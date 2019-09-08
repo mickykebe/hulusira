@@ -1,0 +1,24 @@
+***REMOVED***
+  "env": ***REMOVED***
+    "browser": true,
+    "es6": true,
+    "node": true
+  ***REMOVED***,
+  "extends": "eslint:recommended",
+  "globals": ***REMOVED***
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  ***REMOVED***,
+  "parserOptions": ***REMOVED***
+    "ecmaFeatures": ***REMOVED***
+      "jsx": true
+    ***REMOVED***,
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  ***REMOVED***,
+  "plugins": ["react-hooks"],
+  "rules": ***REMOVED***
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
+  ***REMOVED***
+***REMOVED***
