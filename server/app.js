@@ -3,6 +3,7 @@ const cors = require('cors');
 const express = require('express');
 const session = require('express-session');
 const redis = require("./redis");
+const ***REMOVED***loadUser***REMOVED*** = require('./handlers/loadUser');
 const routes = require("./routes/index");
 const ***REMOVED*** isProduction ***REMOVED*** = require('./utils');
 
@@ -27,13 +28,7 @@ app.use(
   ***REMOVED***)
 );
 
-app.use(async (req, res, next) => ***REMOVED***
-  const userId = req.session.userId;
-  if (userId) ***REMOVED***
-    req.user = await db.getUserById(userId);
-  ***REMOVED***
-  next();
-***REMOVED***);
+app.use(loadUser);
 app.use("/api", routes);
 
 module.exports = app;
