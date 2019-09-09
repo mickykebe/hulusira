@@ -39,7 +39,16 @@ class Api {
   }
 
   async login(data) {
-    const { data: user } = await this.request.post(`/login`, data);
+    const { data: user} = await this.request.post(`/login`, data);
+    return user;
+  }
+
+  async activeUser(ctx) {
+    const { data: user } = await this.request.get(`/me`, {
+      headers: {
+        cookie: ctx.req ? ctx.req.headers.cookie : null,
+      }
+    });
     return user;
   }
 }

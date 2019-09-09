@@ -1,3 +1,6 @@
+const connectRedis = require("connect-redis");
+const cors = require('cors');
+const session = require('express-session');
 const express = require("express");
 const logger = require("morgan");
 const bodyParser = require("body-parser");
@@ -7,8 +10,32 @@ const uploadController = require("../controllers/upload-controller");
 const userController = require("../controllers/user-controller");
 const { catchErrors } = require("../handlers/errorHandler");
 const { isProduction } = require('../utils');
+const redis = require("../redis");
+const {loadUser} = require('../handlers/loadUser');
+
+const RedisStore = connectRedis(session);
 
 const router = express.Router();
+
+router.use(cors());
+router.use(
+  session({
+    store: new RedisStore({
+      client: redis
+    }),
+    name: "qid",
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: isProduction,
+      maxAge: 1000 * 60 * 60 * 24 * 7
+    }
+  })
+);
+
+router.use(loadUser);
 
 router.use(logger("dev"));
 router.use(bodyParser.json());

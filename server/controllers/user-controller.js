@@ -1,17 +1,10 @@
 const bcrypt = require("bcryptjs");
 const db = require("../db");
 
-exports.loadLoggedInUser = async (req, res, next) => {
-  const userId = req.session.userId;
-  if (userId) {
-    req.user = await db.getUserById(userId);
-  }
-  next();
-};
-
 exports.me = async (req, res) => {
   if (req.user) {
     res.status(200).send(req.user.publicData());
+    return;
   }
   throw new Error("User not found");
 };
