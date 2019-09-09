@@ -8,6 +8,7 @@ global.clearDb = async () => ***REMOVED***
   await db.pool.query(`DELETE FROM job`);
   await db.pool.query(`DELETE FROM company`);
   await db.pool.query(`DELETE FROM tag`);
+  await db.pool.query(`DELETE FROM users`);
 ***REMOVED***;
 
 global.endDb = async () => ***REMOVED***

@@ -39,7 +39,16 @@ class Api ***REMOVED***
   ***REMOVED***
 
   async login(data) ***REMOVED***
-    const ***REMOVED*** data: user ***REMOVED*** = await this.request.post(`/login`, data);
+    const ***REMOVED*** data: user***REMOVED*** = await this.request.post(`/login`, data);
+    return user;
+  ***REMOVED***
+
+  async activeUser(ctx) ***REMOVED***
+    const ***REMOVED*** data: user ***REMOVED*** = await this.request.get(`/me`, ***REMOVED***
+      headers: ***REMOVED***
+        cookie: ctx.req ? ctx.req.headers.cookie : null,
+      ***REMOVED***
+    ***REMOVED***);
     return user;
   ***REMOVED***
 ***REMOVED***
