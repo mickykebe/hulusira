@@ -3,6 +3,7 @@ const cors = require('cors');
 const express = require('express');
 const session = require('express-session');
 const redis = require("./redis");
+const {loadUser} = require('./handlers/loadUser');
 const routes = require("./routes/index");
 const { isProduction } = require('./utils');
 
@@ -27,13 +28,7 @@ app.use(
   })
 );
 
-app.use(async (req, res, next) => {
-  const userId = req.session.userId;
-  if (userId) {
-    req.user = await db.getUserById(userId);
-  }
-  next();
-});
+app.use(loadUser);
 app.use("/api", routes);
 
 module.exports = app;
