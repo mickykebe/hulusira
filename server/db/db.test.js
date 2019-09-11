@@ -1,5 +1,4 @@
 const faker = require("faker");
-
 const db = require("./index");
 const Job = require("../models/job");
 const Tag = require("../models/tag");
@@ -190,95 +189,93 @@ describe("db", () => {
   });
 
   it("getJobById returns job data", async () => {
-    const insertQuery = `INSERT INTO job(position, job_type, description, apply_email) VALUES ($1, $2, $3, $4) RETURNING *`;
-    const insertRes = await db.pool.query(insertQuery, [
-      faker.name.jobTitle(),
-      "Full-time",
-      faker.lorem.sentences(),
-      faker.internet.email()
-    ]);
-    const jobRow = insertRes.rows[0];
-    const res = await db.getJobById(jobRow.id);
+    const rows = await db.knex('job').insert({
+      position: faker.name.jobTitle(),
+      job_type: "Full-time",
+      description: faker.lorem.sentences(),
+      apply_email: faker.internet.email(),
+    }).returning(db.selectColumns('job', 'job', db.jobColumns));
+    const jobRow = rows[0];
+    const res = await db.getJobById(jobRow.job_id);
+
     expect(res).toMatchObject({
       company: null,
       job: Job.fromDb(jobRow, [])
     });
   });
 
-  it("getJobs returns jobs", async () => {
-    const tagQuery = `INSERT INTO tag(name) VALUES ($1) RETURNING *`;
-    const resTag1 = await db.pool.query(tagQuery, [faker.lorem.word()]);
-    const tag1 = Tag.fromDb(resTag1.rows[0]);
-    const resTag2 = await db.pool.query(tagQuery, [faker.lorem.word()]);
-    const tag2 = Tag.fromDb(resTag2.rows[0]);
-    const resCompany = await db.pool.query(
-      `INSERT INTO company(name, email) VALUES ($1, $2) RETURNING *`,
-      [faker.company.companyName(), faker.internet.email()]
-    );
-    const company = Company.fromDb(resCompany.rows[0]);
-    const jobRes = await db.pool.query(
-      `INSERT INTO job(position, job_type, company_id, description, apply_email) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-      [
-        faker.name.jobTitle(),
-        "Full-time",
-        company.id,
-        faker.lorem.sentence(),
-        faker.internet.email()
-      ]
-    );
-    const jobTagQuery = `INSERT INTO job_tags(job_id, tag_id) VALUES ($1, $2)`;
-    await db.pool.query(jobTagQuery, [jobRes.rows[0].id, tag1.id]);
-    await db.pool.query(jobTagQuery, [jobRes.rows[0].id, tag2.id]);
-    const res = await db.getJobs(-1);
-    expect(res).toHaveLength(1);
-    /* console.log({
-      ["res[0]"]: res[0],
-      result: {
-        company,
-        job: Job.fromDb(jobRes.rows[0], [tag1, tag2])
-      }
-    }); */
-    expect(res[0]).toMatchObject({
+  it("getJobs returns jobs with tags", async () => {
+    const sortById = (obj1, obj2) => obj1.id > obj2.id ? 1 : -1;
+    const tag1 = Tag.fromDb((await db.knex('tag')
+      .insert({ name: faker.lorem.word()})
+      .returning('*'))[0]);
+    const tag2 = Tag.fromDb((await db.knex('tag')
+      .insert({ name: faker.lorem.word()})
+      .returning('*'))[0]);
+    const company = Company.fromDb((await db.knex('company')
+      .insert({ name: faker.company.companyName(), email: faker.internet.email()})
+      .returning(db.selectColumns('company', 'company', db.companyColumns)))[0]);
+    const job = Job.fromDb((await db.knex('job')
+      .insert({
+        position: faker.name.jobTitle(),
+        job_type: "Full-time",
+        company_id: company.id,
+        description: faker.lorem.sentence(),
+        apply_email: faker.internet.email(),
+      })
+      .returning(db.selectColumns('job', 'job', db.jobColumns)))[0], [tag1, tag2].sort(sortById));
+    await db.knex('job_tags')
+      .insert([{
+        job_id: job.id,
+        tag_id: tag1.id
+      }, {
+        job_id: job.id,
+        tag_id: tag2.id,
+      }]);
+    const jobs = await db.getJobs();
+    expect(jobs).toHaveLength(1);
+    jobs[0].job.tags = jobs[0].job.tags.sort(sortById);
+    expect(jobs[0]).toMatchObject({
       company,
-      job: Job.fromDb(jobRes.rows[0], [tag1, tag2])
+      job,
     });
   });
 
   it("getJobs cursor works", async () => {
-    const res = await db.pool.query(
-      `INSERT INTO job(position, job_type, description, apply_email) VALUES ($1, $2, $3, $4), ($5, $6, $7, $8) RETURNING *`,
-      [
-        faker.name.jobTitle(),
-        "Full-time",
-        faker.lorem.sentences(),
-        faker.internet.email(),
-        faker.name.jobTitle(),
-        "Part-time",
-        faker.lorem.sentences(),
-        faker.internet.email()
-      ]
-    );
-    const firstJobId = res.rows[0].id;
-    const jobs = await db.getJobs(firstJobId);
+    const rows = await db.knex('job')
+      .insert([{
+        position: faker.name.jobTitle(),
+        job_type: 'Full-time',
+        description: faker.lorem.sentences(),
+        apply_email: faker.internet.email(),
+      }, {
+        position: faker.name.jobTitle(),
+        job_type: 'Part-time',
+        description: faker.lorem.sentences(),
+        apply_email: faker.internet.email(),
+      }])
+      .returning('*');
+    const firstJobId = rows[0].id;
+    const jobs = await db.getJobs({fromJobId: firstJobId});
     expect(jobs).toHaveLength(1);
     expect(jobs[0].job.id).toBe(firstJobId);
   });
 
   it("getJobs can limit number of jobs", async () => {
-    const res = await db.pool.query(
-      `INSERT INTO job(position, job_type, description, apply_email) VALUES ($1, $2, $3, $4), ($5, $6, $7, $8) RETURNING *`,
-      [
-        faker.name.jobTitle(),
-        "Full-time",
-        faker.lorem.sentences(),
-        faker.internet.email(),
-        faker.name.jobTitle(),
-        "Part-time",
-        faker.lorem.sentences(),
-        faker.internet.email()
-      ]
-    );
-    const jobs = await db.getJobs(-1, 1);
+    await db.knex('job')
+    .insert([{
+      position: faker.name.jobTitle(),
+      job_type: 'Full-time',
+      description: faker.lorem.sentences(),
+      apply_email: faker.internet.email(),
+    }, {
+      position: faker.name.jobTitle(),
+      job_type: 'Part-time',
+      description: faker.lorem.sentences(),
+      apply_email: faker.internet.email(),
+    }])
+    .returning('*');
+    const jobs = await db.getJobs({ limit: 1 });
     expect(jobs).toHaveLength(1);
   });
 

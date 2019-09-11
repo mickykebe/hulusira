@@ -1,10 +1,19 @@
 const assert = require("assert");
 const { Pool } = require("pg");
 const { Company, Tag, Job, User } = require("../models");
+const Knex = require('knex');
 
 class Db {
-  constructor(pool) {
-    this.pool = pool;
+  constructor() {
+    this.pool = new Pool({
+      connectionString: process.env.DB_CONNECTION_STRING
+    });
+    this.knex = Knex({
+      client: 'pg',
+      connection: process.env.DB_CONNECTION_STRING,
+    });
+    this.jobColumns = ["id", "position", "job_type", "company_id", "city", "primary_tag", "monthly_salary", "description", "responsibilities", "requirements", "how_to_apply", "apply_url", "apply_email", "approved", "closed", "created"];
+    this.companyColumns = ["id", "name", "email", "logo", "verified"];
   }
 
   async createJobAndCompany({ company: companyData, job: jobData }) {
@@ -25,11 +34,11 @@ class Db {
     assert(!!jobData);
 
     if (jobData.primaryTagId) {
-      const tagRes = await this.pool.query(`SELECT * FROM tag WHERE id = $1`, [
-        jobData.primaryTagId
-      ]);
-      if (tagRes.rows.length === 0 || tagRes.rows[0].is_primary === false) {
-        throw new Error("Primary tag value set to invalid tag");
+      const tagRows = await this.knex('tag')
+        .select()
+        .where('id', jobData.primaryTagId);
+      if(tagRows.length === 0 || tagRows[0].is_primary === false) {
+        throw new Error('Primary tag value set to invalid tag');
       }
     }
 
@@ -37,24 +46,23 @@ class Db {
       jobData.tags.map(tagName => this.findOrCreateTag(tagName))
     );
 
-    const query = `INSERT INTO job(position, job_type, company_id, city, primary_tag, monthly_salary, description, responsibilities, requirements, how_to_apply, apply_url, apply_email) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *`;
-    const values = [
-      jobData.position,
-      jobData.jobType,
-      companyId,
-      jobData.city,
-      jobData.primaryTagId,
-      jobData.monthlySalary,
-      jobData.description,
-      jobData.responsibilities,
-      jobData.requirements,
-      jobData.howToApply,
-      jobData.applyUrl,
-      jobData.applyEmail
-    ];
-
-    const res = await this.pool.query(query, values);
-    const job = Job.fromDb(res.rows[0], tags);
+    const rows = await this.knex('job')
+      .insert({
+        position: jobData.position,
+        job_type: jobData.jobType,
+        company_id: companyId,
+        city: jobData.city,
+        primary_tag: jobData.primaryTagId,
+        monthly_salary: jobData.monthlySalary,
+        description: jobData.description,
+        responsibilities: jobData.responsibilities,
+        requirements: jobData.requirements,
+        how_to_apply: jobData.howToApply,
+        apply_url: jobData.applyUrl,
+        apply_email: jobData.applyEmail
+      }).returning(this.selectColumns('job', 'job', this.jobColumns));
+    
+    const job = Job.fromDb(rows[0], tags);
 
     await Promise.all(tags.map(tag => this.createJobTag(job.id, tag.id)));
 
@@ -62,17 +70,20 @@ class Db {
   }
 
   async createJobTag(jobId, tagId) {
-    const query = `INSERT INTO job_tags(job_id, tag_id) VALUES ($1, $2) RETURNING *`;
-    const values = [jobId, tagId];
-
-    return this.pool.query(query, values);
+    return this.knex('job_tags')
+      .insert({
+        job_id: jobId,
+        tag_id: tagId,
+      });
   }
 
   async createCompany(companyData) {
-    const query = `INSERT INTO company(name, email, logo) VALUES ($1, $2, $3) RETURNING *`;
-    const values = [companyData.name, companyData.email, companyData.logo];
-    const res = await this.pool.query(query, values);
-    return Company.fromDb(res.rows[0]);
+    const rows = await this.knex("company").insert({
+      name: companyData.name,
+      email: companyData.email,
+      logo: companyData.logo
+    }).returning(this.selectColumns('company', 'company', this.companyColumns));
+    return Company.fromDb(rows[0]);
   }
 
   async findOrCreateTag(name) {
@@ -84,70 +95,78 @@ class Db {
   }
 
   async getPrimaryTags() {
-    const query = `SELECT * FROM tag WHERE is_primary = TRUE ORDER BY name`;
-    const res = await this.pool.query(query);
-    return res.rows.map(Tag.fromDb);
+    const rows = this.knex('tag')
+      .select()
+      .where('is_primary', true)
+      .orderBy('name');
+    return rows.map(Tag.fromDb);
   }
 
-  _jobFromRow(row) {
+  async getJobs({fromJobId, limit, closed = false, approved, withinDays} = {}) {
+    let query = this.knex('job').select(
+      ...this.selectColumns('job', 'job', this.jobColumns),
+      ...this.selectColumns('company', 'company', this.companyColumns)
+    )
+    .select(this.knex.raw(`coalesce(json_agg(json_build_object('id', tag.id, 'name', tag.name, 'isPrimary', tag.is_primary)) filter (where tag.id IS NOT NULL), '[]') as tags`))
+    .leftJoin('company', 'job.company_id', 'company_id')
+    .leftJoin('job_tags', 'job_tags.job_id', 'job.id')
+    .leftJoin('tag', 'job_tags.tag_id', 'tag.id')
+    .where('job.closed', closed)
+    .groupBy('job.id', 'company.id')
+    .orderBy('job.id', 'desc');
+
+    if(typeof(fromJobId) === "number") {
+      query = query.andWhere('job.id', '<=', fromJobId);
+    }
+    if(approved) {
+      query = query.andWhere('job.approved', approved);
+    }
+    if(typeof(withinDays) === "number") {
+      query = query.andWhere(this.knex.raw("job.created >= NOW - interval '? day'", [withinDays.toString()]))
+    }
+    if(typeof(limit) === "number") {
+      query = query.limit(limit);
+    }
+    const rows = await query;
+    return rows.map(row => {
+      return {
+        company: row.company_id && Company.fromDb(row),
+        job: Job.fromDb(row, row.tags || [])
+      }
+    });
+  }
+
+  selectColumns(tableName, prefix, fields) {
+    return fields.map(f => `${tableName}.${f} as ${prefix}_${f}`);
+  }
+
+  async getJobById(id) {
+    const row = await this.knex("job").first(
+        ...this.selectColumns('job', 'job', this.jobColumns),
+        ...this.selectColumns('company', 'company', this.companyColumns)
+      )
+      .first(this.knex.raw(`coalesce(json_agg(json_build_object('id', extra_tags.id, 'name', extra_tags.name, 'isPrimary', extra_tags.is_primary)) filter (where extra_tags.id IS NOT NULL), '[]') as tags`))
+      .leftJoin('company', 'job.company_id', 'company_id')
+      .leftJoin('job_tags', 'job_tags.job_id', 'job.id')
+      .leftJoin(this.knex.raw('tag extra_tags on job_tags.tag_id = extra_tags.id'))
+      .where('job.id', id)
+      .groupBy('job.id', 'company.id');
     const company =
-      row.company_id &&
-      new Company(
-        row.company_id,
-        row.company_name,
-        row.company_email,
-        row.company_logo
-      );
+      row.company_id && Company.fromDb(row);
     return {
       company: company,
       job: Job.fromDb(row, row.tags || [])
     };
   }
 
-  async getJobs(fromJobId = -1, limit = 30) {
-    const query = `SELECT job.*, job.position, company.id as company_id, company.name as company_name, company.email as company_email, company.logo as company_logo, company.verified as company_verified, coalesce(json_agg(json_build_object('id', extra_tags.id, 'name', extra_tags.name, 'isPrimary', extra_tags.is_primary)) filter (where extra_tags.id IS NOT NULL), '[]') as tags from job left join company on job.company_id = company.id left join job_tags on job_tags.job_id = job.id left join tag extra_tags on job_tags.tag_id = extra_tags.id ${
-      fromJobId !== -1 ? "where job.id <= $2" : ""
-    } group by job.id, company.id order by job.id desc limit $1;`;
-    const values = [limit, ...(fromJobId !== -1 ? [fromJobId] : [])];
-    const res = await this.pool.query(query, values);
-    const jobsData = res.rows.map(this._jobFromRow);
-    return jobsData;
-  }
-
-  async getJobById(id) {
-    const query =
-      "SELECT job.*, job.position, company.id as company_id, company.name as company_name, company.email as company_email, company.logo as company_logo, company.verified as company_verified, coalesce(json_agg(json_build_object('id', extra_tags.id, 'name', extra_tags.name, 'isPrimary', extra_tags.is_primary)) filter (where extra_tags.id IS NOT NULL), '[]') as tags from job left join company on job.company_id = company.id left join job_tags on job_tags.job_id = job.id left join tag extra_tags on job_tags.tag_id = extra_tags.id where job.id = $1 group by job.id, company.id;";
-    const res = await this.pool.query(query, [id]);
-    if (res.rowCount === 0) {
-      throw new Error("Resource not found");
-    }
-    if (res.rowCount > 1) {
-      throw new Error("Data integrity constraint violation");
-    }
-    return this._jobFromRow(res.rows[0]);
-  }
-
-  _getUserFromDbRes(res) {
-    if (res.rowCount === 0) {
-      return null;
-    }
-    if (res.rowCount > 1) {
-      throw new Error("Data integrity constraint violation");
-    }
-
-    return User.fromDb(res.rows[0]);
-  }
-
   async getUserByEmail(email) {
-    const query = "SELECT * FROM users WHERE email = $1";
-    const res = await this.pool.query(query, [email]);
-    return this._getUserFromDbRes(res);
+    const row = await this.knex('users').first().where('email', email);
+    return User.fromDb(row);
   }
 
   async getUserById(id) {
-    const query = "SELECT * FROM users WHERE id = $1";
-    const res = await this.pool.query(query, [id]);
-    return this._getUserFromDbRes(res);
+    const row = await this.knex('users').first().where('id', id);
+    return User.fromDb(row);
   }
 
   end() {
@@ -155,8 +174,4 @@ class Db {
   }
 }
 
-module.exports = new Db(
-  new Pool({
-    connectionString: process.env.DB_CONNECTION_STRING
-  })
-);
+module.exports = new Db();
