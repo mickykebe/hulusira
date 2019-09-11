@@ -21,9 +21,9 @@
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "clsx": "^1.0.4",
+    "connect-redis": "^4.0.2",
     "cookie": "^0.4.0",
     "cors": "^2.8.5",
-    "connect-redis": "^4.0.2",
     "dotenv": "^8.0.0",
     "easymde": "^2.7.0",
     "errorhandler": "^1.5.1",
@@ -31,6 +31,7 @@
     "express-session": "^1.16.2",
     "formik": "^1.5.8",
     "ioredis": "^4.14.0",
+    "knex": "^0.19.4",
     "lodash.throttle": "^4.1.1",
     "markdown-to-jsx": "^6.10.3",
     "morgan": "^1.9.1",
@@ -48,11 +49,12 @@
     "babel-plugin-inline-react-svg": "^1.1.0",
     "cross-env": "^5.2.1",
     "eslint": "^6.3.0",
+    "eslint-plugin-jest": "^22.17.0",
     "eslint-plugin-react-hooks": "^2.0.1",
-    "prettier-eslint": "^9.0.0",
     "faker": "^4.1.0",
     "jest": "^24.9.0",
     "nodemon": "^1.19.1",
+    "prettier-eslint": "^9.0.0",
     "supertest": "^4.0.2"
   ***REMOVED***
 ***REMOVED***

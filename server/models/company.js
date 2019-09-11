@@ -8,10 +8,10 @@ class Company ***REMOVED***
 
   static fromDb(dbCompany) ***REMOVED***
     const company = new Company(
-      dbCompany.id,
-      dbCompany.name,
-      dbCompany.email,
-      dbCompany.logo
+      dbCompany.company_id,
+      dbCompany.company_name,
+      dbCompany.company_email,
+      dbCompany.company_logo
     );
     return company;
   ***REMOVED***
