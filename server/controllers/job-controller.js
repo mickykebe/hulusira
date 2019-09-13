@@ -98,10 +98,9 @@ exports.getPrimaryTags = async (req, res) => ***REMOVED***
 
 exports.getJobs = async (req, res) => ***REMOVED***
   let data;
-  const ***REMOVED*** cursor: encodedCursor = "", count: countStr = "30" ***REMOVED*** = req.query;
-  const cursor = encodedCursor !== "" ? utils.base64decode(encodedCursor) : -1;
+  const ***REMOVED*** cursor: encodedCursor, count: countStr = "30" ***REMOVED*** = req.query;
+  const fromJobId = (typeof encodedCursor === "string" && encodedCursor !== "") ? parseInt(utils.base64decode(encodedCursor)) : null;
   const count = parseInt(countStr);
-  const fromJobId = parseInt(cursor);
   const jobs = await db.getJobs(***REMOVED***fromJobId, limit: count + 1***REMOVED***);
   if (jobs.length < count + 1) ***REMOVED***
     data = ***REMOVED*** jobs, nextCursor: "" ***REMOVED***;
