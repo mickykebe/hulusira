@@ -9,6 +9,16 @@ describe("db", () => ***REMOVED***
 
   afterAll(global.endDb);
 
+  function sampleJobData(fields = ***REMOVED******REMOVED***) ***REMOVED***
+    return ***REMOVED***
+      position: faker.name.jobTitle(),
+      job_type: 'Full-time',
+      description: faker.lorem.sentences(),
+      apply_email: faker.internet.email(),
+      ...fields,
+    ***REMOVED***;
+  ***REMOVED***
+
   it("should create company", async () => ***REMOVED***
     const companyData = ***REMOVED***
       name: faker.company.companyName(),
@@ -278,6 +288,32 @@ describe("db", () => ***REMOVED***
     const jobs = await db.getJobs(***REMOVED*** limit: 1 ***REMOVED***);
     expect(jobs).toHaveLength(1);
   ***REMOVED***);
+
+  it("getJobs can filter by approved status", async () => ***REMOVED***
+    const approvedJobData = sampleJobData(***REMOVED*** approved: true ***REMOVED***);
+    const jobData = sampleJobData();
+    const jobRows = await db.knex("job")
+      .insert([approvedJobData, jobData])
+      .returning(db.selectColumns('job', 'job', db.jobColumns));
+    expect(jobRows).toHaveLength(2);
+    const jobResults = await db.getJobs(***REMOVED*** approved: true ***REMOVED***);
+    expect(jobResults).toHaveLength(1);
+    expect(jobResults[0].job.position).toBe(approvedJobData.position);
+  ***REMOVED***);
+
+  it("getJobs can limit results within day ranges", async () => ***REMOVED***
+    const recentJobData = sampleJobData(***REMOVED*** created: new Date()***REMOVED***);
+    const expiredDate = new Date();
+    expiredDate.setDate(expiredDate.getDate() - 31);
+    const oldJobData = sampleJobData(***REMOVED*** created: expiredDate ***REMOVED***);
+    const jobRows = await db.knex("job")
+      .insert([ recentJobData, oldJobData ])
+      .returning(db.selectColumns('job', 'job', db.jobColumns));
+    expect(jobRows).toHaveLength(2);
+    const jobResults = await db.getJobs(***REMOVED*** withinDays: 30 ***REMOVED***);
+    expect(jobResults).toHaveLength(1);
+    expect(jobResults[0].job.position).toBe(recentJobData.position);
+  ***REMOVED***)
 
   it("getUserByEmail works", async () => ***REMOVED***
     const user = ***REMOVED***

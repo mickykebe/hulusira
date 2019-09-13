@@ -122,7 +122,7 @@ class Db ***REMOVED***
       query = query.andWhere('job.approved', approved);
     ***REMOVED***
     if(typeof(withinDays) === "number") ***REMOVED***
-      query = query.andWhere(this.knex.raw("job.created >= NOW - interval '? day'", [withinDays.toString()]))
+      query = query.andWhere('job.created', '>=', this.knex.raw("NOW() - (?*'1 DAY'::INTERVAL)", [withinDays]));
     ***REMOVED***
     if(typeof(limit) === "number") ***REMOVED***
       query = query.limit(limit);

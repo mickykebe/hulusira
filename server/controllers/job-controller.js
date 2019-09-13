@@ -101,7 +101,8 @@ exports.getJobs = async (req, res) => ***REMOVED***
   const ***REMOVED*** cursor: encodedCursor = "", count: countStr = "30" ***REMOVED*** = req.query;
   const cursor = encodedCursor !== "" ? utils.base64decode(encodedCursor) : -1;
   const count = parseInt(countStr);
-  const jobs = await db.getJobs(cursor, count + 1);
+  const fromJobId = parseInt(cursor);
+  const jobs = await db.getJobs(***REMOVED***fromJobId, limit: count + 1***REMOVED***);
   if (jobs.length < count + 1) ***REMOVED***
     data = ***REMOVED*** jobs, nextCursor: "" ***REMOVED***;
   ***REMOVED*** else ***REMOVED***
