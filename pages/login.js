@@ -4,10 +4,9 @@ import ***REMOVED*** Formik ***REMOVED*** from 'formik';
 import * as Yup from 'yup';
 import ***REMOVED*** makeStyles ***REMOVED*** from '@material-ui/styles';
 import HSPaper from '../components/hs-paper';
-import ***REMOVED*** Typography, TextField, Button, Fab ***REMOVED*** from '@material-ui/core';
+import ***REMOVED*** Typography, TextField, Fab ***REMOVED*** from '@material-ui/core';
 import api from '../api';
 import HSSnackbar from '../components/hs-snackbar';
-import ***REMOVED*** enforceNotAuth ***REMOVED*** from '../utils/auth';
 
 const useStyles = makeStyles(theme => (***REMOVED***
   root: ***REMOVED***
@@ -104,8 +103,20 @@ function Login() ***REMOVED***
 ***REMOVED***
 
 Login.getInitialProps = function(ctx) ***REMOVED***
-  enforceNotAuth(ctx);
-  return ***REMOVED******REMOVED***;
+  if(ctx.req) ***REMOVED***
+    const ***REMOVED*** qid: sessionId ***REMOVED*** = nextCookie(ctx);
+    if(sessionId) ***REMOVED***
+      redirect(ctx, '/');
+    ***REMOVED***
+    return ***REMOVED******REMOVED***;
+  ***REMOVED***
+
+  try ***REMOVED***
+    await api.activeUser();
+    redirect(ctx, '/');
+  ***REMOVED*** finally ***REMOVED***
+    return ***REMOVED******REMOVED***;
+  ***REMOVED***
 ***REMOVED***
 
 export default Login;

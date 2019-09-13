@@ -57,7 +57,7 @@ function Index(***REMOVED*** primaryTags, jobPage ***REMOVED***) ***REMOVED***
   const fetchMoreJobs = async () => ***REMOVED***
     dispatch(***REMOVED*** type: "FETCH_INIT" ***REMOVED***);
     try ***REMOVED***
-      const jobPage = await api.getJobs(nextCursor);
+      const jobPage = await api.getJobs(***REMOVED***cursor: nextCursor***REMOVED***);
       dispatch(***REMOVED*** type: "FETCH_SUCCESS", payload: jobPage ***REMOVED***);
     ***REMOVED*** catch (err) ***REMOVED***
       dispatch(***REMOVED*** type: "FETCH_FAILURE" ***REMOVED***);
@@ -122,10 +122,10 @@ function Index(***REMOVED*** primaryTags, jobPage ***REMOVED***) ***REMOVED***
   );
 ***REMOVED***
 
-Index.getInitialProps = async () => ***REMOVED***
+Index.getInitialProps = async (ctx) => ***REMOVED***
   const [primaryTags, jobPage] = await Promise.all([
     api.getPrimaryTags(),
-    api.getJobs()
+    api.getJobs(***REMOVED*** ctx ***REMOVED***)
   ]);
   return ***REMOVED*** jobPage, primaryTags ***REMOVED***;
 ***REMOVED***;

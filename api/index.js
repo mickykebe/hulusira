@@ -28,8 +28,12 @@ class Api ***REMOVED***
     return data;
   ***REMOVED***
 
-  async getJobs(cursor = "") ***REMOVED***
-    const ***REMOVED*** data ***REMOVED*** = await this.request.get(`/jobs?cursor=$***REMOVED***cursor***REMOVED***`);
+  async getJobs(***REMOVED***ctx = null, cursor = ""***REMOVED*** = ***REMOVED******REMOVED***) ***REMOVED***
+    const ***REMOVED*** data ***REMOVED*** = await this.request.get(`/jobs?cursor=$***REMOVED***cursor***REMOVED***`, ***REMOVED***
+      headers: ***REMOVED***
+        cookie: (ctx && ctx.req) ? ctx.req.headers.cookie : null,
+      ***REMOVED***,
+    ***REMOVED***);
     return data;
   ***REMOVED***
 

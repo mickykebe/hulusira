@@ -6,7 +6,7 @@ exports.me = async (req, res) => ***REMOVED***
     res.status(200).send(req.user.publicData());
     return;
   ***REMOVED***
-  throw new Error("User not found");
+  res.sendStatus(401);
 ***REMOVED***;
 
 exports.login = async (req, res, next) => ***REMOVED***
