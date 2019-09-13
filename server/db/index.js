@@ -122,7 +122,7 @@ class Db {
       query = query.andWhere('job.approved', approved);
     }
     if(typeof(withinDays) === "number") {
-      query = query.andWhere(this.knex.raw("job.created >= NOW - interval '? day'", [withinDays.toString()]))
+      query = query.andWhere('job.created', '>=', this.knex.raw("NOW() - (?*'1 DAY'::INTERVAL)", [withinDays]));
     }
     if(typeof(limit) === "number") {
       query = query.limit(limit);

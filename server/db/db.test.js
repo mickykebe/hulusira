@@ -9,6 +9,16 @@ describe("db", () => {
 
   afterAll(global.endDb);
 
+  function sampleJobData(fields = {}) {
+    return {
+      position: faker.name.jobTitle(),
+      job_type: 'Full-time',
+      description: faker.lorem.sentences(),
+      apply_email: faker.internet.email(),
+      ...fields,
+    };
+  }
+
   it("should create company", async () => {
     const companyData = {
       name: faker.company.companyName(),
@@ -278,6 +288,32 @@ describe("db", () => {
     const jobs = await db.getJobs({ limit: 1 });
     expect(jobs).toHaveLength(1);
   });
+
+  it("getJobs can filter by approved status", async () => {
+    const approvedJobData = sampleJobData({ approved: true });
+    const jobData = sampleJobData();
+    const jobRows = await db.knex("job")
+      .insert([approvedJobData, jobData])
+      .returning(db.selectColumns('job', 'job', db.jobColumns));
+    expect(jobRows).toHaveLength(2);
+    const jobResults = await db.getJobs({ approved: true });
+    expect(jobResults).toHaveLength(1);
+    expect(jobResults[0].job.position).toBe(approvedJobData.position);
+  });
+
+  it("getJobs can limit results within day ranges", async () => {
+    const recentJobData = sampleJobData({ created: new Date()});
+    const expiredDate = new Date();
+    expiredDate.setDate(expiredDate.getDate() - 31);
+    const oldJobData = sampleJobData({ created: expiredDate });
+    const jobRows = await db.knex("job")
+      .insert([ recentJobData, oldJobData ])
+      .returning(db.selectColumns('job', 'job', db.jobColumns));
+    expect(jobRows).toHaveLength(2);
+    const jobResults = await db.getJobs({ withinDays: 30 });
+    expect(jobResults).toHaveLength(1);
+    expect(jobResults[0].job.position).toBe(recentJobData.position);
+  })
 
   it("getUserByEmail works", async () => {
     const user = {
