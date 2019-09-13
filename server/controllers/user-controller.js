@@ -6,7 +6,7 @@ exports.me = async (req, res) => {
     res.status(200).send(req.user.publicData());
     return;
   }
-  throw new Error("User not found");
+  res.sendStatus(401);
 };
 
 exports.login = async (req, res, next) => {

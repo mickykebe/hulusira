@@ -7,15 +7,27 @@ function Admin({ user }) {
 }
 
 Admin.getInitialProps = async function(ctx) {
-  const { qid: sessionId } = nextCookie(ctx);
-  if(sessionId) {
-    const user = await api.activeUser(ctx);
-    if(user.role === 'admin') {
-      return { user };
+  if(ctx.req) {
+    const { qid: sessionId } = nextCookie(ctx);
+    if(!sessionId) {
+      redirect(ctx, '/');
+      return {};
     }
   }
 
-  redirect(ctx, '/');
+  let user;
+
+  try {
+    user = await api.activeUser(ctx);
+    if(user.role !== "admin") {
+      throw new Error("Not permitted");
+    }
+  } catch(err){
+    redirect(ctx, '/');
+    return {};
+  }
+
+  return { user };
 }
 
 export default Admin;

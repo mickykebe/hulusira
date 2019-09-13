@@ -57,7 +57,7 @@ function Index({ primaryTags, jobPage }) {
   const fetchMoreJobs = async () => {
     dispatch({ type: "FETCH_INIT" });
     try {
-      const jobPage = await api.getJobs(nextCursor);
+      const jobPage = await api.getJobs({cursor: nextCursor});
       dispatch({ type: "FETCH_SUCCESS", payload: jobPage });
     } catch (err) {
       dispatch({ type: "FETCH_FAILURE" });
@@ -122,10 +122,10 @@ function Index({ primaryTags, jobPage }) {
   );
 }
 
-Index.getInitialProps = async () => {
+Index.getInitialProps = async (ctx) => {
   const [primaryTags, jobPage] = await Promise.all([
     api.getPrimaryTags(),
-    api.getJobs()
+    api.getJobs({ ctx })
   ]);
   return { jobPage, primaryTags };
 };

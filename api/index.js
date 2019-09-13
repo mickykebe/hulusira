@@ -28,8 +28,12 @@ class Api {
     return data;
   }
 
-  async getJobs(cursor = "") {
-    const { data } = await this.request.get(`/jobs?cursor=${cursor}`);
+  async getJobs({ctx = null, cursor = ""} = {}) {
+    const { data } = await this.request.get(`/jobs?cursor=${cursor}`, {
+      headers: {
+        cookie: (ctx && ctx.req) ? ctx.req.headers.cookie : null,
+      },
+    });
     return data;
   }
 
