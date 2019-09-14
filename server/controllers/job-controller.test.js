@@ -3,7 +3,34 @@ const faker = require("faker");
 const app = require("../app");
 const db = require("../db");
 const utils = require("../utils");
+const { pendingJobs } = require('./job-controller');
 jest.mock("../db");
+
+const mockResponse = () => {
+  const res = {};
+  res.status = jest.fn().mockReturnValue(res);
+  res.send = jest.fn().mockReturnValue(res);
+  return res;
+}
+
+const sampleJobResult = (job = {}, company = {}) => {
+  return {
+    job: {
+      position: faker.name.jobTitle(),
+      jobType: "Full-time",
+      description: faker.lorem.sentence(),
+      apply_email: faker.internet.email(),
+      ...job
+    },
+    company: {
+      ...company
+    }
+  };
+};
+
+const sampleJobsResult = (numJobs = 5) => {
+  return Array.from({ length: numJobs }, sampleJobResult);
+}
 
 describe("POST to /new", () => {
   it("Validation error if position is missing", async () => {
@@ -180,5 +207,17 @@ describe("GET to /jobs", () => {
       nextCursor = response.body.nextCursor;
     }
     expect(db.getJobs.mock.calls.length).toBe(3);
+  });
+});
+
+describe('GET /pending-jobs', () => {
+  it('responds with pending jobs', async () => {
+    const req = null;
+    const res = mockResponse();
+    const jobs = sampleJobsResult();
+    db.getJobs.mockResolvedValue(jobs);
+    await pendingJobs(req, res);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.send).toHaveBeenCalledWith(jobs);
   });
 });

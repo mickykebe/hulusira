@@ -113,6 +113,11 @@ exports.getJobs = async (req, res) => {
   res.status(200).send(data);
 };
 
+exports.pendingJobs = async (_, res) => {
+  const jobs = await db.getJobs({ approved: false });
+  res.status(200).send(jobs);
+}
+
 exports.getJob = async (req, res) => {
   const { jobId } = req.params;
   const job = await db.getJobById(jobId);
