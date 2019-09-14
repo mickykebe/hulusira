@@ -113,6 +113,11 @@ exports.getJobs = async (req, res) => ***REMOVED***
   res.status(200).send(data);
 ***REMOVED***;
 
+exports.pendingJobs = async (_, res) => ***REMOVED***
+  const jobs = await db.getJobs(***REMOVED*** approved: false ***REMOVED***);
+  res.status(200).send(jobs);
+***REMOVED***
+
 exports.getJob = async (req, res) => ***REMOVED***
   const ***REMOVED*** jobId ***REMOVED*** = req.params;
   const job = await db.getJobById(jobId);

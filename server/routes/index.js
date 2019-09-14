@@ -12,6 +12,7 @@ const ***REMOVED*** catchErrors ***REMOVED*** = require("../handlers/errorHandle
 const ***REMOVED*** isProduction ***REMOVED*** = require('../utils');
 const redis = require("../redis");
 const ***REMOVED***loadUser***REMOVED*** = require('../handlers/loadUser');
+const ***REMOVED*** permit ***REMOVED*** = require('../handlers/permission');
 
 const RedisStore = connectRedis(session);
 
@@ -51,6 +52,7 @@ router.post(
 
 router.get("/jobs/:jobId", catchErrors(jobController.getJob));
 router.get("/jobs", catchErrors(jobController.getJobs));
+router.get("/pending-jobs", permit("admin"), catchErrors(jobController.pendingJobs));
 router.get("/primary-tags", catchErrors(jobController.getPrimaryTags));
 
 router.get("/me", catchErrors(userController.me));

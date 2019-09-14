@@ -3,7 +3,34 @@ const faker = require("faker");
 const app = require("../app");
 const db = require("../db");
 const utils = require("../utils");
+const ***REMOVED*** pendingJobs ***REMOVED*** = require('./job-controller');
 jest.mock("../db");
+
+const mockResponse = () => ***REMOVED***
+  const res = ***REMOVED******REMOVED***;
+  res.status = jest.fn().mockReturnValue(res);
+  res.send = jest.fn().mockReturnValue(res);
+  return res;
+***REMOVED***
+
+const sampleJobResult = (job = ***REMOVED******REMOVED***, company = ***REMOVED******REMOVED***) => ***REMOVED***
+  return ***REMOVED***
+    job: ***REMOVED***
+      position: faker.name.jobTitle(),
+      jobType: "Full-time",
+      description: faker.lorem.sentence(),
+      apply_email: faker.internet.email(),
+      ...job
+    ***REMOVED***,
+    company: ***REMOVED***
+      ...company
+    ***REMOVED***
+  ***REMOVED***;
+***REMOVED***;
+
+const sampleJobsResult = (numJobs = 5) => ***REMOVED***
+  return Array.from(***REMOVED*** length: numJobs ***REMOVED***, sampleJobResult);
+***REMOVED***
 
 describe("POST to /new", () => ***REMOVED***
   it("Validation error if position is missing", async () => ***REMOVED***
@@ -180,5 +207,17 @@ describe("GET to /jobs", () => ***REMOVED***
       nextCursor = response.body.nextCursor;
     ***REMOVED***
     expect(db.getJobs.mock.calls.length).toBe(3);
+  ***REMOVED***);
+***REMOVED***);
+
+describe('GET /pending-jobs', () => ***REMOVED***
+  it('responds with pending jobs', async () => ***REMOVED***
+    const req = null;
+    const res = mockResponse();
+    const jobs = sampleJobsResult();
+    db.getJobs.mockResolvedValue(jobs);
+    await pendingJobs(req, res);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.send).toHaveBeenCalledWith(jobs);
   ***REMOVED***);
 ***REMOVED***);
