@@ -7,6 +7,14 @@ class Api {
     });
   }
 
+  configFromContext(ctx) {
+    const config = {headers: {}};
+    if(ctx && ctx.req && ctx.req.headers.cookie) {
+      config.headers.cookie = ctx.req.headers.cookie;
+    }
+    return config;
+  }
+
   async createJob(data) {
     const { data: jobData } = await this.request.post("/new", data);
     return jobData;
@@ -29,11 +37,7 @@ class Api {
   }
 
   async getJobs({ctx = null, cursor = ""} = {}) {
-    const { data } = await this.request.get(`/jobs?cursor=${cursor}`, {
-      headers: {
-        cookie: (ctx && ctx.req) ? ctx.req.headers.cookie : null,
-      },
-    });
+    const { data } = await this.request.get(`/jobs?cursor=${cursor}`, this.configFromContext(ctx));
     return data;
   }
 
@@ -48,11 +52,7 @@ class Api {
   }
 
   async activeUser(ctx) {
-    const { data: user } = await this.request.get(`/me`, {
-      headers: {
-        cookie: ctx.req ? ctx.req.headers.cookie : null,
-      }
-    });
+    const { data: user } = await this.request.get(`/me`, this.configFromContext(ctx));
     return user;
   }
 }

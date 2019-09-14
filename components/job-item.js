@@ -3,7 +3,6 @@ import Link from "next/link";
 import clsx from "clsx";
 import { Box, Typography, Chip, Link as MuiLink } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-import LogoSmall from "../svgs/logo-small.svg";
 import CompanyLogo from "../components/company-logo";
 
 const useStyles = makeStyles(theme => ({
@@ -23,10 +22,6 @@ const useStyles = makeStyles(theme => ({
       zIndex: 1110
     })
   }),
-  abbrev: {
-    width: 48,
-    height: 48
-  },
   logoWrapper: {
     "@media (max-width: 400px)": {
       display: "none"
@@ -66,10 +61,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function abbrev(name) {
-  const [word1, word2, ..._rest] = name.split(" ");
-  return `${word1[0] ? word1[0].toUpperCase() : ""}${word2 ? word2[0] : ""}`;
-}
+
 
 export default function JobItem({
   company,
@@ -79,29 +71,13 @@ export default function JobItem({
   className = ""
 }) {
   const classes = useStyles({ preview });
-  function renderLogo() {
-    if (!!company) {
-      if (company.logo) {
-        return <CompanyLogo src={company.logo} />;
-      } else if (company.name) {
-        return (
-          <Typography
-            variant="h4"
-            color="textSecondary"
-            align="center"
-            className={classes.abbrev}>
-            {abbrev(company.name)}
-          </Typography>
-        );
-      }
-    }
-    return <LogoSmall className={classes.logoSmall} />;
-  }
 
   return (
     <Box className={clsx(classes.root, className)}>
       <Box className={classes.logoWrapper} pr={3}>
-        {renderLogo()}
+        {
+          !!company && (<CompanyLogo company={company} />)
+        }
       </Box>
       <Box display="flex" alignItems="center" flexWrap="wrap" flex={1}>
         <Box mb={1} flex={1} flexBasis={300}>

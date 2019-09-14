@@ -1,5 +1,6 @@
 import { Fragment, useState } from 'react';
 import Router from 'next/router';
+import nextCookie from 'next-cookies';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { makeStyles } from '@material-ui/styles';
@@ -7,6 +8,7 @@ import HSPaper from '../components/hs-paper';
 import { Typography, TextField, Fab } from '@material-ui/core';
 import api from '../api';
 import HSSnackbar from '../components/hs-snackbar';
+import redirect from '../utils/redirect';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -14,6 +16,7 @@ const useStyles = makeStyles(theme => ({
     top: '50%',
     transform: 'translateY(-50%)',
     width: '100%',
+    padding: `0 ${theme.spacing(2)}px`,
   },
   signinCard: {
     padding: theme.spacing(2),
@@ -102,7 +105,7 @@ function Login() {
   )
 }
 
-Login.getInitialProps = function(ctx) {
+Login.getInitialProps = async function(ctx) {
   if(ctx.req) {
     const { qid: sessionId } = nextCookie(ctx);
     if(sessionId) {

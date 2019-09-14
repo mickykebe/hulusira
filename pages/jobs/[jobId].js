@@ -47,9 +47,9 @@ function Job({ job: jobData }) {
     <Layout>
       <Container maxWidth="lg">
         <Box display="flex" alignItems="center" pb={2}>
-          {company && company.logo && (
+          {company && (
             <Box mr={2}>
-              <CompanyLogo src={company.logo} size="large" />
+              <CompanyLogo company={company} abbrevFallback={false} size="large" />
             </Box>
           )}
           <Box>

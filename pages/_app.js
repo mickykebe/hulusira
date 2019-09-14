@@ -4,7 +4,7 @@ import Head from "next/head";
 import { ThemeProvider } from "@material-ui/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import theme from "../components/theme";
-import "../app.css";
+import "easymde/dist/easymde.min.css";
 
 class MyApp extends App {
   componentDidMount() {
