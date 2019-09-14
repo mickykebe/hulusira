@@ -47,9 +47,9 @@ function Job(***REMOVED*** job: jobData ***REMOVED***) ***REMOVED***
     <Layout>
       <Container maxWidth="lg">
         <Box display="flex" alignItems="center" pb=***REMOVED***2***REMOVED***>
-          ***REMOVED***company && company.logo && (
+          ***REMOVED***company && (
             <Box mr=***REMOVED***2***REMOVED***>
-              <CompanyLogo src=***REMOVED***company.logo***REMOVED*** size="large" />
+              <CompanyLogo company=***REMOVED***company***REMOVED*** abbrevFallback=***REMOVED***false***REMOVED*** size="large" />
             </Box>
           )***REMOVED***
           <Box>

@@ -3,7 +3,6 @@ import Link from "next/link";
 import clsx from "clsx";
 import ***REMOVED*** Box, Typography, Chip, Link as MuiLink ***REMOVED*** from "@material-ui/core";
 import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
-import LogoSmall from "../svgs/logo-small.svg";
 import CompanyLogo from "../components/company-logo";
 
 const useStyles = makeStyles(theme => (***REMOVED***
@@ -23,10 +22,6 @@ const useStyles = makeStyles(theme => (***REMOVED***
       zIndex: 1110
     ***REMOVED***)
   ***REMOVED***),
-  abbrev: ***REMOVED***
-    width: 48,
-    height: 48
-  ***REMOVED***,
   logoWrapper: ***REMOVED***
     "@media (max-width: 400px)": ***REMOVED***
       display: "none"
@@ -66,10 +61,7 @@ const useStyles = makeStyles(theme => (***REMOVED***
   ***REMOVED***
 ***REMOVED***));
 
-function abbrev(name) ***REMOVED***
-  const [word1, word2, ..._rest] = name.split(" ");
-  return `$***REMOVED***word1[0] ? word1[0].toUpperCase() : ""***REMOVED***$***REMOVED***word2 ? word2[0] : ""***REMOVED***`;
-***REMOVED***
+
 
 export default function JobItem(***REMOVED***
   company,
@@ -79,29 +71,13 @@ export default function JobItem(***REMOVED***
   className = ""
 ***REMOVED***) ***REMOVED***
   const classes = useStyles(***REMOVED*** preview ***REMOVED***);
-  function renderLogo() ***REMOVED***
-    if (!!company) ***REMOVED***
-      if (company.logo) ***REMOVED***
-        return <CompanyLogo src=***REMOVED***company.logo***REMOVED*** />;
-      ***REMOVED*** else if (company.name) ***REMOVED***
-        return (
-          <Typography
-            variant="h4"
-            color="textSecondary"
-            align="center"
-            className=***REMOVED***classes.abbrev***REMOVED***>
-            ***REMOVED***abbrev(company.name)***REMOVED***
-          </Typography>
-        );
-      ***REMOVED***
-    ***REMOVED***
-    return <LogoSmall className=***REMOVED***classes.logoSmall***REMOVED*** />;
-  ***REMOVED***
 
   return (
     <Box className=***REMOVED***clsx(classes.root, className)***REMOVED***>
       <Box className=***REMOVED***classes.logoWrapper***REMOVED*** pr=***REMOVED***3***REMOVED***>
-        ***REMOVED***renderLogo()***REMOVED***
+        ***REMOVED***
+          !!company && (<CompanyLogo company=***REMOVED***company***REMOVED*** />)
+        ***REMOVED***
       </Box>
       <Box display="flex" alignItems="center" flexWrap="wrap" flex=***REMOVED***1***REMOVED***>
         <Box mb=***REMOVED***1***REMOVED*** flex=***REMOVED***1***REMOVED*** flexBasis=***REMOVED***300***REMOVED***>

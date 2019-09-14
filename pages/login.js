@@ -1,5 +1,6 @@
 import ***REMOVED*** Fragment, useState ***REMOVED*** from 'react';
 import Router from 'next/router';
+import nextCookie from 'next-cookies';
 import ***REMOVED*** Formik ***REMOVED*** from 'formik';
 import * as Yup from 'yup';
 import ***REMOVED*** makeStyles ***REMOVED*** from '@material-ui/styles';
@@ -7,6 +8,7 @@ import HSPaper from '../components/hs-paper';
 import ***REMOVED*** Typography, TextField, Fab ***REMOVED*** from '@material-ui/core';
 import api from '../api';
 import HSSnackbar from '../components/hs-snackbar';
+import redirect from '../utils/redirect';
 
 const useStyles = makeStyles(theme => (***REMOVED***
   root: ***REMOVED***
@@ -14,6 +16,7 @@ const useStyles = makeStyles(theme => (***REMOVED***
     top: '50%',
     transform: 'translateY(-50%)',
     width: '100%',
+    padding: `0 $***REMOVED***theme.spacing(2)***REMOVED***px`,
   ***REMOVED***,
   signinCard: ***REMOVED***
     padding: theme.spacing(2),
@@ -102,7 +105,7 @@ function Login() ***REMOVED***
   )
 ***REMOVED***
 
-Login.getInitialProps = function(ctx) ***REMOVED***
+Login.getInitialProps = async function(ctx) ***REMOVED***
   if(ctx.req) ***REMOVED***
     const ***REMOVED*** qid: sessionId ***REMOVED*** = nextCookie(ctx);
     if(sessionId) ***REMOVED***

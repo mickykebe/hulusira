@@ -1,9 +1,14 @@
 import nextCookie from 'next-cookies';
 import api from '../api';
 import redirect from '../utils/redirect';
+import Layout from '../components/layout';
 
 function Admin(***REMOVED*** user ***REMOVED***) ***REMOVED***
-  return <div>***REMOVED***user.firstName***REMOVED***</div>
+  return (
+    <Layout>
+      
+    </Layout>
+  )
 ***REMOVED***
 
 Admin.getInitialProps = async function(ctx) ***REMOVED***

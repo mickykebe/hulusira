@@ -2,7 +2,7 @@ import React from "react";
 import clsx from "clsx";
 import SimpleMDE from "react-simplemde-editor";
 import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
-import "easymde/dist/easymde.min.css";
+//import "easymde/dist/easymde.min.css";
 import ***REMOVED*** Box, FormHelperText ***REMOVED*** from "@material-ui/core";
 
 const useStyles = makeStyles(theme => (***REMOVED***

@@ -7,6 +7,14 @@ class Api ***REMOVED***
     ***REMOVED***);
   ***REMOVED***
 
+  configFromContext(ctx) ***REMOVED***
+    const config = ***REMOVED***headers: ***REMOVED******REMOVED******REMOVED***;
+    if(ctx && ctx.req && ctx.req.headers.cookie) ***REMOVED***
+      config.headers.cookie = ctx.req.headers.cookie;
+    ***REMOVED***
+    return config;
+  ***REMOVED***
+
   async createJob(data) ***REMOVED***
     const ***REMOVED*** data: jobData ***REMOVED*** = await this.request.post("/new", data);
     return jobData;
@@ -29,11 +37,7 @@ class Api ***REMOVED***
   ***REMOVED***
 
   async getJobs(***REMOVED***ctx = null, cursor = ""***REMOVED*** = ***REMOVED******REMOVED***) ***REMOVED***
-    const ***REMOVED*** data ***REMOVED*** = await this.request.get(`/jobs?cursor=$***REMOVED***cursor***REMOVED***`, ***REMOVED***
-      headers: ***REMOVED***
-        cookie: (ctx && ctx.req) ? ctx.req.headers.cookie : null,
-      ***REMOVED***,
-    ***REMOVED***);
+    const ***REMOVED*** data ***REMOVED*** = await this.request.get(`/jobs?cursor=$***REMOVED***cursor***REMOVED***`, this.configFromContext(ctx));
     return data;
   ***REMOVED***
 
@@ -48,11 +52,7 @@ class Api ***REMOVED***
   ***REMOVED***
 
   async activeUser(ctx) ***REMOVED***
-    const ***REMOVED*** data: user ***REMOVED*** = await this.request.get(`/me`, ***REMOVED***
-      headers: ***REMOVED***
-        cookie: ctx.req ? ctx.req.headers.cookie : null,
-      ***REMOVED***
-    ***REMOVED***);
+    const ***REMOVED*** data: user ***REMOVED*** = await this.request.get(`/me`, this.configFromContext(ctx));
     return user;
   ***REMOVED***
 ***REMOVED***
