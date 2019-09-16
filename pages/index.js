@@ -8,13 +8,16 @@ import {
   Typography,
   Fab
 } from "@material-ui/core";
-import RefreshIcon from '@material-ui/icons/Refresh';
+import RefreshIcon from "@material-ui/icons/Refresh";
 import api from "../api";
 import Layout from "../components/layout";
 import JobItem from "../components/job-item";
 import useInfiniteScroller from "../hooks/use-infinite-scroll";
 
 const useStyles = makeStyles(theme => ({
+  root: {
+    paddingTop: theme.spacing(1)
+  },
   jobItem: {
     marginBottom: theme.spacing(2)
   },
@@ -57,7 +60,7 @@ function Index({ primaryTags, jobPage }) {
   const fetchMoreJobs = async () => {
     dispatch({ type: "FETCH_INIT" });
     try {
-      const jobPage = await api.getJobs({cursor: nextCursor});
+      const jobPage = await api.getJobs({ cursor: nextCursor });
       dispatch({ type: "FETCH_SUCCESS", payload: jobPage });
     } catch (err) {
       dispatch({ type: "FETCH_FAILURE" });
@@ -77,7 +80,7 @@ function Index({ primaryTags, jobPage }) {
           </Link>
         </React.Fragment>
       }>
-      <Container maxWidth="md">
+      <Container className={classes.root} maxWidth="md">
         <React.Fragment>
           {jobs.map(({ job, company }) => {
             const { tags, ...jobData } = job;
@@ -104,25 +107,27 @@ function Index({ primaryTags, jobPage }) {
             color="secondary"
           />
         )}
-        {
-          isError && (
-            <Box textAlign="center">
-              <Typography color="textSecondary" variant="h6">
-                Problem occurred fetching data.
-              </Typography>
-              <Fab onClick={fetchMoreJobs} variant="extended" color="primary" size="medium">
-                <RefreshIcon />
-                Try Again
-              </Fab>
-            </Box>
-          )
-        }
+        {isError && (
+          <Box textAlign="center">
+            <Typography color="textSecondary" variant="h6">
+              Problem occurred fetching data.
+            </Typography>
+            <Fab
+              onClick={fetchMoreJobs}
+              variant="extended"
+              color="primary"
+              size="medium">
+              <RefreshIcon />
+              Try Again
+            </Fab>
+          </Box>
+        )}
       </Container>
     </Layout>
   );
 }
 
-Index.getInitialProps = async (ctx) => {
+Index.getInitialProps = async ctx => {
   const [primaryTags, jobPage] = await Promise.all([
     api.getPrimaryTags(),
     api.getJobs({ ctx })

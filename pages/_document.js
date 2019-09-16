@@ -14,7 +14,10 @@ class MyDocument extends Document {
             content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
           />
           <meta name="theme-color" content={theme.palette.primary.main} />
-          <link href="https://fonts.googleapis.com/css?family=Nunito:400,800&display=swap" rel="stylesheet"/>
+          <link
+            href="https://fonts.googleapis.com/css?family=Nunito:400,800&display=swap"
+            rel="stylesheet"
+          />
         </Head>
         <body>
           <Main />

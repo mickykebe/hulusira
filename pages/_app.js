@@ -4,6 +4,7 @@ import Head from "next/head";
 import { ThemeProvider } from "@material-ui/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import theme from "../components/theme";
+import GlobalCss from "../components/global-css";
 import "easymde/dist/easymde.min.css";
 
 class MyApp extends App {
@@ -21,10 +22,11 @@ class MyApp extends App {
     return (
       <Container>
         <Head>
-          <title>My page</title>
+          <title>HuluSira</title>
         </Head>
         <ThemeProvider theme={theme}>
           <CssBaseline />
+          <GlobalCss />
           <Component {...pageProps} />
         </ThemeProvider>
       </Container>

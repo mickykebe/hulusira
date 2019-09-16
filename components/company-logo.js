@@ -4,24 +4,24 @@ import { makeStyles } from "@material-ui/styles";
 const logoSizes = {
   small: {
     width: 24,
-    height: 24,
+    height: 24
   },
   medium: {
     width: 48,
-    height: 48,
+    height: 48
   },
   large: {
     width: 64,
-    height: 64,
-  },
-}
+    height: 64
+  }
+};
 
 const useStyles = makeStyles({
   logoContainer: props => ({
     position: "relative",
     backgroundColor: `#fafbfc`,
     border: `1px solid #eee`,
-    ...(logoSizes[props.size]),
+    ...logoSizes[props.size]
   }),
   logo: {
     position: "absolute",
@@ -35,11 +35,11 @@ const useStyles = makeStyles({
     maxHeight: "100%"
   },
   abbrev: props => ({
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    ...(logoSizes[props.size]),
-  }),
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    ...logoSizes[props.size]
+  })
 });
 
 function abbrev(name) {
@@ -47,9 +47,13 @@ function abbrev(name) {
   return `${word1[0] ? word1[0].toUpperCase() : ""}${word2 ? word2[0] : ""}`;
 }
 
-export default function CompanyLogo({ company, abbrevFallback = true, size = "medium" }) {
+export default function CompanyLogo({
+  company,
+  abbrevFallback = true,
+  size = "medium"
+}) {
   const classes = useStyles({ size });
-  if(company.logo) {
+  if (company.logo) {
     return (
       <Box className={classes.logoContainer}>
         <img
@@ -61,15 +65,15 @@ export default function CompanyLogo({ company, abbrevFallback = true, size = "me
       </Box>
     );
   }
-  if(abbrevFallback) {
+  if (abbrevFallback) {
     return (
       <Typography
-        variant="h4"
+        variant={size === "small" ? "h6" : "h4"}
         color="textSecondary"
         align="center"
         className={classes.abbrev}>
-          {abbrev(company.name)}
-        </Typography>
+        {abbrev(company.name)}
+      </Typography>
     );
   }
   return null;

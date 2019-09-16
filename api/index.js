@@ -41,6 +41,11 @@ class Api {
     return data;
   }
 
+  async getPendingJobs(ctx) {
+    const { data } = await this.request.get(`/pending-jobs`, this.configFromContext(ctx));
+    return data;
+  }
+
   async getJob(jobId) {
     const { data } = await this.request.get(`/jobs/${jobId}`);
     return data;
