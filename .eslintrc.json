@@ -4,7 +4,7 @@
     "es6": true,
     "node": true
   ***REMOVED***,
-  "extends": "eslint:recommended",
+  "extends": ["prettier"],
   "globals": ***REMOVED***
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"
@@ -16,8 +16,9 @@
     "ecmaVersion": 2018,
     "sourceType": "module"
   ***REMOVED***,
-  "plugins": ["react-hooks", "jest"],
+  "plugins": ["react-hooks", "jest", "prettier"],
   "rules": ***REMOVED***
+    "prettier/prettier": ["error"],
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn"
   ***REMOVED***

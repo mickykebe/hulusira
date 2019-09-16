@@ -41,6 +41,11 @@ class Api ***REMOVED***
     return data;
   ***REMOVED***
 
+  async getPendingJobs(ctx) ***REMOVED***
+    const ***REMOVED*** data ***REMOVED*** = await this.request.get(`/pending-jobs`, this.configFromContext(ctx));
+    return data;
+  ***REMOVED***
+
   async getJob(jobId) ***REMOVED***
     const ***REMOVED*** data ***REMOVED*** = await this.request.get(`/jobs/$***REMOVED***jobId***REMOVED***`);
     return data;

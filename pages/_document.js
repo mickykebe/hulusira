@@ -14,7 +14,10 @@ class MyDocument extends Document ***REMOVED***
             content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
           />
           <meta name="theme-color" content=***REMOVED***theme.palette.primary.main***REMOVED*** />
-          <link href="https://fonts.googleapis.com/css?family=Nunito:400,800&display=swap" rel="stylesheet"/>
+          <link
+            href="https://fonts.googleapis.com/css?family=Nunito:400,800&display=swap"
+            rel="stylesheet"
+          />
         </Head>
         <body>
           <Main />

@@ -4,24 +4,24 @@ import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
 const logoSizes = ***REMOVED***
   small: ***REMOVED***
     width: 24,
-    height: 24,
+    height: 24
   ***REMOVED***,
   medium: ***REMOVED***
     width: 48,
-    height: 48,
+    height: 48
   ***REMOVED***,
   large: ***REMOVED***
     width: 64,
-    height: 64,
-  ***REMOVED***,
-***REMOVED***
+    height: 64
+  ***REMOVED***
+***REMOVED***;
 
 const useStyles = makeStyles(***REMOVED***
   logoContainer: props => (***REMOVED***
     position: "relative",
     backgroundColor: `#fafbfc`,
     border: `1px solid #eee`,
-    ...(logoSizes[props.size]),
+    ...logoSizes[props.size]
   ***REMOVED***),
   logo: ***REMOVED***
     position: "absolute",
@@ -35,11 +35,11 @@ const useStyles = makeStyles(***REMOVED***
     maxHeight: "100%"
   ***REMOVED***,
   abbrev: props => (***REMOVED***
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    ...(logoSizes[props.size]),
-  ***REMOVED***),
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    ...logoSizes[props.size]
+  ***REMOVED***)
 ***REMOVED***);
 
 function abbrev(name) ***REMOVED***
@@ -47,9 +47,13 @@ function abbrev(name) ***REMOVED***
   return `$***REMOVED***word1[0] ? word1[0].toUpperCase() : ""***REMOVED***$***REMOVED***word2 ? word2[0] : ""***REMOVED***`;
 ***REMOVED***
 
-export default function CompanyLogo(***REMOVED*** company, abbrevFallback = true, size = "medium" ***REMOVED***) ***REMOVED***
+export default function CompanyLogo(***REMOVED***
+  company,
+  abbrevFallback = true,
+  size = "medium"
+***REMOVED***) ***REMOVED***
   const classes = useStyles(***REMOVED*** size ***REMOVED***);
-  if(company.logo) ***REMOVED***
+  if (company.logo) ***REMOVED***
     return (
       <Box className=***REMOVED***classes.logoContainer***REMOVED***>
         <img
@@ -61,15 +65,15 @@ export default function CompanyLogo(***REMOVED*** company, abbrevFallback = true
       </Box>
     );
   ***REMOVED***
-  if(abbrevFallback) ***REMOVED***
+  if (abbrevFallback) ***REMOVED***
     return (
       <Typography
-        variant="h4"
+        variant=***REMOVED***size === "small" ? "h6" : "h4"***REMOVED***
         color="textSecondary"
         align="center"
         className=***REMOVED***classes.abbrev***REMOVED***>
-          ***REMOVED***abbrev(company.name)***REMOVED***
-        </Typography>
+        ***REMOVED***abbrev(company.name)***REMOVED***
+      </Typography>
     );
   ***REMOVED***
   return null;

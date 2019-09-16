@@ -24,6 +24,9 @@ import MDEditor from "../components/md-editor";
 import HSSnackbar from "../components/hs-snackbar";
 
 const useStyles = makeStyles(theme => (***REMOVED***
+  root: ***REMOVED***
+    paddingTop: theme.spacing(1)
+  ***REMOVED***,
   form: ***REMOVED***
     display: "flex",
     flexDirection: "column"
@@ -208,7 +211,7 @@ function New(***REMOVED*** primaryTags ***REMOVED***) ***REMOVED***
 
   return (
     <Layout>
-      <Container maxWidth="md">
+      <Container className=***REMOVED***classes.root***REMOVED*** maxWidth="md">
         <Formik
           validationSchema=***REMOVED***validationSchema***REMOVED***
           initialValues=***REMOVED******REMOVED***
