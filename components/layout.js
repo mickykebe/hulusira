@@ -17,7 +17,7 @@ const useStyles = makeStyles(theme => (***REMOVED***
 export default function Layout(***REMOVED*** children, toolbarChildren = null ***REMOVED***) ***REMOVED***
   const classes = useStyles();
   return (
-    <Box height="100%">
+    <Box>
       <AppBar className=***REMOVED***classes.appBar***REMOVED***>
         <Toolbar>
           <Link href="/" passHref>
@@ -28,9 +28,7 @@ export default function Layout(***REMOVED*** children, toolbarChildren = null **
           ***REMOVED***toolbarChildren***REMOVED***
         </Toolbar>
       </AppBar>
-      <Box pt=***REMOVED***8***REMOVED*** height="100%">
-        ***REMOVED***children***REMOVED***
-      </Box>
+      <Box pt=***REMOVED***8***REMOVED***>***REMOVED***children***REMOVED***</Box>
     </Box>
   );
 ***REMOVED***

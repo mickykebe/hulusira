@@ -26,7 +26,6 @@ class MyApp extends App ***REMOVED***
         </Head>
         <ThemeProvider theme=***REMOVED***theme***REMOVED***>
           <CssBaseline />
-          <GlobalCss />
           <Component ***REMOVED***...pageProps***REMOVED*** />
         </ThemeProvider>
       </Container>
