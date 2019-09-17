@@ -6,8 +6,9 @@ const utils = require("../utils");
 const { pendingJobs, approveJob, removeJob } = require("./job-controller");
 jest.mock("../db");
 
-const mockRequest = ({ body } = {}) => {
+const mockRequest = ({ body, params } = {}) => {
   return {
+    params,
     body
   };
 };
@@ -242,9 +243,9 @@ describe("PUT /approve-job", () => {
   });
 });
 
-describe("DELETE /remove-job", () => {
+describe("DELETE /jobs/:jobId", () => {
   it("deletes job if it exists and responds with true", async () => {
-    const req = mockRequest({ body: { jobId: 1 } });
+    const req = mockRequest({ params: { jobId: 1 } });
     const res = mockResponse();
     db.deleteJob.mockResolvedValueOnce(1).mockResolvedValueOnce(0);
     await removeJob(req, res);

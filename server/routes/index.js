@@ -63,7 +63,7 @@ router.put(
   catchErrors(jobController.approveJob)
 );
 router.delete(
-  "/remove-job",
+  "/jobs/:jobId",
   permit("admin"),
   catchErrors(jobController.removeJob)
 );

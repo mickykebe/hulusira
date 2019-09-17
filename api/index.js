@@ -74,6 +74,11 @@ class Api {
     const { data } = await this.request.put("/approve-job", { jobId });
     return data;
   }
+
+  async removeJob(jobId) {
+    const { data } = await this.request.delete(`/jobs/${jobId}`);
+    return data;
+  }
 }
 
 export default new Api();

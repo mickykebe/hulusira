@@ -100,6 +100,17 @@ function PendingJobs({ jobs }) {
       dispatch({ type: "ERROR_UPDATING_JOB" });
     }
   };
+  const removeJob = async jobId => {
+    dispatch({ type: "UPDATING_JOB" });
+    try {
+      await api.removeJob(jobId);
+      dispatch({ type: "UPDATED_JOB" });
+      Router.replace("/pending-jobs");
+    } catch (err) {
+      console.error(err);
+      dispatch({ type: "ERROR_UPDATING_JOB" });
+    }
+  };
   const classes = useStyles({ activeJob: !!activeJobData });
   return (
     <Layout>
@@ -144,7 +155,8 @@ function PendingJobs({ jobs }) {
               color="secondary"
               variant="contained"
               className={classes.actionButton}
-              disabled={jobUpdateState.inProgress}>
+              disabled={jobUpdateState.inProgress}
+              onClick={() => removeJob(activeJobId)}>
               <ClearIcon /> Drop
             </Button>
           </Toolbar>
