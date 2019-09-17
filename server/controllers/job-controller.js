@@ -99,9 +99,12 @@ exports.getPrimaryTags = async (req, res) => ***REMOVED***
 exports.getJobs = async (req, res) => ***REMOVED***
   let data;
   const ***REMOVED*** cursor: encodedCursor, count: countStr = "30" ***REMOVED*** = req.query;
-  const fromJobId = (typeof encodedCursor === "string" && encodedCursor !== "") ? parseInt(utils.base64decode(encodedCursor)) : null;
+  const fromJobId =
+    typeof encodedCursor === "string" && encodedCursor !== ""
+      ? parseInt(utils.base64decode(encodedCursor))
+      : null;
   const count = parseInt(countStr);
-  const jobs = await db.getJobs(***REMOVED***fromJobId, limit: count + 1***REMOVED***);
+  const jobs = await db.getJobs(***REMOVED*** fromJobId, limit: count + 1 ***REMOVED***);
   if (jobs.length < count + 1) ***REMOVED***
     data = ***REMOVED*** jobs, nextCursor: "" ***REMOVED***;
   ***REMOVED*** else ***REMOVED***
@@ -116,10 +119,19 @@ exports.getJobs = async (req, res) => ***REMOVED***
 exports.pendingJobs = async (_, res) => ***REMOVED***
   const jobs = await db.getJobs(***REMOVED*** approved: false ***REMOVED***);
   res.status(200).send(jobs);
-***REMOVED***
+***REMOVED***;
 
 exports.getJob = async (req, res) => ***REMOVED***
   const ***REMOVED*** jobId ***REMOVED*** = req.params;
   const job = await db.getJobById(jobId);
   res.status(200).send(job);
+***REMOVED***;
+
+exports.approveJob = async (req, res) => ***REMOVED***
+  const ***REMOVED*** jobId ***REMOVED*** = req.body;
+  const affectedRows = await db.approveJob(jobId);
+  if (affectedRows === 1) ***REMOVED***
+    res.status(200).send(true);
+  ***REMOVED***
+  res.sendStatus(404);
 ***REMOVED***;

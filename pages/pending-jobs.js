@@ -62,7 +62,6 @@ function PendingJobs(***REMOVED*** jobs ***REMOVED***) ***REMOVED***
   if (!!activeJobId) ***REMOVED***
     activeJobData = jobs.find(jobData => jobData.job.id === activeJobId);
   ***REMOVED***
-  console.log(***REMOVED*** activeJobData ***REMOVED***);
   const classes = useStyles(***REMOVED*** activeJob: !!activeJobData ***REMOVED***);
   return (
     <Layout>

@@ -3,15 +3,22 @@ const faker = require("faker");
 const app = require("../app");
 const db = require("../db");
 const utils = require("../utils");
-const ***REMOVED*** pendingJobs ***REMOVED*** = require('./job-controller');
+const ***REMOVED*** pendingJobs, approveJob ***REMOVED*** = require("./job-controller");
 jest.mock("../db");
+
+const mockRequest = (***REMOVED*** body ***REMOVED*** = ***REMOVED******REMOVED***) => ***REMOVED***
+  return ***REMOVED***
+    body
+  ***REMOVED***;
+***REMOVED***;
 
 const mockResponse = () => ***REMOVED***
   const res = ***REMOVED******REMOVED***;
   res.status = jest.fn().mockReturnValue(res);
   res.send = jest.fn().mockReturnValue(res);
+  res.sendStatus = jest.fn().mockReturnValue(res);
   return res;
-***REMOVED***
+***REMOVED***;
 
 const sampleJobResult = (job = ***REMOVED******REMOVED***, company = ***REMOVED******REMOVED***) => ***REMOVED***
   return ***REMOVED***
@@ -30,7 +37,7 @@ const sampleJobResult = (job = ***REMOVED******REMOVED***, company = ***REMOVED*
 
 const sampleJobsResult = (numJobs = 5) => ***REMOVED***
   return Array.from(***REMOVED*** length: numJobs ***REMOVED***, sampleJobResult);
-***REMOVED***
+***REMOVED***;
 
 describe("POST to /new", () => ***REMOVED***
   it("Validation error if position is missing", async () => ***REMOVED***
@@ -210,8 +217,8 @@ describe("GET to /jobs", () => ***REMOVED***
   ***REMOVED***);
 ***REMOVED***);
 
-describe('GET /pending-jobs', () => ***REMOVED***
-  it('responds with pending jobs', async () => ***REMOVED***
+describe("GET /pending-jobs", () => ***REMOVED***
+  it("responds with pending jobs", async () => ***REMOVED***
     const req = null;
     const res = mockResponse();
     const jobs = sampleJobsResult();
@@ -219,5 +226,18 @@ describe('GET /pending-jobs', () => ***REMOVED***
     await pendingJobs(req, res);
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.send).toHaveBeenCalledWith(jobs);
+  ***REMOVED***);
+***REMOVED***);
+
+describe("POST /approve-job", () => ***REMOVED***
+  it.only("responds with true if job exists", async () => ***REMOVED***
+    const req = mockRequest(***REMOVED*** body: ***REMOVED*** jobId: 1 ***REMOVED*** ***REMOVED***);
+    const res = mockResponse();
+    db.approveJob.mockResolvedValueOnce(1).mockResolvedValueOnce(0);
+    await approveJob(req, res);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.send).toHaveBeenCalledWith(true);
+    await approveJob(req, res);
+    expect(res.sendStatus).toHaveBeenCalledWith(404);
   ***REMOVED***);
 ***REMOVED***);

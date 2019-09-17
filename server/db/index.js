@@ -1,7 +1,7 @@
 const assert = require("assert");
 const ***REMOVED*** Pool ***REMOVED*** = require("pg");
 const ***REMOVED*** Company, Tag, Job, User ***REMOVED*** = require("../models");
-const Knex = require('knex');
+const Knex = require("knex");
 
 class Db ***REMOVED***
   constructor() ***REMOVED***
@@ -9,10 +9,27 @@ class Db ***REMOVED***
       connectionString: process.env.DB_CONNECTION_STRING
     ***REMOVED***);
     this.knex = Knex(***REMOVED***
-      client: 'pg',
-      connection: process.env.DB_CONNECTION_STRING,
+      client: "pg",
+      connection: process.env.DB_CONNECTION_STRING
     ***REMOVED***);
-    this.jobColumns = ["id", "position", "job_type", "company_id", "city", "primary_tag", "monthly_salary", "description", "responsibilities", "requirements", "how_to_apply", "apply_url", "apply_email", "approved", "closed", "created"];
+    this.jobColumns = [
+      "id",
+      "position",
+      "job_type",
+      "company_id",
+      "city",
+      "primary_tag",
+      "monthly_salary",
+      "description",
+      "responsibilities",
+      "requirements",
+      "how_to_apply",
+      "apply_url",
+      "apply_email",
+      "approved",
+      "closed",
+      "created"
+    ];
     this.companyColumns = ["id", "name", "email", "logo", "verified"];
   ***REMOVED***
 
@@ -34,11 +51,11 @@ class Db ***REMOVED***
     assert(!!jobData);
 
     if (jobData.primaryTagId) ***REMOVED***
-      const tagRows = await this.knex('tag')
+      const tagRows = await this.knex("tag")
         .select()
-        .where('id', jobData.primaryTagId);
-      if(tagRows.length === 0 || tagRows[0].is_primary === false) ***REMOVED***
-        throw new Error('Primary tag value set to invalid tag');
+        .where("id", jobData.primaryTagId);
+      if (tagRows.length === 0 || tagRows[0].is_primary === false) ***REMOVED***
+        throw new Error("Primary tag value set to invalid tag");
       ***REMOVED***
     ***REMOVED***
 
@@ -46,7 +63,7 @@ class Db ***REMOVED***
       jobData.tags.map(tagName => this.findOrCreateTag(tagName))
     );
 
-    const rows = await this.knex('job')
+    const rows = await this.knex("job")
       .insert(***REMOVED***
         position: jobData.position,
         job_type: jobData.jobType,
@@ -60,8 +77,9 @@ class Db ***REMOVED***
         how_to_apply: jobData.howToApply,
         apply_url: jobData.applyUrl,
         apply_email: jobData.applyEmail
-      ***REMOVED***).returning(this.selectColumns('job', 'job', this.jobColumns));
-    
+      ***REMOVED***)
+      .returning(this.selectColumns("job", "job", this.jobColumns));
+
     const job = Job.fromDb(rows[0], tags);
 
     await Promise.all(tags.map(tag => this.createJobTag(job.id, tag.id)));
@@ -70,19 +88,20 @@ class Db ***REMOVED***
   ***REMOVED***
 
   async createJobTag(jobId, tagId) ***REMOVED***
-    return this.knex('job_tags')
-      .insert(***REMOVED***
-        job_id: jobId,
-        tag_id: tagId,
-      ***REMOVED***);
+    return this.knex("job_tags").insert(***REMOVED***
+      job_id: jobId,
+      tag_id: tagId
+    ***REMOVED***);
   ***REMOVED***
 
   async createCompany(companyData) ***REMOVED***
-    const rows = await this.knex("company").insert(***REMOVED***
-      name: companyData.name,
-      email: companyData.email,
-      logo: companyData.logo
-    ***REMOVED***).returning(this.selectColumns('company', 'company', this.companyColumns));
+    const rows = await this.knex("company")
+      .insert(***REMOVED***
+        name: companyData.name,
+        email: companyData.email,
+        logo: companyData.logo
+      ***REMOVED***)
+      .returning(this.selectColumns("company", "company", this.companyColumns));
     return Company.fromDb(rows[0]);
   ***REMOVED***
 
@@ -95,36 +114,51 @@ class Db ***REMOVED***
   ***REMOVED***
 
   async getPrimaryTags() ***REMOVED***
-    const rows = this.knex('tag')
+    const rows = this.knex("tag")
       .select()
-      .where('is_primary', true)
-      .orderBy('name');
+      .where("is_primary", true)
+      .orderBy("name");
     return rows.map(Tag.fromDb);
   ***REMOVED***
 
-  async getJobs(***REMOVED***fromJobId, limit, closed = false, approved, withinDays***REMOVED*** = ***REMOVED******REMOVED***) ***REMOVED***
-    let query = this.knex('job').select(
-      ...this.selectColumns('job', 'job', this.jobColumns),
-      ...this.selectColumns('company', 'company', this.companyColumns)
-    )
-    .select(this.knex.raw(`coalesce(json_agg(json_build_object('id', tag.id, 'name', tag.name, 'isPrimary', tag.is_primary)) filter (where tag.id IS NOT NULL), '[]') as tags`))
-    .leftJoin('company', 'job.company_id', 'company.id')
-    .leftJoin('job_tags', 'job_tags.job_id', 'job.id')
-    .leftJoin('tag', 'job_tags.tag_id', 'tag.id')
-    .where('job.closed', closed)
-    .groupBy('job.id', 'company.id')
-    .orderBy('job.id', 'desc');
+  async getJobs(***REMOVED***
+    fromJobId,
+    limit,
+    closed = false,
+    approved,
+    withinDays
+  ***REMOVED*** = ***REMOVED******REMOVED***) ***REMOVED***
+    let query = this.knex("job")
+      .select(
+        ...this.selectColumns("job", "job", this.jobColumns),
+        ...this.selectColumns("company", "company", this.companyColumns)
+      )
+      .select(
+        this.knex.raw(
+          `coalesce(json_agg(json_build_object('id', tag.id, 'name', tag.name, 'isPrimary', tag.is_primary)) filter (where tag.id IS NOT NULL), '[]') as tags`
+        )
+      )
+      .leftJoin("company", "job.company_id", "company.id")
+      .leftJoin("job_tags", "job_tags.job_id", "job.id")
+      .leftJoin("tag", "job_tags.tag_id", "tag.id")
+      .where("job.closed", closed)
+      .groupBy("job.id", "company.id")
+      .orderBy("job.id", "desc");
 
-    if(typeof(fromJobId) === "number") ***REMOVED***
-      query = query.andWhere('job.id', '<=', fromJobId);
+    if (typeof fromJobId === "number") ***REMOVED***
+      query = query.andWhere("job.id", "<=", fromJobId);
     ***REMOVED***
-    if(approved) ***REMOVED***
-      query = query.andWhere('job.approved', approved);
+    if (approved) ***REMOVED***
+      query = query.andWhere("job.approved", approved);
     ***REMOVED***
-    if(typeof(withinDays) === "number") ***REMOVED***
-      query = query.andWhere('job.created', '>=', this.knex.raw("NOW() - (?*'1 DAY'::INTERVAL)", [withinDays]));
+    if (typeof withinDays === "number") ***REMOVED***
+      query = query.andWhere(
+        "job.created",
+        ">=",
+        this.knex.raw("NOW() - (?*'1 DAY'::INTERVAL)", [withinDays])
+      );
     ***REMOVED***
-    if(typeof(limit) === "number") ***REMOVED***
+    if (typeof limit === "number") ***REMOVED***
       query = query.limit(limit);
     ***REMOVED***
     const rows = await query;
@@ -132,7 +166,7 @@ class Db ***REMOVED***
       return ***REMOVED***
         company: row.company_id && Company.fromDb(row),
         job: Job.fromDb(row, row.tags || [])
-      ***REMOVED***
+      ***REMOVED***;
     ***REMOVED***);
   ***REMOVED***
 
@@ -141,18 +175,24 @@ class Db ***REMOVED***
   ***REMOVED***
 
   async getJobById(id) ***REMOVED***
-    const row = await this.knex("job").first(
-        ...this.selectColumns('job', 'job', this.jobColumns),
-        ...this.selectColumns('company', 'company', this.companyColumns)
+    const row = await this.knex("job")
+      .first(
+        ...this.selectColumns("job", "job", this.jobColumns),
+        ...this.selectColumns("company", "company", this.companyColumns)
       )
-      .first(this.knex.raw(`coalesce(json_agg(json_build_object('id', extra_tags.id, 'name', extra_tags.name, 'isPrimary', extra_tags.is_primary)) filter (where extra_tags.id IS NOT NULL), '[]') as tags`))
-      .leftJoin('company', 'job.company_id', 'company.id')
-      .leftJoin('job_tags', 'job_tags.job_id', 'job.id')
-      .leftJoin(this.knex.raw('tag extra_tags on job_tags.tag_id = extra_tags.id'))
-      .where('job.id', id)
-      .groupBy('job.id', 'company.id');
-    const company =
-      row.company_id && Company.fromDb(row);
+      .first(
+        this.knex.raw(
+          `coalesce(json_agg(json_build_object('id', extra_tags.id, 'name', extra_tags.name, 'isPrimary', extra_tags.is_primary)) filter (where extra_tags.id IS NOT NULL), '[]') as tags`
+        )
+      )
+      .leftJoin("company", "job.company_id", "company.id")
+      .leftJoin("job_tags", "job_tags.job_id", "job.id")
+      .leftJoin(
+        this.knex.raw("tag extra_tags on job_tags.tag_id = extra_tags.id")
+      )
+      .where("job.id", id)
+      .groupBy("job.id", "company.id");
+    const company = row.company_id && Company.fromDb(row);
     return ***REMOVED***
       company: company,
       job: Job.fromDb(row, row.tags || [])
@@ -160,13 +200,25 @@ class Db ***REMOVED***
   ***REMOVED***
 
   async getUserByEmail(email) ***REMOVED***
-    const row = await this.knex('users').first().where('email', email);
+    const row = await this.knex("users")
+      .first()
+      .where("email", email);
     return User.fromDb(row);
   ***REMOVED***
 
   async getUserById(id) ***REMOVED***
-    const row = await this.knex('users').first().where('id', id);
+    const row = await this.knex("users")
+      .first()
+      .where("id", id);
     return User.fromDb(row);
+  ***REMOVED***
+
+  approveJob(id) ***REMOVED***
+    return this.knex("job")
+      .where("id", id)
+      .update(***REMOVED***
+        approved: true
+      ***REMOVED***);
   ***REMOVED***
 
   end() ***REMOVED***

@@ -1,6 +1,6 @@
 const connectRedis = require("connect-redis");
-const cors = require('cors');
-const session = require('express-session');
+const cors = require("cors");
+const session = require("express-session");
 const express = require("express");
 const logger = require("morgan");
 const bodyParser = require("body-parser");
@@ -9,10 +9,10 @@ const jobController = require("../controllers/job-controller");
 const uploadController = require("../controllers/upload-controller");
 const userController = require("../controllers/user-controller");
 const ***REMOVED*** catchErrors ***REMOVED*** = require("../handlers/errorHandler");
-const ***REMOVED*** isProduction ***REMOVED*** = require('../utils');
+const ***REMOVED*** isProduction ***REMOVED*** = require("../utils");
 const redis = require("../redis");
-const ***REMOVED***loadUser***REMOVED*** = require('../handlers/loadUser');
-const ***REMOVED*** permit ***REMOVED*** = require('../handlers/permission');
+const ***REMOVED*** loadUser ***REMOVED*** = require("../handlers/loadUser");
+const ***REMOVED*** permit ***REMOVED*** = require("../handlers/permission");
 
 const RedisStore = connectRedis(session);
 
@@ -52,7 +52,16 @@ router.post(
 
 router.get("/jobs/:jobId", catchErrors(jobController.getJob));
 router.get("/jobs", catchErrors(jobController.getJobs));
-router.get("/pending-jobs", permit("admin"), catchErrors(jobController.pendingJobs));
+router.get(
+  "/pending-jobs",
+  permit("admin"),
+  catchErrors(jobController.pendingJobs)
+);
+router.get(
+  "/approve-job",
+  permit("admin"),
+  catchErrors(jobController.approveJob)
+);
 router.get("/primary-tags", catchErrors(jobController.getPrimaryTags));
 
 router.get("/me", catchErrors(userController.me));
