@@ -148,7 +148,7 @@ class Db {
     if (typeof fromJobId === "number") {
       query = query.andWhere("job.id", "<=", fromJobId);
     }
-    if (approved) {
+    if (typeof approved === "boolean") {
       query = query.andWhere("job.approved", approved);
     }
     if (typeof withinDays === "number") {

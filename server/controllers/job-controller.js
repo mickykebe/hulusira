@@ -104,7 +104,11 @@ exports.getJobs = async (req, res) => {
       ? parseInt(utils.base64decode(encodedCursor))
       : null;
   const count = parseInt(countStr);
-  const jobs = await db.getJobs({ fromJobId, limit: count + 1 });
+  const jobs = await db.getJobs({
+    fromJobId,
+    limit: count + 1,
+    approved: true
+  });
   if (jobs.length < count + 1) {
     data = { jobs, nextCursor: "" };
   } else {
@@ -129,9 +133,11 @@ exports.getJob = async (req, res) => {
 
 exports.approveJob = async (req, res) => {
   const { jobId } = req.body;
+  console.log(typeof jobId, jobId);
   const affectedRows = await db.approveJob(jobId);
   if (affectedRows === 1) {
     res.status(200).send(true);
+    return;
   }
   res.sendStatus(404);
 };

@@ -1,5 +1,5 @@
-import { Fragment } from "react";
-import { useRouter } from "next/router";
+import { Fragment, useReducer } from "react";
+import Router, { useRouter } from "next/router";
 import Link from "next/link";
 import {
   Box,
@@ -20,6 +20,7 @@ import Layout from "../components/layout";
 import CompanyLogo from "../components/company-logo";
 import JobContent from "../components/job-content";
 import { makeStyles } from "@material-ui/styles";
+import HSSnackbar from "../components/hs-snackbar";
 
 const useStyles = makeStyles(theme => ({
   jobList: props => ({
@@ -53,8 +54,34 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-//add breakpoints
+const jobReducer = (state, action) => {
+  switch (action.type) {
+    case "UPDATING_JOB": {
+      return { ...state, inProgress: true, error: false };
+    }
+    case "UPDATED_JOB": {
+      return {
+        ...state,
+        inProgress: false,
+        error: false
+      };
+    }
+    case "ERROR_UPDATING_JOB": {
+      return { ...state, inProgress: false, error: true };
+    }
+    case "CLEAR_ERROR": {
+      return { ...state, error: false };
+    }
+    default:
+      throw new Error("Unrecognized action type");
+  }
+};
+
 function PendingJobs({ jobs }) {
+  const [jobUpdateState, dispatch] = useReducer(jobReducer, {
+    inProgress: false,
+    error: false
+  });
   let activeJobData;
   const router = useRouter();
   const { jobId } = router.query;
@@ -62,6 +89,17 @@ function PendingJobs({ jobs }) {
   if (!!activeJobId) {
     activeJobData = jobs.find(jobData => jobData.job.id === activeJobId);
   }
+  const approveJob = async jobId => {
+    dispatch({ type: "UPDATING_JOB" });
+    try {
+      await api.approveJob(jobId);
+      dispatch({ type: "UPDATED_JOB" });
+      Router.replace("/pending-jobs");
+    } catch (err) {
+      console.error(err);
+      dispatch({ type: "ERROR_UPDATING_JOB" });
+    }
+  };
   const classes = useStyles({ activeJob: !!activeJobData });
   return (
     <Layout>
@@ -97,17 +135,27 @@ function PendingJobs({ jobs }) {
             <Button
               color="primary"
               variant="contained"
-              className={classes.actionButton}>
+              className={classes.actionButton}
+              disabled={jobUpdateState.inProgress}
+              onClick={() => approveJob(activeJobId)}>
               <DoneIcon /> Approve
             </Button>
             <Button
               color="secondary"
               variant="contained"
-              className={classes.actionButton}>
+              className={classes.actionButton}
+              disabled={jobUpdateState.inProgress}>
               <ClearIcon /> Drop
             </Button>
           </Toolbar>
           <JobContent jobData={activeJobData} />
+          <HSSnackbar
+            variant="error"
+            open={jobUpdateState.error}
+            message="Problem occurred updating job"
+            autoHideDuration={3000}
+            onClose={() => dispatch({ type: "CLEAR_ERROR" })}
+          />
         </Box>
       )}
     </Layout>
@@ -136,7 +184,6 @@ PendingJobs.getInitialProps = async function(ctx) {
   }
 
   const jobs = await api.getPendingJobs(ctx);
-
   return { user, jobs };
 };
 
