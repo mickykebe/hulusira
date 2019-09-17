@@ -100,6 +100,17 @@ function PendingJobs(***REMOVED*** jobs ***REMOVED***) ***REMOVED***
       dispatch(***REMOVED*** type: "ERROR_UPDATING_JOB" ***REMOVED***);
     ***REMOVED***
   ***REMOVED***;
+  const removeJob = async jobId => ***REMOVED***
+    dispatch(***REMOVED*** type: "UPDATING_JOB" ***REMOVED***);
+    try ***REMOVED***
+      await api.removeJob(jobId);
+      dispatch(***REMOVED*** type: "UPDATED_JOB" ***REMOVED***);
+      Router.replace("/pending-jobs");
+    ***REMOVED*** catch (err) ***REMOVED***
+      console.error(err);
+      dispatch(***REMOVED*** type: "ERROR_UPDATING_JOB" ***REMOVED***);
+    ***REMOVED***
+  ***REMOVED***;
   const classes = useStyles(***REMOVED*** activeJob: !!activeJobData ***REMOVED***);
   return (
     <Layout>
@@ -144,7 +155,8 @@ function PendingJobs(***REMOVED*** jobs ***REMOVED***) ***REMOVED***
               color="secondary"
               variant="contained"
               className=***REMOVED***classes.actionButton***REMOVED***
-              disabled=***REMOVED***jobUpdateState.inProgress***REMOVED***>
+              disabled=***REMOVED***jobUpdateState.inProgress***REMOVED***
+              onClick=***REMOVED***() => removeJob(activeJobId)***REMOVED***>
               <ClearIcon /> Drop
             </Button>
           </Toolbar>

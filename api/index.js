@@ -74,6 +74,11 @@ class Api ***REMOVED***
     const ***REMOVED*** data ***REMOVED*** = await this.request.put("/approve-job", ***REMOVED*** jobId ***REMOVED***);
     return data;
   ***REMOVED***
+
+  async removeJob(jobId) ***REMOVED***
+    const ***REMOVED*** data ***REMOVED*** = await this.request.delete(`/jobs/$***REMOVED***jobId***REMOVED***`);
+    return data;
+  ***REMOVED***
 ***REMOVED***
 
 export default new Api();
