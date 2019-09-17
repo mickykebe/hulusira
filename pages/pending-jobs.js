@@ -1,5 +1,5 @@
-import ***REMOVED*** Fragment ***REMOVED*** from "react";
-import ***REMOVED*** useRouter ***REMOVED*** from "next/router";
+import ***REMOVED*** Fragment, useReducer ***REMOVED*** from "react";
+import Router, ***REMOVED*** useRouter ***REMOVED*** from "next/router";
 import Link from "next/link";
 import ***REMOVED***
   Box,
@@ -20,6 +20,7 @@ import Layout from "../components/layout";
 import CompanyLogo from "../components/company-logo";
 import JobContent from "../components/job-content";
 import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
+import HSSnackbar from "../components/hs-snackbar";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   jobList: props => (***REMOVED***
@@ -53,8 +54,34 @@ const useStyles = makeStyles(theme => (***REMOVED***
   ***REMOVED***
 ***REMOVED***));
 
-//add breakpoints
+const jobReducer = (state, action) => ***REMOVED***
+  switch (action.type) ***REMOVED***
+    case "UPDATING_JOB": ***REMOVED***
+      return ***REMOVED*** ...state, inProgress: true, error: false ***REMOVED***;
+    ***REMOVED***
+    case "UPDATED_JOB": ***REMOVED***
+      return ***REMOVED***
+        ...state,
+        inProgress: false,
+        error: false
+      ***REMOVED***;
+    ***REMOVED***
+    case "ERROR_UPDATING_JOB": ***REMOVED***
+      return ***REMOVED*** ...state, inProgress: false, error: true ***REMOVED***;
+    ***REMOVED***
+    case "CLEAR_ERROR": ***REMOVED***
+      return ***REMOVED*** ...state, error: false ***REMOVED***;
+    ***REMOVED***
+    default:
+      throw new Error("Unrecognized action type");
+  ***REMOVED***
+***REMOVED***;
+
 function PendingJobs(***REMOVED*** jobs ***REMOVED***) ***REMOVED***
+  const [jobUpdateState, dispatch] = useReducer(jobReducer, ***REMOVED***
+    inProgress: false,
+    error: false
+  ***REMOVED***);
   let activeJobData;
   const router = useRouter();
   const ***REMOVED*** jobId ***REMOVED*** = router.query;
@@ -62,6 +89,17 @@ function PendingJobs(***REMOVED*** jobs ***REMOVED***) ***REMOVED***
   if (!!activeJobId) ***REMOVED***
     activeJobData = jobs.find(jobData => jobData.job.id === activeJobId);
   ***REMOVED***
+  const approveJob = async jobId => ***REMOVED***
+    dispatch(***REMOVED*** type: "UPDATING_JOB" ***REMOVED***);
+    try ***REMOVED***
+      await api.approveJob(jobId);
+      dispatch(***REMOVED*** type: "UPDATED_JOB" ***REMOVED***);
+      Router.replace("/pending-jobs");
+    ***REMOVED*** catch (err) ***REMOVED***
+      console.error(err);
+      dispatch(***REMOVED*** type: "ERROR_UPDATING_JOB" ***REMOVED***);
+    ***REMOVED***
+  ***REMOVED***;
   const classes = useStyles(***REMOVED*** activeJob: !!activeJobData ***REMOVED***);
   return (
     <Layout>
@@ -97,17 +135,27 @@ function PendingJobs(***REMOVED*** jobs ***REMOVED***) ***REMOVED***
             <Button
               color="primary"
               variant="contained"
-              className=***REMOVED***classes.actionButton***REMOVED***>
+              className=***REMOVED***classes.actionButton***REMOVED***
+              disabled=***REMOVED***jobUpdateState.inProgress***REMOVED***
+              onClick=***REMOVED***() => approveJob(activeJobId)***REMOVED***>
               <DoneIcon /> Approve
             </Button>
             <Button
               color="secondary"
               variant="contained"
-              className=***REMOVED***classes.actionButton***REMOVED***>
+              className=***REMOVED***classes.actionButton***REMOVED***
+              disabled=***REMOVED***jobUpdateState.inProgress***REMOVED***>
               <ClearIcon /> Drop
             </Button>
           </Toolbar>
           <JobContent jobData=***REMOVED***activeJobData***REMOVED*** />
+          <HSSnackbar
+            variant="error"
+            open=***REMOVED***jobUpdateState.error***REMOVED***
+            message="Problem occurred updating job"
+            autoHideDuration=***REMOVED***3000***REMOVED***
+            onClose=***REMOVED***() => dispatch(***REMOVED*** type: "CLEAR_ERROR" ***REMOVED***)***REMOVED***
+          />
         </Box>
       )***REMOVED***
     </Layout>
@@ -136,7 +184,6 @@ PendingJobs.getInitialProps = async function(ctx) ***REMOVED***
   ***REMOVED***
 
   const jobs = await api.getPendingJobs(ctx);
-
   return ***REMOVED*** user, jobs ***REMOVED***;
 ***REMOVED***;
 

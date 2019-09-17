@@ -104,7 +104,11 @@ exports.getJobs = async (req, res) => ***REMOVED***
       ? parseInt(utils.base64decode(encodedCursor))
       : null;
   const count = parseInt(countStr);
-  const jobs = await db.getJobs(***REMOVED*** fromJobId, limit: count + 1 ***REMOVED***);
+  const jobs = await db.getJobs(***REMOVED***
+    fromJobId,
+    limit: count + 1,
+    approved: true
+  ***REMOVED***);
   if (jobs.length < count + 1) ***REMOVED***
     data = ***REMOVED*** jobs, nextCursor: "" ***REMOVED***;
   ***REMOVED*** else ***REMOVED***
@@ -129,9 +133,11 @@ exports.getJob = async (req, res) => ***REMOVED***
 
 exports.approveJob = async (req, res) => ***REMOVED***
   const ***REMOVED*** jobId ***REMOVED*** = req.body;
+  console.log(typeof jobId, jobId);
   const affectedRows = await db.approveJob(jobId);
   if (affectedRows === 1) ***REMOVED***
     res.status(200).send(true);
+    return;
   ***REMOVED***
   res.sendStatus(404);
 ***REMOVED***;

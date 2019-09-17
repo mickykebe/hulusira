@@ -148,7 +148,7 @@ class Db ***REMOVED***
     if (typeof fromJobId === "number") ***REMOVED***
       query = query.andWhere("job.id", "<=", fromJobId);
     ***REMOVED***
-    if (approved) ***REMOVED***
+    if (typeof approved === "boolean") ***REMOVED***
       query = query.andWhere("job.approved", approved);
     ***REMOVED***
     if (typeof withinDays === "number") ***REMOVED***

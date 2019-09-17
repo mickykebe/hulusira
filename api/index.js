@@ -8,8 +8,8 @@ class Api ***REMOVED***
   ***REMOVED***
 
   configFromContext(ctx) ***REMOVED***
-    const config = ***REMOVED***headers: ***REMOVED******REMOVED******REMOVED***;
-    if(ctx && ctx.req && ctx.req.headers.cookie) ***REMOVED***
+    const config = ***REMOVED*** headers: ***REMOVED******REMOVED*** ***REMOVED***;
+    if (ctx && ctx.req && ctx.req.headers.cookie) ***REMOVED***
       config.headers.cookie = ctx.req.headers.cookie;
     ***REMOVED***
     return config;
@@ -36,13 +36,19 @@ class Api ***REMOVED***
     return data;
   ***REMOVED***
 
-  async getJobs(***REMOVED***ctx = null, cursor = ""***REMOVED*** = ***REMOVED******REMOVED***) ***REMOVED***
-    const ***REMOVED*** data ***REMOVED*** = await this.request.get(`/jobs?cursor=$***REMOVED***cursor***REMOVED***`, this.configFromContext(ctx));
+  async getJobs(***REMOVED*** ctx = null, cursor = "" ***REMOVED*** = ***REMOVED******REMOVED***) ***REMOVED***
+    const ***REMOVED*** data ***REMOVED*** = await this.request.get(
+      `/jobs?cursor=$***REMOVED***cursor***REMOVED***`,
+      this.configFromContext(ctx)
+    );
     return data;
   ***REMOVED***
 
   async getPendingJobs(ctx) ***REMOVED***
-    const ***REMOVED*** data ***REMOVED*** = await this.request.get(`/pending-jobs`, this.configFromContext(ctx));
+    const ***REMOVED*** data ***REMOVED*** = await this.request.get(
+      `/pending-jobs`,
+      this.configFromContext(ctx)
+    );
     return data;
   ***REMOVED***
 
@@ -52,13 +58,21 @@ class Api ***REMOVED***
   ***REMOVED***
 
   async login(data) ***REMOVED***
-    const ***REMOVED*** data: user***REMOVED*** = await this.request.post(`/login`, data);
+    const ***REMOVED*** data: user ***REMOVED*** = await this.request.post(`/login`, data);
     return user;
   ***REMOVED***
 
   async activeUser(ctx) ***REMOVED***
-    const ***REMOVED*** data: user ***REMOVED*** = await this.request.get(`/me`, this.configFromContext(ctx));
+    const ***REMOVED*** data: user ***REMOVED*** = await this.request.get(
+      `/me`,
+      this.configFromContext(ctx)
+    );
     return user;
+  ***REMOVED***
+
+  async approveJob(jobId) ***REMOVED***
+    const ***REMOVED*** data ***REMOVED*** = await this.request.post("/approve-job", ***REMOVED*** jobId ***REMOVED***);
+    return data;
   ***REMOVED***
 ***REMOVED***
 

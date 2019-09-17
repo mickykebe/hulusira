@@ -57,7 +57,7 @@ router.get(
   permit("admin"),
   catchErrors(jobController.pendingJobs)
 );
-router.get(
+router.post(
   "/approve-job",
   permit("admin"),
   catchErrors(jobController.approveJob)
