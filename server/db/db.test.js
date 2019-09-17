@@ -12,10 +12,10 @@ describe("db", () => {
   function sampleJobData(fields = {}) {
     return {
       position: faker.name.jobTitle(),
-      job_type: 'Full-time',
+      job_type: "Full-time",
       description: faker.lorem.sentences(),
       apply_email: faker.internet.email(),
-      ...fields,
+      ...fields
     };
   }
 
@@ -199,12 +199,15 @@ describe("db", () => {
   });
 
   it("getJobById returns job data", async () => {
-    const rows = await db.knex('job').insert({
-      position: faker.name.jobTitle(),
-      job_type: "Full-time",
-      description: faker.lorem.sentences(),
-      apply_email: faker.internet.email(),
-    }).returning(db.selectColumns('job', 'job', db.jobColumns));
+    const rows = await db
+      .knex("job")
+      .insert({
+        position: faker.name.jobTitle(),
+        job_type: "Full-time",
+        description: faker.lorem.sentences(),
+        apply_email: faker.internet.email()
+      })
+      .returning(db.selectColumns("job", "job", db.jobColumns));
     const jobRow = rows[0];
     const res = await db.getJobById(jobRow.job_id);
 
@@ -215,76 +218,104 @@ describe("db", () => {
   });
 
   it("getJobs returns jobs with tags", async () => {
-    const sortById = (obj1, obj2) => obj1.id > obj2.id ? 1 : -1;
-    const tag1 = Tag.fromDb((await db.knex('tag')
-      .insert({ name: faker.lorem.word()})
-      .returning('*'))[0]);
-    const tag2 = Tag.fromDb((await db.knex('tag')
-      .insert({ name: faker.lorem.word()})
-      .returning('*'))[0]);
-    const company = Company.fromDb((await db.knex('company')
-      .insert({ name: faker.company.companyName(), email: faker.internet.email()})
-      .returning(db.selectColumns('company', 'company', db.companyColumns)))[0]);
-    const job = Job.fromDb((await db.knex('job')
-      .insert({
-        position: faker.name.jobTitle(),
-        job_type: "Full-time",
-        company_id: company.id,
-        description: faker.lorem.sentence(),
-        apply_email: faker.internet.email(),
-      })
-      .returning(db.selectColumns('job', 'job', db.jobColumns)))[0], [tag1, tag2].sort(sortById));
-    await db.knex('job_tags')
-      .insert([{
+    const sortById = (obj1, obj2) => (obj1.id > obj2.id ? 1 : -1);
+    const tag1 = Tag.fromDb(
+      (await db
+        .knex("tag")
+        .insert({ name: faker.lorem.word() })
+        .returning("*"))[0]
+    );
+    const tag2 = Tag.fromDb(
+      (await db
+        .knex("tag")
+        .insert({ name: faker.lorem.word() })
+        .returning("*"))[0]
+    );
+    const company = Company.fromDb(
+      (await db
+        .knex("company")
+        .insert({
+          name: faker.company.companyName(),
+          email: faker.internet.email()
+        })
+        .returning(
+          db.selectColumns("company", "company", db.companyColumns)
+        ))[0]
+    );
+    const job = Job.fromDb(
+      (await db
+        .knex("job")
+        .insert({
+          position: faker.name.jobTitle(),
+          job_type: "Full-time",
+          company_id: company.id,
+          description: faker.lorem.sentence(),
+          apply_email: faker.internet.email()
+        })
+        .returning(db.selectColumns("job", "job", db.jobColumns)))[0],
+      [tag1, tag2].sort(sortById)
+    );
+    await db.knex("job_tags").insert([
+      {
         job_id: job.id,
         tag_id: tag1.id
-      }, {
+      },
+      {
         job_id: job.id,
-        tag_id: tag2.id,
-      }]);
+        tag_id: tag2.id
+      }
+    ]);
     const jobs = await db.getJobs();
     expect(jobs).toHaveLength(1);
     jobs[0].job.tags = jobs[0].job.tags.sort(sortById);
     expect(jobs[0]).toMatchObject({
       company,
-      job,
+      job
     });
   });
 
   it("getJobs cursor works", async () => {
-    const rows = await db.knex('job')
-      .insert([{
-        position: faker.name.jobTitle(),
-        job_type: 'Full-time',
-        description: faker.lorem.sentences(),
-        apply_email: faker.internet.email(),
-      }, {
-        position: faker.name.jobTitle(),
-        job_type: 'Part-time',
-        description: faker.lorem.sentences(),
-        apply_email: faker.internet.email(),
-      }])
-      .returning('*');
+    const rows = await db
+      .knex("job")
+      .insert([
+        {
+          position: faker.name.jobTitle(),
+          job_type: "Full-time",
+          description: faker.lorem.sentences(),
+          apply_email: faker.internet.email()
+        },
+        {
+          position: faker.name.jobTitle(),
+          job_type: "Part-time",
+          description: faker.lorem.sentences(),
+          apply_email: faker.internet.email()
+        }
+      ])
+      .returning("*");
     const firstJobId = rows[0].id;
-    const jobs = await db.getJobs({fromJobId: firstJobId});
+    const jobs = await db.getJobs({ fromJobId: firstJobId });
     expect(jobs).toHaveLength(1);
     expect(jobs[0].job.id).toBe(firstJobId);
   });
 
   it("getJobs can limit number of jobs", async () => {
-    await db.knex('job')
-    .insert([{
-      position: faker.name.jobTitle(),
-      job_type: 'Full-time',
-      description: faker.lorem.sentences(),
-      apply_email: faker.internet.email(),
-    }, {
-      position: faker.name.jobTitle(),
-      job_type: 'Part-time',
-      description: faker.lorem.sentences(),
-      apply_email: faker.internet.email(),
-    }])
-    .returning('*');
+    await db
+      .knex("job")
+      .insert([
+        {
+          position: faker.name.jobTitle(),
+          job_type: "Full-time",
+          description: faker.lorem.sentences(),
+          apply_email: faker.internet.email()
+        },
+        {
+          position: faker.name.jobTitle(),
+          job_type: "Part-time",
+          description: faker.lorem.sentences(),
+          apply_email: faker.internet.email()
+        }
+      ])
+      .returning("*");
     const jobs = await db.getJobs({ limit: 1 });
     expect(jobs).toHaveLength(1);
   });
@@ -292,9 +323,10 @@ describe("db", () => {
   it("getJobs can filter by approved status", async () => {
     const approvedJobData = sampleJobData({ approved: true });
     const jobData = sampleJobData();
-    const jobRows = await db.knex("job")
+    const jobRows = await db
+      .knex("job")
       .insert([approvedJobData, jobData])
-      .returning(db.selectColumns('job', 'job', db.jobColumns));
+      .returning(db.selectColumns("job", "job", db.jobColumns));
     expect(jobRows).toHaveLength(2);
     const jobResults = await db.getJobs({ approved: true });
     expect(jobResults).toHaveLength(1);
@@ -302,18 +334,19 @@ describe("db", () => {
   });
 
   it("getJobs can limit results within day ranges", async () => {
-    const recentJobData = sampleJobData({ created: new Date()});
+    const recentJobData = sampleJobData({ created: new Date() });
     const expiredDate = new Date();
     expiredDate.setDate(expiredDate.getDate() - 31);
     const oldJobData = sampleJobData({ created: expiredDate });
-    const jobRows = await db.knex("job")
-      .insert([ recentJobData, oldJobData ])
-      .returning(db.selectColumns('job', 'job', db.jobColumns));
+    const jobRows = await db
+      .knex("job")
+      .insert([recentJobData, oldJobData])
+      .returning(db.selectColumns("job", "job", db.jobColumns));
     expect(jobRows).toHaveLength(2);
     const jobResults = await db.getJobs({ withinDays: 30 });
     expect(jobResults).toHaveLength(1);
     expect(jobResults[0].job.position).toBe(recentJobData.position);
-  })
+  });
 
   it("getUserByEmail works", async () => {
     const user = {
@@ -346,5 +379,19 @@ describe("db", () => {
     const userId = res.rows[0].id;
     const resUser = await db.getUserById(userId);
     expect(resUser).toMatchObject(user);
+  });
+
+  it("approveJob should approve pending job", async () => {
+    const jobData = sampleJobData({});
+    const jobRows = await db
+      .knex("job")
+      .insert(jobData)
+      .returning(db.selectColumns("job", "job", db.jobColumns));
+    expect(jobRows).toHaveLength(1);
+    const jobId = jobRows[0]["job_id"];
+    const result = await db.approveJob(jobId);
+    expect(result).toBe(1);
+    const result2 = await db.approveJob(1);
+    expect(result2).toBe(0);
   });
 });

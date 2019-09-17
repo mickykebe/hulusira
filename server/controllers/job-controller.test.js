@@ -3,15 +3,22 @@ const faker = require("faker");
 const app = require("../app");
 const db = require("../db");
 const utils = require("../utils");
-const { pendingJobs } = require('./job-controller');
+const { pendingJobs, approveJob } = require("./job-controller");
 jest.mock("../db");
+
+const mockRequest = ({ body } = {}) => {
+  return {
+    body
+  };
+};
 
 const mockResponse = () => {
   const res = {};
   res.status = jest.fn().mockReturnValue(res);
   res.send = jest.fn().mockReturnValue(res);
+  res.sendStatus = jest.fn().mockReturnValue(res);
   return res;
-}
+};
 
 const sampleJobResult = (job = {}, company = {}) => {
   return {
@@ -30,7 +37,7 @@ const sampleJobResult = (job = {}, company = {}) => {
 
 const sampleJobsResult = (numJobs = 5) => {
   return Array.from({ length: numJobs }, sampleJobResult);
-}
+};
 
 describe("POST to /new", () => {
   it("Validation error if position is missing", async () => {
@@ -210,8 +217,8 @@ describe("GET to /jobs", () => {
   });
 });
 
-describe('GET /pending-jobs', () => {
-  it('responds with pending jobs', async () => {
+describe("GET /pending-jobs", () => {
+  it("responds with pending jobs", async () => {
     const req = null;
     const res = mockResponse();
     const jobs = sampleJobsResult();
@@ -219,5 +226,18 @@ describe('GET /pending-jobs', () => {
     await pendingJobs(req, res);
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.send).toHaveBeenCalledWith(jobs);
+  });
+});
+
+describe("POST /approve-job", () => {
+  it.only("responds with true if job exists", async () => {
+    const req = mockRequest({ body: { jobId: 1 } });
+    const res = mockResponse();
+    db.approveJob.mockResolvedValueOnce(1).mockResolvedValueOnce(0);
+    await approveJob(req, res);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.send).toHaveBeenCalledWith(true);
+    await approveJob(req, res);
+    expect(res.sendStatus).toHaveBeenCalledWith(404);
   });
 });

@@ -62,7 +62,6 @@ function PendingJobs({ jobs }) {
   if (!!activeJobId) {
     activeJobData = jobs.find(jobData => jobData.job.id === activeJobId);
   }
-  console.log({ activeJobData });
   const classes = useStyles({ activeJob: !!activeJobData });
   return (
     <Layout>

@@ -99,9 +99,12 @@ exports.getPrimaryTags = async (req, res) => {
 exports.getJobs = async (req, res) => {
   let data;
   const { cursor: encodedCursor, count: countStr = "30" } = req.query;
-  const fromJobId = (typeof encodedCursor === "string" && encodedCursor !== "") ? parseInt(utils.base64decode(encodedCursor)) : null;
+  const fromJobId =
+    typeof encodedCursor === "string" && encodedCursor !== ""
+      ? parseInt(utils.base64decode(encodedCursor))
+      : null;
   const count = parseInt(countStr);
-  const jobs = await db.getJobs({fromJobId, limit: count + 1});
+  const jobs = await db.getJobs({ fromJobId, limit: count + 1 });
   if (jobs.length < count + 1) {
     data = { jobs, nextCursor: "" };
   } else {
@@ -116,10 +119,19 @@ exports.getJobs = async (req, res) => {
 exports.pendingJobs = async (_, res) => {
   const jobs = await db.getJobs({ approved: false });
   res.status(200).send(jobs);
-}
+};
 
 exports.getJob = async (req, res) => {
   const { jobId } = req.params;
   const job = await db.getJobById(jobId);
   res.status(200).send(job);
+};
+
+exports.approveJob = async (req, res) => {
+  const { jobId } = req.body;
+  const affectedRows = await db.approveJob(jobId);
+  if (affectedRows === 1) {
+    res.status(200).send(true);
+  }
+  res.sendStatus(404);
 };
