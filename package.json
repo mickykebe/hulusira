@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "cross-env NODE_ENV=production node index.js",
     "now-build": "next build",
-    "watch": "nodemon --ignore .next/ --ignore **/*.test.js ./index.js",
+    "watch": "nodemon --watch server --watch ./index.js ./index.js",
     "test": "jest"
   },
   "dependencies": {
