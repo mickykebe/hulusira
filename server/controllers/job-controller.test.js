@@ -3,7 +3,7 @@ const faker = require("faker");
 const app = require("../app");
 const db = require("../db");
 const utils = require("../utils");
-const { pendingJobs, approveJob } = require("./job-controller");
+const { pendingJobs, approveJob, removeJob } = require("./job-controller");
 jest.mock("../db");
 
 const mockRequest = ({ body } = {}) => {
@@ -229,8 +229,8 @@ describe("GET /pending-jobs", () => {
   });
 });
 
-describe("POST /approve-job", () => {
-  it.only("responds with true if job exists", async () => {
+describe("PUT /approve-job", () => {
+  it("updates job and responds with true if job exists", async () => {
     const req = mockRequest({ body: { jobId: 1 } });
     const res = mockResponse();
     db.approveJob.mockResolvedValueOnce(1).mockResolvedValueOnce(0);
@@ -238,6 +238,19 @@ describe("POST /approve-job", () => {
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.send).toHaveBeenCalledWith(true);
     await approveJob(req, res);
+    expect(res.sendStatus).toHaveBeenCalledWith(404);
+  });
+});
+
+describe("DELETE /remove-job", () => {
+  it("deletes job if it exists and responds with true", async () => {
+    const req = mockRequest({ body: { jobId: 1 } });
+    const res = mockResponse();
+    db.deleteJob.mockResolvedValueOnce(1).mockResolvedValueOnce(0);
+    await removeJob(req, res);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.send).toHaveBeenCalledWith(true);
+    await removeJob(req, res);
     expect(res.sendStatus).toHaveBeenCalledWith(404);
   });
 });

@@ -394,4 +394,18 @@ describe("db", () => {
     const result2 = await db.approveJob(1);
     expect(result2).toBe(0);
   });
+
+  it("deleteJob should delete job", async () => {
+    const jobData = sampleJobData();
+    const jobRows = await db
+      .knex("job")
+      .insert(jobData)
+      .returning(db.selectColumns("job", "job", db.jobColumns));
+    expect(jobRows).toHaveLength(1);
+    const jobId = jobRows[0]["job_id"];
+    const result = await db.deleteJob(jobId);
+    expect(result).toBe(1);
+    const result2 = await db.deleteJob(2);
+    expect(result2).toBe(0);
+  });
 });

@@ -221,6 +221,12 @@ class Db {
       });
   }
 
+  deleteJob(id) {
+    return this.knex("job")
+      .where("id", id)
+      .del();
+  }
+
   end() {
     return this.pool.end();
   }

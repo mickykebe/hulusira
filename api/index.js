@@ -71,7 +71,7 @@ class Api {
   }
 
   async approveJob(jobId) {
-    const { data } = await this.request.post("/approve-job", { jobId });
+    const { data } = await this.request.put("/approve-job", { jobId });
     return data;
   }
 }
