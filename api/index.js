@@ -71,7 +71,7 @@ class Api ***REMOVED***
   ***REMOVED***
 
   async approveJob(jobId) ***REMOVED***
-    const ***REMOVED*** data ***REMOVED*** = await this.request.post("/approve-job", ***REMOVED*** jobId ***REMOVED***);
+    const ***REMOVED*** data ***REMOVED*** = await this.request.put("/approve-job", ***REMOVED*** jobId ***REMOVED***);
     return data;
   ***REMOVED***
 ***REMOVED***

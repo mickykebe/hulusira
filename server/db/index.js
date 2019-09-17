@@ -221,6 +221,12 @@ class Db ***REMOVED***
       ***REMOVED***);
   ***REMOVED***
 
+  deleteJob(id) ***REMOVED***
+    return this.knex("job")
+      .where("id", id)
+      .del();
+  ***REMOVED***
+
   end() ***REMOVED***
     return this.pool.end();
   ***REMOVED***

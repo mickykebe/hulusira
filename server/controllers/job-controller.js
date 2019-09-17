@@ -133,8 +133,17 @@ exports.getJob = async (req, res) => ***REMOVED***
 
 exports.approveJob = async (req, res) => ***REMOVED***
   const ***REMOVED*** jobId ***REMOVED*** = req.body;
-  console.log(typeof jobId, jobId);
   const affectedRows = await db.approveJob(jobId);
+  if (affectedRows === 1) ***REMOVED***
+    res.status(200).send(true);
+    return;
+  ***REMOVED***
+  res.sendStatus(404);
+***REMOVED***;
+
+exports.removeJob = async (req, res) => ***REMOVED***
+  const ***REMOVED*** jobId ***REMOVED*** = req.body;
+  const affectedRows = await db.deleteJob(jobId);
   if (affectedRows === 1) ***REMOVED***
     res.status(200).send(true);
     return;

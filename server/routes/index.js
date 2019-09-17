@@ -57,10 +57,15 @@ router.get(
   permit("admin"),
   catchErrors(jobController.pendingJobs)
 );
-router.post(
+router.put(
   "/approve-job",
   permit("admin"),
   catchErrors(jobController.approveJob)
+);
+router.delete(
+  "/remove-job",
+  permit("admin"),
+  catchErrors(jobController.removeJob)
 );
 router.get("/primary-tags", catchErrors(jobController.getPrimaryTags));
 

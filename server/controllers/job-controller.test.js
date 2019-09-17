@@ -3,7 +3,7 @@ const faker = require("faker");
 const app = require("../app");
 const db = require("../db");
 const utils = require("../utils");
-const ***REMOVED*** pendingJobs, approveJob ***REMOVED*** = require("./job-controller");
+const ***REMOVED*** pendingJobs, approveJob, removeJob ***REMOVED*** = require("./job-controller");
 jest.mock("../db");
 
 const mockRequest = (***REMOVED*** body ***REMOVED*** = ***REMOVED******REMOVED***) => ***REMOVED***
@@ -229,8 +229,8 @@ describe("GET /pending-jobs", () => ***REMOVED***
   ***REMOVED***);
 ***REMOVED***);
 
-describe("POST /approve-job", () => ***REMOVED***
-  it.only("responds with true if job exists", async () => ***REMOVED***
+describe("PUT /approve-job", () => ***REMOVED***
+  it("updates job and responds with true if job exists", async () => ***REMOVED***
     const req = mockRequest(***REMOVED*** body: ***REMOVED*** jobId: 1 ***REMOVED*** ***REMOVED***);
     const res = mockResponse();
     db.approveJob.mockResolvedValueOnce(1).mockResolvedValueOnce(0);
@@ -238,6 +238,19 @@ describe("POST /approve-job", () => ***REMOVED***
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.send).toHaveBeenCalledWith(true);
     await approveJob(req, res);
+    expect(res.sendStatus).toHaveBeenCalledWith(404);
+  ***REMOVED***);
+***REMOVED***);
+
+describe("DELETE /remove-job", () => ***REMOVED***
+  it("deletes job if it exists and responds with true", async () => ***REMOVED***
+    const req = mockRequest(***REMOVED*** body: ***REMOVED*** jobId: 1 ***REMOVED*** ***REMOVED***);
+    const res = mockResponse();
+    db.deleteJob.mockResolvedValueOnce(1).mockResolvedValueOnce(0);
+    await removeJob(req, res);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.send).toHaveBeenCalledWith(true);
+    await removeJob(req, res);
     expect(res.sendStatus).toHaveBeenCalledWith(404);
   ***REMOVED***);
 ***REMOVED***);
