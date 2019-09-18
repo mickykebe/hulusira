@@ -61,8 +61,6 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-
-
 export default function JobItem({
   company,
   job,
@@ -75,16 +73,14 @@ export default function JobItem({
   return (
     <Box className={clsx(classes.root, className)}>
       <Box className={classes.logoWrapper} pr={3}>
-        {
-          !!company && (<CompanyLogo company={company} />)
-        }
+        {!!company && <CompanyLogo company={company} />}
       </Box>
       <Box display="flex" alignItems="center" flexWrap="wrap" flex={1}>
         <Box mb={1} flex={1} flexBasis={300}>
           {preview ? (
             <Typography variant="h6">{job.position || "Position"}</Typography>
           ) : (
-            <Link href="/jobs/[jobId]" as={`/jobs/${job.id}`} passHref>
+            <Link href="/jobs/[slug]" as={`/jobs/${job.slug}`} passHref>
               <MuiLink
                 classes={{ root: classes.position }}
                 variant="h6"

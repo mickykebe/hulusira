@@ -11,10 +11,10 @@ function Job({ jobData }) {
 }
 
 Job.getInitialProps = async ({ query }) => {
-  const { jobId } = query;
+  const { slug } = query;
   const [primaryTags, jobData] = await Promise.all([
     api.getPrimaryTags(),
-    api.getJob(jobId)
+    api.getJob(slug)
   ]);
   return { jobData, primaryTags };
 };

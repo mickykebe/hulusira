@@ -199,7 +199,7 @@ function New({ primaryTags }) {
         primaryTagId,
         companyLogo
       });
-      Router.push(`/jobs/${jobData.job.id}`);
+      Router.push(`/jobs/${jobData.job.slug}`);
     } catch (err) {
       console.error(err);
       setShowErrorSubmitting(true);

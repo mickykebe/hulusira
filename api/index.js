@@ -52,8 +52,8 @@ class Api {
     return data;
   }
 
-  async getJob(jobId) {
-    const { data } = await this.request.get(`/jobs/${jobId}`);
+  async getJob(slug) {
+    const { data } = await this.request.get(`/jobs/${slug}`);
     return data;
   }
 

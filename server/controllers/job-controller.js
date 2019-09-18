@@ -105,7 +105,8 @@ exports.getJobs = async (req, res) => {
   const jobs = await db.getJobs({
     fromJobId,
     limit: count + 1,
-    approved: true
+    approved: true,
+    withinDays: 30
   });
   if (jobs.length < count + 1) {
     data = { jobs, nextCursor: "" };
@@ -124,8 +125,8 @@ exports.pendingJobs = async (_, res) => {
 };
 
 exports.getJob = async (req, res) => {
-  const { jobId } = req.params;
-  const job = await db.getJobById(jobId);
+  const { slug } = req.params;
+  const job = await db.getJobBySlug(slug);
   res.status(200).send(job);
 };
 
