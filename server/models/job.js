@@ -16,7 +16,8 @@ class Job ***REMOVED***
     applyEmail,
     created,
     approved,
-    closed
+    closed,
+    slug
   ) ***REMOVED***
     this.id = id;
     this.position = position;
@@ -33,8 +34,8 @@ class Job ***REMOVED***
     this.applyUrl = applyUrl;
     this.applyEmail = applyEmail;
     this.created = created;
-    this.approved = approved,
-    this.closed = closed;
+    (this.approved = approved), (this.closed = closed);
+    this.slug = slug;
   ***REMOVED***
 
   static fromDb(dbJob, tags) ***REMOVED***
@@ -56,6 +57,7 @@ class Job ***REMOVED***
       dbJob.job_created,
       dbJob.job_approved,
       dbJob.job_closed,
+      dbJob.job_slug
     );
   ***REMOVED***
 ***REMOVED***

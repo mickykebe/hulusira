@@ -134,6 +134,7 @@ describe("db", () => ***REMOVED***
       applyUrl: jobData.applyUrl,
       applyEmail: jobData.applyEmail
     ***REMOVED***);
+    expect(job.slug).toBe(db.jobSlug(job.id, job.position));
     const tagCountRes = await db.pool.query(`SELECT COUNT(*) FROM tag`);
     expect(tagCountRes.rows[0].count).toBe("3");
     const jobTagRes = await db.pool.query(`SELECT COUNT(*) FROM job_tags`);

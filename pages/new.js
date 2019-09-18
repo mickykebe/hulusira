@@ -199,7 +199,7 @@ function New(***REMOVED*** primaryTags ***REMOVED***) ***REMOVED***
         primaryTagId,
         companyLogo
       ***REMOVED***);
-      Router.push(`/jobs/$***REMOVED***jobData.job.id***REMOVED***`);
+      Router.push(`/jobs/$***REMOVED***jobData.job.slug***REMOVED***`);
     ***REMOVED*** catch (err) ***REMOVED***
       console.error(err);
       setShowErrorSubmitting(true);

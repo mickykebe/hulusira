@@ -2,6 +2,7 @@ const assert = require("assert");
 const ***REMOVED*** Pool ***REMOVED*** = require("pg");
 const ***REMOVED*** Company, Tag, Job, User ***REMOVED*** = require("../models");
 const Knex = require("knex");
+const slug = require("slug");
 
 class Db ***REMOVED***
   constructor() ***REMOVED***
@@ -28,7 +29,8 @@ class Db ***REMOVED***
       "apply_email",
       "approved",
       "closed",
-      "created"
+      "created",
+      "slug"
     ];
     this.companyColumns = ["id", "name", "email", "logo", "verified"];
   ***REMOVED***
@@ -47,6 +49,10 @@ class Db ***REMOVED***
     ***REMOVED***;
   ***REMOVED***
 
+  jobSlug(id, position) ***REMOVED***
+    return `$***REMOVED***id***REMOVED***-$***REMOVED***slug(position)***REMOVED***`;
+  ***REMOVED***
+
   async createJob(jobData, companyId = null) ***REMOVED***
     assert(!!jobData);
 
@@ -59,11 +65,56 @@ class Db ***REMOVED***
       ***REMOVED***
     ***REMOVED***
 
-    const tags = await Promise.all(
+    const job = await this.knex.transaction(async trx => ***REMOVED***
+      const tags = await await Promise.all(
+        jobData.tags.map(tagName => this.findOrCreateTag(tagName, ***REMOVED*** trx ***REMOVED***))
+      );
+
+      let rows = await trx("job")
+        .insert(***REMOVED***
+          position: jobData.position,
+          job_type: jobData.jobType,
+          company_id: companyId,
+          city: jobData.city,
+          primary_tag: jobData.primaryTagId,
+          monthly_salary: jobData.monthlySalary,
+          description: jobData.description,
+          responsibilities: jobData.responsibilities,
+          requirements: jobData.requirements,
+          how_to_apply: jobData.howToApply,
+          apply_url: jobData.applyUrl,
+          apply_email: jobData.applyEmail
+        ***REMOVED***)
+        .returning(this.selectColumns("job", "job", this.jobColumns));
+
+      if (rows.length !== 1) ***REMOVED***
+        throw new Error("Problem occurred inserting job");
+      ***REMOVED***
+      const row = rows[0];
+
+      rows = await trx("job")
+        .where("id", row.job_id)
+        .update(***REMOVED***
+          slug: this.jobSlug(row.job_id, row.job_position)
+        ***REMOVED***)
+        .returning(this.selectColumns("job", "job", this.jobColumns));
+
+      const job = Job.fromDb(rows[0], tags);
+
+      await Promise.all(
+        tags.map(tag => this.createJobTag(job.id, tag.id, ***REMOVED*** trx ***REMOVED***))
+      );
+
+      return job;
+    ***REMOVED***);
+
+    return job;
+
+    /* const tags = await Promise.all(
       jobData.tags.map(tagName => this.findOrCreateTag(tagName))
     );
 
-    const rows = await this.knex("job")
+    let rows = await this.knex("job")
       .insert(***REMOVED***
         position: jobData.position,
         job_type: jobData.jobType,
@@ -80,15 +131,27 @@ class Db ***REMOVED***
       ***REMOVED***)
       .returning(this.selectColumns("job", "job", this.jobColumns));
 
+    if (rows.length !== 1) ***REMOVED***
+      throw new Error("Problem occurred inserting job");
+    ***REMOVED***
+    const row = rows[0];
+
+    rows = await this.knex("job")
+      .where("id", row.job_id)
+      .update(***REMOVED***
+        slug: this.jobSlug(row.job_id, row.job_position)
+      ***REMOVED***)
+      .returning(this.selectColumns("job", "job", this.jobColumns));
+
     const job = Job.fromDb(rows[0], tags);
 
     await Promise.all(tags.map(tag => this.createJobTag(job.id, tag.id)));
 
-    return job;
+    return job; */
   ***REMOVED***
 
-  async createJobTag(jobId, tagId) ***REMOVED***
-    return this.knex("job_tags").insert(***REMOVED***
+  async createJobTag(jobId, tagId, ***REMOVED*** trx = null ***REMOVED*** = ***REMOVED******REMOVED***) ***REMOVED***
+    return (trx || this.knex)("job_tags").insert(***REMOVED***
       job_id: jobId,
       tag_id: tagId
     ***REMOVED***);
@@ -105,13 +168,21 @@ class Db ***REMOVED***
     return Company.fromDb(rows[0]);
   ***REMOVED***
 
-  async findOrCreateTag(name) ***REMOVED***
+  async findOrCreateTag(name, ***REMOVED*** trx = null ***REMOVED*** = ***REMOVED******REMOVED***) ***REMOVED***
+    const res = await (trx || this.knex).raw(
+      "with new_row as (insert into tag(name) select :name where not exists (select * from tag where name = :name) returning *) select * from new_row union select * from tag where name = :name",
+      ***REMOVED*** name ***REMOVED***
+    );
+    return Tag.fromDb(res.rows[0]);
+  ***REMOVED***
+
+  /*   async findOrCreateTag(name) ***REMOVED***
     const query =
       "with new_row as (insert into tag(name) select $1 where not exists (select * from tag where name=$1) returning *) select * from new_row union select * from tag where name=$1";
     const values = [name];
     const res = await this.pool.query(query, values);
     return Tag.fromDb(res.rows[0]);
-  ***REMOVED***
+  ***REMOVED*** */
 
   async getPrimaryTags() ***REMOVED***
     const rows = this.knex("tag")
@@ -174,8 +245,8 @@ class Db ***REMOVED***
     return fields.map(f => `$***REMOVED***tableName***REMOVED***.$***REMOVED***f***REMOVED*** as $***REMOVED***prefix***REMOVED***_$***REMOVED***f***REMOVED***`);
   ***REMOVED***
 
-  async getJobById(id) ***REMOVED***
-    const row = await this.knex("job")
+  jobQuery() ***REMOVED***
+    return this.knex("job")
       .first(
         ...this.selectColumns("job", "job", this.jobColumns),
         ...this.selectColumns("company", "company", this.companyColumns)
@@ -190,8 +261,20 @@ class Db ***REMOVED***
       .leftJoin(
         this.knex.raw("tag extra_tags on job_tags.tag_id = extra_tags.id")
       )
-      .where("job.id", id)
       .groupBy("job.id", "company.id");
+  ***REMOVED***
+
+  async getJobBySlug(slug) ***REMOVED***
+    const row = await this.jobQuery().where("job.slug", slug);
+    const company = row.company_id && Company.fromDb(row);
+    return ***REMOVED***
+      company: company,
+      job: Job.fromDb(row, row.tags || [])
+    ***REMOVED***;
+  ***REMOVED***
+
+  async getJobById(id) ***REMOVED***
+    const row = await this.jobQuery().where("job.id", id);
     const company = row.company_id && Company.fromDb(row);
     return ***REMOVED***
       company: company,

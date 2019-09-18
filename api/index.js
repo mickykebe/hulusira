@@ -52,8 +52,8 @@ class Api ***REMOVED***
     return data;
   ***REMOVED***
 
-  async getJob(jobId) ***REMOVED***
-    const ***REMOVED*** data ***REMOVED*** = await this.request.get(`/jobs/$***REMOVED***jobId***REMOVED***`);
+  async getJob(slug) ***REMOVED***
+    const ***REMOVED*** data ***REMOVED*** = await this.request.get(`/jobs/$***REMOVED***slug***REMOVED***`);
     return data;
   ***REMOVED***
 

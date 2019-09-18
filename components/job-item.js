@@ -61,8 +61,6 @@ const useStyles = makeStyles(theme => (***REMOVED***
   ***REMOVED***
 ***REMOVED***));
 
-
-
 export default function JobItem(***REMOVED***
   company,
   job,
@@ -75,16 +73,14 @@ export default function JobItem(***REMOVED***
   return (
     <Box className=***REMOVED***clsx(classes.root, className)***REMOVED***>
       <Box className=***REMOVED***classes.logoWrapper***REMOVED*** pr=***REMOVED***3***REMOVED***>
-        ***REMOVED***
-          !!company && (<CompanyLogo company=***REMOVED***company***REMOVED*** />)
-        ***REMOVED***
+        ***REMOVED***!!company && <CompanyLogo company=***REMOVED***company***REMOVED*** />***REMOVED***
       </Box>
       <Box display="flex" alignItems="center" flexWrap="wrap" flex=***REMOVED***1***REMOVED***>
         <Box mb=***REMOVED***1***REMOVED*** flex=***REMOVED***1***REMOVED*** flexBasis=***REMOVED***300***REMOVED***>
           ***REMOVED***preview ? (
             <Typography variant="h6">***REMOVED***job.position || "Position"***REMOVED***</Typography>
           ) : (
-            <Link href="/jobs/[jobId]" as=***REMOVED***`/jobs/$***REMOVED***job.id***REMOVED***`***REMOVED*** passHref>
+            <Link href="/jobs/[slug]" as=***REMOVED***`/jobs/$***REMOVED***job.slug***REMOVED***`***REMOVED*** passHref>
               <MuiLink
                 classes=***REMOVED******REMOVED*** root: classes.position ***REMOVED******REMOVED***
                 variant="h6"

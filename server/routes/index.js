@@ -50,7 +50,7 @@ router.post(
   catchErrors(jobController.createJob)
 );
 
-router.get("/jobs/:jobId", catchErrors(jobController.getJob));
+router.get("/jobs/:slug", catchErrors(jobController.getJob));
 router.get("/jobs", catchErrors(jobController.getJobs));
 router.get(
   "/pending-jobs",

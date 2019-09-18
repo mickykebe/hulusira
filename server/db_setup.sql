@@ -39,6 +39,7 @@ CREATE TABLE job (
   approved BOOLEAN NOT NULL DEFAULT FALSE,
   closed BOOLEAN NOT NULL DEFAULT FALSE,
   created TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  slug TEXT,
   CONSTRAINT require_apply_method CHECK (apply_url IS NOT NULL OR apply_email IS NOT NULL)
 );
 
