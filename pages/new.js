@@ -143,14 +143,12 @@ const validationSchema = Yup.object().shape(
       is: true,
       then: Yup.string().required("Required")
     }),
-    companyEmail: Yup.string()
-      .email()
-      .when("hasCompany", {
-        is: true,
-        then: Yup.string()
-          .email()
-          .required("Required")
-      })
+    companyEmail: Yup.string().when("hasCompany", {
+      is: true,
+      then: Yup.string()
+        .email()
+        .required("Required")
+    })
   },
   ["applyUrl", "applyEmail"]
 );

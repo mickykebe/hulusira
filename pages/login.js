@@ -1,37 +1,39 @@
-import { Fragment, useState } from 'react';
-import Router from 'next/router';
-import nextCookie from 'next-cookies';
-import { Formik } from 'formik';
-import * as Yup from 'yup';
-import { makeStyles } from '@material-ui/styles';
-import HSPaper from '../components/hs-paper';
-import { Typography, TextField, Fab } from '@material-ui/core';
-import api from '../api';
-import HSSnackbar from '../components/hs-snackbar';
-import redirect from '../utils/redirect';
+import { Fragment, useState } from "react";
+import Router from "next/router";
+import nextCookie from "next-cookies";
+import { Formik } from "formik";
+import * as Yup from "yup";
+import { makeStyles } from "@material-ui/styles";
+import HSPaper from "../components/hs-paper";
+import { Typography, TextField, Fab } from "@material-ui/core";
+import api from "../api";
+import HSSnackbar from "../components/hs-snackbar";
+import redirect from "../utils/redirect";
 
 const useStyles = makeStyles(theme => ({
   root: {
-    position: 'absolute',
-    top: '50%',
-    transform: 'translateY(-50%)',
-    width: '100%',
-    padding: `0 ${theme.spacing(2)}px`,
+    position: "absolute",
+    top: "50%",
+    transform: "translateY(-50%)",
+    width: "100%",
+    padding: `0 ${theme.spacing(2)}px`
   },
   signinCard: {
     padding: theme.spacing(2),
     maxWidth: 400,
-    margin: 'auto',
+    margin: "auto"
   },
   signinButton: {
-    width: '100% !important',
-    marginTop: theme.spacing(1),
+    width: "100% !important",
+    marginTop: theme.spacing(1)
   }
 }));
 
 const validationSchema = Yup.object().shape({
-  email: Yup.string().email().required("Required"),
-  password: Yup.string().required("Required"),
+  email: Yup.string()
+    .email()
+    .required("Required"),
+  password: Yup.string().required("Required")
 });
 
 function Login() {
@@ -39,87 +41,101 @@ function Login() {
   const classes = useStyles();
   const handleSubmit = async function(values, actions) {
     setErrorLogin(false);
-    try{
+    try {
       await api.login(values);
-      Router.push('/admin');
-    } catch(err){
+      Router.push("/pending-jobs");
+    } catch (err) {
       setErrorLogin(true);
     }
     actions.setSubmitting(false);
-  }
+  };
   return (
     <Fragment>
-    <div className={classes.root} >
-      <HSPaper className={classes.signinCard}>
-      <Typography variant="h5" align="center">HuluSira</Typography>
-      <Formik
-        validationSchema={validationSchema}
-        initialValues={{
-          email: "",
-          password: "",
-        }}
-        onSubmit={handleSubmit}
-      >
-        {({values, isSubmitting, handleChange, errors, touched, handleSubmit}) => {
-          return (
-            <form onSubmit={handleSubmit}>
-              <TextField
-                name="email"
-                value={values.email}
-                onChange={handleChange}
-                error={!!(touched.email && errors.email)}
-                helperText={touched.email && errors.email}
-                label="Email"
-                margin="normal"
-                variant="outlined"
-                fullWidth
-              />
-              <TextField
-                name="password"
-                value={values.password}
-                onChange={handleChange}
-                error={!!(touched.password && errors.password)}
-                helperText={touched.password && errors.password}
-                label="Password"
-                type="password"
-                margin="normal"
-                variant="outlined"
-                fullWidth
-              />
-              <Fab classes={{root: classes.signinButton}} type="submit" variant="extended" color="primary" disabled={isSubmitting}>Sign In</Fab>
-            </form>
-          )
-        }}
-      </Formik>
-      
-    </HSPaper>
-    </div>
-    <HSSnackbar
+      <div className={classes.root}>
+        <HSPaper className={classes.signinCard}>
+          <Typography variant="h5" align="center">
+            HuluSira
+          </Typography>
+          <Formik
+            validationSchema={validationSchema}
+            initialValues={{
+              email: "",
+              password: ""
+            }}
+            onSubmit={handleSubmit}>
+            {({
+              values,
+              isSubmitting,
+              handleChange,
+              errors,
+              touched,
+              handleSubmit
+            }) => {
+              return (
+                <form onSubmit={handleSubmit}>
+                  <TextField
+                    name="email"
+                    value={values.email}
+                    onChange={handleChange}
+                    error={!!(touched.email && errors.email)}
+                    helperText={touched.email && errors.email}
+                    label="Email"
+                    margin="normal"
+                    variant="outlined"
+                    fullWidth
+                  />
+                  <TextField
+                    name="password"
+                    value={values.password}
+                    onChange={handleChange}
+                    error={!!(touched.password && errors.password)}
+                    helperText={touched.password && errors.password}
+                    label="Password"
+                    type="password"
+                    margin="normal"
+                    variant="outlined"
+                    fullWidth
+                  />
+                  <Fab
+                    classes={{ root: classes.signinButton }}
+                    type="submit"
+                    variant="extended"
+                    color="primary"
+                    disabled={isSubmitting}>
+                    Sign In
+                  </Fab>
+                </form>
+              );
+            }}
+          </Formik>
+        </HSPaper>
+      </div>
+      <HSSnackbar
         variant="error"
         message="Login Failed."
         open={errorLogin}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center'}}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
         autoHideDuration={3000}
       />
     </Fragment>
-  )
+  );
 }
 
 Login.getInitialProps = async function(ctx) {
-  if(ctx.req) {
+  if (ctx.req) {
     const { qid: sessionId } = nextCookie(ctx);
-    if(sessionId) {
-      redirect(ctx, '/');
+    if (sessionId) {
+      redirect(ctx, "/");
     }
     return {};
   }
 
   try {
     await api.activeUser();
-    redirect(ctx, '/');
+    redirect(ctx, "/");
   } finally {
     return {};
   }
-}
+};
 
 export default Login;
