@@ -225,20 +225,26 @@ class Db {
 
   async getJobBySlug(slug) {
     const row = await this.jobQuery().where("job.slug", slug);
-    const company = row.company_id && Company.fromDb(row);
-    return {
-      company: company,
-      job: Job.fromDb(row, row.tags || [])
-    };
+    if (!!row) {
+      const company = row.company_id && Company.fromDb(row);
+      return {
+        company: company,
+        job: Job.fromDb(row, row.tags || [])
+      };
+    }
+    return null;
   }
 
   async getJobById(id) {
     const row = await this.jobQuery().where("job.id", id);
-    const company = row.company_id && Company.fromDb(row);
-    return {
-      company: company,
-      job: Job.fromDb(row, row.tags || [])
-    };
+    if (!!row) {
+      const company = row.company_id && Company.fromDb(row);
+      return {
+        company: company,
+        job: Job.fromDb(row, row.tags || [])
+      };
+    }
+    return null;
   }
 
   async getUserByEmail(email) {

@@ -22,6 +22,7 @@ import HSCard from "../components/hs-card";
 import JobItem from "../components/job-item";
 import MDEditor from "../components/md-editor";
 import HSSnackbar from "../components/hs-snackbar";
+import { setJobAdminToken } from "../utils/localStorage";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -199,6 +200,7 @@ function New({ primaryTags }) {
         primaryTagId,
         companyLogo
       });
+      setJobAdminToken(jobData.job.id, jobData.job.adminToken);
       Router.push(`/jobs/${jobData.job.slug}`);
     } catch (err) {
       console.error(err);

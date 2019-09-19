@@ -50,6 +50,10 @@ router.post(
   catchErrors(jobController.createJob)
 );
 
+router.post(
+  "/jobs/:id/verify-token",
+  catchErrors(jobController.verifyAdminToken)
+);
 router.get("/jobs/:slug", catchErrors(jobController.getJob));
 router.get("/jobs", catchErrors(jobController.getJobs));
 router.get(

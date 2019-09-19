@@ -79,6 +79,13 @@ class Api {
     const { data } = await this.request.delete(`/jobs/${jobId}`);
     return data;
   }
+
+  async verifyJobToken(id, adminToken) {
+    const { data } = await this.request.post(`/jobs/${id}/verify-token`, {
+      adminToken
+    });
+    return data;
+  }
 }
 
 export default new Api();

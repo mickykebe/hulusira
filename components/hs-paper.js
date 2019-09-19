@@ -7,15 +7,14 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function HSPaper({ children, className = "" }) {
+export default function HSPaper(props) {
   const classes = useStyles();
   return (
     <Paper
-      className={className}
       classes={{
         elevation1: classes.elevation1
-      }}>
-      {children}
-    </Paper>
+      }}
+      {...props}
+    />
   );
 }

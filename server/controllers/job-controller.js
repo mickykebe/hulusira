@@ -128,6 +128,10 @@ exports.pendingJobs = async (_, res) => {
 exports.getJob = async (req, res) => {
   const { slug } = req.params;
   const jobData = await db.getJobBySlug(slug);
+  if (jobData === null) {
+    res.sendStatus(404);
+    return;
+  }
   jobData.job = jobData.job.publicData();
   res.status(200).send(jobData);
 };
@@ -150,4 +154,18 @@ exports.removeJob = async (req, res) => {
     return;
   }
   res.sendStatus(404);
+};
+
+exports.verifyAdminToken = async (req, res) => {
+  const { id } = req.params;
+  const { adminToken } = req.body;
+  const jobData = await db.getJobById(id);
+  if (jobData !== null) {
+    const { job } = jobData;
+    if (job.adminToken === adminToken) {
+      res.status(200).send(true);
+      return;
+    }
+  }
+  res.sendStatus(500);
 };

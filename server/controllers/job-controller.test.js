@@ -3,7 +3,12 @@ const faker = require("faker");
 const app = require("../app");
 const db = require("../db");
 const utils = require("../utils");
-const { pendingJobs, approveJob, removeJob } = require("./job-controller");
+const {
+  pendingJobs,
+  approveJob,
+  removeJob,
+  verifyAdminToken
+} = require("./job-controller");
 jest.mock("../db");
 
 const mockRequest = ({ body, params } = {}) => {
@@ -253,5 +258,28 @@ describe("DELETE /jobs/:jobId", () => {
     expect(res.send).toHaveBeenCalledWith(true);
     await removeJob(req, res);
     expect(res.sendStatus).toHaveBeenCalledWith(404);
+  });
+});
+
+describe("POST /jobs/:id/verify-token", () => {
+  it("verifies adminToken", async () => {
+    const jobAdminToken = "secret-token";
+    const req = mockRequest({
+      params: { id: 1 },
+      body: { adminToken: jobAdminToken }
+    });
+    const res = mockResponse();
+    db.getJobById
+      .mockResolvedValueOnce({ job: { adminToken: jobAdminToken } })
+      .mockResolvedValueOnce(null)
+      .mockResolvedValue({ job: { adminToken: "another-secret-token" } });
+    await verifyAdminToken(req, res);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.send).toHaveBeenCalledWith(true);
+    await verifyAdminToken(req, res);
+    expect(res.sendStatus).toHaveBeenCalledWith(500);
+    await verifyAdminToken(req, res);
+    expect(res.sendStatus).toHaveBeenCalledWith(500);
+    expect(res.sendStatus).toHaveBeenCalledTimes(2);
   });
 });
