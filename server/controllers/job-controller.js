@@ -106,7 +106,8 @@ exports.getJobs = async (req, res) => ***REMOVED***
     fromJobId,
     limit: count + 1,
     approved: true,
-    withinDays: 30
+    withinDays: 30,
+    publicOnly: true
   ***REMOVED***);
   if (jobs.length < count + 1) ***REMOVED***
     data = ***REMOVED*** jobs, nextCursor: "" ***REMOVED***;
@@ -126,8 +127,9 @@ exports.pendingJobs = async (_, res) => ***REMOVED***
 
 exports.getJob = async (req, res) => ***REMOVED***
   const ***REMOVED*** slug ***REMOVED*** = req.params;
-  const job = await db.getJobBySlug(slug);
-  res.status(200).send(job);
+  const jobData = await db.getJobBySlug(slug);
+  jobData.job = jobData.job.publicData();
+  res.status(200).send(jobData);
 ***REMOVED***;
 
 exports.approveJob = async (req, res) => ***REMOVED***

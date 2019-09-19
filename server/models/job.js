@@ -17,7 +17,8 @@ class Job ***REMOVED***
     created,
     approved,
     closed,
-    slug
+    slug,
+    adminToken
   ) ***REMOVED***
     this.id = id;
     this.position = position;
@@ -34,8 +35,15 @@ class Job ***REMOVED***
     this.applyUrl = applyUrl;
     this.applyEmail = applyEmail;
     this.created = created;
-    (this.approved = approved), (this.closed = closed);
+    this.approved = approved;
+    this.closed = closed;
     this.slug = slug;
+    this.adminToken = adminToken;
+  ***REMOVED***
+
+  publicData() ***REMOVED***
+    const ***REMOVED*** adminToken, ...data ***REMOVED*** = this;
+    return data;
   ***REMOVED***
 
   static fromDb(dbJob, tags) ***REMOVED***
@@ -57,7 +65,8 @@ class Job ***REMOVED***
       dbJob.job_created,
       dbJob.job_approved,
       dbJob.job_closed,
-      dbJob.job_slug
+      dbJob.job_slug,
+      dbJob.job_admin_token
     );
   ***REMOVED***
 ***REMOVED***

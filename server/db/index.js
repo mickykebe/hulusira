@@ -30,7 +30,8 @@ class Db ***REMOVED***
       "approved",
       "closed",
       "created",
-      "slug"
+      "slug",
+      "admin_token"
     ];
     this.companyColumns = ["id", "name", "email", "logo", "verified"];
   ***REMOVED***
@@ -109,45 +110,6 @@ class Db ***REMOVED***
     ***REMOVED***);
 
     return job;
-
-    /* const tags = await Promise.all(
-      jobData.tags.map(tagName => this.findOrCreateTag(tagName))
-    );
-
-    let rows = await this.knex("job")
-      .insert(***REMOVED***
-        position: jobData.position,
-        job_type: jobData.jobType,
-        company_id: companyId,
-        city: jobData.city,
-        primary_tag: jobData.primaryTagId,
-        monthly_salary: jobData.monthlySalary,
-        description: jobData.description,
-        responsibilities: jobData.responsibilities,
-        requirements: jobData.requirements,
-        how_to_apply: jobData.howToApply,
-        apply_url: jobData.applyUrl,
-        apply_email: jobData.applyEmail
-      ***REMOVED***)
-      .returning(this.selectColumns("job", "job", this.jobColumns));
-
-    if (rows.length !== 1) ***REMOVED***
-      throw new Error("Problem occurred inserting job");
-    ***REMOVED***
-    const row = rows[0];
-
-    rows = await this.knex("job")
-      .where("id", row.job_id)
-      .update(***REMOVED***
-        slug: this.jobSlug(row.job_id, row.job_position)
-      ***REMOVED***)
-      .returning(this.selectColumns("job", "job", this.jobColumns));
-
-    const job = Job.fromDb(rows[0], tags);
-
-    await Promise.all(tags.map(tag => this.createJobTag(job.id, tag.id)));
-
-    return job; */
   ***REMOVED***
 
   async createJobTag(jobId, tagId, ***REMOVED*** trx = null ***REMOVED*** = ***REMOVED******REMOVED***) ***REMOVED***
@@ -176,14 +138,6 @@ class Db ***REMOVED***
     return Tag.fromDb(res.rows[0]);
   ***REMOVED***
 
-  /*   async findOrCreateTag(name) ***REMOVED***
-    const query =
-      "with new_row as (insert into tag(name) select $1 where not exists (select * from tag where name=$1) returning *) select * from new_row union select * from tag where name=$1";
-    const values = [name];
-    const res = await this.pool.query(query, values);
-    return Tag.fromDb(res.rows[0]);
-  ***REMOVED*** */
-
   async getPrimaryTags() ***REMOVED***
     const rows = this.knex("tag")
       .select()
@@ -197,7 +151,8 @@ class Db ***REMOVED***
     limit,
     closed = false,
     approved,
-    withinDays
+    withinDays,
+    publicOnly = false
   ***REMOVED*** = ***REMOVED******REMOVED***) ***REMOVED***
     let query = this.knex("job")
       .select(
@@ -234,9 +189,13 @@ class Db ***REMOVED***
     ***REMOVED***
     const rows = await query;
     return rows.map(row => ***REMOVED***
+      let job = Job.fromDb(row, row.tags || []);
+      if (publicOnly) ***REMOVED***
+        job = job.publicData();
+      ***REMOVED***
       return ***REMOVED***
         company: row.company_id && Company.fromDb(row),
-        job: Job.fromDb(row, row.tags || [])
+        job
       ***REMOVED***;
     ***REMOVED***);
   ***REMOVED***
