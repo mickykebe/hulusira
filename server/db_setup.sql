@@ -1,3 +1,5 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   first_name TEXT NOT NULL,
@@ -40,6 +42,7 @@ CREATE TABLE job (
   closed BOOLEAN NOT NULL DEFAULT FALSE,
   created TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   slug TEXT,
+  admin_token uuid DEFAULT uuid_generate_v4(), 
   CONSTRAINT require_apply_method CHECK (apply_url IS NOT NULL OR apply_email IS NOT NULL)
 );
 

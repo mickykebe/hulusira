@@ -17,7 +17,8 @@ class Job {
     created,
     approved,
     closed,
-    slug
+    slug,
+    adminToken
   ) {
     this.id = id;
     this.position = position;
@@ -34,8 +35,15 @@ class Job {
     this.applyUrl = applyUrl;
     this.applyEmail = applyEmail;
     this.created = created;
-    (this.approved = approved), (this.closed = closed);
+    this.approved = approved;
+    this.closed = closed;
     this.slug = slug;
+    this.adminToken = adminToken;
+  }
+
+  publicData() {
+    const { adminToken, ...data } = this;
+    return data;
   }
 
   static fromDb(dbJob, tags) {
@@ -57,7 +65,8 @@ class Job {
       dbJob.job_created,
       dbJob.job_approved,
       dbJob.job_closed,
-      dbJob.job_slug
+      dbJob.job_slug,
+      dbJob.job_admin_token
     );
   }
 }
