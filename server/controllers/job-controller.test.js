@@ -3,7 +3,12 @@ const faker = require("faker");
 const app = require("../app");
 const db = require("../db");
 const utils = require("../utils");
-const ***REMOVED*** pendingJobs, approveJob, removeJob ***REMOVED*** = require("./job-controller");
+const ***REMOVED***
+  pendingJobs,
+  approveJob,
+  removeJob,
+  verifyAdminToken
+***REMOVED*** = require("./job-controller");
 jest.mock("../db");
 
 const mockRequest = (***REMOVED*** body, params ***REMOVED*** = ***REMOVED******REMOVED***) => ***REMOVED***
@@ -253,5 +258,28 @@ describe("DELETE /jobs/:jobId", () => ***REMOVED***
     expect(res.send).toHaveBeenCalledWith(true);
     await removeJob(req, res);
     expect(res.sendStatus).toHaveBeenCalledWith(404);
+  ***REMOVED***);
+***REMOVED***);
+
+describe("POST /jobs/:id/verify-token", () => ***REMOVED***
+  it("verifies adminToken", async () => ***REMOVED***
+    const jobAdminToken = "secret-token";
+    const req = mockRequest(***REMOVED***
+      params: ***REMOVED*** id: 1 ***REMOVED***,
+      body: ***REMOVED*** adminToken: jobAdminToken ***REMOVED***
+    ***REMOVED***);
+    const res = mockResponse();
+    db.getJobById
+      .mockResolvedValueOnce(***REMOVED*** job: ***REMOVED*** adminToken: jobAdminToken ***REMOVED*** ***REMOVED***)
+      .mockResolvedValueOnce(null)
+      .mockResolvedValue(***REMOVED*** job: ***REMOVED*** adminToken: "another-secret-token" ***REMOVED*** ***REMOVED***);
+    await verifyAdminToken(req, res);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.send).toHaveBeenCalledWith(true);
+    await verifyAdminToken(req, res);
+    expect(res.sendStatus).toHaveBeenCalledWith(500);
+    await verifyAdminToken(req, res);
+    expect(res.sendStatus).toHaveBeenCalledWith(500);
+    expect(res.sendStatus).toHaveBeenCalledTimes(2);
   ***REMOVED***);
 ***REMOVED***);

@@ -128,6 +128,10 @@ exports.pendingJobs = async (_, res) => ***REMOVED***
 exports.getJob = async (req, res) => ***REMOVED***
   const ***REMOVED*** slug ***REMOVED*** = req.params;
   const jobData = await db.getJobBySlug(slug);
+  if (jobData === null) ***REMOVED***
+    res.sendStatus(404);
+    return;
+  ***REMOVED***
   jobData.job = jobData.job.publicData();
   res.status(200).send(jobData);
 ***REMOVED***;
@@ -150,4 +154,18 @@ exports.removeJob = async (req, res) => ***REMOVED***
     return;
   ***REMOVED***
   res.sendStatus(404);
+***REMOVED***;
+
+exports.verifyAdminToken = async (req, res) => ***REMOVED***
+  const ***REMOVED*** id ***REMOVED*** = req.params;
+  const ***REMOVED*** adminToken ***REMOVED*** = req.body;
+  const jobData = await db.getJobById(id);
+  if (jobData !== null) ***REMOVED***
+    const ***REMOVED*** job ***REMOVED*** = jobData;
+    if (job.adminToken === adminToken) ***REMOVED***
+      res.status(200).send(true);
+      return;
+    ***REMOVED***
+  ***REMOVED***
+  res.sendStatus(500);
 ***REMOVED***;

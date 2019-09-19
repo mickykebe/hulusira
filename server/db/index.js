@@ -225,20 +225,26 @@ class Db ***REMOVED***
 
   async getJobBySlug(slug) ***REMOVED***
     const row = await this.jobQuery().where("job.slug", slug);
-    const company = row.company_id && Company.fromDb(row);
-    return ***REMOVED***
-      company: company,
-      job: Job.fromDb(row, row.tags || [])
-    ***REMOVED***;
+    if (!!row) ***REMOVED***
+      const company = row.company_id && Company.fromDb(row);
+      return ***REMOVED***
+        company: company,
+        job: Job.fromDb(row, row.tags || [])
+      ***REMOVED***;
+    ***REMOVED***
+    return null;
   ***REMOVED***
 
   async getJobById(id) ***REMOVED***
     const row = await this.jobQuery().where("job.id", id);
-    const company = row.company_id && Company.fromDb(row);
-    return ***REMOVED***
-      company: company,
-      job: Job.fromDb(row, row.tags || [])
-    ***REMOVED***;
+    if (!!row) ***REMOVED***
+      const company = row.company_id && Company.fromDb(row);
+      return ***REMOVED***
+        company: company,
+        job: Job.fromDb(row, row.tags || [])
+      ***REMOVED***;
+    ***REMOVED***
+    return null;
   ***REMOVED***
 
   async getUserByEmail(email) ***REMOVED***
