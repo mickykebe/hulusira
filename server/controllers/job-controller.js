@@ -136,6 +136,16 @@ exports.getJob = async (req, res) => ***REMOVED***
   res.status(200).send(jobData);
 ***REMOVED***;
 
+exports.closeJob = async (req, res) => ***REMOVED***
+  const ***REMOVED*** id ***REMOVED*** = req.params;
+  const affectedRows = await db.closeJob(id);
+  if (affectedRows === 1) ***REMOVED***
+    res.status(200).send(true);
+    return;
+  ***REMOVED***
+  res.sendStatus(404);
+***REMOVED***;
+
 exports.approveJob = async (req, res) => ***REMOVED***
   const ***REMOVED*** jobId ***REMOVED*** = req.body;
   const affectedRows = await db.approveJob(jobId);
@@ -156,14 +166,14 @@ exports.removeJob = async (req, res) => ***REMOVED***
   res.sendStatus(404);
 ***REMOVED***;
 
-exports.verifyAdminToken = async (req, res) => ***REMOVED***
+exports.permitJobAdmin = async (req, res, next) => ***REMOVED***
   const ***REMOVED*** id ***REMOVED*** = req.params;
   const ***REMOVED*** adminToken ***REMOVED*** = req.body;
   const jobData = await db.getJobById(id);
   if (jobData !== null) ***REMOVED***
     const ***REMOVED*** job ***REMOVED*** = jobData;
     if (job.adminToken === adminToken) ***REMOVED***
-      res.status(200).send(true);
+      next();
       return;
     ***REMOVED***
   ***REMOVED***

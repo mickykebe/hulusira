@@ -86,6 +86,13 @@ class Api ***REMOVED***
     ***REMOVED***);
     return data;
   ***REMOVED***
+
+  async closeJob(id, adminToken) ***REMOVED***
+    const ***REMOVED*** data ***REMOVED*** = await this.request.patch(`/jobs/$***REMOVED***id***REMOVED***/close-job`, ***REMOVED***
+      adminToken
+    ***REMOVED***);
+    return data;
+  ***REMOVED***
 ***REMOVED***
 
 export default new Api();

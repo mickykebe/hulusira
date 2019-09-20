@@ -52,7 +52,15 @@ router.post(
 
 router.post(
   "/jobs/:id/verify-token",
-  catchErrors(jobController.verifyAdminToken)
+  catchErrors(jobController.permitJobAdmin),
+  (req, res) => ***REMOVED***
+    res.status(200).send(true);
+  ***REMOVED***
+);
+router.patch(
+  "/jobs/:id/close-job",
+  catchErrors(jobController.permitJobAdmin),
+  catchErrors(jobController.closeJob)
 );
 router.get("/jobs/:slug", catchErrors(jobController.getJob));
 router.get("/jobs", catchErrors(jobController.getJobs));

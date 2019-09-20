@@ -7,7 +7,8 @@ const ***REMOVED***
   pendingJobs,
   approveJob,
   removeJob,
-  verifyAdminToken
+  permitJobAdmin,
+  closeJob
 ***REMOVED*** = require("./job-controller");
 jest.mock("../db");
 
@@ -248,6 +249,19 @@ describe("PUT /approve-job", () => ***REMOVED***
   ***REMOVED***);
 ***REMOVED***);
 
+describe("closeJob middleware", () => ***REMOVED***
+  it.only("closes job and responds with true", async () => ***REMOVED***
+    const req = mockRequest(***REMOVED*** params: ***REMOVED*** id: 1 ***REMOVED*** ***REMOVED***);
+    const res = mockResponse();
+    db.closeJob.mockResolvedValueOnce(1).mockResolvedValueOnce(0);
+    await closeJob(req, res);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.send).toHaveBeenCalledWith(true);
+    await closeJob(req, res);
+    expect(res.sendStatus).toHaveBeenCalledWith(404);
+  ***REMOVED***);
+***REMOVED***);
+
 describe("DELETE /jobs/:jobId", () => ***REMOVED***
   it("deletes job if it exists and responds with true", async () => ***REMOVED***
     const req = mockRequest(***REMOVED*** params: ***REMOVED*** jobId: 1 ***REMOVED*** ***REMOVED***);
@@ -261,24 +275,24 @@ describe("DELETE /jobs/:jobId", () => ***REMOVED***
   ***REMOVED***);
 ***REMOVED***);
 
-describe("POST /jobs/:id/verify-token", () => ***REMOVED***
-  it("verifies adminToken", async () => ***REMOVED***
+describe("permit jobAdmin middleware", () => ***REMOVED***
+  it("checks job admin access", async () => ***REMOVED***
     const jobAdminToken = "secret-token";
     const req = mockRequest(***REMOVED***
       params: ***REMOVED*** id: 1 ***REMOVED***,
       body: ***REMOVED*** adminToken: jobAdminToken ***REMOVED***
     ***REMOVED***);
     const res = mockResponse();
+    const next = jest.fn();
     db.getJobById
       .mockResolvedValueOnce(***REMOVED*** job: ***REMOVED*** adminToken: jobAdminToken ***REMOVED*** ***REMOVED***)
       .mockResolvedValueOnce(null)
       .mockResolvedValue(***REMOVED*** job: ***REMOVED*** adminToken: "another-secret-token" ***REMOVED*** ***REMOVED***);
-    await verifyAdminToken(req, res);
-    expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.send).toHaveBeenCalledWith(true);
-    await verifyAdminToken(req, res);
+    await permitJobAdmin(req, res, next);
+    expect(next).toHaveBeenCalledTimes(1);
+    await permitJobAdmin(req, res, next);
     expect(res.sendStatus).toHaveBeenCalledWith(500);
-    await verifyAdminToken(req, res);
+    await permitJobAdmin(req, res, next);
     expect(res.sendStatus).toHaveBeenCalledWith(500);
     expect(res.sendStatus).toHaveBeenCalledTimes(2);
   ***REMOVED***);

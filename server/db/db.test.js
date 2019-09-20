@@ -396,6 +396,20 @@ describe("db", () => ***REMOVED***
     expect(result2).toBe(0);
   ***REMOVED***);
 
+  it("closeJob should close a job", async () => ***REMOVED***
+    const jobData = sampleJobData(***REMOVED******REMOVED***);
+    const jobRows = await db
+      .knex("job")
+      .insert(jobData)
+      .returning(db.selectColumns("job", "job", db.jobColumns));
+    expect(jobRows).toHaveLength(1);
+    const jobId = jobRows[0]["job_id"];
+    const result = await db.closeJob(jobId);
+    expect(result).toBe(1);
+    const result2 = await db.closeJob(1);
+    expect(result2).toBe(0);
+  ***REMOVED***);
+
   it("deleteJob should delete job", async () => ***REMOVED***
     const jobData = sampleJobData();
     const jobRows = await db
