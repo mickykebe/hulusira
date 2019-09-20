@@ -86,6 +86,13 @@ class Api {
     });
     return data;
   }
+
+  async closeJob(id, adminToken) {
+    const { data } = await this.request.patch(`/jobs/${id}/close-job`, {
+      adminToken
+    });
+    return data;
+  }
 }
 
 export default new Api();

@@ -223,8 +223,12 @@ class Db {
       .groupBy("job.id", "company.id");
   }
 
-  async getJobBySlug(slug) {
-    const row = await this.jobQuery().where("job.slug", slug);
+  async getJobBySlug(slug, where) {
+    const query = this.jobQuery().where("job.slug", slug);
+    if (where) {
+      query.andWhere(where);
+    }
+    const row = await query;
     if (!!row) {
       const company = row.company_id && Company.fromDb(row);
       return {
@@ -259,6 +263,14 @@ class Db {
       .first()
       .where("id", id);
     return User.fromDb(row);
+  }
+
+  closeJob(id) {
+    return this.knex("job")
+      .where("id", id)
+      .update({
+        closed: true
+      });
   }
 
   approveJob(id) {

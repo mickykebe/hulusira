@@ -7,7 +7,8 @@ const {
   pendingJobs,
   approveJob,
   removeJob,
-  verifyAdminToken
+  permitJobAdmin,
+  closeJob
 } = require("./job-controller");
 jest.mock("../db");
 
@@ -248,6 +249,19 @@ describe("PUT /approve-job", () => {
   });
 });
 
+describe("closeJob middleware", () => {
+  it.only("closes job and responds with true", async () => {
+    const req = mockRequest({ params: { id: 1 } });
+    const res = mockResponse();
+    db.closeJob.mockResolvedValueOnce(1).mockResolvedValueOnce(0);
+    await closeJob(req, res);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.send).toHaveBeenCalledWith(true);
+    await closeJob(req, res);
+    expect(res.sendStatus).toHaveBeenCalledWith(404);
+  });
+});
+
 describe("DELETE /jobs/:jobId", () => {
   it("deletes job if it exists and responds with true", async () => {
     const req = mockRequest({ params: { jobId: 1 } });
@@ -261,24 +275,24 @@ describe("DELETE /jobs/:jobId", () => {
   });
 });
 
-describe("POST /jobs/:id/verify-token", () => {
-  it("verifies adminToken", async () => {
+describe("permit jobAdmin middleware", () => {
+  it("checks job admin access", async () => {
     const jobAdminToken = "secret-token";
     const req = mockRequest({
       params: { id: 1 },
       body: { adminToken: jobAdminToken }
     });
     const res = mockResponse();
+    const next = jest.fn();
     db.getJobById
       .mockResolvedValueOnce({ job: { adminToken: jobAdminToken } })
       .mockResolvedValueOnce(null)
       .mockResolvedValue({ job: { adminToken: "another-secret-token" } });
-    await verifyAdminToken(req, res);
-    expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.send).toHaveBeenCalledWith(true);
-    await verifyAdminToken(req, res);
+    await permitJobAdmin(req, res, next);
+    expect(next).toHaveBeenCalledTimes(1);
+    await permitJobAdmin(req, res, next);
     expect(res.sendStatus).toHaveBeenCalledWith(500);
-    await verifyAdminToken(req, res);
+    await permitJobAdmin(req, res, next);
     expect(res.sendStatus).toHaveBeenCalledWith(500);
     expect(res.sendStatus).toHaveBeenCalledTimes(2);
   });

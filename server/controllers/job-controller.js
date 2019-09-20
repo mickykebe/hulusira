@@ -136,6 +136,16 @@ exports.getJob = async (req, res) => {
   res.status(200).send(jobData);
 };
 
+exports.closeJob = async (req, res) => {
+  const { id } = req.params;
+  const affectedRows = await db.closeJob(id);
+  if (affectedRows === 1) {
+    res.status(200).send(true);
+    return;
+  }
+  res.sendStatus(404);
+};
+
 exports.approveJob = async (req, res) => {
   const { jobId } = req.body;
   const affectedRows = await db.approveJob(jobId);
@@ -156,14 +166,14 @@ exports.removeJob = async (req, res) => {
   res.sendStatus(404);
 };
 
-exports.verifyAdminToken = async (req, res) => {
+exports.permitJobAdmin = async (req, res, next) => {
   const { id } = req.params;
   const { adminToken } = req.body;
   const jobData = await db.getJobById(id);
   if (jobData !== null) {
     const { job } = jobData;
     if (job.adminToken === adminToken) {
-      res.status(200).send(true);
+      next();
       return;
     }
   }

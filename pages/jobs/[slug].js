@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useReducer } from "react";
+import Router from "next/router";
 import api from "../../api";
 import Layout from "../../components/layout";
 import JobContent from "../../components/job-content";
@@ -14,6 +15,7 @@ import {
 import CloseIcon from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/styles";
 import InfoIcon from "@material-ui/icons/Info";
+import HSSnackbar from "../../components/hs-snackbar";
 
 const useStyles = makeStyles(theme => ({
   toolbar: {
@@ -38,16 +40,35 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+function jobCloseReducer(state, action) {
+  switch (action.type) {
+    case "CLOSING_JOB":
+      return { ...state, isClosingJob: true, errorClosingJob: false };
+    case "CLOSED_JOB":
+      return { ...state, isClosingJob: false, errorClosingJob: false };
+    case "ERROR_CLOSING_JOB":
+      return { ...state, isClosingJob: false, errorClosingJob: true };
+    case "CLEAR_ERROR":
+      return { ...state, errorClosingJob: false };
+    default:
+      throw new Error("Unidentified action type");
+  }
+}
+
 function Job({ jobData }) {
+  const [{ isClosingJob, errorClosingJob }, dispatch] = useReducer(
+    jobCloseReducer,
+    { isClosingJob: false, errorClosingJob: false }
+  );
   const classes = useStyles();
-  const [isJobAdmin, setIsJobAdmin] = useState(false);
+  const [adminToken, setAdminToken] = useState(null);
   useEffect(() => {
     const verifyToken = async (id, adminToken) => {
       try {
         await api.verifyJobToken(id, adminToken);
-        setIsJobAdmin(true);
+        setAdminToken(adminToken);
       } catch (err) {
-        setIsJobAdmin(false);
+        setAdminToken(null);
       }
     };
     const { job } = jobData;
@@ -55,7 +76,17 @@ function Job({ jobData }) {
     if (adminToken) {
       verifyToken(job.id, adminToken);
     }
-  }, [jobData, setIsJobAdmin]);
+  }, [jobData, setAdminToken]);
+  const handleCloseJob = async () => {
+    dispatch({ type: "CLOSING_JOB" });
+    try {
+      await api.closeJob(jobData.job.id, adminToken);
+      Router.push("/");
+      dispatch({ type: "CLOSED_JOB" });
+    } catch (err) {
+      dispatch({ type: "ERROR_CLOSING_JOB" });
+    }
+  };
   return (
     <Layout>
       <Container>
@@ -70,16 +101,28 @@ function Job({ jobData }) {
             </Typography>
           </Paper>
         )}
-        {isJobAdmin && (
+        {!!adminToken && !jobData.job.closed && (
           <Toolbar className={classes.toolbar}>
             <Box flex={1} />
-            <Button variant="contained" color="secondary" size="small">
+            <Button
+              variant="contained"
+              color="secondary"
+              size="small"
+              disabled={isClosingJob}
+              onClick={handleCloseJob}>
               <CloseIcon className={classes.closeIcon} /> Close Job
             </Button>
           </Toolbar>
         )}
       </Container>
       <JobContent jobData={jobData} />
+      <HSSnackbar
+        open={errorClosingJob}
+        variant="error"
+        message="Problem occurred closing job."
+        autoHideDuration={3000}
+        onClose={() => dispatch("CLEAR_ERROR")}
+      />
     </Layout>
   );
 }
