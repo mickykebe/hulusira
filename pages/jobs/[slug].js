@@ -1,38 +1,19 @@
 import { useEffect, useState, useReducer } from "react";
 import Router from "next/router";
+import nextCookie from "next-cookies";
 import api from "../../api";
 import Layout from "../../components/layout";
 import JobContent from "../../components/job-content";
-import { getJobAdminToken } from "../../utils/localStorage";
-import {
-  Toolbar,
-  Button,
-  Box,
-  Container,
-  Typography,
-  Paper
-} from "@material-ui/core";
+import { Toolbar, Button, Box, Container } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/styles";
-import InfoIcon from "@material-ui/icons/Info";
+import Banner from "../../components/banner";
+
 import HSSnackbar from "../../components/hs-snackbar";
 
 const useStyles = makeStyles(theme => ({
   toolbar: {
     padding: 0
-  },
-  banner: {
-    backgroundColor: theme.palette.secondary.main,
-    padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
-    color: "white",
-    marginTop: theme.spacing(2)
-  },
-  bannerText: {
-    display: "flex",
-    alignItems: "center"
-  },
-  infoIcon: {
-    marginRight: theme.spacing(1)
   },
   closeIcon: {
     fontSize: 18,
@@ -55,28 +36,27 @@ function jobCloseReducer(state, action) {
   }
 }
 
-function Job({ jobData }) {
+function Job({ jobData, adminToken }) {
   const [{ isClosingJob, errorClosingJob }, dispatch] = useReducer(
     jobCloseReducer,
     { isClosingJob: false, errorClosingJob: false }
   );
   const classes = useStyles();
-  const [adminToken, setAdminToken] = useState(null);
+  const [isValidToken, setIsValidToken] = useState(false);
   useEffect(() => {
     const verifyToken = async (id, adminToken) => {
       try {
         await api.verifyJobToken(id, adminToken);
-        setAdminToken(adminToken);
+        setIsValidToken(true);
       } catch (err) {
-        setAdminToken(null);
+        setIsValidToken(true);
       }
     };
     const { job } = jobData;
-    const adminToken = getJobAdminToken(job.id);
     if (adminToken) {
       verifyToken(job.id, adminToken);
     }
-  }, [jobData, setAdminToken]);
+  }, [jobData, setIsValidToken]);
   const handleCloseJob = async () => {
     dispatch({ type: "CLOSING_JOB" });
     try {
@@ -90,18 +70,13 @@ function Job({ jobData }) {
   return (
     <Layout>
       <Container>
-        {jobData.job.approved === false && (
-          <Paper className={classes.banner}>
-            <Typography
-              className={classes.bannerText}
-              variant="subtitle1"
-              color="inherit">
-              <InfoIcon className={classes.infoIcon} /> This job is pending. It
-              will be live once it gets admin approval.
-            </Typography>
-          </Paper>
+        {jobData.job.closed && (
+          <Banner message="This job is closed and thus no longer publicly accessible." />
         )}
-        {!!adminToken && !jobData.job.closed && (
+        {!jobData.job.closed && !jobData.job.approved && (
+          <Banner message="This job is pending. It will be live once it gets admin approval." />
+        )}
+        {!!isValidToken && !jobData.job.closed && (
           <Toolbar className={classes.toolbar}>
             <Box flex={1} />
             <Button
@@ -127,13 +102,15 @@ function Job({ jobData }) {
   );
 }
 
-Job.getInitialProps = async ({ query }) => {
-  const { slug } = query;
+Job.getInitialProps = async ctx => {
+  const { slug } = ctx.query;
+  const cookies = nextCookie(ctx);
+  const adminToken = cookies[slug];
   const [primaryTags, jobData] = await Promise.all([
     api.getPrimaryTags(),
-    api.getJob(slug)
+    api.getJob(slug, adminToken)
   ]);
-  return { jobData, primaryTags };
+  return { jobData, primaryTags, adminToken };
 };
 
 export default Job;

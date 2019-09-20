@@ -132,7 +132,17 @@ exports.getJob = async (req, res) => {
     res.sendStatus(404);
     return;
   }
-  jobData.job = jobData.job.publicData();
+  const { adminToken } = req.query;
+  const isJobAdmin = !!adminToken && jobData.job.adminToken === adminToken;
+
+  if (!isJobAdmin) {
+    jobData.job = jobData.job.publicData();
+  }
+
+  if ((jobData.job.closed || !jobData.job.approved) && !isJobAdmin) {
+    res.sendStatus(404);
+    return;
+  }
   res.status(200).send(jobData);
 };
 

@@ -1,5 +1,6 @@
 import React from "react";
 import Router from "next/router";
+import Cookies from "js-cookie";
 import {
   Box,
   Container,
@@ -22,7 +23,6 @@ import HSCard from "../components/hs-card";
 import JobItem from "../components/job-item";
 import MDEditor from "../components/md-editor";
 import HSSnackbar from "../components/hs-snackbar";
-import { setJobAdminToken } from "../utils/localStorage";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -200,7 +200,7 @@ function New({ primaryTags }) {
         primaryTagId,
         companyLogo
       });
-      setJobAdminToken(jobData.job.id, jobData.job.adminToken);
+      Cookies.set(jobData.job.slug, jobData.job.adminToken);
       Router.push(`/jobs/${jobData.job.slug}`);
     } catch (err) {
       console.error(err);
@@ -523,7 +523,7 @@ function New({ primaryTags }) {
                 {isSubmitting && (
                   <LinearProgress
                     classes={{ root: classes.submittingProgress }}
-                    color="secondary"
+                    color="primary"
                   />
                 )}
                 <HSSnackbar
