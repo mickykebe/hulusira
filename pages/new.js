@@ -1,5 +1,6 @@
 import React from "react";
 import Router from "next/router";
+import Cookies from "js-cookie";
 import ***REMOVED***
   Box,
   Container,
@@ -22,7 +23,6 @@ import HSCard from "../components/hs-card";
 import JobItem from "../components/job-item";
 import MDEditor from "../components/md-editor";
 import HSSnackbar from "../components/hs-snackbar";
-import ***REMOVED*** setJobAdminToken ***REMOVED*** from "../utils/localStorage";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   root: ***REMOVED***
@@ -200,7 +200,7 @@ function New(***REMOVED*** primaryTags ***REMOVED***) ***REMOVED***
         primaryTagId,
         companyLogo
       ***REMOVED***);
-      setJobAdminToken(jobData.job.id, jobData.job.adminToken);
+      Cookies.set(jobData.job.slug, jobData.job.adminToken);
       Router.push(`/jobs/$***REMOVED***jobData.job.slug***REMOVED***`);
     ***REMOVED*** catch (err) ***REMOVED***
       console.error(err);
@@ -523,7 +523,7 @@ function New(***REMOVED*** primaryTags ***REMOVED***) ***REMOVED***
                 ***REMOVED***isSubmitting && (
                   <LinearProgress
                     classes=***REMOVED******REMOVED*** root: classes.submittingProgress ***REMOVED******REMOVED***
-                    color="secondary"
+                    color="primary"
                   />
                 )***REMOVED***
                 <HSSnackbar
