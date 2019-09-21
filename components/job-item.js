@@ -52,8 +52,8 @@ const useStyles = makeStyles(theme => (***REMOVED***
     position: "absolute",
     top: 0,
     right: 0,
-    backgroundColor: theme.palette.secondary.main,
-    color: theme.palette.getContrastText(theme.palette.secondary.main),
+    backgroundColor: theme.palette.grey[700],
+    color: theme.palette.getContrastText(theme.palette.grey[700]),
     padding: `$***REMOVED***theme.spacing(0.5)***REMOVED***px $***REMOVED***theme.spacing(1)***REMOVED***px`,
     borderRadius: "0 0 0 5px",
     fontWeight: 800,
@@ -66,7 +66,8 @@ export default function JobItem(***REMOVED***
   job,
   tags,
   preview = false,
-  className = ""
+  className = "",
+  onTagClick
 ***REMOVED***) ***REMOVED***
   const classes = useStyles(***REMOVED*** preview ***REMOVED***);
 
@@ -110,6 +111,7 @@ export default function JobItem(***REMOVED***
                 label=***REMOVED***tagName***REMOVED***
                 variant="outlined"
                 size="small"
+                onClick=***REMOVED***!!onTagClick ? () => onTagClick(tag) : null***REMOVED***
               />
             );
           ***REMOVED***)***REMOVED***

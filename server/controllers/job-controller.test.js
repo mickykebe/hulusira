@@ -3,7 +3,9 @@ const faker = require("faker");
 const app = require("../app");
 const db = require("../db");
 const utils = require("../utils");
+const ***REMOVED*** Job ***REMOVED*** = require("../models");
 const ***REMOVED***
+  getJob,
   pendingJobs,
   approveJob,
   removeJob,
@@ -12,10 +14,11 @@ const ***REMOVED***
 ***REMOVED*** = require("./job-controller");
 jest.mock("../db");
 
-const mockRequest = (***REMOVED*** body, params ***REMOVED*** = ***REMOVED******REMOVED***) => ***REMOVED***
+const mockRequest = (***REMOVED*** body = ***REMOVED******REMOVED***, params = ***REMOVED******REMOVED***, query = ***REMOVED******REMOVED*** ***REMOVED*** = ***REMOVED******REMOVED***) => ***REMOVED***
   return ***REMOVED***
     params,
-    body
+    body,
+    query
   ***REMOVED***;
 ***REMOVED***;
 
@@ -27,18 +30,21 @@ const mockResponse = () => ***REMOVED***
   return res;
 ***REMOVED***;
 
-const sampleJobResult = (job = ***REMOVED******REMOVED***, company = ***REMOVED******REMOVED***) => ***REMOVED***
+const sampleJobResult = (jobFields = ***REMOVED******REMOVED***, company = ***REMOVED******REMOVED***) => ***REMOVED***
   return ***REMOVED***
-    job: ***REMOVED***
-      position: faker.name.jobTitle(),
-      jobType: "Full-time",
-      description: faker.lorem.sentence(),
-      apply_email: faker.internet.email(),
-      ...job
-    ***REMOVED***,
-    company: ***REMOVED***
-      ...company
-    ***REMOVED***
+    job: Object.assign(
+      new Job(),
+      ***REMOVED***
+        position: faker.name.jobTitle(),
+        jobType: "Full-time",
+        description: faker.lorem.sentence(),
+        apply_email: faker.internet.email(),
+        closed: false,
+        approved: true
+      ***REMOVED***,
+      jobFields
+    ),
+    company: ***REMOVED*** ...company ***REMOVED***
   ***REMOVED***;
 ***REMOVED***;
 
@@ -224,6 +230,87 @@ describe("GET to /jobs", () => ***REMOVED***
   ***REMOVED***);
 ***REMOVED***);
 
+describe("getJob middleware", () => ***REMOVED***
+  it("responds with 404 if job doesn't exist", async () => ***REMOVED***
+    const req = mockRequest(***REMOVED*** params: ***REMOVED*** slug: faker.lorem.word() ***REMOVED*** ***REMOVED***);
+    const res = mockResponse();
+    db.getJobBySlug.mockResolvedValue(null);
+    await getJob(req, res);
+    expect(res.sendStatus).toHaveBeenCalledWith(404);
+  ***REMOVED***);
+
+  it("responds with 404 if job is closed", async () => ***REMOVED***
+    const jobData = sampleJobResult(***REMOVED*** closed: true ***REMOVED***);
+    const req = mockRequest(***REMOVED*** params: ***REMOVED*** slug: faker.lorem.word() ***REMOVED*** ***REMOVED***);
+    const res = mockResponse();
+    db.getJobBySlug.mockResolvedValue(jobData);
+    await getJob(req, res);
+    expect(res.sendStatus).toHaveBeenCalledWith(404);
+  ***REMOVED***);
+
+  it("responds with 404 if job is not approved", async () => ***REMOVED***
+    const jobData = sampleJobResult(***REMOVED*** approved: false ***REMOVED***);
+    const req = mockRequest(***REMOVED*** params: ***REMOVED*** slug: faker.lorem.word() ***REMOVED*** ***REMOVED***);
+    const res = mockResponse();
+    db.getJobBySlug.mockResolvedValue(jobData);
+    await getJob(req, res);
+    expect(res.sendStatus).toHaveBeenCalledWith(404);
+  ***REMOVED***);
+
+  it("responds with job if it's available and active", async () => ***REMOVED***
+    const jobData = sampleJobResult();
+    const req = mockRequest(***REMOVED*** params: ***REMOVED*** slug: faker.lorem.word() ***REMOVED*** ***REMOVED***);
+    const res = mockResponse();
+    db.getJobBySlug.mockResolvedValue(jobData);
+    await getJob(req, res);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.send).toHaveBeenCalledWith(jobData);
+  ***REMOVED***);
+
+  it("responds with 404 for a closed job when adminToken doesn't check out", async () => ***REMOVED***
+    const jobData = sampleJobResult(***REMOVED***
+      closed: true,
+      adminToken: faker.random.uuid()
+    ***REMOVED***);
+    const req = mockRequest(***REMOVED***
+      params: ***REMOVED*** slug: faker.lorem.word() ***REMOVED***,
+      query: ***REMOVED*** adminToken: faker.random.uuid() ***REMOVED***
+    ***REMOVED***);
+    const res = mockResponse();
+    db.getJobBySlug.mockResolvedValue(jobData);
+    await getJob(req, res);
+    expect(res.sendStatus).toHaveBeenCalledWith(404);
+  ***REMOVED***);
+
+  it("responds with job which is closed if adminToken checks out", async () => ***REMOVED***
+    const adminToken = faker.random.uuid();
+    const jobData = sampleJobResult(***REMOVED*** closed: true, adminToken ***REMOVED***);
+    const req = mockRequest(***REMOVED***
+      params: ***REMOVED*** slug: faker.lorem.word() ***REMOVED***,
+      query: ***REMOVED*** adminToken ***REMOVED***
+    ***REMOVED***);
+    const res = mockResponse();
+    db.getJobBySlug.mockResolvedValue(jobData);
+    await getJob(req, res);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.send).toHaveBeenCalledWith(jobData);
+  ***REMOVED***);
+
+  it("responds with job which is not approved if adminToken checks out", async () => ***REMOVED***
+    const adminToken = faker.random.uuid();
+    const jobData = sampleJobResult(***REMOVED*** approved: false, adminToken ***REMOVED***);
+    const req = mockRequest(***REMOVED***
+      params: ***REMOVED*** slug: faker.lorem.word() ***REMOVED***,
+      query: ***REMOVED*** adminToken ***REMOVED***
+    ***REMOVED***);
+    const res = mockResponse();
+    db.getJobBySlug.mockResolvedValue(jobData);
+    await getJob(req, res);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.send).toHaveBeenCalledWith(jobData);
+  ***REMOVED***);
+***REMOVED***);
+
 describe("GET /pending-jobs", () => ***REMOVED***
   it("responds with pending jobs", async () => ***REMOVED***
     const req = null;
@@ -250,7 +337,7 @@ describe("PUT /approve-job", () => ***REMOVED***
 ***REMOVED***);
 
 describe("closeJob middleware", () => ***REMOVED***
-  it.only("closes job and responds with true", async () => ***REMOVED***
+  it("closes job and responds with true", async () => ***REMOVED***
     const req = mockRequest(***REMOVED*** params: ***REMOVED*** id: 1 ***REMOVED*** ***REMOVED***);
     const res = mockResponse();
     db.closeJob.mockResolvedValueOnce(1).mockResolvedValueOnce(0);

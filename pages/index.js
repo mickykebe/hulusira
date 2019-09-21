@@ -13,6 +13,7 @@ import api from "../api";
 import Layout from "../components/layout";
 import JobItem from "../components/job-item";
 import useInfiniteScroller from "../hooks/use-infinite-scroll";
+import TagFilter from "../components/tag-filter";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   root: ***REMOVED***
@@ -67,6 +68,9 @@ function Index(***REMOVED*** primaryTags, jobPage ***REMOVED***) ***REMOVED***
     ***REMOVED***
   ***REMOVED***;
   useInfiniteScroller(isLoading, !!nextCursor, fetchMoreJobs, isError);
+  const handleTagClick = tag => ***REMOVED***
+    console.log(tag.name);
+  ***REMOVED***;
 
   return (
     <Layout
@@ -82,6 +86,7 @@ function Index(***REMOVED*** primaryTags, jobPage ***REMOVED***) ***REMOVED***
       ***REMOVED***>
       <Container className=***REMOVED***classes.root***REMOVED*** maxWidth="md">
         <React.Fragment>
+          <TagFilter />
           ***REMOVED***jobs.map((***REMOVED*** job, company ***REMOVED***) => ***REMOVED***
             const ***REMOVED*** tags, ...jobData ***REMOVED*** = job;
             let primaryTag = null;
@@ -97,6 +102,7 @@ function Index(***REMOVED*** primaryTags, jobPage ***REMOVED***) ***REMOVED***
                 job=***REMOVED***jobData***REMOVED***
                 tags=***REMOVED***primaryTag ? [primaryTag, ...tags] : tags***REMOVED***
                 company=***REMOVED***company***REMOVED***
+                onTagClick=***REMOVED***handleTagClick***REMOVED***
               />
             );
           ***REMOVED***)***REMOVED***
