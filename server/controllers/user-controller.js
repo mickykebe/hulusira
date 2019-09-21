@@ -9,7 +9,7 @@ exports.me = async (req, res) => ***REMOVED***
   res.sendStatus(401);
 ***REMOVED***;
 
-exports.login = async (req, res, next) => ***REMOVED***
+exports.login = async (req, res) => ***REMOVED***
   const ***REMOVED*** email, password ***REMOVED*** = req.body;
   const user = await db.getUserByEmail(email);
   if (user) ***REMOVED***
