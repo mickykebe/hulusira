@@ -9,7 +9,7 @@ exports.me = async (req, res) => {
   res.sendStatus(401);
 };
 
-exports.login = async (req, res, next) => {
+exports.login = async (req, res) => {
   const { email, password } = req.body;
   const user = await db.getUserByEmail(email);
   if (user) {

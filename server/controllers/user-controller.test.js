@@ -1,39 +1,84 @@
-const faker = require('faker');
-const request = require('supertest');
-const bcrypt = require('bcryptjs');
+const faker = require("faker");
+const bcrypt = require("bcryptjs");
 const db = require("../db");
-const { User } = require('../models');
-const app = require("../app");
+const { User } = require("../models");
+const { login } = require("./user-controller");
 jest.mock("../db");
+jest.mock("bcryptjs");
+
+const mockRequest = ({
+  body = {},
+  params = {},
+  query = {},
+  session = {}
+} = {}) => {
+  return {
+    params,
+    body,
+    query,
+    session
+  };
+};
+
+const mockResponse = () => {
+  const res = {};
+  res.status = jest.fn().mockReturnValue(res);
+  res.send = jest.fn().mockReturnValue(res);
+  res.sendStatus = jest.fn().mockReturnValue(res);
+  return res;
+};
+
+const sampleUser = (userData = {}) => {
+  return Object.assign(new User(), userData);
+};
 
 describe(`/login`, () => {
-  const email = faker.internet.email();
-  const password = faker.internet.password();
-  let user;
-  beforeAll(async () => {
-    const hashedPassword = await bcrypt.hash(password, 15);
-    user = new User(faker.random.number(), faker.name.firstName(), faker.name.lastName(), email, hashedPassword, true, faker.random.word());
-  });
-  it('wrong email returns 401', async () => {
-    const response = await request(app)
-      .post("/api/login")
-      .send({ email: 'wrong email', password});
-    expect(response.statusCode).toBe(401);
+  it("wrong email returns 401", async () => {
+    const req = mockRequest({
+      body: { email: "wrong email", password: faker.internet.password() }
+    });
+    const res = mockResponse();
+    db.getUserByEmail.mockResolvedValue(undefined);
+    await login(req, res);
+    expect(res.sendStatus).toHaveBeenCalledWith(401);
   });
 
-  it('corrent email but wrong password returns 401', async () => {
-    const response = await request(app)
-      .post("/api/login")
-      .send({ email, password: 'wrong password'});
-    expect(response.statusCode).toBe(401);
-  });
-
-  it('correct email and password logs user in', async () => {
+  it("corrent email but wrong password returns 401", async () => {
+    const email = faker.internet.email();
+    const password = faker.internet.password();
+    const user = sampleUser({ email, password });
+    const req = mockRequest({ body: { email, password: "wrong password" } });
+    const res = mockResponse();
     db.getUserByEmail.mockResolvedValue(user);
-    const response = await request(app)
-        .post("/api/login")
-        .send({ email, password });
-    expect(response.statusCode).toBe(200);
-    expect(response.body).toMatchObject(user.publicData());
+    bcrypt.compare.mockResolvedValue(false);
+    await login(req, res);
+    expect(res.sendStatus).toHaveBeenCalledWith(401);
+  });
+
+  it("for uncofirmed user responds with 401", async () => {
+    const email = faker.internet.email();
+    const password = faker.internet.password();
+    const user = sampleUser({ email, password, confirmed: false });
+    const req = mockRequest({ body: { email, password } });
+    const res = mockResponse();
+    db.getUserByEmail.mockResolvedValue(user);
+    bcrypt.compare.mockResolvedValue(true);
+    await login(req, res);
+    expect(res.sendStatus).toHaveBeenCalledWith(401);
+  });
+
+  it("works for confirmed user with correct email and password", async () => {
+    const id = faker.random.number();
+    const email = faker.internet.email();
+    const password = faker.internet.password();
+    const user = sampleUser({ id, email, password, confirmed: true });
+    const req = mockRequest({ body: { email, password } });
+    const res = mockResponse();
+    db.getUserByEmail.mockResolvedValue(user);
+    bcrypt.compare.mockResolvedValue(true);
+    await login(req, res);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(req.session.userId).toBe(id);
+    expect(res.send).toHaveBeenCalledWith(user.publicData());
   });
 });
