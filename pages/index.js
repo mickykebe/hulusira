@@ -13,6 +13,7 @@ import api from "../api";
 import Layout from "../components/layout";
 import JobItem from "../components/job-item";
 import useInfiniteScroller from "../hooks/use-infinite-scroll";
+import TagFilter from "../components/tag-filter";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -67,6 +68,9 @@ function Index({ primaryTags, jobPage }) {
     }
   };
   useInfiniteScroller(isLoading, !!nextCursor, fetchMoreJobs, isError);
+  const handleTagClick = tag => {
+    console.log(tag.name);
+  };
 
   return (
     <Layout
@@ -82,6 +86,7 @@ function Index({ primaryTags, jobPage }) {
       }>
       <Container className={classes.root} maxWidth="md">
         <React.Fragment>
+          <TagFilter />
           {jobs.map(({ job, company }) => {
             const { tags, ...jobData } = job;
             let primaryTag = null;
@@ -97,6 +102,7 @@ function Index({ primaryTags, jobPage }) {
                 job={jobData}
                 tags={primaryTag ? [primaryTag, ...tags] : tags}
                 company={company}
+                onTagClick={handleTagClick}
               />
             );
           })}
