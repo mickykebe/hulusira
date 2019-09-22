@@ -2,17 +2,6 @@ import { Paper, Chip } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import HSPaper from "./hs-paper";
 
-const sampleTags = [
-  {
-    id: 1,
-    name: "React"
-  },
-  {
-    id: 2,
-    name: "Node.js"
-  }
-];
-
 const useStyles = makeStyles(theme => ({
   root: {
     marginTop: theme.spacing(2),
@@ -30,17 +19,17 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function TagFilter() {
+export default function TagFilter({ tags, onTagRemove }) {
   const classes = useStyles();
   return (
     <HSPaper className={classes.root}>
-      {sampleTags.map(tag => (
+      {tags.map(tag => (
         <Chip
           key={tag.name}
           label={tag.name}
           variant="outlined"
           className={classes.tagChip}
-          onDelete={() => {}}></Chip>
+          onDelete={() => onTagRemove(tag.id)}></Chip>
       ))}
     </HSPaper>
   );

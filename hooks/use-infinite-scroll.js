@@ -8,32 +8,34 @@ export default function useInfiniteScroll(
   disabled = false,
   threshold = 50
 ) {
-  const [shouldLoad, setShouldLoad] = useState(false);
+  const [scrollDownTrigger, setScrollDownTrigger] = useState(false);
 
   useEffect(() => {
-    if(isFetching || !shouldLoad || !hasMore) {
+    if (isFetching || !scrollDownTrigger || !hasMore) {
       return;
     }
     onLoadMore();
-    setShouldLoad(false);
-  }, [hasMore, isFetching, onLoadMore, shouldLoad]);
+    setScrollDownTrigger(false);
+  }, [hasMore, isFetching, onLoadMore, scrollDownTrigger]);
 
   useEffect(() => {
     const handleScroll = () => {
-      if(disabled) {
+      if (disabled) {
         return;
       }
 
-      if(window.innerHeight + document.documentElement.scrollTop + threshold >
-        document.documentElement.offsetHeight) {
-        setShouldLoad(true);
+      if (
+        window.innerHeight + document.documentElement.scrollTop + threshold >
+        document.documentElement.offsetHeight
+      ) {
+        setScrollDownTrigger(true);
       }
     };
 
     const throttledHandleScroll = throttle(handleScroll, 500);
-    window.addEventListener('scroll', throttledHandleScroll);
+    window.addEventListener("scroll", throttledHandleScroll);
     return () => {
-      window.removeEventListener('scroll', throttledHandleScroll);
-    }
+      window.removeEventListener("scroll", throttledHandleScroll);
+    };
   }, [threshold, disabled]);
 }

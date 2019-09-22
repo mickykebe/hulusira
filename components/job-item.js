@@ -9,7 +9,7 @@ const useStyles = makeStyles(theme => ({
   root: props => ({
     position: "relative",
     display: "flex",
-    padding: `${theme.spacing(4)}px ${theme.spacing(2)}px`,
+    padding: `${theme.spacing(3)}px ${theme.spacing(2)}px`,
     border: `1px solid ${theme.palette.grey[200]}`,
     backgroundColor: theme.palette.common.white,
     alignItems: "center",
@@ -52,9 +52,9 @@ const useStyles = makeStyles(theme => ({
     position: "absolute",
     top: 0,
     right: 0,
-    backgroundColor: theme.palette.grey[700],
+    backgroundColor: theme.palette.secondary.main,
     color: theme.palette.getContrastText(theme.palette.grey[700]),
-    padding: `${theme.spacing(0.5)}px ${theme.spacing(1)}px`,
+    padding: `2px ${theme.spacing(1)}px`,
     borderRadius: "0 0 0 5px",
     fontWeight: 800,
     fontSize: 12
@@ -111,7 +111,7 @@ export default function JobItem({
                 label={tagName}
                 variant="outlined"
                 size="small"
-                onClick={!!onTagClick ? () => onTagClick(tag) : null}
+                onClick={!!onTagClick ? () => onTagClick(tag.id) : null}
               />
             );
           })}

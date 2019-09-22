@@ -19,6 +19,14 @@ describe("db", () => {
     };
   }
 
+  function sampleTagData(fields = {}) {
+    return {
+      name: faker.lorem.word(),
+      is_primary: false,
+      ...fields
+    };
+  }
+
   it("should create company", async () => {
     const companyData = {
       name: faker.company.companyName(),
@@ -422,5 +430,15 @@ describe("db", () => {
     expect(result).toBe(1);
     const result2 = await db.deleteJob(2);
     expect(result2).toBe(0);
+  });
+
+  it.only("getTags returns tags", async () => {
+    const rows = await db
+      .knex("tag")
+      .insert([sampleTagData(), sampleTagData()])
+      .returning("*");
+    expect(rows.length).toBe(2);
+    const tags = await db.getTags([rows[0].id, rows[1].id]);
+    expect(tags).toHaveLength(2);
   });
 });

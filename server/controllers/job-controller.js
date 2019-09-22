@@ -96,17 +96,23 @@ exports.getPrimaryTags = async (req, res) => {
 
 exports.getJobs = async (req, res) => {
   let data;
-  const { cursor: encodedCursor, count: countStr = "30" } = req.query;
+  const {
+    cursor: encodedCursor,
+    count: countStr = "30",
+    tags = ""
+  } = req.query;
   const fromJobId =
     typeof encodedCursor === "string" && encodedCursor !== ""
       ? parseInt(utils.base64decode(encodedCursor))
       : null;
   const count = parseInt(countStr);
+  const tagIds = utils.tagIdsfromQueryParam(tags);
   const jobs = await db.getJobs({
     fromJobId,
     limit: count + 1,
     approved: true,
     withinDays: 30,
+    tagIds,
     publicOnly: true
   });
   if (jobs.length < count + 1) {

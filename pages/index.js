@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Router, { useRouter } from "next/router";
 import {
   makeStyles,
   Button,
@@ -14,6 +15,8 @@ import Layout from "../components/layout";
 import JobItem from "../components/job-item";
 import useInfiniteScroller from "../hooks/use-infinite-scroll";
 import TagFilter from "../components/tag-filter";
+import { tagIdsfromQueryParam } from "../utils";
+import { useEffect } from "react";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -42,21 +45,33 @@ const jobsReducer = (state, action) => {
       };
     case "FETCH_FAILURE":
       return { ...state, isLoading: false, isError: true };
+    case "TAG_FILTER": {
+      return {
+        ...state,
+        isLoading: false,
+        isError: false,
+        jobs: action.payload.jobs,
+        nextCursor: action.payload.nextCursor
+      };
+    }
     default:
       throw new Error("Invalid action type for jobsReducer");
   }
 };
 
-function Index({ primaryTags, jobPage }) {
+function Index({ primaryTags, jobPage, activeTags }) {
   const [{ jobs, nextCursor, isLoading, isError }, dispatch] = React.useReducer(
     jobsReducer,
     {
-      jobs: jobPage.jobs,
-      nextCursor: jobPage.nextCursor,
+      jobs: [],
+      nextCursor: null,
       isLoading: false,
       isError: false
     }
   );
+  useEffect(() => {
+    dispatch({ type: "TAG_FILTER", payload: jobPage });
+  }, [jobPage]);
   const classes = useStyles();
   const fetchMoreJobs = async () => {
     dispatch({ type: "FETCH_INIT" });
@@ -68,8 +83,21 @@ function Index({ primaryTags, jobPage }) {
     }
   };
   useInfiniteScroller(isLoading, !!nextCursor, fetchMoreJobs, isError);
-  const handleTagClick = tag => {
-    console.log(tag.name);
+  const handleTagClick = tagId => {
+    const tagIndex = activeTags.findIndex(tag => tag.id === tagId);
+    if (tagIndex !== -1) {
+      return;
+    }
+    const tagIds = activeTags.map(tag => tag.id);
+    const tags = `${tagId}${tagIds.length > 0 ? `,${tagIds.join(",")}` : ""}`;
+    Router.push(`/?tags=${tags}`);
+  };
+
+  const removeTagFromFilter = tagId => {
+    const tagIds = activeTags
+      .filter(tag => tag.id !== tagId)
+      .map(tag => tag.id);
+    Router.push(`/${tagIds.length ? `?tags=${tagIds.join(",")}` : ""}`);
   };
 
   return (
@@ -86,7 +114,9 @@ function Index({ primaryTags, jobPage }) {
       }>
       <Container className={classes.root} maxWidth="md">
         <React.Fragment>
-          <TagFilter />
+          {activeTags.length > 0 && (
+            <TagFilter tags={activeTags} onTagRemove={removeTagFromFilter} />
+          )}
           {jobs.map(({ job, company }) => {
             const { tags, ...jobData } = job;
             let primaryTag = null;
@@ -134,11 +164,16 @@ function Index({ primaryTags, jobPage }) {
 }
 
 Index.getInitialProps = async ctx => {
+  const { tags = "" } = ctx.query;
   const [primaryTags, jobPage] = await Promise.all([
     api.getPrimaryTags(),
-    api.getJobs({ ctx })
+    api.getJobs({ ctx, tags })
   ]);
-  return { jobPage, primaryTags };
+  let activeTags = [];
+  if (!!tags) {
+    activeTags = await api.getTags(tags);
+  }
+  return { jobPage, primaryTags, activeTags };
 };
 
 export default Index;

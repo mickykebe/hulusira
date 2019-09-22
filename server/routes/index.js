@@ -8,6 +8,7 @@ const errorHandlers = require("../handlers/errorHandler");
 const jobController = require("../controllers/job-controller");
 const uploadController = require("../controllers/upload-controller");
 const userController = require("../controllers/user-controller");
+const tagController = require("../controllers/tag-controller");
 const { catchErrors } = require("../handlers/errorHandler");
 const { isProduction } = require("../utils");
 const redis = require("../redis");
@@ -83,6 +84,8 @@ router.get("/primary-tags", catchErrors(jobController.getPrimaryTags));
 
 router.get("/me", catchErrors(userController.me));
 router.post("/login", catchErrors(userController.login));
+
+router.get("/tags", catchErrors(tagController.getTags));
 
 router.use(errorHandlers.notFound);
 if (!isProduction) {

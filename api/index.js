@@ -36,9 +36,9 @@ class Api {
     return data;
   }
 
-  async getJobs({ ctx = null, cursor = "" } = {}) {
+  async getJobs({ ctx = null, cursor = "", tags = "" } = {}) {
     const { data } = await this.request.get(
-      `/jobs?cursor=${cursor}`,
+      `/jobs?cursor=${cursor}&tags=${tags}`,
       this.configFromContext(ctx)
     );
     return data;
@@ -93,6 +93,11 @@ class Api {
     const { data } = await this.request.patch(`/jobs/${id}/close-job`, {
       adminToken
     });
+    return data;
+  }
+
+  async getTags(tagIds = "") {
+    const { data } = await this.request.get(`/tags?ids=${tagIds}`);
     return data;
   }
 }
