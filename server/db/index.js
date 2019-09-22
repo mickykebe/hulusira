@@ -188,24 +188,18 @@ class Db ***REMOVED***
     if (typeof limit === "number") ***REMOVED***
       query = query.limit(limit);
     ***REMOVED***
-    if (tagIds.length > 0) ***REMOVED***
-      console.log(***REMOVED*** tagIds ***REMOVED***);
+    tagIds.forEach(tagId => ***REMOVED***
       const subQuery = this.knex("job_tags")
         .select("job_id")
         .whereIn(
           "tag_id",
           this.knex("tag")
             .select("id")
-            .whereIn("id", tagIds)
+            .whereIn("id", [tagId])
         );
-      query = query.andWhere("job.id", "in", subQuery);
-    ***REMOVED***
-    let rows;
-    try ***REMOVED***
-      rows = await query;
-    ***REMOVED*** catch (err) ***REMOVED***
-      console.log(err);
-    ***REMOVED***
+      query = query.where("job.id", "in", subQuery);
+    ***REMOVED***);
+    const rows = await query;
     return rows.map(row => ***REMOVED***
       let job = Job.fromDb(row, row.tags || []);
       if (publicOnly) ***REMOVED***
