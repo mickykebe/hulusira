@@ -8,32 +8,34 @@ export default function useInfiniteScroll(
   disabled = false,
   threshold = 50
 ) ***REMOVED***
-  const [shouldLoad, setShouldLoad] = useState(false);
+  const [scrollDownTrigger, setScrollDownTrigger] = useState(false);
 
   useEffect(() => ***REMOVED***
-    if(isFetching || !shouldLoad || !hasMore) ***REMOVED***
+    if (isFetching || !scrollDownTrigger || !hasMore) ***REMOVED***
       return;
     ***REMOVED***
     onLoadMore();
-    setShouldLoad(false);
-  ***REMOVED***, [hasMore, isFetching, onLoadMore, shouldLoad]);
+    setScrollDownTrigger(false);
+  ***REMOVED***, [hasMore, isFetching, onLoadMore, scrollDownTrigger]);
 
   useEffect(() => ***REMOVED***
     const handleScroll = () => ***REMOVED***
-      if(disabled) ***REMOVED***
+      if (disabled) ***REMOVED***
         return;
       ***REMOVED***
 
-      if(window.innerHeight + document.documentElement.scrollTop + threshold >
-        document.documentElement.offsetHeight) ***REMOVED***
-        setShouldLoad(true);
+      if (
+        window.innerHeight + document.documentElement.scrollTop + threshold >
+        document.documentElement.offsetHeight
+      ) ***REMOVED***
+        setScrollDownTrigger(true);
       ***REMOVED***
     ***REMOVED***;
 
     const throttledHandleScroll = throttle(handleScroll, 500);
-    window.addEventListener('scroll', throttledHandleScroll);
+    window.addEventListener("scroll", throttledHandleScroll);
     return () => ***REMOVED***
-      window.removeEventListener('scroll', throttledHandleScroll);
-    ***REMOVED***
+      window.removeEventListener("scroll", throttledHandleScroll);
+    ***REMOVED***;
   ***REMOVED***, [threshold, disabled]);
 ***REMOVED***

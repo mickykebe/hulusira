@@ -6,7 +6,7 @@ const theme = createMuiTheme(***REMOVED***
       main: "#0069ff"
     ***REMOVED***,
     secondary: ***REMOVED***
-      main: "#008b8b"
+      main: "#800000"
     ***REMOVED***,
     background: ***REMOVED***
       default: "#f4f6f8"

@@ -9,7 +9,7 @@ const useStyles = makeStyles(theme => (***REMOVED***
   root: props => (***REMOVED***
     position: "relative",
     display: "flex",
-    padding: `$***REMOVED***theme.spacing(4)***REMOVED***px $***REMOVED***theme.spacing(2)***REMOVED***px`,
+    padding: `$***REMOVED***theme.spacing(3)***REMOVED***px $***REMOVED***theme.spacing(2)***REMOVED***px`,
     border: `1px solid $***REMOVED***theme.palette.grey[200]***REMOVED***`,
     backgroundColor: theme.palette.common.white,
     alignItems: "center",
@@ -52,9 +52,9 @@ const useStyles = makeStyles(theme => (***REMOVED***
     position: "absolute",
     top: 0,
     right: 0,
-    backgroundColor: theme.palette.grey[700],
+    backgroundColor: theme.palette.secondary.main,
     color: theme.palette.getContrastText(theme.palette.grey[700]),
-    padding: `$***REMOVED***theme.spacing(0.5)***REMOVED***px $***REMOVED***theme.spacing(1)***REMOVED***px`,
+    padding: `2px $***REMOVED***theme.spacing(1)***REMOVED***px`,
     borderRadius: "0 0 0 5px",
     fontWeight: 800,
     fontSize: 12
@@ -111,7 +111,7 @@ export default function JobItem(***REMOVED***
                 label=***REMOVED***tagName***REMOVED***
                 variant="outlined"
                 size="small"
-                onClick=***REMOVED***!!onTagClick ? () => onTagClick(tag) : null***REMOVED***
+                onClick=***REMOVED***!!onTagClick ? () => onTagClick(tag.id) : null***REMOVED***
               />
             );
           ***REMOVED***)***REMOVED***

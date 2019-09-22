@@ -19,6 +19,14 @@ describe("db", () => ***REMOVED***
     ***REMOVED***;
   ***REMOVED***
 
+  function sampleTagData(fields = ***REMOVED******REMOVED***) ***REMOVED***
+    return ***REMOVED***
+      name: faker.lorem.word(),
+      is_primary: false,
+      ...fields
+    ***REMOVED***;
+  ***REMOVED***
+
   it("should create company", async () => ***REMOVED***
     const companyData = ***REMOVED***
       name: faker.company.companyName(),
@@ -422,5 +430,15 @@ describe("db", () => ***REMOVED***
     expect(result).toBe(1);
     const result2 = await db.deleteJob(2);
     expect(result2).toBe(0);
+  ***REMOVED***);
+
+  it.only("getTags returns tags", async () => ***REMOVED***
+    const rows = await db
+      .knex("tag")
+      .insert([sampleTagData(), sampleTagData()])
+      .returning("*");
+    expect(rows.length).toBe(2);
+    const tags = await db.getTags([rows[0].id, rows[1].id]);
+    expect(tags).toHaveLength(2);
   ***REMOVED***);
 ***REMOVED***);

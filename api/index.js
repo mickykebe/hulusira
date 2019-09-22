@@ -36,9 +36,9 @@ class Api ***REMOVED***
     return data;
   ***REMOVED***
 
-  async getJobs(***REMOVED*** ctx = null, cursor = "" ***REMOVED*** = ***REMOVED******REMOVED***) ***REMOVED***
+  async getJobs(***REMOVED*** ctx = null, cursor = "", tags = "" ***REMOVED*** = ***REMOVED******REMOVED***) ***REMOVED***
     const ***REMOVED*** data ***REMOVED*** = await this.request.get(
-      `/jobs?cursor=$***REMOVED***cursor***REMOVED***`,
+      `/jobs?cursor=$***REMOVED***cursor***REMOVED***&tags=$***REMOVED***tags***REMOVED***`,
       this.configFromContext(ctx)
     );
     return data;
@@ -93,6 +93,11 @@ class Api ***REMOVED***
     const ***REMOVED*** data ***REMOVED*** = await this.request.patch(`/jobs/$***REMOVED***id***REMOVED***/close-job`, ***REMOVED***
       adminToken
     ***REMOVED***);
+    return data;
+  ***REMOVED***
+
+  async getTags(tagIds = "") ***REMOVED***
+    const ***REMOVED*** data ***REMOVED*** = await this.request.get(`/tags?ids=$***REMOVED***tagIds***REMOVED***`);
     return data;
   ***REMOVED***
 ***REMOVED***

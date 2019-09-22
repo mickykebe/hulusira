@@ -152,6 +152,7 @@ class Db ***REMOVED***
     closed = false,
     approved,
     withinDays,
+    tagIds = [],
     publicOnly = false
   ***REMOVED*** = ***REMOVED******REMOVED***) ***REMOVED***
     let query = this.knex("job")
@@ -187,7 +188,24 @@ class Db ***REMOVED***
     if (typeof limit === "number") ***REMOVED***
       query = query.limit(limit);
     ***REMOVED***
-    const rows = await query;
+    if (tagIds.length > 0) ***REMOVED***
+      console.log(***REMOVED*** tagIds ***REMOVED***);
+      const subQuery = this.knex("job_tags")
+        .select("job_id")
+        .whereIn(
+          "tag_id",
+          this.knex("tag")
+            .select("id")
+            .whereIn("id", tagIds)
+        );
+      query = query.andWhere("job.id", "in", subQuery);
+    ***REMOVED***
+    let rows;
+    try ***REMOVED***
+      rows = await query;
+    ***REMOVED*** catch (err) ***REMOVED***
+      console.log(err);
+    ***REMOVED***
     return rows.map(row => ***REMOVED***
       let job = Job.fromDb(row, row.tags || []);
       if (publicOnly) ***REMOVED***
@@ -263,6 +281,13 @@ class Db ***REMOVED***
       .first()
       .where("id", id);
     return User.fromDb(row);
+  ***REMOVED***
+
+  async getTags(tagIds = []) ***REMOVED***
+    const rows = await this.knex("tag")
+      .select()
+      .whereIn("id", tagIds);
+    return rows.map(Tag.fromDb);
   ***REMOVED***
 
   closeJob(id) ***REMOVED***

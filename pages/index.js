@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Router, ***REMOVED*** useRouter ***REMOVED*** from "next/router";
 import ***REMOVED***
   makeStyles,
   Button,
@@ -14,6 +15,8 @@ import Layout from "../components/layout";
 import JobItem from "../components/job-item";
 import useInfiniteScroller from "../hooks/use-infinite-scroll";
 import TagFilter from "../components/tag-filter";
+import ***REMOVED*** tagIdsfromQueryParam ***REMOVED*** from "../utils";
+import ***REMOVED*** useEffect ***REMOVED*** from "react";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   root: ***REMOVED***
@@ -42,21 +45,33 @@ const jobsReducer = (state, action) => ***REMOVED***
       ***REMOVED***;
     case "FETCH_FAILURE":
       return ***REMOVED*** ...state, isLoading: false, isError: true ***REMOVED***;
+    case "TAG_FILTER": ***REMOVED***
+      return ***REMOVED***
+        ...state,
+        isLoading: false,
+        isError: false,
+        jobs: action.payload.jobs,
+        nextCursor: action.payload.nextCursor
+      ***REMOVED***;
+    ***REMOVED***
     default:
       throw new Error("Invalid action type for jobsReducer");
   ***REMOVED***
 ***REMOVED***;
 
-function Index(***REMOVED*** primaryTags, jobPage ***REMOVED***) ***REMOVED***
+function Index(***REMOVED*** primaryTags, jobPage, activeTags ***REMOVED***) ***REMOVED***
   const [***REMOVED*** jobs, nextCursor, isLoading, isError ***REMOVED***, dispatch] = React.useReducer(
     jobsReducer,
     ***REMOVED***
-      jobs: jobPage.jobs,
-      nextCursor: jobPage.nextCursor,
+      jobs: [],
+      nextCursor: null,
       isLoading: false,
       isError: false
     ***REMOVED***
   );
+  useEffect(() => ***REMOVED***
+    dispatch(***REMOVED*** type: "TAG_FILTER", payload: jobPage ***REMOVED***);
+  ***REMOVED***, [jobPage]);
   const classes = useStyles();
   const fetchMoreJobs = async () => ***REMOVED***
     dispatch(***REMOVED*** type: "FETCH_INIT" ***REMOVED***);
@@ -68,8 +83,21 @@ function Index(***REMOVED*** primaryTags, jobPage ***REMOVED***) ***REMOVED***
     ***REMOVED***
   ***REMOVED***;
   useInfiniteScroller(isLoading, !!nextCursor, fetchMoreJobs, isError);
-  const handleTagClick = tag => ***REMOVED***
-    console.log(tag.name);
+  const handleTagClick = tagId => ***REMOVED***
+    const tagIndex = activeTags.findIndex(tag => tag.id === tagId);
+    if (tagIndex !== -1) ***REMOVED***
+      return;
+    ***REMOVED***
+    const tagIds = activeTags.map(tag => tag.id);
+    const tags = `$***REMOVED***tagId***REMOVED***$***REMOVED***tagIds.length > 0 ? `,$***REMOVED***tagIds.join(",")***REMOVED***` : ""***REMOVED***`;
+    Router.push(`/?tags=$***REMOVED***tags***REMOVED***`);
+  ***REMOVED***;
+
+  const removeTagFromFilter = tagId => ***REMOVED***
+    const tagIds = activeTags
+      .filter(tag => tag.id !== tagId)
+      .map(tag => tag.id);
+    Router.push(`/$***REMOVED***tagIds.length ? `?tags=$***REMOVED***tagIds.join(",")***REMOVED***` : ""***REMOVED***`);
   ***REMOVED***;
 
   return (
@@ -86,7 +114,9 @@ function Index(***REMOVED*** primaryTags, jobPage ***REMOVED***) ***REMOVED***
       ***REMOVED***>
       <Container className=***REMOVED***classes.root***REMOVED*** maxWidth="md">
         <React.Fragment>
-          <TagFilter />
+          ***REMOVED***activeTags.length > 0 && (
+            <TagFilter tags=***REMOVED***activeTags***REMOVED*** onTagRemove=***REMOVED***removeTagFromFilter***REMOVED*** />
+          )***REMOVED***
           ***REMOVED***jobs.map((***REMOVED*** job, company ***REMOVED***) => ***REMOVED***
             const ***REMOVED*** tags, ...jobData ***REMOVED*** = job;
             let primaryTag = null;
@@ -134,11 +164,16 @@ function Index(***REMOVED*** primaryTags, jobPage ***REMOVED***) ***REMOVED***
 ***REMOVED***
 
 Index.getInitialProps = async ctx => ***REMOVED***
+  const ***REMOVED*** tags = "" ***REMOVED*** = ctx.query;
   const [primaryTags, jobPage] = await Promise.all([
     api.getPrimaryTags(),
-    api.getJobs(***REMOVED*** ctx ***REMOVED***)
+    api.getJobs(***REMOVED*** ctx, tags ***REMOVED***)
   ]);
-  return ***REMOVED*** jobPage, primaryTags ***REMOVED***;
+  let activeTags = [];
+  if (!!tags) ***REMOVED***
+    activeTags = await api.getTags(tags);
+  ***REMOVED***
+  return ***REMOVED*** jobPage, primaryTags, activeTags ***REMOVED***;
 ***REMOVED***;
 
 export default Index;
