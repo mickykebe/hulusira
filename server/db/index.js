@@ -19,7 +19,6 @@ class Db {
       "job_type",
       "company_id",
       "city",
-      "primary_tag",
       "monthly_salary",
       "description",
       "responsibilities",
@@ -77,7 +76,6 @@ class Db {
           job_type: jobData.jobType,
           company_id: companyId,
           city: jobData.city,
-          primary_tag: jobData.primaryTagId,
           monthly_salary: jobData.monthlySalary,
           description: jobData.description,
           responsibilities: jobData.responsibilities,
@@ -102,8 +100,9 @@ class Db {
 
       const job = Job.fromDb(rows[0], tags);
 
+      await this.createJobTag(job.id, jobData.primaryTagId, true, { trx });
       await Promise.all(
-        tags.map(tag => this.createJobTag(job.id, tag.id, { trx }))
+        tags.map(tag => this.createJobTag(job.id, tag.id, false, { trx }))
       );
 
       return job;
@@ -112,10 +111,11 @@ class Db {
     return job;
   }
 
-  async createJobTag(jobId, tagId, { trx = null } = {}) {
+  async createJobTag(jobId, tagId, isPrimary = false, { trx = null } = {}) {
     return (trx || this.knex)("job_tags").insert({
       job_id: jobId,
-      tag_id: tagId
+      tag_id: tagId,
+      is_primary: isPrimary
     });
   }
 

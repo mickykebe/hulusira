@@ -118,19 +118,12 @@ function Index({ primaryTags, jobPage, activeTags }) {
             <TagFilter tags={activeTags} onTagRemove={removeTagFromFilter} />
           )}
           {jobs.map(({ job, company }) => {
-            const { tags, ...jobData } = job;
-            let primaryTag = null;
-            if (jobData.primaryTagId !== null) {
-              primaryTag = primaryTags.find(
-                tag => tag.id === jobData.primaryTagId
-              );
-            }
             return (
               <JobItem
                 key={job.id}
                 className={classes.jobItem}
-                job={jobData}
-                tags={primaryTag ? [primaryTag, ...tags] : tags}
+                job={job}
+                tags={job.tags}
                 company={company}
                 onTagClick={handleTagClick}
               />

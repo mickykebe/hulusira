@@ -50,5 +50,6 @@ CREATE TABLE job_tags (
   id SERIAL PRIMARY KEY,
   job_id INTEGER REFERENCES job(id) NOT NULL ON DELETE CASCADE,
   tag_id INTEGER REFERENCES tag(id) NOT NULL,
+  is_primary BOOLEAN DEFAULT FALSE,
   UNIQUE (job_id, tag_id)
 );
