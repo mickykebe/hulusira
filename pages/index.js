@@ -16,7 +16,7 @@ import JobItem from "../components/job-item";
 import useInfiniteScroller from "../hooks/use-infinite-scroll";
 import TagFilter from "../components/tag-filter";
 import { tagIdsfromQueryParam } from "../utils";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -59,7 +59,7 @@ const jobsReducer = (state, action) => {
   }
 };
 
-function Index({ primaryTags, jobPage, activeTags }) {
+function Index({ jobPage, activeTags }) {
   const [{ jobs, nextCursor, isLoading, isError }, dispatch] = React.useReducer(
     jobsReducer,
     {
@@ -69,17 +69,24 @@ function Index({ primaryTags, jobPage, activeTags }) {
       isError: false
     }
   );
+  const ticker = useRef(0);
   useEffect(() => {
     dispatch({ type: "TAG_FILTER", payload: jobPage });
+    ticker.current++;
   }, [jobPage]);
   const classes = useStyles();
   const fetchMoreJobs = async () => {
+    const tickerVal = ticker.current;
     dispatch({ type: "FETCH_INIT" });
     try {
       const jobPage = await api.getJobs({ cursor: nextCursor });
-      dispatch({ type: "FETCH_SUCCESS", payload: jobPage });
+      if (tickerVal === ticker.current) {
+        dispatch({ type: "FETCH_SUCCESS", payload: jobPage });
+      }
     } catch (err) {
-      dispatch({ type: "FETCH_FAILURE" });
+      if (tickerVal === ticker.current) {
+        dispatch({ type: "FETCH_FAILURE" });
+      }
     }
   };
   useInfiniteScroller(isLoading, !!nextCursor, fetchMoreJobs, isError);
@@ -158,15 +165,12 @@ function Index({ primaryTags, jobPage, activeTags }) {
 
 Index.getInitialProps = async ctx => {
   const { tags = "" } = ctx.query;
-  const [primaryTags, jobPage] = await Promise.all([
-    api.getPrimaryTags(),
-    api.getJobs({ ctx, tags })
-  ]);
+  const jobPage = await api.getJobs({ ctx, tags });
   let activeTags = [];
   if (!!tags) {
     activeTags = await api.getTags(tags);
   }
-  return { jobPage, primaryTags, activeTags };
+  return { jobPage, activeTags };
 };
 
 export default Index;

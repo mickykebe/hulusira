@@ -32,7 +32,7 @@ export default function useInfiniteScroll(
       }
     };
 
-    const throttledHandleScroll = throttle(handleScroll, 500);
+    const throttledHandleScroll = throttle(handleScroll, 200);
     window.addEventListener("scroll", throttledHandleScroll);
     return () => {
       window.removeEventListener("scroll", throttledHandleScroll);
