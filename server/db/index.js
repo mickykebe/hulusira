@@ -19,7 +19,6 @@ class Db ***REMOVED***
       "job_type",
       "company_id",
       "city",
-      "primary_tag",
       "monthly_salary",
       "description",
       "responsibilities",
@@ -77,7 +76,6 @@ class Db ***REMOVED***
           job_type: jobData.jobType,
           company_id: companyId,
           city: jobData.city,
-          primary_tag: jobData.primaryTagId,
           monthly_salary: jobData.monthlySalary,
           description: jobData.description,
           responsibilities: jobData.responsibilities,
@@ -102,8 +100,9 @@ class Db ***REMOVED***
 
       const job = Job.fromDb(rows[0], tags);
 
+      await this.createJobTag(job.id, jobData.primaryTagId, true, ***REMOVED*** trx ***REMOVED***);
       await Promise.all(
-        tags.map(tag => this.createJobTag(job.id, tag.id, ***REMOVED*** trx ***REMOVED***))
+        tags.map(tag => this.createJobTag(job.id, tag.id, false, ***REMOVED*** trx ***REMOVED***))
       );
 
       return job;
@@ -112,10 +111,11 @@ class Db ***REMOVED***
     return job;
   ***REMOVED***
 
-  async createJobTag(jobId, tagId, ***REMOVED*** trx = null ***REMOVED*** = ***REMOVED******REMOVED***) ***REMOVED***
+  async createJobTag(jobId, tagId, isPrimary = false, ***REMOVED*** trx = null ***REMOVED*** = ***REMOVED******REMOVED***) ***REMOVED***
     return (trx || this.knex)("job_tags").insert(***REMOVED***
       job_id: jobId,
-      tag_id: tagId
+      tag_id: tagId,
+      is_primary: isPrimary
     ***REMOVED***);
   ***REMOVED***
 

@@ -118,19 +118,12 @@ function Index(***REMOVED*** primaryTags, jobPage, activeTags ***REMOVED***) ***
             <TagFilter tags=***REMOVED***activeTags***REMOVED*** onTagRemove=***REMOVED***removeTagFromFilter***REMOVED*** />
           )***REMOVED***
           ***REMOVED***jobs.map((***REMOVED*** job, company ***REMOVED***) => ***REMOVED***
-            const ***REMOVED*** tags, ...jobData ***REMOVED*** = job;
-            let primaryTag = null;
-            if (jobData.primaryTagId !== null) ***REMOVED***
-              primaryTag = primaryTags.find(
-                tag => tag.id === jobData.primaryTagId
-              );
-            ***REMOVED***
             return (
               <JobItem
                 key=***REMOVED***job.id***REMOVED***
                 className=***REMOVED***classes.jobItem***REMOVED***
-                job=***REMOVED***jobData***REMOVED***
-                tags=***REMOVED***primaryTag ? [primaryTag, ...tags] : tags***REMOVED***
+                job=***REMOVED***job***REMOVED***
+                tags=***REMOVED***job.tags***REMOVED***
                 company=***REMOVED***company***REMOVED***
                 onTagClick=***REMOVED***handleTagClick***REMOVED***
               />
