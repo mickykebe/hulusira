@@ -16,7 +16,7 @@ import JobItem from "../components/job-item";
 import useInfiniteScroller from "../hooks/use-infinite-scroll";
 import TagFilter from "../components/tag-filter";
 import ***REMOVED*** tagIdsfromQueryParam ***REMOVED*** from "../utils";
-import ***REMOVED*** useEffect ***REMOVED*** from "react";
+import ***REMOVED*** useEffect, useRef ***REMOVED*** from "react";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   root: ***REMOVED***
@@ -59,7 +59,7 @@ const jobsReducer = (state, action) => ***REMOVED***
   ***REMOVED***
 ***REMOVED***;
 
-function Index(***REMOVED*** primaryTags, jobPage, activeTags ***REMOVED***) ***REMOVED***
+function Index(***REMOVED*** jobPage, activeTags ***REMOVED***) ***REMOVED***
   const [***REMOVED*** jobs, nextCursor, isLoading, isError ***REMOVED***, dispatch] = React.useReducer(
     jobsReducer,
     ***REMOVED***
@@ -69,17 +69,24 @@ function Index(***REMOVED*** primaryTags, jobPage, activeTags ***REMOVED***) ***
       isError: false
     ***REMOVED***
   );
+  const ticker = useRef(0);
   useEffect(() => ***REMOVED***
     dispatch(***REMOVED*** type: "TAG_FILTER", payload: jobPage ***REMOVED***);
+    ticker.current++;
   ***REMOVED***, [jobPage]);
   const classes = useStyles();
   const fetchMoreJobs = async () => ***REMOVED***
+    const tickerVal = ticker.current;
     dispatch(***REMOVED*** type: "FETCH_INIT" ***REMOVED***);
     try ***REMOVED***
       const jobPage = await api.getJobs(***REMOVED*** cursor: nextCursor ***REMOVED***);
-      dispatch(***REMOVED*** type: "FETCH_SUCCESS", payload: jobPage ***REMOVED***);
+      if (tickerVal === ticker.current) ***REMOVED***
+        dispatch(***REMOVED*** type: "FETCH_SUCCESS", payload: jobPage ***REMOVED***);
+      ***REMOVED***
     ***REMOVED*** catch (err) ***REMOVED***
-      dispatch(***REMOVED*** type: "FETCH_FAILURE" ***REMOVED***);
+      if (tickerVal === ticker.current) ***REMOVED***
+        dispatch(***REMOVED*** type: "FETCH_FAILURE" ***REMOVED***);
+      ***REMOVED***
     ***REMOVED***
   ***REMOVED***;
   useInfiniteScroller(isLoading, !!nextCursor, fetchMoreJobs, isError);
@@ -158,15 +165,12 @@ function Index(***REMOVED*** primaryTags, jobPage, activeTags ***REMOVED***) ***
 
 Index.getInitialProps = async ctx => ***REMOVED***
   const ***REMOVED*** tags = "" ***REMOVED*** = ctx.query;
-  const [primaryTags, jobPage] = await Promise.all([
-    api.getPrimaryTags(),
-    api.getJobs(***REMOVED*** ctx, tags ***REMOVED***)
-  ]);
+  const jobPage = await api.getJobs(***REMOVED*** ctx, tags ***REMOVED***);
   let activeTags = [];
   if (!!tags) ***REMOVED***
     activeTags = await api.getTags(tags);
   ***REMOVED***
-  return ***REMOVED*** jobPage, primaryTags, activeTags ***REMOVED***;
+  return ***REMOVED*** jobPage, activeTags ***REMOVED***;
 ***REMOVED***;
 
 export default Index;

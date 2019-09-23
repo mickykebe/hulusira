@@ -32,7 +32,7 @@ export default function useInfiniteScroll(
       ***REMOVED***
     ***REMOVED***;
 
-    const throttledHandleScroll = throttle(handleScroll, 500);
+    const throttledHandleScroll = throttle(handleScroll, 200);
     window.addEventListener("scroll", throttledHandleScroll);
     return () => ***REMOVED***
       window.removeEventListener("scroll", throttledHandleScroll);
