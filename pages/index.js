@@ -140,7 +140,7 @@ function Index({ jobPage, activeTags }) {
         {isLoading && (
           <CircularProgress
             classes={{ root: classes.jobsLoadingSpinner }}
-            color="secondary"
+            color="primary"
           />
         )}
         {isError && (

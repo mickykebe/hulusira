@@ -4,7 +4,17 @@ import nextCookie from "next-cookies";
 import api from "../../api";
 import Layout from "../../components/layout";
 import JobContent from "../../components/job-content";
-import { Toolbar, Button, Box, Container } from "@material-ui/core";
+import {
+  Toolbar,
+  Button,
+  Box,
+  Container,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions
+} from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/styles";
 import Banner from "../../components/banner";
@@ -43,6 +53,7 @@ function Job({ jobData, adminToken }) {
   );
   const classes = useStyles();
   const [isValidToken, setIsValidToken] = useState(false);
+  const [jobDialogOpen, setJobDialogOpen] = useState(false);
   useEffect(() => {
     const verifyToken = async (id, adminToken) => {
       try {
@@ -84,13 +95,29 @@ function Job({ jobData, adminToken }) {
               color="secondary"
               size="small"
               disabled={isClosingJob}
-              onClick={handleCloseJob}>
+              onClick={() => setJobDialogOpen(true)}>
               <CloseIcon className={classes.closeIcon} /> Close Job
             </Button>
           </Toolbar>
         )}
       </Container>
       <JobContent jobData={jobData} />
+      <Dialog open={jobDialogOpen} onClose={() => setJobDialogOpen(false)}>
+        <DialogTitle>Close this job?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Closing a job renders it publicly inaccessible from the site.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setJobDialogOpen(false)} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleCloseJob} color="primary">
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
       <HSSnackbar
         open={errorClosingJob}
         variant="error"
