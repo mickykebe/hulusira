@@ -1,8 +1,11 @@
 import React from "react";
 import Link from "next/link";
+import formatDistance from "date-fns/formatDistance";
 import clsx from "clsx";
 import ***REMOVED*** Box, Typography, Chip, Link as MuiLink ***REMOVED*** from "@material-ui/core";
 import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
+import DescriptionIcon from "@material-ui/icons/Description";
+import ScheduleIcon from "@material-ui/icons/Schedule";
 import CompanyLogo from "../components/company-logo";
 
 const useStyles = makeStyles(theme => (***REMOVED***
@@ -60,6 +63,15 @@ const useStyles = makeStyles(theme => (***REMOVED***
     borderRadius: "0 0 0 5px",
     fontWeight: 800,
     fontSize: 12
+  ***REMOVED***,
+  extrasText: ***REMOVED***
+    display: "inline-flex",
+    alignItems: "center",
+    marginRight: theme.spacing(1)
+  ***REMOVED***,
+  extrasIcon: ***REMOVED***
+    fontSize: 16,
+    marginRight: theme.spacing(0.5)
   ***REMOVED***
 ***REMOVED***));
 
@@ -102,6 +114,32 @@ export default function JobItem(***REMOVED***
               </Typography>
             </React.Fragment>
           )***REMOVED***
+          ***REMOVED***(!preview || !!job.jobType) && (
+            <Box display="flex" alignItems="center" pt=***REMOVED***2***REMOVED***>
+              ***REMOVED***!!job.jobType && (
+                <Typography
+                  className=***REMOVED***classes.extrasText***REMOVED***
+                  color="textSecondary"
+                  variant="body2">
+                  <DescriptionIcon className=***REMOVED***classes.extrasIcon***REMOVED*** />***REMOVED***" "***REMOVED***
+                  ***REMOVED***job.jobType***REMOVED***
+                </Typography>
+              )***REMOVED***
+              ***REMOVED***!preview && (
+                <Typography
+                  className=***REMOVED***classes.extrasText***REMOVED***
+                  color="textSecondary"
+                  variant="body2">
+                  <ScheduleIcon className=***REMOVED***classes.extrasIcon***REMOVED*** />
+                  ***REMOVED***formatDistance(
+                    job.created ? new Date(job.created) : new Date(),
+                    new Date(),
+                    ***REMOVED*** addSuffix: true ***REMOVED***
+                  )***REMOVED***
+                </Typography>
+              )***REMOVED***
+            </Box>
+          )***REMOVED***
         </Box>
         <Box>
           ***REMOVED***tags.map(tag => ***REMOVED***
@@ -119,7 +157,7 @@ export default function JobItem(***REMOVED***
           ***REMOVED***)***REMOVED***
         </Box>
       </Box>
-      ***REMOVED***job.jobType && <Box className=***REMOVED***classes.jobType***REMOVED***>***REMOVED***job.jobType***REMOVED***</Box>***REMOVED***
+      ***REMOVED***/* ***REMOVED***job.jobType && <Box className=***REMOVED***classes.jobType***REMOVED***>***REMOVED***job.jobType***REMOVED***</Box>***REMOVED*** */***REMOVED***
     </Box>
   );
 ***REMOVED***
