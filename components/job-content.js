@@ -97,10 +97,10 @@ export default function JobContent({ jobData }) {
           <HSPaper className={classes.jobMain}>
             <Typography variant="h5">Description</Typography>
             <Markdown>{job.description}</Markdown>
-            {job.responsiblities && (
+            {job.responsibilities && (
               <React.Fragment>
-                <Typography variant="h5">Responsiblities</Typography>
-                <Markdown>{job.responsiblities}</Markdown>
+                <Typography variant="h5">Responsibilities</Typography>
+                <Markdown>{job.responsibilities}</Markdown>
               </React.Fragment>
             )}
             {job.requirements && (
