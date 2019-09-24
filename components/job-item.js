@@ -1,8 +1,11 @@
 import React from "react";
 import Link from "next/link";
+import formatDistance from "date-fns/formatDistance";
 import clsx from "clsx";
 import { Box, Typography, Chip, Link as MuiLink } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
+import DescriptionIcon from "@material-ui/icons/Description";
+import ScheduleIcon from "@material-ui/icons/Schedule";
 import CompanyLogo from "../components/company-logo";
 
 const useStyles = makeStyles(theme => ({
@@ -60,6 +63,15 @@ const useStyles = makeStyles(theme => ({
     borderRadius: "0 0 0 5px",
     fontWeight: 800,
     fontSize: 12
+  },
+  extrasText: {
+    display: "inline-flex",
+    alignItems: "center",
+    marginRight: theme.spacing(1)
+  },
+  extrasIcon: {
+    fontSize: 16,
+    marginRight: theme.spacing(0.5)
   }
 }));
 
@@ -102,6 +114,32 @@ export default function JobItem({
               </Typography>
             </React.Fragment>
           )}
+          {(!preview || !!job.jobType) && (
+            <Box display="flex" alignItems="center" pt={2}>
+              {!!job.jobType && (
+                <Typography
+                  className={classes.extrasText}
+                  color="textSecondary"
+                  variant="body2">
+                  <DescriptionIcon className={classes.extrasIcon} />{" "}
+                  {job.jobType}
+                </Typography>
+              )}
+              {!preview && (
+                <Typography
+                  className={classes.extrasText}
+                  color="textSecondary"
+                  variant="body2">
+                  <ScheduleIcon className={classes.extrasIcon} />
+                  {formatDistance(
+                    job.created ? new Date(job.created) : new Date(),
+                    new Date(),
+                    { addSuffix: true }
+                  )}
+                </Typography>
+              )}
+            </Box>
+          )}
         </Box>
         <Box>
           {tags.map(tag => {
@@ -119,7 +157,7 @@ export default function JobItem({
           })}
         </Box>
       </Box>
-      {job.jobType && <Box className={classes.jobType}>{job.jobType}</Box>}
+      {/* {job.jobType && <Box className={classes.jobType}>{job.jobType}</Box>} */}
     </Box>
   );
 }
