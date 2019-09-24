@@ -97,10 +97,10 @@ export default function JobContent(***REMOVED*** jobData ***REMOVED***) ***REMOV
           <HSPaper className=***REMOVED***classes.jobMain***REMOVED***>
             <Typography variant="h5">Description</Typography>
             <Markdown>***REMOVED***job.description***REMOVED***</Markdown>
-            ***REMOVED***job.responsiblities && (
+            ***REMOVED***job.responsibilities && (
               <React.Fragment>
-                <Typography variant="h5">Responsiblities</Typography>
-                <Markdown>***REMOVED***job.responsiblities***REMOVED***</Markdown>
+                <Typography variant="h5">Responsibilities</Typography>
+                <Markdown>***REMOVED***job.responsibilities***REMOVED***</Markdown>
               </React.Fragment>
             )***REMOVED***
             ***REMOVED***job.requirements && (
