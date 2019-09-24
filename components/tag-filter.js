@@ -12,7 +12,6 @@ const useStyles = makeStyles(theme => (***REMOVED***
   tagChip: ***REMOVED***
     border: `1px solid $***REMOVED***theme.palette.grey[700]***REMOVED***`,
     marginRight: theme.spacing(2),
-    marginBottom: theme.spacing(1),
     fontWeight: 800,
     fontSize: 11,
     color: theme.palette.grey[700]

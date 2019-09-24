@@ -100,7 +100,9 @@ class Db ***REMOVED***
 
       const job = Job.fromDb(rows[0], tags);
 
-      await this.createJobTag(job.id, jobData.primaryTagId, true, ***REMOVED*** trx ***REMOVED***);
+      if (jobData.primaryTagId) ***REMOVED***
+        await this.createJobTag(job.id, jobData.primaryTagId, true, ***REMOVED*** trx ***REMOVED***);
+      ***REMOVED***
       await Promise.all(
         tags.map(tag => this.createJobTag(job.id, tag.id, false, ***REMOVED*** trx ***REMOVED***))
       );

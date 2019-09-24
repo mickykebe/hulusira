@@ -13,6 +13,8 @@ const useStyles = makeStyles(theme => (***REMOVED***
     border: `1px solid $***REMOVED***theme.palette.grey[200]***REMOVED***`,
     backgroundColor: theme.palette.common.white,
     alignItems: "center",
+    borderRadius: 4,
+    border: `1px solid #EAEDF3`,
     boxShadow: theme.boxShadows[0],
     ...(props.preview && ***REMOVED***
       position: "sticky",
@@ -35,12 +37,12 @@ const useStyles = makeStyles(theme => (***REMOVED***
     display: "block"
   ***REMOVED***,
   tagChip: ***REMOVED***
-    border: `1px solid $***REMOVED***theme.palette.grey[800]***REMOVED***`,
+    border: `1px solid $***REMOVED***theme.palette.grey[700]***REMOVED***`,
     marginRight: theme.spacing(1),
     marginBottom: theme.spacing(1),
     fontWeight: 800,
     fontSize: 11,
-    color: theme.palette.grey[800]
+    color: theme.palette.grey[700]
   ***REMOVED***,
   applyButton: ***REMOVED***
     marginLeft: theme.spacing(2),

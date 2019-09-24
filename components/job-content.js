@@ -48,6 +48,18 @@ export default function JobContent(***REMOVED*** jobData ***REMOVED***) ***REMOV
       </Box>
     );
   ***REMOVED***;
+  const renderApplyButton = job => ***REMOVED***
+    return (
+      <Button
+        variant="contained"
+        color="primary"
+        href=***REMOVED***job.applyUrl || `mailto:$***REMOVED***job.applyEmail***REMOVED***`***REMOVED***
+        target="_blank"
+        fullWidth>
+        Apply Now
+      </Button>
+    );
+  ***REMOVED***;
   return (
     <Container className=***REMOVED***classes.root***REMOVED*** maxWidth="lg">
       <Box display="flex" alignItems="center" pb=***REMOVED***2***REMOVED***>
@@ -100,24 +112,20 @@ export default function JobContent(***REMOVED*** jobData ***REMOVED***) ***REMOV
           </HSPaper>
         </Grid>
         <Grid item sm=***REMOVED***12***REMOVED*** lg=***REMOVED***3***REMOVED*** className=***REMOVED***classes.applyGrid***REMOVED***>
-          <HSPaper className=***REMOVED***classes.apply***REMOVED***>
-            <Button
-              variant="contained"
-              color="primary"
-              href=***REMOVED***job.applyUrl || `mailto:$***REMOVED***job.applyEmail***REMOVED***`***REMOVED***
-              target="_blank"
-              fullWidth>
-              Apply Now
-            </Button>
-            ***REMOVED***job.howToApply && (
-              <Box pt=***REMOVED***2***REMOVED***>
-                <Typography variant="subtitle1">
-                  Are you interested in this job?
-                </Typography>
-                <Markdown>***REMOVED***job.howToApply***REMOVED***</Markdown>
-              </Box>
-            )***REMOVED***
-          </HSPaper>
+          ***REMOVED***!job.howToApply && renderApplyButton(job)***REMOVED***
+          ***REMOVED***!!job.howToApply && (
+            <HSPaper className=***REMOVED***classes.apply***REMOVED***>
+              ***REMOVED***renderApplyButton(job)***REMOVED***
+              ***REMOVED***job.howToApply && (
+                <Box pt=***REMOVED***2***REMOVED***>
+                  <Typography variant="subtitle1">
+                    Are you interested in this job?
+                  </Typography>
+                  <Markdown>***REMOVED***job.howToApply***REMOVED***</Markdown>
+                </Box>
+              )***REMOVED***
+            </HSPaper>
+          )***REMOVED***
         </Grid>
       </Grid>
     </Container>

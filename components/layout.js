@@ -28,7 +28,7 @@ export default function Layout(***REMOVED*** children, toolbarChildren = null **
           ***REMOVED***toolbarChildren***REMOVED***
         </Toolbar>
       </AppBar>
-      <Box pt=***REMOVED***8***REMOVED***>***REMOVED***children***REMOVED***</Box>
+      <Box pt=***REMOVED***9***REMOVED***>***REMOVED***children***REMOVED***</Box>
     </Box>
   );
 ***REMOVED***

@@ -9,7 +9,7 @@ const theme = createMuiTheme(***REMOVED***
       main: "#800000"
     ***REMOVED***,
     background: ***REMOVED***
-      default: "#f4f6f8"
+      default: "#FBFBFD"
     ***REMOVED***
   ***REMOVED***,
   typography: ***REMOVED***
@@ -48,7 +48,7 @@ const theme = createMuiTheme(***REMOVED***
       fontWeight: 800
     ***REMOVED***
   ***REMOVED***,
-  boxShadows: ["0 8px 30px rgba(0,29,54,.1)"]
+  boxShadows: ["0 1px 3px 0 rgba(0, 0, 0, 0.04)"]
 ***REMOVED***);
 
 export default theme;

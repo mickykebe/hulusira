@@ -3,6 +3,7 @@ import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   root: ***REMOVED***
+    border: `1px solid #EAEDF3`,
     boxShadow: theme.boxShadows[0]
   ***REMOVED***,
   cardContent: ***REMOVED***
