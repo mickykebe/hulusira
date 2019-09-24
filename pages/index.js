@@ -140,7 +140,7 @@ function Index(***REMOVED*** jobPage, activeTags ***REMOVED***) ***REMOVED***
         ***REMOVED***isLoading && (
           <CircularProgress
             classes=***REMOVED******REMOVED*** root: classes.jobsLoadingSpinner ***REMOVED******REMOVED***
-            color="secondary"
+            color="primary"
           />
         )***REMOVED***
         ***REMOVED***isError && (

@@ -4,7 +4,17 @@ import nextCookie from "next-cookies";
 import api from "../../api";
 import Layout from "../../components/layout";
 import JobContent from "../../components/job-content";
-import ***REMOVED*** Toolbar, Button, Box, Container ***REMOVED*** from "@material-ui/core";
+import ***REMOVED***
+  Toolbar,
+  Button,
+  Box,
+  Container,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions
+***REMOVED*** from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
 import Banner from "../../components/banner";
@@ -43,6 +53,7 @@ function Job(***REMOVED*** jobData, adminToken ***REMOVED***) ***REMOVED***
   );
   const classes = useStyles();
   const [isValidToken, setIsValidToken] = useState(false);
+  const [jobDialogOpen, setJobDialogOpen] = useState(false);
   useEffect(() => ***REMOVED***
     const verifyToken = async (id, adminToken) => ***REMOVED***
       try ***REMOVED***
@@ -84,13 +95,29 @@ function Job(***REMOVED*** jobData, adminToken ***REMOVED***) ***REMOVED***
               color="secondary"
               size="small"
               disabled=***REMOVED***isClosingJob***REMOVED***
-              onClick=***REMOVED***handleCloseJob***REMOVED***>
+              onClick=***REMOVED***() => setJobDialogOpen(true)***REMOVED***>
               <CloseIcon className=***REMOVED***classes.closeIcon***REMOVED*** /> Close Job
             </Button>
           </Toolbar>
         )***REMOVED***
       </Container>
       <JobContent jobData=***REMOVED***jobData***REMOVED*** />
+      <Dialog open=***REMOVED***jobDialogOpen***REMOVED*** onClose=***REMOVED***() => setJobDialogOpen(false)***REMOVED***>
+        <DialogTitle>Close this job?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Closing a job renders it publicly inaccessible from the site.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick=***REMOVED***() => setJobDialogOpen(false)***REMOVED*** color="primary">
+            Cancel
+          </Button>
+          <Button onClick=***REMOVED***handleCloseJob***REMOVED*** color="primary">
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
       <HSSnackbar
         open=***REMOVED***errorClosingJob***REMOVED***
         variant="error"
