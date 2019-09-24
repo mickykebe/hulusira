@@ -100,7 +100,9 @@ class Db {
 
       const job = Job.fromDb(rows[0], tags);
 
-      await this.createJobTag(job.id, jobData.primaryTagId, true, { trx });
+      if (jobData.primaryTagId) {
+        await this.createJobTag(job.id, jobData.primaryTagId, true, { trx });
+      }
       await Promise.all(
         tags.map(tag => this.createJobTag(job.id, tag.id, false, { trx }))
       );

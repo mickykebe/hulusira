@@ -48,6 +48,18 @@ export default function JobContent({ jobData }) {
       </Box>
     );
   };
+  const renderApplyButton = job => {
+    return (
+      <Button
+        variant="contained"
+        color="primary"
+        href={job.applyUrl || `mailto:${job.applyEmail}`}
+        target="_blank"
+        fullWidth>
+        Apply Now
+      </Button>
+    );
+  };
   return (
     <Container className={classes.root} maxWidth="lg">
       <Box display="flex" alignItems="center" pb={2}>
@@ -100,24 +112,20 @@ export default function JobContent({ jobData }) {
           </HSPaper>
         </Grid>
         <Grid item sm={12} lg={3} className={classes.applyGrid}>
-          <HSPaper className={classes.apply}>
-            <Button
-              variant="contained"
-              color="primary"
-              href={job.applyUrl || `mailto:${job.applyEmail}`}
-              target="_blank"
-              fullWidth>
-              Apply Now
-            </Button>
-            {job.howToApply && (
-              <Box pt={2}>
-                <Typography variant="subtitle1">
-                  Are you interested in this job?
-                </Typography>
-                <Markdown>{job.howToApply}</Markdown>
-              </Box>
-            )}
-          </HSPaper>
+          {!job.howToApply && renderApplyButton(job)}
+          {!!job.howToApply && (
+            <HSPaper className={classes.apply}>
+              {renderApplyButton(job)}
+              {job.howToApply && (
+                <Box pt={2}>
+                  <Typography variant="subtitle1">
+                    Are you interested in this job?
+                  </Typography>
+                  <Markdown>{job.howToApply}</Markdown>
+                </Box>
+              )}
+            </HSPaper>
+          )}
         </Grid>
       </Grid>
     </Container>
