@@ -168,7 +168,7 @@ Index.getInitialProps = async ctx => {
   const jobPage = await api.getJobs({ ctx, tags });
   let activeTags = [];
   if (!!tags) {
-    activeTags = await api.getTags(tags);
+    activeTags = await api.getTags(tags, ctx);
   }
   return { jobPage, activeTags };
 };

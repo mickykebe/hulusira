@@ -6,7 +6,7 @@ CREATE TABLE users (
   last_name TEXT NOT NULL,
   email TEXT NOT NULL UNIQUE,
   password TEXT NOT NULL,
-  confirmed BOOLEAN NOT NULL DEFAULT FALSE
+  confirmed BOOLEAN NOT NULL DEFAULT FALSE,
   role TEXT NOT NULL CONSTRAINT role_values CHECK (role IN ('user', 'admin'))
 );
 
@@ -15,7 +15,7 @@ CREATE TABLE company (
   name TEXT NOT NULL,
   email TEXT NOT NULL,
   logo TEXT,
-  verified BOOLEAN NOT NULL DEFAULT FALSE,
+  verified BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE tag (
@@ -27,7 +27,7 @@ CREATE TABLE tag (
 CREATE TABLE job (
   id SERIAL PRIMARY KEY,
   position TEXT NOT NULL,
-  job_type TEXT NOT NULL CONSTRAINT check_value CHECK (job_type IN ('Full-time', 'Part-time', 'Freelance', 'Internship', 'Temporary'))
+  job_type TEXT NOT NULL CONSTRAINT check_value CHECK (job_type IN ('Full-time', 'Part-time', 'Freelance', 'Internship', 'Temporary')),
   company_id INTEGER REFERENCES company(id),
   city TEXT,
   primary_tag INTEGER REFERENCES tag(id),
@@ -48,8 +48,8 @@ CREATE TABLE job (
 
 CREATE TABLE job_tags (
   id SERIAL PRIMARY KEY,
-  job_id INTEGER REFERENCES job(id) NOT NULL ON DELETE CASCADE,
-  tag_id INTEGER REFERENCES tag(id) NOT NULL,
+  job_id INTEGER NOT NULL REFERENCES job(id) ON DELETE CASCADE,
+  tag_id INTEGER NOT NULL REFERENCES tag(id),
   is_primary BOOLEAN DEFAULT FALSE,
   UNIQUE (job_id, tag_id)
 );

@@ -542,8 +542,8 @@ function New({ primaryTags }) {
   );
 }
 
-New.getInitialProps = async () => {
-  const primaryTags = await api.getPrimaryTags();
+New.getInitialProps = async ctx => {
+  const primaryTags = await api.getPrimaryTags(ctx);
   return { primaryTags };
 };
 
