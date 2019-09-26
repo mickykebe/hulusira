@@ -1,3 +1,6 @@
-const Redis = require('ioredis');
+const Redis = require("ioredis");
+const utils = require("./utils");
 
-module.exports = new Redis();
+module.exports = utils.isProduction
+  ? new Redis(process.env.REDIS_URL)
+  : new Redis();

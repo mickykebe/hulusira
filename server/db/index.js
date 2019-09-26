@@ -7,11 +7,11 @@ const slug = require("slug");
 class Db {
   constructor() {
     this.pool = new Pool({
-      connectionString: process.env.DB_CONNECTION_STRING
+      connectionString: process.env.DATABASE_URL
     });
     this.knex = Knex({
       client: "pg",
-      connection: process.env.DB_CONNECTION_STRING
+      connection: process.env.DATABASE_URL
     });
     this.jobColumns = [
       "id",
