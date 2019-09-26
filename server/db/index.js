@@ -269,14 +269,18 @@ class Db {
     const row = await this.knex("users")
       .first()
       .where("email", email);
-    return User.fromDb(row);
+    if (!!row) {
+      return User.fromDb(row);
+    }
   }
 
   async getUserById(id) {
     const row = await this.knex("users")
       .first()
       .where("id", id);
-    return User.fromDb(row);
+    if (!!row) {
+      return User.fromDb(row);
+    }
   }
 
   async getTags(tagIds = []) {
