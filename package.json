@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "node index.js",
     "build": "next build",
-    "start": "cross-env NODE_ENV=production node index.js",
+    "start": "NODE_ENV=production node index.js",
     "now-build": "next build",
     "watch": "nodemon --watch server --watch ./index.js --ignore **/*.test.js ./index.js",
     "test": "jest"
