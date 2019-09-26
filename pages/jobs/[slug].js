@@ -134,8 +134,8 @@ Job.getInitialProps = async ctx => ***REMOVED***
   const cookies = nextCookie(ctx);
   const adminToken = cookies[slug];
   const [primaryTags, jobData] = await Promise.all([
-    api.getPrimaryTags(),
-    api.getJob(slug, adminToken)
+    api.getPrimaryTags(ctx),
+    api.getJob(slug, adminToken, ctx)
   ]);
   return ***REMOVED*** jobData, primaryTags, adminToken ***REMOVED***;
 ***REMOVED***;

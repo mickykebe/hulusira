@@ -542,8 +542,8 @@ function New(***REMOVED*** primaryTags ***REMOVED***) ***REMOVED***
   );
 ***REMOVED***
 
-New.getInitialProps = async () => ***REMOVED***
-  const primaryTags = await api.getPrimaryTags();
+New.getInitialProps = async ctx => ***REMOVED***
+  const primaryTags = await api.getPrimaryTags(ctx);
   return ***REMOVED*** primaryTags ***REMOVED***;
 ***REMOVED***;
 
