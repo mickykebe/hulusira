@@ -269,14 +269,18 @@ class Db ***REMOVED***
     const row = await this.knex("users")
       .first()
       .where("email", email);
-    return User.fromDb(row);
+    if (!!row) ***REMOVED***
+      return User.fromDb(row);
+    ***REMOVED***
   ***REMOVED***
 
   async getUserById(id) ***REMOVED***
     const row = await this.knex("users")
       .first()
       .where("id", id);
-    return User.fromDb(row);
+    if (!!row) ***REMOVED***
+      return User.fromDb(row);
+    ***REMOVED***
   ***REMOVED***
 
   async getTags(tagIds = []) ***REMOVED***
