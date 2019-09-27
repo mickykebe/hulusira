@@ -14,6 +14,19 @@ class MyApp extends App {
     if (jssStyles) {
       jssStyles.parentNode.removeChild(jssStyles);
     }
+    const firebaseConfig = {
+      apiKey: "AIzaSyA_hMtWwxkL6vKM0c8QW7TE58Dvwx1_B9A",
+      authDomain: "hulusira-f45f9.firebaseapp.com",
+      databaseURL: "https://hulusira-f45f9.firebaseio.com",
+      projectId: "hulusira-f45f9",
+      storageBucket: "",
+      messagingSenderId: "695763028991",
+      appId: "1:695763028991:web:205f14c6b037cd8b79b5ca",
+      measurementId: "G-885WPTSXM9"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
   }
 
   render() {
