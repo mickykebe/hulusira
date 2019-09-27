@@ -4,7 +4,7 @@ const ***REMOVED*** isProduction ***REMOVED*** = require("./utils");
 
 const app = express();
 if (isProduction) ***REMOVED***
-  app.set("trust proxy", 1);
+  app.set("trust proxy", 2);
 ***REMOVED***
 app.use("/api", routes);
 
