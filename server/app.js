@@ -3,9 +3,9 @@ const routes = require("./routes/index");
 const ***REMOVED*** isProduction ***REMOVED*** = require("./utils");
 
 const app = express();
-/* if (isProduction) ***REMOVED***
+if (isProduction) ***REMOVED***
   app.set("trust proxy", 1);
-***REMOVED*** */
+***REMOVED***
 app.use("/api", routes);
 
 module.exports = app;
