@@ -29,6 +29,7 @@ router.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    proxy: true,
     cookie: ***REMOVED***
       httpOnly: true,
       secure: isProduction,
