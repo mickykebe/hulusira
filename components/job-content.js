@@ -25,6 +25,9 @@ const useStyles = makeStyles(theme => ({
     width: "100%",
     [theme.breakpoints.down("xs")]: {
       maxWidth: "100%"
+    },
+    [theme.breakpoints.down("md")]: {
+      marginTop: -1 * theme.spacing(2)
     }
   },
   apply: {
