@@ -7,7 +7,9 @@ import ***REMOVED***
   Container,
   CircularProgress,
   Typography,
-  Fab
+  Fab,
+  TextField,
+  MenuItem
 ***REMOVED*** from "@material-ui/core";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import api from "../api";
@@ -16,7 +18,7 @@ import JobItem from "../components/job-item";
 import useInfiniteScroller from "../hooks/use-infinite-scroll";
 import TagFilter from "../components/tag-filter";
 import ***REMOVED*** tagIdsfromQueryParam ***REMOVED*** from "../utils";
-import ***REMOVED*** useEffect, useRef ***REMOVED*** from "react";
+import ***REMOVED*** useEffect, useRef, useState ***REMOVED*** from "react";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   root: ***REMOVED***
@@ -28,6 +30,10 @@ const useStyles = makeStyles(theme => (***REMOVED***
   jobsLoadingSpinner: ***REMOVED***
     display: "block",
     margin: "0 auto"
+  ***REMOVED***,
+  categorySelect: ***REMOVED***
+    marginBottom: theme.spacing(2),
+    background: theme.palette.common.white
   ***REMOVED***
 ***REMOVED***));
 
@@ -59,7 +65,7 @@ const jobsReducer = (state, action) => ***REMOVED***
   ***REMOVED***
 ***REMOVED***;
 
-function Index(***REMOVED*** jobPage, activeTags ***REMOVED***) ***REMOVED***
+function Index(***REMOVED*** jobPage, activeTags, primaryTags ***REMOVED***) ***REMOVED***
   const [***REMOVED*** jobs, nextCursor, isLoading, isError ***REMOVED***, dispatch] = React.useReducer(
     jobsReducer,
     ***REMOVED***
@@ -113,13 +119,39 @@ function Index(***REMOVED*** jobPage, activeTags ***REMOVED***) ***REMOVED***
         <React.Fragment>
           <Box flex="1" />
           <Link href="/new" passHref>
-            <Button variant="contained" color="primary" size="large">
+            <Button variant="contained" color="primary">
               Post a Job
             </Button>
           </Link>
         </React.Fragment>
       ***REMOVED***>
       <Container className=***REMOVED***classes.root***REMOVED*** maxWidth="md">
+        ***REMOVED***(!activeTags || activeTags.length === 0) && (
+          <TextField
+            value=""
+            select
+            className=***REMOVED***classes.categorySelect***REMOVED***
+            label="Select"
+            onChange=***REMOVED***ev => ***REMOVED***
+              const tagId = ev.target.value;
+              handleTagClick(tagId);
+            ***REMOVED******REMOVED***
+            SelectProps=***REMOVED******REMOVED***
+              MenuProps: ***REMOVED***
+                className: classes.menu
+              ***REMOVED***
+            ***REMOVED******REMOVED***
+            label="Choose category"
+            margin="dense"
+            variant="outlined"
+            fullWidth>
+            ***REMOVED***primaryTags.map(tag => (
+              <MenuItem key=***REMOVED***tag.id***REMOVED*** value=***REMOVED***tag.id***REMOVED***>
+                ***REMOVED***tag.name***REMOVED***
+              </MenuItem>
+            ))***REMOVED***
+          </TextField>
+        )***REMOVED***
         <React.Fragment>
           ***REMOVED***activeTags.length > 0 && (
             <TagFilter tags=***REMOVED***activeTags***REMOVED*** onTagRemove=***REMOVED***removeTagFromFilter***REMOVED*** />
@@ -165,12 +197,16 @@ function Index(***REMOVED*** jobPage, activeTags ***REMOVED***) ***REMOVED***
 
 Index.getInitialProps = async ctx => ***REMOVED***
   const ***REMOVED*** tags = "" ***REMOVED*** = ctx.query;
-  const jobPage = await api.getJobs(***REMOVED*** ctx, tags ***REMOVED***);
+  const [jobPage, primaryTags] = await Promise.all([
+    api.getJobs(***REMOVED*** ctx, tags ***REMOVED***),
+    api.getPrimaryTags(ctx)
+  ]);
+  //const jobPage = await api.getJobs(***REMOVED*** ctx, tags ***REMOVED***);
   let activeTags = [];
   if (!!tags) ***REMOVED***
     activeTags = await api.getTags(tags, ctx);
   ***REMOVED***
-  return ***REMOVED*** jobPage, activeTags ***REMOVED***;
+  return ***REMOVED*** jobPage, activeTags, primaryTags ***REMOVED***;
 ***REMOVED***;
 
 export default Index;

@@ -14,21 +14,23 @@ class MyApp extends App ***REMOVED***
     if (jssStyles) ***REMOVED***
       jssStyles.parentNode.removeChild(jssStyles);
     ***REMOVED***
-    window.onload = function() ***REMOVED***
-      const firebaseConfig = ***REMOVED***
-        apiKey: "AIzaSyA_hMtWwxkL6vKM0c8QW7TE58Dvwx1_B9A",
-        authDomain: "hulusira-f45f9.firebaseapp.com",
-        databaseURL: "https://hulusira-f45f9.firebaseio.com",
-        projectId: "hulusira-f45f9",
-        storageBucket: "",
-        messagingSenderId: "695763028991",
-        appId: "1:695763028991:web:205f14c6b037cd8b79b5ca",
-        measurementId: "G-885WPTSXM9"
+    if (process.env.NODE_ENV === "production") ***REMOVED***
+      window.onload = function() ***REMOVED***
+        const firebaseConfig = ***REMOVED***
+          apiKey: "AIzaSyA_hMtWwxkL6vKM0c8QW7TE58Dvwx1_B9A",
+          authDomain: "hulusira-f45f9.firebaseapp.com",
+          databaseURL: "https://hulusira-f45f9.firebaseio.com",
+          projectId: "hulusira-f45f9",
+          storageBucket: "",
+          messagingSenderId: "695763028991",
+          appId: "1:695763028991:web:205f14c6b037cd8b79b5ca",
+          measurementId: "G-885WPTSXM9"
+        ***REMOVED***;
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        firebase.analytics();
       ***REMOVED***;
-      // Initialize Firebase
-      firebase.initializeApp(firebaseConfig);
-      firebase.analytics();
-    ***REMOVED***;
+    ***REMOVED***
   ***REMOVED***
 
   render() ***REMOVED***
