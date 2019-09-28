@@ -12,7 +12,7 @@ const useStyles = makeStyles(theme => ({
   root: props => ({
     position: "relative",
     display: "flex",
-    padding: `${theme.spacing(3)}px ${theme.spacing(2)}px`,
+    padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
     border: `1px solid ${theme.palette.grey[200]}`,
     backgroundColor: theme.palette.common.white,
     alignItems: "center",

@@ -7,7 +7,7 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(2),
     padding: theme.spacing(2),
-    boxShadow: `0px 3px 3px rgba(0, 105, 255, 0.3)`
+    boxShadow: `0px 3px 3px rgba(200, 200, 200, 0.4)`
   },
   tagChip: {
     border: `1px solid ${theme.palette.grey[700]}`,
