@@ -7,7 +7,9 @@ import {
   Container,
   CircularProgress,
   Typography,
-  Fab
+  Fab,
+  TextField,
+  MenuItem
 } from "@material-ui/core";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import api from "../api";
@@ -16,7 +18,7 @@ import JobItem from "../components/job-item";
 import useInfiniteScroller from "../hooks/use-infinite-scroll";
 import TagFilter from "../components/tag-filter";
 import { tagIdsfromQueryParam } from "../utils";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -28,6 +30,10 @@ const useStyles = makeStyles(theme => ({
   jobsLoadingSpinner: {
     display: "block",
     margin: "0 auto"
+  },
+  categorySelect: {
+    marginBottom: theme.spacing(2),
+    background: theme.palette.common.white
   }
 }));
 
@@ -59,7 +65,7 @@ const jobsReducer = (state, action) => {
   }
 };
 
-function Index({ jobPage, activeTags }) {
+function Index({ jobPage, activeTags, primaryTags }) {
   const [{ jobs, nextCursor, isLoading, isError }, dispatch] = React.useReducer(
     jobsReducer,
     {
@@ -113,13 +119,39 @@ function Index({ jobPage, activeTags }) {
         <React.Fragment>
           <Box flex="1" />
           <Link href="/new" passHref>
-            <Button variant="contained" color="primary" size="large">
+            <Button variant="contained" color="primary">
               Post a Job
             </Button>
           </Link>
         </React.Fragment>
       }>
       <Container className={classes.root} maxWidth="md">
+        {(!activeTags || activeTags.length === 0) && (
+          <TextField
+            value=""
+            select
+            className={classes.categorySelect}
+            label="Select"
+            onChange={ev => {
+              const tagId = ev.target.value;
+              handleTagClick(tagId);
+            }}
+            SelectProps={{
+              MenuProps: {
+                className: classes.menu
+              }
+            }}
+            label="Choose category"
+            margin="dense"
+            variant="outlined"
+            fullWidth>
+            {primaryTags.map(tag => (
+              <MenuItem key={tag.id} value={tag.id}>
+                {tag.name}
+              </MenuItem>
+            ))}
+          </TextField>
+        )}
         <React.Fragment>
           {activeTags.length > 0 && (
             <TagFilter tags={activeTags} onTagRemove={removeTagFromFilter} />
@@ -165,12 +197,16 @@ function Index({ jobPage, activeTags }) {
 
 Index.getInitialProps = async ctx => {
   const { tags = "" } = ctx.query;
-  const jobPage = await api.getJobs({ ctx, tags });
+  const [jobPage, primaryTags] = await Promise.all([
+    api.getJobs({ ctx, tags }),
+    api.getPrimaryTags(ctx)
+  ]);
+  //const jobPage = await api.getJobs({ ctx, tags });
   let activeTags = [];
   if (!!tags) {
     activeTags = await api.getTags(tags, ctx);
   }
-  return { jobPage, activeTags };
+  return { jobPage, activeTags, primaryTags };
 };
 
 export default Index;
