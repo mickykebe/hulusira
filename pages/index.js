@@ -34,6 +34,9 @@ const useStyles = makeStyles(theme => (***REMOVED***
   categorySelect: ***REMOVED***
     marginBottom: theme.spacing(2),
     background: theme.palette.common.white
+  ***REMOVED***,
+  categoryItem: ***REMOVED***
+    fontSize: "0.8rem"
   ***REMOVED***
 ***REMOVED***));
 
@@ -146,7 +149,10 @@ function Index(***REMOVED*** jobPage, activeTags, primaryTags ***REMOVED***) ***
             variant="outlined"
             fullWidth>
             ***REMOVED***primaryTags.map(tag => (
-              <MenuItem key=***REMOVED***tag.id***REMOVED*** value=***REMOVED***tag.id***REMOVED***>
+              <MenuItem
+                className=***REMOVED***classes.categoryItem***REMOVED***
+                key=***REMOVED***tag.id***REMOVED***
+                value=***REMOVED***tag.id***REMOVED***>
                 ***REMOVED***tag.name***REMOVED***
               </MenuItem>
             ))***REMOVED***
