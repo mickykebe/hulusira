@@ -34,6 +34,9 @@ const useStyles = makeStyles(theme => ({
   categorySelect: {
     marginBottom: theme.spacing(2),
     background: theme.palette.common.white
+  },
+  categoryItem: {
+    fontSize: "0.8rem"
   }
 }));
 
@@ -146,7 +149,10 @@ function Index({ jobPage, activeTags, primaryTags }) {
             variant="outlined"
             fullWidth>
             {primaryTags.map(tag => (
-              <MenuItem key={tag.id} value={tag.id}>
+              <MenuItem
+                className={classes.categoryItem}
+                key={tag.id}
+                value={tag.id}>
                 {tag.name}
               </MenuItem>
             ))}
