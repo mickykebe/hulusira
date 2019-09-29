@@ -37,6 +37,9 @@ const useStyles = makeStyles(theme => ({
   },
   categoryItem: {
     fontSize: "0.8rem"
+  },
+  nothingFound: {
+    paddingTop: theme.spacing(4)
   }
 }));
 
@@ -174,6 +177,15 @@ function Index({ jobPage, activeTags, primaryTags }) {
               />
             );
           })}
+          {jobs.length === 0 && (
+            <Typography
+              variant="h4"
+              color="textSecondary"
+              align="center"
+              className={classes.nothingFound}>
+              😬 <br /> Nothing Found
+            </Typography>
+          )}
         </React.Fragment>
         {isLoading && (
           <CircularProgress
