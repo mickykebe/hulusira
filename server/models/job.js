@@ -5,7 +5,7 @@ class Job ***REMOVED***
     jobType,
     companyId,
     tags,
-    city,
+    location,
     primaryTagId,
     monthlySalary,
     description,
@@ -25,7 +25,7 @@ class Job ***REMOVED***
     this.jobType = jobType;
     this.companyId = companyId;
     this.tags = tags;
-    this.city = city;
+    this.location = location;
     this.primaryTagId = primaryTagId;
     this.monthlySalary = monthlySalary;
     this.description = description;
@@ -53,7 +53,7 @@ class Job ***REMOVED***
       dbJob.job_job_type,
       dbJob.job_company_id,
       tags,
-      dbJob.job_city,
+      dbJob.job_location,
       dbJob.job_primary_tag,
       dbJob.job_monthly_salary,
       dbJob.job_description,

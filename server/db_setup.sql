@@ -29,7 +29,7 @@ CREATE TABLE job (
   position TEXT NOT NULL,
   job_type TEXT NOT NULL CONSTRAINT check_value CHECK (job_type IN ('Full-time', 'Part-time', 'Freelance', 'Internship', 'Temporary')),
   company_id INTEGER REFERENCES company(id),
-  city TEXT,
+  location TEXT,
   primary_tag INTEGER REFERENCES tag(id),
   monthly_salary TEXT,
   description TEXT NOT NULL,
