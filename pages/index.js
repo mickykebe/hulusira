@@ -177,7 +177,7 @@ function Index(***REMOVED*** jobPage, activeTags, primaryTags ***REMOVED***) ***
               />
             );
           ***REMOVED***)***REMOVED***
-          ***REMOVED***jobs.length === 0 && (
+          ***REMOVED***ticker.current > 0 && jobs.length === 0 && (
             <Typography
               variant="h4"
               color="textSecondary"
