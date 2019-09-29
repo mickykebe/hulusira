@@ -177,7 +177,7 @@ function Index({ jobPage, activeTags, primaryTags }) {
               />
             );
           })}
-          {jobs.length === 0 && (
+          {ticker.current > 0 && jobs.length === 0 && (
             <Typography
               variant="h4"
               color="textSecondary"
