@@ -151,7 +151,7 @@ describe("POST to /new", () => {
     const data = {
       position: faker.name.jobTitle(),
       jobType: "Full-time",
-      city: faker.address.city(),
+      location: faker.address.city(),
       tags: [faker.random.word()],
       monthlySalary: faker.finance.amount(),
       description: faker.lorem.sentences(),
@@ -171,7 +171,7 @@ describe("POST to /new", () => {
       job: {
         position: data.position,
         jobType: data.jobType,
-        city: data.city,
+        location: data.location,
         tags: [{ name: data.tags[0], isPrimary: false }],
         monthlySalary: data.monthlySalary,
         description: data.description,

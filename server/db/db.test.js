@@ -107,7 +107,7 @@ describe("db", () => {
     const jobData = {
       position: faker.lorem.sentence(),
       jobType: "Full-time",
-      city: faker.address.city(),
+      location: faker.address.city(),
       primaryTagId: tagId,
       tags: [faker.random.word(), faker.random.word()],
       monthlySalary: faker.finance.amount(),
@@ -122,7 +122,7 @@ describe("db", () => {
     expect(job).toMatchObject({
       position: jobData.position,
       jobType: jobData.jobType,
-      city: jobData.city,
+      location: jobData.location,
       companyId: company.id,
       primaryTagId: tagId,
       tags: [
