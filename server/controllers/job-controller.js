@@ -85,6 +85,7 @@ exports.createJob = async (req, res) => {
       logo: companyLogo
     };
   }
+  jobData.approved = req.user && req.user.role === "admin";
   const resData = await db.createJobAndCompany({ company, job: jobData });
   res.status(200).send(resData);
 };
