@@ -82,7 +82,8 @@ class Db ***REMOVED***
           requirements: jobData.requirements,
           how_to_apply: jobData.howToApply,
           apply_url: jobData.applyUrl,
-          apply_email: jobData.applyEmail
+          apply_email: jobData.applyEmail,
+          approved: !!jobData.approved || false
         ***REMOVED***)
         .returning(this.selectColumns("job", "job", this.jobColumns));
 
