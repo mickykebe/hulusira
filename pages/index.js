@@ -37,6 +37,9 @@ const useStyles = makeStyles(theme => (***REMOVED***
   ***REMOVED***,
   categoryItem: ***REMOVED***
     fontSize: "0.8rem"
+  ***REMOVED***,
+  nothingFound: ***REMOVED***
+    paddingTop: theme.spacing(4)
   ***REMOVED***
 ***REMOVED***));
 
@@ -174,6 +177,15 @@ function Index(***REMOVED*** jobPage, activeTags, primaryTags ***REMOVED***) ***
               />
             );
           ***REMOVED***)***REMOVED***
+          ***REMOVED***jobs.length === 0 && (
+            <Typography
+              variant="h4"
+              color="textSecondary"
+              align="center"
+              className=***REMOVED***classes.nothingFound***REMOVED***>
+              😬 <br /> Nothing Found
+            </Typography>
+          )***REMOVED***
         </React.Fragment>
         ***REMOVED***isLoading && (
           <CircularProgress
