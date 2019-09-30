@@ -18,6 +18,11 @@ class MyDocument extends Document ***REMOVED***
             href="https://fonts.googleapis.com/css?family=Nunito:400,800&display=swap"
             rel="stylesheet"
           />
+          <meta property="og:site_name" content="HuluSira" />
+          <meta property="og:type" content="website" />
+          <meta name="twitter:card" content="summary" />
+          <meta name="twitter:site" content="@HuluSira" />
+          <meta name="twitter:creator" content="@HuluSira" />
         </Head>
         <body>
           <Main />

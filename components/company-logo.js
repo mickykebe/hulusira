@@ -68,7 +68,7 @@ export default function CompanyLogo(***REMOVED***
   if (abbrevFallback) ***REMOVED***
     return (
       <Typography
-        variant=***REMOVED***size === "small" ? "h6" : "h4"***REMOVED***
+        variant=***REMOVED***size === "small" ? "h6" : "h5"***REMOVED***
         color="textSecondary"
         align="center"
         className=***REMOVED***classes.abbrev***REMOVED***>

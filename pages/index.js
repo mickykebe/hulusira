@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Router, ***REMOVED*** useRouter ***REMOVED*** from "next/router";
+import Head from "next/head";
 import ***REMOVED***
   makeStyles,
   Button,
@@ -42,6 +43,11 @@ const useStyles = makeStyles(theme => (***REMOVED***
     paddingTop: theme.spacing(4)
   ***REMOVED***
 ***REMOVED***));
+
+const pageTitle = "Hulusira - Jobs in Ethiopia";
+const pageUrl = `$***REMOVED***process.env.ROOT_URL***REMOVED***/`;
+const pageDescription =
+  "HuluSira is a job board for jobs based in Ethiopia. We aim to make the job posting and dissemination process as simple as possible. Get workers hired.";
 
 const jobsReducer = (state, action) => ***REMOVED***
   switch (action.type) ***REMOVED***
@@ -131,6 +137,18 @@ function Index(***REMOVED*** jobPage, activeTags, primaryTags ***REMOVED***) ***
           </Link>
         </React.Fragment>
       ***REMOVED***>
+      <Head>
+        <title>***REMOVED***pageTitle***REMOVED***</title>
+        <meta name="description" content=***REMOVED***pageDescription***REMOVED*** />
+        <meta property="og:title" content=***REMOVED***pageTitle***REMOVED*** />
+        <meta property="og:url" content=***REMOVED***pageUrl***REMOVED*** />
+        <meta property="og:description" content=***REMOVED***pageDescription***REMOVED*** />
+        ***REMOVED***/*<meta property="og:image" content="" />*/***REMOVED***
+        <meta name="twitter:title" content=***REMOVED***pageTitle***REMOVED*** />
+        <meta name="twitter:description" content=***REMOVED***pageDescription***REMOVED*** />
+        ***REMOVED***/*<meta name="twitter:image:src" content="" />*/***REMOVED***
+        <meta name="twitter:url" content=***REMOVED***pageUrl***REMOVED*** />
+      </Head>
       <Container className=***REMOVED***classes.root***REMOVED*** maxWidth="md">
         ***REMOVED***(!activeTags || activeTags.length === 0) && (
           <TextField
