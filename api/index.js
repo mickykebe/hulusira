@@ -36,7 +36,7 @@ class Api {
     return data;
   }
 
-  async getJobs({ ctx = null, cursor = "", tags = "" } = {}) {
+  async getJobs({ ctx = {}, cursor = "", tags = "" } = {}) {
     const { data } = await this.request(ctx).get(
       `/jobs?cursor=${cursor}&tags=${tags}`
     );
