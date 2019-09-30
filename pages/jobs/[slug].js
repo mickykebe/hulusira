@@ -1,5 +1,6 @@
 import { useEffect, useState, useReducer } from "react";
-import Router from "next/router";
+import Head from "next/head";
+import Router, { useRouter } from "next/router";
 import nextCookie from "next-cookies";
 import api from "../../api";
 import Layout from "../../components/layout";
@@ -78,8 +79,32 @@ function Job({ jobData, adminToken }) {
       dispatch({ type: "ERROR_CLOSING_JOB" });
     }
   };
+  const metaTitle = `${jobData.job.position}${
+    jobData.company ? ` at ${jobData.company.name}` : ""
+  }`;
+  const metaDescription = `${
+    jobData.company ? `${jobData.company.name} is h` : "H"
+  }iring ${jobData.job.position}. ${jobData.job.description.slice(0, 250)}...`;
+  const router = useRouter();
+  const url = `${process.env.ROOT_URL}${router.asPath}`;
   return (
     <Layout>
+      <Head>
+        <title>{metaTitle}</title>
+        <meta name="description" content={metaDescription} />
+        <meta property="og:title" content={metaTitle} />
+        <meta property="og:url" content={url} />
+        <meta property="og:description" content={metaDescription} />
+        {jobData.company && jobData.company.logo && (
+          <meta property="og:image" content={jobData.company.logo} />
+        )}
+        <meta name="twitter:title" content={metaTitle} />
+        <meta name="twitter:description" content={metaDescription} />
+        {jobData.company && jobData.company.logo && (
+          <meta property="twitter:image:src" content={jobData.company.logo} />
+        )}
+        <meta property="twitter:url" content={url} />
+      </Head>
       <Container>
         {jobData.job.closed && (
           <Banner message="This job is closed and thus no longer publicly accessible." />

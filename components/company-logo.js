@@ -68,7 +68,7 @@ export default function CompanyLogo({
   if (abbrevFallback) {
     return (
       <Typography
-        variant={size === "small" ? "h6" : "h4"}
+        variant={size === "small" ? "h6" : "h5"}
         color="textSecondary"
         align="center"
         className={classes.abbrev}>

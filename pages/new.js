@@ -1,5 +1,6 @@
 import React from "react";
-import Router from "next/router";
+import Router, { useRouter } from "next/router";
+import Head from "next/head";
 import Cookies from "js-cookie";
 import {
   Box,
@@ -97,6 +98,10 @@ const useStyles = makeStyles(theme => ({
     zIndex: 1350
   }
 }));
+
+const pageTitle = "Post job on HuluSira";
+const pageDescription =
+  "Access thousands of job applicants by posting on HuluSira";
 
 const cleanTags = tags =>
   tags.map(tag => tag.trim()).filter(tag => tag.length > 0);
@@ -208,9 +213,21 @@ function New({ primaryTags }) {
     }
     actions.setSubmitting(false);
   };
+  const router = useRouter();
+  const pageUrl = `${process.env.ROOT_URL}${router.asPath}`;
 
   return (
     <Layout>
+      <Head>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:url" content={pageUrl} />
+        <meta property="og:description" content={pageDescription} />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+        <meta property="twitter:url" content={pageUrl} />
+      </Head>
       <Container className={classes.root} maxWidth="md">
         <Formik
           validationSchema={validationSchema}

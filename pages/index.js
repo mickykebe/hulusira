@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Router, { useRouter } from "next/router";
+import Head from "next/head";
 import {
   makeStyles,
   Button,
@@ -42,6 +43,11 @@ const useStyles = makeStyles(theme => ({
     paddingTop: theme.spacing(4)
   }
 }));
+
+const pageTitle = "Hulusira - Jobs in Ethiopia";
+const pageUrl = `${process.env.ROOT_URL}/`;
+const pageDescription =
+  "HuluSira is a job board for jobs based in Ethiopia. We aim to make the job posting and dissemination process as simple as possible. Get workers hired.";
 
 const jobsReducer = (state, action) => {
   switch (action.type) {
@@ -131,6 +137,18 @@ function Index({ jobPage, activeTags, primaryTags }) {
           </Link>
         </React.Fragment>
       }>
+      <Head>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:url" content={pageUrl} />
+        <meta property="og:description" content={pageDescription} />
+        {/*<meta property="og:image" content="" />*/}
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+        {/*<meta name="twitter:image:src" content="" />*/}
+        <meta name="twitter:url" content={pageUrl} />
+      </Head>
       <Container className={classes.root} maxWidth="md">
         {(!activeTags || activeTags.length === 0) && (
           <TextField
