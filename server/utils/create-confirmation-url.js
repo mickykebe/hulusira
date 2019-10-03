@@ -8,5 +8,5 @@ exports.confirmUserPrefix = confirmUserPrefix;
 exports.createConfirmationUrl = async userId => ***REMOVED***
   const token = v4();
   await redis.set(confirmUserPrefix + token, userId, "ex", 60 * 60 * 24);
-  return `$***REMOVED***process.env.ROOT_URL***REMOVED***/confirm/$***REMOVED***token***REMOVED***`;
+  return `$***REMOVED***process.env.ROOT_URL***REMOVED***/confirm-user/$***REMOVED***token***REMOVED***`;
 ***REMOVED***;

@@ -1,7 +1,11 @@
 const bcrypt = require("bcryptjs");
 const db = require("../db");
 const ***REMOVED*** sendEmail ***REMOVED*** = require("../utils/send-email");
-const ***REMOVED*** createConfirmationUrl ***REMOVED*** = require("../utils/create-confirmation-url");
+const ***REMOVED***
+  createConfirmationUrl,
+  confirmUserPrefix
+***REMOVED*** = require("../utils/create-confirmation-url");
+const redis = require("../redis");
 
 exports.me = async (req, res) => ***REMOVED***
   if (req.user) ***REMOVED***
@@ -36,4 +40,17 @@ exports.register = async (req, res) => ***REMOVED***
     `Hi, <br /><br /> Thanks for using HuluSira! Please confirm your email address by clicking the link below. <br /><br /> <a href="$***REMOVED***confirmationUrl***REMOVED***">$***REMOVED***confirmationUrl***REMOVED***</a> <br /><br />If you did not signup for a HuluSira account please disregard this email. <br /><br /> Thanks <br />HuluSira`
   );
   res.status(200).send(user.publicData());
+***REMOVED***;
+
+exports.confirmUser = async (req, res) => ***REMOVED***
+  const ***REMOVED*** token ***REMOVED*** = req.params;
+  const confirmationKey = confirmUserPrefix + token;
+  const userId = await redis.get(confirmationKey);
+  if (!userId) ***REMOVED***
+    res.sendStatus(500);
+  ***REMOVED***
+
+  await db.confirmUser(parseInt(userId, 10));
+  redis.del(confirmationKey);
+  res.sendStatus(200);
 ***REMOVED***;

@@ -301,6 +301,14 @@ class Db ***REMOVED***
     return User.fromDb(rows[0]);
   ***REMOVED***
 
+  async confirmUser(userId) ***REMOVED***
+    await this.knex("users")
+      .where("id", userId)
+      .update(***REMOVED***
+        confirmed: true
+      ***REMOVED***);
+  ***REMOVED***
+
   async getUserById(id) ***REMOVED***
     const row = await this.knex("users")
       .first()
