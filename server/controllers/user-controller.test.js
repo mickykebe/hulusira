@@ -2,9 +2,13 @@ const faker = require("faker");
 const bcrypt = require("bcryptjs");
 const db = require("../db");
 const { User } = require("../models");
-const { login } = require("./user-controller");
+const { login, register } = require("./user-controller");
+const sendEmailUtil = require("../utils/send-email");
+
 jest.mock("../db");
 jest.mock("bcryptjs");
+jest.mock("../utils/create-confirmation-url");
+jest.mock("../utils/send-email");
 
 const mockRequest = ({
   body = {},
@@ -31,6 +35,18 @@ const mockResponse = () => {
 const sampleUser = (userData = {}) => {
   return Object.assign(new User(), userData);
 };
+
+describe(`/register`, () => {
+  it("registers user and sends confirmation email", async () => {
+    const req = mockRequest({ body: {} });
+    const res = mockResponse();
+    db.createUser.mockResolvedValue(new User());
+    await register(req, res);
+    expect(sendEmailUtil.sendEmail).toHaveBeenCalledTimes(1);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.send).toHaveBeenCalledTimes(1);
+  });
+});
 
 describe(`/login`, () => {
   it("wrong email returns 401", async () => {

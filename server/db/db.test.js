@@ -94,9 +94,10 @@ describe("db", () => {
   });
 
   it("createJob creates job", async () => {
+    const primaryTag = { name: "dev", isPrimary: true };
     const tagRes = await db.pool.query(
       `INSERT INTO tag(name, is_primary) VALUES ($1, $2) RETURNING *`,
-      ["dev", true]
+      [primaryTag.name, primaryTag.isPrimary]
     );
     const tagId = tagRes.rows[0].id;
     const company = await db.createCompany({
@@ -124,8 +125,11 @@ describe("db", () => {
       jobType: jobData.jobType,
       location: jobData.location,
       companyId: company.id,
-      primaryTagId: tagId,
       tags: [
+        {
+          name: primaryTag.name,
+          isPrimary: true
+        },
         {
           name: jobData.tags[0],
           isPrimary: false
@@ -146,7 +150,7 @@ describe("db", () => {
     const tagCountRes = await db.pool.query(`SELECT COUNT(*) FROM tag`);
     expect(tagCountRes.rows[0].count).toBe("3");
     const jobTagRes = await db.pool.query(`SELECT COUNT(*) FROM job_tags`);
-    expect(jobTagRes.rows[0].count).toBe("2");
+    expect(jobTagRes.rows[0].count).toBe("3");
   });
 
   it("createJob should work without company", async () => {
@@ -432,7 +436,7 @@ describe("db", () => {
     expect(result2).toBe(0);
   });
 
-  it.only("getTags returns tags", async () => {
+  it("getTags returns tags", async () => {
     const rows = await db
       .knex("tag")
       .insert([sampleTagData(), sampleTagData()])

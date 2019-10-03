@@ -3,6 +3,7 @@ const { Pool } = require("pg");
 const { Company, Tag, Job, User } = require("../models");
 const Knex = require("knex");
 const slug = require("slug");
+const bcrypt = require("bcryptjs");
 
 class Db {
   constructor() {
@@ -55,14 +56,16 @@ class Db {
 
   async createJob(jobData, companyId = null) {
     assert(!!jobData);
+    let primaryTag;
 
     if (jobData.primaryTagId) {
-      const tagRows = await this.knex("tag")
-        .select()
+      const primaryTagRow = await this.knex("tag")
+        .first()
         .where("id", jobData.primaryTagId);
-      if (tagRows.length === 0 || tagRows[0].is_primary === false) {
+      if (!primaryTagRow || primaryTagRow.is_primary === false) {
         throw new Error("Primary tag value set to invalid tag");
       }
+      primaryTag = Tag.fromDb(primaryTagRow);
     }
 
     const job = await this.knex.transaction(async trx => {
@@ -99,7 +102,10 @@ class Db {
         })
         .returning(this.selectColumns("job", "job", this.jobColumns));
 
-      const job = Job.fromDb(rows[0], tags);
+      const job = Job.fromDb(
+        rows[0],
+        primaryTag ? [primaryTag, ...tags] : tags
+      );
 
       if (jobData.primaryTagId) {
         await this.createJobTag(job.id, jobData.primaryTagId, true, { trx });
@@ -273,6 +279,26 @@ class Db {
     if (!!row) {
       return User.fromDb(row);
     }
+  }
+
+  async createUser(userData) {
+    const hashedPassword = await bcrypt.hash(userData.password, 15);
+    if (!userData) {
+      throw new Error("Invalid user data supplied");
+    }
+    const rows = await this.knex("users")
+      .insert({
+        first_name: userData.firstName,
+        last_name: userData.lastName,
+        email: userData.email,
+        password: hashedPassword,
+        role: userData.role
+      })
+      .returning("*");
+    if (rows.length !== 1) {
+      throw new Error("Problem occurred creating user");
+    }
+    return User.fromDb(rows[0]);
   }
 
   async getUserById(id) {
