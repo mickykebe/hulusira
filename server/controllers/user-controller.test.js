@@ -2,9 +2,13 @@ const faker = require("faker");
 const bcrypt = require("bcryptjs");
 const db = require("../db");
 const ***REMOVED*** User ***REMOVED*** = require("../models");
-const ***REMOVED*** login ***REMOVED*** = require("./user-controller");
+const ***REMOVED*** login, register ***REMOVED*** = require("./user-controller");
+const sendEmailUtil = require("../utils/send-email");
+
 jest.mock("../db");
 jest.mock("bcryptjs");
+jest.mock("../utils/create-confirmation-url");
+jest.mock("../utils/send-email");
 
 const mockRequest = (***REMOVED***
   body = ***REMOVED******REMOVED***,
@@ -31,6 +35,18 @@ const mockResponse = () => ***REMOVED***
 const sampleUser = (userData = ***REMOVED******REMOVED***) => ***REMOVED***
   return Object.assign(new User(), userData);
 ***REMOVED***;
+
+describe(`/register`, () => ***REMOVED***
+  it("registers user and sends confirmation email", async () => ***REMOVED***
+    const req = mockRequest(***REMOVED*** body: ***REMOVED******REMOVED*** ***REMOVED***);
+    const res = mockResponse();
+    db.createUser.mockResolvedValue(new User());
+    await register(req, res);
+    expect(sendEmailUtil.sendEmail).toHaveBeenCalledTimes(1);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.send).toHaveBeenCalledTimes(1);
+  ***REMOVED***);
+***REMOVED***);
 
 describe(`/login`, () => ***REMOVED***
   it("wrong email returns 401", async () => ***REMOVED***

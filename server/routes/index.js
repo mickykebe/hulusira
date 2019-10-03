@@ -85,6 +85,7 @@ router.get("/primary-tags", catchErrors(jobController.getPrimaryTags));
 
 router.get("/me", catchErrors(userController.me));
 router.post("/login", catchErrors(userController.login));
+router.post("/register", catchErrors(userController.register));
 
 router.get("/tags", catchErrors(tagController.getTags));
 

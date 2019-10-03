@@ -3,6 +3,7 @@ const ***REMOVED*** Pool ***REMOVED*** = require("pg");
 const ***REMOVED*** Company, Tag, Job, User ***REMOVED*** = require("../models");
 const Knex = require("knex");
 const slug = require("slug");
+const bcrypt = require("bcryptjs");
 
 class Db ***REMOVED***
   constructor() ***REMOVED***
@@ -55,14 +56,16 @@ class Db ***REMOVED***
 
   async createJob(jobData, companyId = null) ***REMOVED***
     assert(!!jobData);
+    let primaryTag;
 
     if (jobData.primaryTagId) ***REMOVED***
-      const tagRows = await this.knex("tag")
-        .select()
+      const primaryTagRow = await this.knex("tag")
+        .first()
         .where("id", jobData.primaryTagId);
-      if (tagRows.length === 0 || tagRows[0].is_primary === false) ***REMOVED***
+      if (!primaryTagRow || primaryTagRow.is_primary === false) ***REMOVED***
         throw new Error("Primary tag value set to invalid tag");
       ***REMOVED***
+      primaryTag = Tag.fromDb(primaryTagRow);
     ***REMOVED***
 
     const job = await this.knex.transaction(async trx => ***REMOVED***
@@ -99,7 +102,10 @@ class Db ***REMOVED***
         ***REMOVED***)
         .returning(this.selectColumns("job", "job", this.jobColumns));
 
-      const job = Job.fromDb(rows[0], tags);
+      const job = Job.fromDb(
+        rows[0],
+        primaryTag ? [primaryTag, ...tags] : tags
+      );
 
       if (jobData.primaryTagId) ***REMOVED***
         await this.createJobTag(job.id, jobData.primaryTagId, true, ***REMOVED*** trx ***REMOVED***);
@@ -273,6 +279,26 @@ class Db ***REMOVED***
     if (!!row) ***REMOVED***
       return User.fromDb(row);
     ***REMOVED***
+  ***REMOVED***
+
+  async createUser(userData) ***REMOVED***
+    const hashedPassword = await bcrypt.hash(userData.password, 15);
+    if (!userData) ***REMOVED***
+      throw new Error("Invalid user data supplied");
+    ***REMOVED***
+    const rows = await this.knex("users")
+      .insert(***REMOVED***
+        first_name: userData.firstName,
+        last_name: userData.lastName,
+        email: userData.email,
+        password: hashedPassword,
+        role: userData.role
+      ***REMOVED***)
+      .returning("*");
+    if (rows.length !== 1) ***REMOVED***
+      throw new Error("Problem occurred creating user");
+    ***REMOVED***
+    return User.fromDb(rows[0]);
   ***REMOVED***
 
   async getUserById(id) ***REMOVED***
