@@ -301,6 +301,14 @@ class Db {
     return User.fromDb(rows[0]);
   }
 
+  async confirmUser(userId) {
+    await this.knex("users")
+      .where("id", userId)
+      .update({
+        confirmed: true
+      });
+  }
+
   async getUserById(id) {
     const row = await this.knex("users")
       .first()
