@@ -240,7 +240,7 @@ function New(***REMOVED*** primaryTags ***REMOVED***) ***REMOVED***
             location: "Addis Ababa",
             primaryTagId: "",
             tags: [],
-            monthlySalary: "",
+            salary: "",
             description: "",
             requirements: "",
             responsibilites: "",
@@ -346,17 +346,17 @@ function New(***REMOVED*** primaryTags ***REMOVED***) ***REMOVED***
                     ***REMOVED***
                   />
                   <TextField
-                    name="monthlySalary"
-                    label="Monthly Salary"
+                    name="salary"
+                    label="Salary"
                     variant="outlined"
                     margin="normal"
                     fullWidth
-                    value=***REMOVED***values.monthlySalary***REMOVED***
+                    value=***REMOVED***values.salary***REMOVED***
                     onChange=***REMOVED***handleChange***REMOVED***
-                    error=***REMOVED***!!(touched.monthlySalary && errors.monthlySalary)***REMOVED***
+                    error=***REMOVED***!!(touched.salary && errors.salary)***REMOVED***
                     helperText=***REMOVED***
-                      !!(touched.monthlySalary && errors.monthlySalary)
-                        ? errors.monthlySalary
+                      !!(touched.salary && errors.salary)
+                        ? errors.salary
                         : "Salary is not required but highly recommended. Enter salary data for better results."
                     ***REMOVED***
                   />

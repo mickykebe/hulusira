@@ -94,8 +94,7 @@ export default function JobContent(***REMOVED*** jobData ***REMOVED***) ***REMOV
           <HSPaper className=***REMOVED***classes.jobInfo***REMOVED***>
             ***REMOVED***job.location && renderJobInfoItem("Location", job.location)***REMOVED***
             ***REMOVED***job.jobType && renderJobInfoItem("Job Type", job.jobType)***REMOVED***
-            ***REMOVED***job.monthlySalary &&
-              renderJobInfoItem("Monthly Salary", job.monthlySalary)***REMOVED***
+            ***REMOVED***job.salary && renderJobInfoItem("Salary", job.salary)***REMOVED***
           </HSPaper>
           <HSPaper className=***REMOVED***classes.jobMain***REMOVED***>
             <Typography variant="h5">Description</Typography>

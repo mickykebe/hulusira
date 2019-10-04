@@ -7,7 +7,7 @@ class Job ***REMOVED***
     tags,
     location,
     primaryTagId,
-    monthlySalary,
+    salary,
     description,
     responsibilities,
     requirements,
@@ -27,7 +27,7 @@ class Job ***REMOVED***
     this.tags = tags;
     this.location = location;
     this.primaryTagId = primaryTagId;
-    this.monthlySalary = monthlySalary;
+    this.salary = salary;
     this.description = description;
     this.responsibilities = responsibilities;
     this.requirements = requirements;
@@ -55,7 +55,7 @@ class Job ***REMOVED***
       tags,
       dbJob.job_location,
       dbJob.job_primary_tag,
-      dbJob.job_monthly_salary,
+      dbJob.job_salary,
       dbJob.job_description,
       dbJob.job_responsibilities,
       dbJob.job_requirements,

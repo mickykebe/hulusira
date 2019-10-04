@@ -31,7 +31,7 @@ CREATE TABLE job (
   company_id INTEGER REFERENCES company(id),
   location TEXT,
   primary_tag INTEGER REFERENCES tag(id),
-  monthly_salary TEXT,
+  salary TEXT,
   description TEXT NOT NULL,
   responsibilities TEXT,
   requirements TEXT,
