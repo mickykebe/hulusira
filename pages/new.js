@@ -162,6 +162,7 @@ const validationSchema = Yup.object().shape(
 const jobTypes = [
   "Full-time",
   "Part-time",
+  "Contract",
   "Freelance",
   "Internship",
   "Temporary"

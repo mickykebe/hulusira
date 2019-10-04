@@ -27,7 +27,7 @@ CREATE TABLE tag (
 CREATE TABLE job (
   id SERIAL PRIMARY KEY,
   position TEXT NOT NULL,
-  job_type TEXT NOT NULL CONSTRAINT check_value CHECK (job_type IN ('Full-time', 'Part-time', 'Freelance', 'Internship', 'Temporary')),
+  job_type TEXT NOT NULL CONSTRAINT check_value CHECK (job_type IN ('Full-time', 'Part-time', 'Freelance', 'Internship', 'Temporary', 'Contract')),
   company_id INTEGER REFERENCES company(id),
   location TEXT,
   primary_tag INTEGER REFERENCES tag(id),
