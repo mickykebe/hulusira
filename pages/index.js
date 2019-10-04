@@ -95,6 +95,9 @@ function Index(***REMOVED*** jobPage, activeTags, primaryTags ***REMOVED***) ***
   const classes = useStyles();
   const fetchMoreJobs = async () => ***REMOVED***
     const tickerVal = ticker.current;
+    if (isLoading || !nextCursor) ***REMOVED***
+      return;
+    ***REMOVED***
     dispatch(***REMOVED*** type: "FETCH_INIT" ***REMOVED***);
     try ***REMOVED***
       const jobPage = await api.getJobs(***REMOVED*** cursor: nextCursor ***REMOVED***);
@@ -107,7 +110,9 @@ function Index(***REMOVED*** jobPage, activeTags, primaryTags ***REMOVED***) ***
       ***REMOVED***
     ***REMOVED***
   ***REMOVED***;
-  useInfiniteScroller(isLoading, !!nextCursor, fetchMoreJobs, isError);
+
+  const sentinelRef = useInfiniteScroller(250, fetchMoreJobs);
+  //useInfiniteScroller(isLoading, !!nextCursor, fetchMoreJobs, isError);
   const handleTagClick = tagId => ***REMOVED***
     const tagIndex = activeTags.findIndex(tag => tag.id === tagId);
     if (tagIndex !== -1) ***REMOVED***
@@ -195,6 +200,7 @@ function Index(***REMOVED*** jobPage, activeTags, primaryTags ***REMOVED***) ***
               />
             );
           ***REMOVED***)***REMOVED***
+          <div ref=***REMOVED***sentinelRef***REMOVED*** style=***REMOVED******REMOVED*** height: "1px" ***REMOVED******REMOVED*** />
           ***REMOVED***ticker.current > 0 && jobs.length === 0 && (
             <Typography
               variant="h4"
