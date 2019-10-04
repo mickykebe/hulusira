@@ -94,8 +94,7 @@ export default function JobContent({ jobData }) {
           <HSPaper className={classes.jobInfo}>
             {job.location && renderJobInfoItem("Location", job.location)}
             {job.jobType && renderJobInfoItem("Job Type", job.jobType)}
-            {job.monthlySalary &&
-              renderJobInfoItem("Monthly Salary", job.monthlySalary)}
+            {job.salary && renderJobInfoItem("Salary", job.salary)}
           </HSPaper>
           <HSPaper className={classes.jobMain}>
             <Typography variant="h5">Description</Typography>

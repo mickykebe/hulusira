@@ -240,7 +240,7 @@ function New({ primaryTags }) {
             location: "Addis Ababa",
             primaryTagId: "",
             tags: [],
-            monthlySalary: "",
+            salary: "",
             description: "",
             requirements: "",
             responsibilites: "",
@@ -346,17 +346,17 @@ function New({ primaryTags }) {
                     }
                   />
                   <TextField
-                    name="monthlySalary"
-                    label="Monthly Salary"
+                    name="salary"
+                    label="Salary"
                     variant="outlined"
                     margin="normal"
                     fullWidth
-                    value={values.monthlySalary}
+                    value={values.salary}
                     onChange={handleChange}
-                    error={!!(touched.monthlySalary && errors.monthlySalary)}
+                    error={!!(touched.salary && errors.salary)}
                     helperText={
-                      !!(touched.monthlySalary && errors.monthlySalary)
-                        ? errors.monthlySalary
+                      !!(touched.salary && errors.salary)
+                        ? errors.salary
                         : "Salary is not required but highly recommended. Enter salary data for better results."
                     }
                   />
