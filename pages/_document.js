@@ -28,6 +28,9 @@ class MyDocument extends Document {
           <meta name="twitter:card" content="summary" />
           <meta name="twitter:site" content="@HuluSira" />
           <meta name="twitter:creator" content="@HuluSira" />
+          <script
+            crossOrigin="anonymous"
+            src="https://polyfill.io/v3/polyfill.min.js?features=IntersectionObserver"></script>
         </Head>
         <body>
           <Main />

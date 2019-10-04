@@ -1,41 +1,24 @@
-import { useEffect, useState } from "react";
-import throttle from "lodash.throttle";
+import { useEffect, useRef } from "react";
 
-export default function useInfiniteScroll(
-  isFetching,
-  hasMore,
-  onLoadMore,
-  disabled = false,
-  threshold = 50
-) {
-  const [scrollDownTrigger, setScrollDownTrigger] = useState(false);
-
+export default function useInfinteScroll(bottomOffset = 0, onLoadMore) {
+  const ref = useRef();
   useEffect(() => {
-    if (isFetching || !scrollDownTrigger || !hasMore) {
-      return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          onLoadMore();
+        }
+      },
+      { rootMargin: `0px 0px ${bottomOffset}px 0px` }
+    );
+    const sentinelRef = ref;
+    if (sentinelRef.current) {
+      observer.observe(sentinelRef.current);
     }
-    onLoadMore();
-    setScrollDownTrigger(false);
-  }, [hasMore, isFetching, onLoadMore, scrollDownTrigger]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (disabled) {
-        return;
-      }
-
-      if (
-        window.innerHeight + document.documentElement.scrollTop + threshold >
-        document.documentElement.offsetHeight
-      ) {
-        setScrollDownTrigger(true);
-      }
-    };
-
-    const throttledHandleScroll = throttle(handleScroll, 200);
-    window.addEventListener("scroll", throttledHandleScroll);
     return () => {
-      window.removeEventListener("scroll", throttledHandleScroll);
+      observer.unobserve(sentinelRef.current);
     };
-  }, [threshold, disabled]);
+  }, [bottomOffset, onLoadMore, ref]);
+
+  return ref;
 }

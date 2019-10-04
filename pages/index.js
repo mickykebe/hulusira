@@ -95,6 +95,9 @@ function Index({ jobPage, activeTags, primaryTags }) {
   const classes = useStyles();
   const fetchMoreJobs = async () => {
     const tickerVal = ticker.current;
+    if (isLoading || !nextCursor) {
+      return;
+    }
     dispatch({ type: "FETCH_INIT" });
     try {
       const jobPage = await api.getJobs({ cursor: nextCursor });
@@ -107,7 +110,9 @@ function Index({ jobPage, activeTags, primaryTags }) {
       }
     }
   };
-  useInfiniteScroller(isLoading, !!nextCursor, fetchMoreJobs, isError);
+
+  const sentinelRef = useInfiniteScroller(250, fetchMoreJobs);
+  //useInfiniteScroller(isLoading, !!nextCursor, fetchMoreJobs, isError);
   const handleTagClick = tagId => {
     const tagIndex = activeTags.findIndex(tag => tag.id === tagId);
     if (tagIndex !== -1) {
@@ -195,6 +200,7 @@ function Index({ jobPage, activeTags, primaryTags }) {
               />
             );
           })}
+          <div ref={sentinelRef} style={{ height: "1px" }} />
           {ticker.current > 0 && jobs.length === 0 && (
             <Typography
               variant="h4"
