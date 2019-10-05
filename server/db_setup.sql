@@ -53,3 +53,8 @@ CREATE TABLE job_tags (
   is_primary BOOLEAN DEFAULT FALSE,
   UNIQUE (job_id, tag_id)
 );
+
+CREATE TABLE job_telegram_post (
+  job_id INTEGER PRIMARY KEY REFERENCES job(id) ON DELETE CASCADE,
+  telegram_message_id INTEGER NOT NULL
+);

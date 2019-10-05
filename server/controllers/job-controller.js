@@ -1,5 +1,6 @@
 const Yup = require("yup");
 const db = require("../db/index");
+const telegramHandler = require("../handlers/telegram");
 const utils = require("../utils");
 
 const validationSchema = Yup.object().shape(
@@ -85,8 +86,14 @@ exports.createJob = async (req, res) => ***REMOVED***
       logo: companyLogo
     ***REMOVED***;
   ***REMOVED***
-  jobData.approved = req.user && req.user.role === "admin";
+  const isAdminUser = req.user && req.user.role === "admin";
+  if (isAdminUser) ***REMOVED***
+    jobData.approved = true;
+  ***REMOVED***
   const resData = await db.createJobAndCompany(***REMOVED*** company, job: jobData ***REMOVED***);
+  if (isAdminUser) ***REMOVED***
+    telegramHandler.postJobToChannel(resData);
+  ***REMOVED***
   res.status(200).send(resData);
 ***REMOVED***;
 
@@ -158,6 +165,11 @@ exports.closeJob = async (req, res) => ***REMOVED***
   const affectedRows = await db.closeJob(id);
   if (affectedRows === 1) ***REMOVED***
     res.status(200).send(true);
+    const messageId = await db.getTelegramMessageId(id);
+    if (messageId) ***REMOVED***
+      await telegramHandler.closeJobPost(messageId);
+      db.deleteTelegramMessage(id);
+    ***REMOVED***
     return;
   ***REMOVED***
   res.sendStatus(404);
@@ -168,6 +180,8 @@ exports.approveJob = async (req, res) => ***REMOVED***
   const affectedRows = await db.approveJob(jobId);
   if (affectedRows === 1) ***REMOVED***
     res.status(200).send(true);
+    const jobData = await db.getJobById(jobId);
+    telegramHandler.postJobToChannel(jobData);
     return;
   ***REMOVED***
   res.sendStatus(404);

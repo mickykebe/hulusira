@@ -313,6 +313,28 @@ class Db ***REMOVED***
       .del();
   ***REMOVED***
 
+  createJobTelegramMessage(jobId, telegramMessageId) ***REMOVED***
+    return this.knex("job_telegram_post").insert(***REMOVED***
+      job_id: jobId,
+      telegram_message_id: telegramMessageId
+    ***REMOVED***);
+  ***REMOVED***
+
+  async getTelegramMessageId(jobId) ***REMOVED***
+    const row = await this.knex("job_telegram_post")
+      .first()
+      .where("job_id", jobId);
+    if (!!row) ***REMOVED***
+      return row.telegram_message_id;
+    ***REMOVED***
+  ***REMOVED***
+
+  deleteTelegramMessage(jobId) ***REMOVED***
+    return this.knex("job_telegram_post")
+      .where("job_id", jobId)
+      .del();
+  ***REMOVED***
+
   end() ***REMOVED***
     return this.pool.end();
   ***REMOVED***
