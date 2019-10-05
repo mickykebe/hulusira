@@ -1,13 +1,12 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
-export default function useInfinteScroll(bottomOffset = 0, onLoadMore) {
+export default function useIsInview(bottomOffset = 0) {
+  const [isIntersecting, setIsIntersecting] = useState(false);
   const ref = useRef();
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          onLoadMore();
-        }
+        setIsIntersecting(entry.isIntersecting);
       },
       { rootMargin: `0px 0px ${bottomOffset}px 0px` }
     );
@@ -18,7 +17,7 @@ export default function useInfinteScroll(bottomOffset = 0, onLoadMore) {
     return () => {
       observer.unobserve(sentinelRef.current);
     };
-  }, [bottomOffset, onLoadMore, ref]);
+  }, [bottomOffset, isIntersecting, ref]);
 
-  return ref;
+  return [isIntersecting, ref];
 }

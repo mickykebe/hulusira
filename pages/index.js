@@ -16,7 +16,7 @@ import RefreshIcon from "@material-ui/icons/Refresh";
 import api from "../api";
 import Layout from "../components/layout";
 import JobItem from "../components/job-item";
-import useInfiniteScroller from "../hooks/use-infinite-scroll";
+import useIsInview from "../hooks/use-is-inview";
 import TagFilter from "../components/tag-filter";
 import { tagIdsfromQueryParam } from "../utils";
 import { useEffect, useRef, useState } from "react";
@@ -92,7 +92,10 @@ function Index({ jobPage, activeTags, primaryTags }) {
     dispatch({ type: "TAG_FILTER", payload: jobPage });
     ticker.current++;
   }, [jobPage]);
+
   const classes = useStyles();
+  const router = useRouter();
+
   const fetchMoreJobs = async () => {
     const tickerVal = ticker.current;
     if (isLoading || !nextCursor) {
@@ -100,7 +103,10 @@ function Index({ jobPage, activeTags, primaryTags }) {
     }
     dispatch({ type: "FETCH_INIT" });
     try {
-      const jobPage = await api.getJobs({ cursor: nextCursor });
+      const jobPage = await api.getJobs({
+        tags: router.query.tags || "",
+        cursor: nextCursor
+      });
       if (tickerVal === ticker.current) {
         dispatch({ type: "FETCH_SUCCESS", payload: jobPage });
       }
@@ -111,8 +117,12 @@ function Index({ jobPage, activeTags, primaryTags }) {
     }
   };
 
-  const sentinelRef = useInfiniteScroller(250, fetchMoreJobs);
-  //useInfiniteScroller(isLoading, !!nextCursor, fetchMoreJobs, isError);
+  const [isIntersecting, sentinelRef] = useIsInview(300, fetchMoreJobs);
+  useEffect(() => {
+    if (isIntersecting) {
+      fetchMoreJobs();
+    }
+  }, [isIntersecting]);
   const handleTagClick = tagId => {
     const tagIndex = activeTags.findIndex(tag => tag.id === tagId);
     if (tagIndex !== -1) {
@@ -243,7 +253,6 @@ Index.getInitialProps = async ctx => {
     api.getJobs({ ctx, tags }),
     api.getPrimaryTags(ctx)
   ]);
-  //const jobPage = await api.getJobs({ ctx, tags });
   let activeTags = [];
   if (!!tags) {
     activeTags = await api.getTags(tags, ctx);
