@@ -1,13 +1,12 @@
-import ***REMOVED*** useEffect, useRef ***REMOVED*** from "react";
+import ***REMOVED*** useEffect, useRef, useState ***REMOVED*** from "react";
 
-export default function useInfinteScroll(bottomOffset = 0, onLoadMore) ***REMOVED***
+export default function useIsInview(bottomOffset = 0) ***REMOVED***
+  const [isIntersecting, setIsIntersecting] = useState(false);
   const ref = useRef();
   useEffect(() => ***REMOVED***
     const observer = new IntersectionObserver(
       ([entry]) => ***REMOVED***
-        if (entry.isIntersecting) ***REMOVED***
-          onLoadMore();
-        ***REMOVED***
+        setIsIntersecting(entry.isIntersecting);
       ***REMOVED***,
       ***REMOVED*** rootMargin: `0px 0px $***REMOVED***bottomOffset***REMOVED***px 0px` ***REMOVED***
     );
@@ -18,7 +17,7 @@ export default function useInfinteScroll(bottomOffset = 0, onLoadMore) ***REMOVE
     return () => ***REMOVED***
       observer.unobserve(sentinelRef.current);
     ***REMOVED***;
-  ***REMOVED***, [bottomOffset, onLoadMore, ref]);
+  ***REMOVED***, [bottomOffset, isIntersecting, ref]);
 
-  return ref;
+  return [isIntersecting, ref];
 ***REMOVED***

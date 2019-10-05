@@ -16,7 +16,7 @@ import RefreshIcon from "@material-ui/icons/Refresh";
 import api from "../api";
 import Layout from "../components/layout";
 import JobItem from "../components/job-item";
-import useInfiniteScroller from "../hooks/use-infinite-scroll";
+import useIsInview from "../hooks/use-is-inview";
 import TagFilter from "../components/tag-filter";
 import ***REMOVED*** tagIdsfromQueryParam ***REMOVED*** from "../utils";
 import ***REMOVED*** useEffect, useRef, useState ***REMOVED*** from "react";
@@ -92,7 +92,10 @@ function Index(***REMOVED*** jobPage, activeTags, primaryTags ***REMOVED***) ***
     dispatch(***REMOVED*** type: "TAG_FILTER", payload: jobPage ***REMOVED***);
     ticker.current++;
   ***REMOVED***, [jobPage]);
+
   const classes = useStyles();
+  const router = useRouter();
+
   const fetchMoreJobs = async () => ***REMOVED***
     const tickerVal = ticker.current;
     if (isLoading || !nextCursor) ***REMOVED***
@@ -100,7 +103,10 @@ function Index(***REMOVED*** jobPage, activeTags, primaryTags ***REMOVED***) ***
     ***REMOVED***
     dispatch(***REMOVED*** type: "FETCH_INIT" ***REMOVED***);
     try ***REMOVED***
-      const jobPage = await api.getJobs(***REMOVED*** cursor: nextCursor ***REMOVED***);
+      const jobPage = await api.getJobs(***REMOVED***
+        tags: router.query.tags || "",
+        cursor: nextCursor
+      ***REMOVED***);
       if (tickerVal === ticker.current) ***REMOVED***
         dispatch(***REMOVED*** type: "FETCH_SUCCESS", payload: jobPage ***REMOVED***);
       ***REMOVED***
@@ -111,8 +117,12 @@ function Index(***REMOVED*** jobPage, activeTags, primaryTags ***REMOVED***) ***
     ***REMOVED***
   ***REMOVED***;
 
-  const sentinelRef = useInfiniteScroller(250, fetchMoreJobs);
-  //useInfiniteScroller(isLoading, !!nextCursor, fetchMoreJobs, isError);
+  const [isIntersecting, sentinelRef] = useIsInview(300, fetchMoreJobs);
+  useEffect(() => ***REMOVED***
+    if (isIntersecting) ***REMOVED***
+      fetchMoreJobs();
+    ***REMOVED***
+  ***REMOVED***, [isIntersecting]);
   const handleTagClick = tagId => ***REMOVED***
     const tagIndex = activeTags.findIndex(tag => tag.id === tagId);
     if (tagIndex !== -1) ***REMOVED***
@@ -243,7 +253,6 @@ Index.getInitialProps = async ctx => ***REMOVED***
     api.getJobs(***REMOVED*** ctx, tags ***REMOVED***),
     api.getPrimaryTags(ctx)
   ]);
-  //const jobPage = await api.getJobs(***REMOVED*** ctx, tags ***REMOVED***);
   let activeTags = [];
   if (!!tags) ***REMOVED***
     activeTags = await api.getTags(tags, ctx);
