@@ -1,5 +1,6 @@
 const Yup = require("yup");
 const db = require("../db/index");
+const telegramHandler = require("../handlers/telegram");
 const utils = require("../utils");
 
 const validationSchema = Yup.object().shape(
@@ -85,8 +86,14 @@ exports.createJob = async (req, res) => {
       logo: companyLogo
     };
   }
-  jobData.approved = req.user && req.user.role === "admin";
+  const isAdminUser = req.user && req.user.role === "admin";
+  if (isAdminUser) {
+    jobData.approved = true;
+  }
   const resData = await db.createJobAndCompany({ company, job: jobData });
+  if (isAdminUser) {
+    telegramHandler.postJobToChannel(resData);
+  }
   res.status(200).send(resData);
 };
 
@@ -158,6 +165,11 @@ exports.closeJob = async (req, res) => {
   const affectedRows = await db.closeJob(id);
   if (affectedRows === 1) {
     res.status(200).send(true);
+    const messageId = await db.getTelegramMessageId(id);
+    if (messageId) {
+      await telegramHandler.closeJobPost(messageId);
+      db.deleteTelegramMessage(id);
+    }
     return;
   }
   res.sendStatus(404);
@@ -168,6 +180,8 @@ exports.approveJob = async (req, res) => {
   const affectedRows = await db.approveJob(jobId);
   if (affectedRows === 1) {
     res.status(200).send(true);
+    const jobData = await db.getJobById(jobId);
+    telegramHandler.postJobToChannel(jobData);
     return;
   }
   res.sendStatus(404);

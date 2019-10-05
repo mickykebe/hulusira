@@ -313,6 +313,28 @@ class Db {
       .del();
   }
 
+  createJobTelegramMessage(jobId, telegramMessageId) {
+    return this.knex("job_telegram_post").insert({
+      job_id: jobId,
+      telegram_message_id: telegramMessageId
+    });
+  }
+
+  async getTelegramMessageId(jobId) {
+    const row = await this.knex("job_telegram_post")
+      .first()
+      .where("job_id", jobId);
+    if (!!row) {
+      return row.telegram_message_id;
+    }
+  }
+
+  deleteTelegramMessage(jobId) {
+    return this.knex("job_telegram_post")
+      .where("job_id", jobId)
+      .del();
+  }
+
   end() {
     return this.pool.end();
   }
