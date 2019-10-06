@@ -19,7 +19,7 @@ import JobItem from "../components/job-item";
 import useIsInview from "../hooks/use-is-inview";
 import TagFilter from "../components/tag-filter";
 import { tagIdsfromQueryParam } from "../utils";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -81,15 +81,17 @@ function Index({ jobPage, activeTags, primaryTags }) {
   const [{ jobs, nextCursor, isLoading, isError }, dispatch] = React.useReducer(
     jobsReducer,
     {
-      jobs: [],
-      nextCursor: null,
+      jobs: jobPage.jobs,
+      nextCursor: jobPage.nextCursor,
       isLoading: false,
       isError: false
     }
   );
   const ticker = useRef(0);
   useEffect(() => {
-    dispatch({ type: "TAG_FILTER", payload: jobPage });
+    if (ticker.current > 0) {
+      dispatch({ type: "TAG_FILTER", payload: jobPage });
+    }
     ticker.current++;
   }, [jobPage]);
 
@@ -117,7 +119,7 @@ function Index({ jobPage, activeTags, primaryTags }) {
     }
   };
 
-  const [isIntersecting, sentinelRef] = useIsInview(300, fetchMoreJobs);
+  const [isIntersecting, sentinelRef] = useIsInview(300);
   useEffect(() => {
     if (isIntersecting) {
       fetchMoreJobs();
