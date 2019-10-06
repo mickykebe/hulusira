@@ -28,7 +28,9 @@ export default function Layout({ children, toolbarChildren = null }) {
           {toolbarChildren}
         </Toolbar>
       </AppBar>
-      <Box pt={9}>{children}</Box>
+      <Box pt={9} pb={2}>
+        {children}
+      </Box>
     </Box>
   );
 }
