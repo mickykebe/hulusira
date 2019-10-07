@@ -54,7 +54,7 @@ CREATE TABLE job_tags (
   UNIQUE (job_id, tag_id)
 );
 
-CREATE TABLE job_telegram_post (
+CREATE TABLE job_social_post (
   job_id INTEGER PRIMARY KEY REFERENCES job(id) ON DELETE CASCADE,
-  telegram_message_id INTEGER NOT NULL
+  telegram_message_id INTEGER
 );
