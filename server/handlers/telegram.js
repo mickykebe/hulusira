@@ -9,6 +9,8 @@ const sendPostToTelegram = async function({ job, company }) {
     job.salary ? `\n💰 ${job.salary}` : ""
   }${company ? `\n🏢 ${company.name}` : ""}
 
+📋 ${job.description}
+
 To apply for this job visit: ${process.env.ROOT_URL}/jobs/${job.slug}`;
   try {
     const { data: response } = await axios.post(BOT_SEND_MESSAGE_URL, {
@@ -20,7 +22,7 @@ To apply for this job visit: ${process.env.ROOT_URL}/jobs/${job.slug}`;
       return messageId;
     }
   } catch (error) {
-    console.error("Problem posting job to telegram");
+    console.log("Problem occurred posting to telegram");
     if (error.response) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
