@@ -87,6 +87,7 @@ function Index({ jobPage, activeTags, primaryTags }) {
       isError: false
     }
   );
+  console.log("in staging");
   const ticker = useRef(0);
   useEffect(() => {
     if (ticker.current > 0) {
