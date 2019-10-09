@@ -160,10 +160,10 @@ function Index({ jobPage, activeTags, primaryTags }) {
         <meta property="og:title" content={pageTitle} />
         <meta property="og:url" content={pageUrl} />
         <meta property="og:description" content={pageDescription} />
-        {/*<meta property="og:image" content="" />*/}
+        <meta property="og:image" content="/static/hulusira.png" />
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDescription} />
-        {/*<meta name="twitter:image:src" content="" />*/}
+        <meta name="twitter:image:src" content="/static/hulusira.png" />
         <meta name="twitter:url" content={pageUrl} />
       </Head>
       <Container className={classes.root} maxWidth="md">
