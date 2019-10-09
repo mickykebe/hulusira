@@ -107,7 +107,7 @@ exports.postJobCloseToSocialMedia = async function(jobData) {
   }
 };
 
-exports.createMessage = createJobMessage;
+exports.createJobMessage = createJobMessage;
 exports.sendPostToTelegram = sendPostToTelegram;
 exports.sendPostToFacebook = sendPostToFacebook;
 exports.postCloseJobToFacebook = postCloseJobToFacebook;
