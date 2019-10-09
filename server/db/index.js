@@ -313,24 +313,36 @@ class Db {
       .del();
   }
 
-  createJobTelegramMessage(jobId, telegramMessageId) {
-    return this.knex("job_telegram_post").insert({
-      job_id: jobId,
-      telegram_message_id: telegramMessageId
-    });
+  createJobSocialPost(jobId, { telegramMessageId, facebookPostId }) {
+    const data = {
+      job_id: jobId
+    };
+    if (!telegramMessageId && !facebookPostId) {
+      return;
+    }
+    if (telegramMessageId) {
+      data.telegram_message_id = telegramMessageId;
+    }
+    if (facebookPostId) {
+      data.facebook_post_id = facebookPostId;
+    }
+    return this.knex("job_social_post").insert(data);
   }
 
-  async getTelegramMessageId(jobId) {
-    const row = await this.knex("job_telegram_post")
+  async getJobSocialPost(jobId) {
+    const row = await this.knex("job_social_post")
       .first()
       .where("job_id", jobId);
     if (!!row) {
-      return row.telegram_message_id;
+      return {
+        telegramMessageId: row.telegram_message_id,
+        facebookPostId: row.facebook_post_id
+      };
     }
   }
 
-  deleteTelegramMessage(jobId) {
-    return this.knex("job_telegram_post")
+  deleteJobSocialPost(jobId) {
+    return this.knex("job_social_post")
       .where("job_id", jobId)
       .del();
   }
