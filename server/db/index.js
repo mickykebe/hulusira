@@ -313,24 +313,36 @@ class Db ***REMOVED***
       .del();
   ***REMOVED***
 
-  createJobTelegramMessage(jobId, telegramMessageId) ***REMOVED***
-    return this.knex("job_telegram_post").insert(***REMOVED***
-      job_id: jobId,
-      telegram_message_id: telegramMessageId
-    ***REMOVED***);
+  createJobSocialPost(jobId, ***REMOVED*** telegramMessageId, facebookPostId ***REMOVED***) ***REMOVED***
+    const data = ***REMOVED***
+      job_id: jobId
+    ***REMOVED***;
+    if (!telegramMessageId && !facebookPostId) ***REMOVED***
+      return;
+    ***REMOVED***
+    if (telegramMessageId) ***REMOVED***
+      data.telegram_message_id = telegramMessageId;
+    ***REMOVED***
+    if (facebookPostId) ***REMOVED***
+      data.facebook_post_id = facebookPostId;
+    ***REMOVED***
+    return this.knex("job_social_post").insert(data);
   ***REMOVED***
 
-  async getTelegramMessageId(jobId) ***REMOVED***
-    const row = await this.knex("job_telegram_post")
+  async getJobSocialPost(jobId) ***REMOVED***
+    const row = await this.knex("job_social_post")
       .first()
       .where("job_id", jobId);
     if (!!row) ***REMOVED***
-      return row.telegram_message_id;
+      return ***REMOVED***
+        telegramMessageId: row.telegram_message_id,
+        facebookPostId: row.facebook_post_id
+      ***REMOVED***;
     ***REMOVED***
   ***REMOVED***
 
-  deleteTelegramMessage(jobId) ***REMOVED***
-    return this.knex("job_telegram_post")
+  deleteJobSocialPost(jobId) ***REMOVED***
+    return this.knex("job_social_post")
       .where("job_id", jobId)
       .del();
   ***REMOVED***

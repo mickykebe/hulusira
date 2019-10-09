@@ -1,6 +1,6 @@
 const Yup = require("yup");
 const db = require("../db/index");
-const telegramHandler = require("../handlers/telegram");
+const socialHandler = require("../handlers/social");
 const utils = require("../utils");
 
 const validationSchema = Yup.object().shape(
@@ -92,7 +92,7 @@ exports.createJob = async (req, res) => ***REMOVED***
   ***REMOVED***
   const resData = await db.createJobAndCompany(***REMOVED*** company, job: jobData ***REMOVED***);
   if (isAdminUser) ***REMOVED***
-    telegramHandler.postJobToChannel(resData);
+    socialHandler.postJobToSocialMedia(resData);
   ***REMOVED***
   res.status(200).send(resData);
 ***REMOVED***;
@@ -165,11 +165,9 @@ exports.closeJob = async (req, res) => ***REMOVED***
   const affectedRows = await db.closeJob(id);
   if (affectedRows === 1) ***REMOVED***
     res.status(200).send(true);
-    const messageId = await db.getTelegramMessageId(id);
-    if (messageId) ***REMOVED***
-      await telegramHandler.closeJobPost(messageId);
-      db.deleteTelegramMessage(id);
-    ***REMOVED***
+    const jobData = await db.getJobById(id);
+    await socialHandler.postJobCloseToSocialMedia(jobData);
+    db.deleteJobSocialPost(id);
     return;
   ***REMOVED***
   res.sendStatus(404);
@@ -181,7 +179,7 @@ exports.approveJob = async (req, res) => ***REMOVED***
   if (affectedRows === 1) ***REMOVED***
     res.status(200).send(true);
     const jobData = await db.getJobById(jobId);
-    telegramHandler.postJobToChannel(jobData);
+    socialHandler.postJobToSocialMedia(jobData);
     return;
   ***REMOVED***
   res.sendStatus(404);
