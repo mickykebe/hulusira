@@ -160,10 +160,10 @@ function Index(***REMOVED*** jobPage, activeTags, primaryTags ***REMOVED***) ***
         <meta property="og:title" content=***REMOVED***pageTitle***REMOVED*** />
         <meta property="og:url" content=***REMOVED***pageUrl***REMOVED*** />
         <meta property="og:description" content=***REMOVED***pageDescription***REMOVED*** />
-        ***REMOVED***/*<meta property="og:image" content="" />*/***REMOVED***
+        <meta property="og:image" content="/static/hulusira.png" />
         <meta name="twitter:title" content=***REMOVED***pageTitle***REMOVED*** />
         <meta name="twitter:description" content=***REMOVED***pageDescription***REMOVED*** />
-        ***REMOVED***/*<meta name="twitter:image:src" content="" />*/***REMOVED***
+        <meta name="twitter:image:src" content="/static/hulusira.png" />
         <meta name="twitter:url" content=***REMOVED***pageUrl***REMOVED*** />
       </Head>
       <Container className=***REMOVED***classes.root***REMOVED*** maxWidth="md">
