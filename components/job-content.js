@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/styles";
 import CompanyLogo from "./company-logo";
 import HSPaper from "./hs-paper";
 import Markdown from "./markdown";
+import format from "date-fns/format";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -37,20 +38,26 @@ const useStyles = makeStyles(theme => ({
     wordBreak: "break-all",
     wordBreak: "bread-word",
     hyphens: "auto"
+  },
+  jobInfoDeadline: {
+    color: "red"
   }
 }));
+
+function JobInfoItem({ title, value, classes = {} }) {
+  return (
+    <Box pr={3}>
+      <Typography variant="subtitle1">{title}</Typography>
+      <Typography variant="body1" className={classes.value}>
+        {value}
+      </Typography>
+    </Box>
+  );
+}
 
 export default function JobContent({ jobData }) {
   const classes = useStyles();
   const { job, company } = jobData;
-  const renderJobInfoItem = (title, value) => {
-    return (
-      <Box pr={3}>
-        <Typography variant="subtitle1">{title}</Typography>
-        <Typography variant="body1">{value}</Typography>
-      </Box>
-    );
-  };
   const renderApplyButton = job => {
     return (
       <Button
@@ -92,9 +99,20 @@ export default function JobContent({ jobData }) {
       <Grid container spacing={2}>
         <Grid className={classes.jobGrid} item sm={12} lg={9}>
           <HSPaper className={classes.jobInfo}>
-            {job.location && renderJobInfoItem("Location", job.location)}
-            {job.jobType && renderJobInfoItem("Job Type", job.jobType)}
-            {job.salary && renderJobInfoItem("Salary", job.salary)}
+            {job.location && (
+              <JobInfoItem title="Location" value={job.location} />
+            )}
+            {job.jobType && (
+              <JobInfoItem title="Job Type" value={job.jobType} />
+            )}
+            {job.salary && <JobInfoItem title="Salary" value={job.salary} />}
+            {job.deadline && (
+              <JobInfoItem
+                title="Deadline"
+                value={format(new Date(job.deadline), "MMM dd, yyyy")}
+                classes={{ value: classes.jobInfoDeadline }}
+              />
+            )}
           </HSPaper>
           <HSPaper className={classes.jobMain}>
             <Typography variant="h5">Description</Typography>

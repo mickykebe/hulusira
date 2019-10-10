@@ -13,6 +13,8 @@ import {
   Fab,
   LinearProgress
 } from "@material-ui/core";
+import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
 import { makeStyles } from "@material-ui/styles";
 import SaveIcon from "@material-ui/icons/Save";
 import { useDropzone } from "react-dropzone";
@@ -132,6 +134,9 @@ const validationSchema = Yup.object().shape(
         return true;
       }
     ),
+    deadline: Yup.date()
+      .nullable()
+      .default(null),
     description: Yup.string().required("Required"),
     applyUrl: Yup.string().when("applyEmail", {
       is: value => !value,
@@ -167,6 +172,10 @@ const jobTypes = [
   "Internship",
   "Temporary"
 ];
+
+function DatePickerTextField(props) {
+  return <TextField margin="normal" fullWidth {...props} />;
+}
 
 function New({ primaryTags }) {
   const classes = useStyles();
@@ -247,7 +256,8 @@ function New({ primaryTags }) {
             howToApply: "",
             applyUrl: "",
             applyEmail: "",
-            companyEmail: ""
+            companyEmail: "",
+            deadline: null
           }}
           onSubmit={handleSubmit}>
           {({
@@ -261,6 +271,7 @@ function New({ primaryTags }) {
           }) => {
             const handleMdeChange = fieldName => value =>
               setFieldValue(fieldName, value);
+            console.log({ errors, deadline: values.deadline });
             return (
               <form className={classes.form} onSubmit={handleSubmit}>
                 <HSCard title="Job Details">
@@ -360,6 +371,16 @@ function New({ primaryTags }) {
                         : "Salary is not required but highly recommended. Enter salary data for better results."
                     }
                   />
+                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <DatePicker
+                      format="yyyy-MM-dd"
+                      label="Application Deadline"
+                      inputVariant="outlined"
+                      value={values.deadline}
+                      onChange={date => setFieldValue("deadline", date)}
+                      TextFieldComponent={DatePickerTextField}
+                    />
+                  </MuiPickersUtilsProvider>
                   <MDEditor
                     id="description"
                     label="Job Description*"
