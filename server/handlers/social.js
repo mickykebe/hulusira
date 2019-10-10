@@ -1,14 +1,20 @@
 const axios = require("axios");
 const db = require("../db");
 const { logAxiosErrors } = require("../utils");
+const format = require("date-fns/format");
 
 const TELEGRAM_SEND_MESSAGE_URL = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`;
 
 const createJobMessage = ({ job, company }) => {
   return `💼 ${job.position}
-🕔 ${job.jobType}${job.location ? `\n📍 ${job.location}` : ""}${
-    job.salary ? `\n💰 ${job.salary}` : ""
-  }${company ? `\n🏢 ${company.name}` : ""}
+
+🕔 ${job.jobType}${company ? `\n\n🏢 ${company.name}` : ""}${
+    job.location ? `\n\n📍 ${job.location}` : ""
+  }${job.salary ? `\n\n💰 ${job.salary}` : ""}${
+    job.deadline
+      ? `\n\n⏲️ Deadline: ${format(new Date(job.deadline), "MMM dd, yyyy")}`
+      : ""
+  }
 
 📋 ${job.description}
 
