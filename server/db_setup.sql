@@ -40,6 +40,7 @@ CREATE TABLE job (
   apply_email TEXT,
   approved BOOLEAN NOT NULL DEFAULT FALSE,
   closed BOOLEAN NOT NULL DEFAULT FALSE,
+  deadline Date,
   created TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   slug TEXT,
   admin_token uuid DEFAULT uuid_generate_v4(), 

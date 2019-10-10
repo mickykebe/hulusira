@@ -18,7 +18,8 @@ class Job {
     approved,
     closed,
     slug,
-    adminToken
+    adminToken,
+    deadline
   ) {
     this.id = id;
     this.position = position;
@@ -39,6 +40,7 @@ class Job {
     this.closed = closed;
     this.slug = slug;
     this.adminToken = adminToken;
+    this.deadline = deadline;
   }
 
   publicData() {
@@ -66,7 +68,8 @@ class Job {
       dbJob.job_approved,
       dbJob.job_closed,
       dbJob.job_slug,
-      dbJob.job_admin_token
+      dbJob.job_admin_token,
+      dbJob.job_deadline
     );
   }
 }
