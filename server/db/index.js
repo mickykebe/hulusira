@@ -30,7 +30,8 @@ class Db ***REMOVED***
       "closed",
       "created",
       "slug",
-      "admin_token"
+      "admin_token",
+      "deadline"
     ];
     this.companyColumns = ["id", "name", "email", "logo", "verified"];
   ***REMOVED***
@@ -77,6 +78,7 @@ class Db ***REMOVED***
           company_id: companyId,
           location: jobData.location,
           salary: jobData.salary,
+          deadline: jobData.deadline,
           description: jobData.description,
           responsibilities: jobData.responsibilities,
           requirements: jobData.requirements,
