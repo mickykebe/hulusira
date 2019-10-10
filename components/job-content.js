@@ -3,6 +3,7 @@ import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
 import CompanyLogo from "./company-logo";
 import HSPaper from "./hs-paper";
 import Markdown from "./markdown";
+import format from "date-fns/format";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   root: ***REMOVED***
@@ -37,20 +38,26 @@ const useStyles = makeStyles(theme => (***REMOVED***
     wordBreak: "break-all",
     wordBreak: "bread-word",
     hyphens: "auto"
+  ***REMOVED***,
+  jobInfoDeadline: ***REMOVED***
+    color: "red"
   ***REMOVED***
 ***REMOVED***));
+
+function JobInfoItem(***REMOVED*** title, value, classes = ***REMOVED******REMOVED*** ***REMOVED***) ***REMOVED***
+  return (
+    <Box pr=***REMOVED***3***REMOVED***>
+      <Typography variant="subtitle1">***REMOVED***title***REMOVED***</Typography>
+      <Typography variant="body1" className=***REMOVED***classes.value***REMOVED***>
+        ***REMOVED***value***REMOVED***
+      </Typography>
+    </Box>
+  );
+***REMOVED***
 
 export default function JobContent(***REMOVED*** jobData ***REMOVED***) ***REMOVED***
   const classes = useStyles();
   const ***REMOVED*** job, company ***REMOVED*** = jobData;
-  const renderJobInfoItem = (title, value) => ***REMOVED***
-    return (
-      <Box pr=***REMOVED***3***REMOVED***>
-        <Typography variant="subtitle1">***REMOVED***title***REMOVED***</Typography>
-        <Typography variant="body1">***REMOVED***value***REMOVED***</Typography>
-      </Box>
-    );
-  ***REMOVED***;
   const renderApplyButton = job => ***REMOVED***
     return (
       <Button
@@ -92,9 +99,20 @@ export default function JobContent(***REMOVED*** jobData ***REMOVED***) ***REMOV
       <Grid container spacing=***REMOVED***2***REMOVED***>
         <Grid className=***REMOVED***classes.jobGrid***REMOVED*** item sm=***REMOVED***12***REMOVED*** lg=***REMOVED***9***REMOVED***>
           <HSPaper className=***REMOVED***classes.jobInfo***REMOVED***>
-            ***REMOVED***job.location && renderJobInfoItem("Location", job.location)***REMOVED***
-            ***REMOVED***job.jobType && renderJobInfoItem("Job Type", job.jobType)***REMOVED***
-            ***REMOVED***job.salary && renderJobInfoItem("Salary", job.salary)***REMOVED***
+            ***REMOVED***job.location && (
+              <JobInfoItem title="Location" value=***REMOVED***job.location***REMOVED*** />
+            )***REMOVED***
+            ***REMOVED***job.jobType && (
+              <JobInfoItem title="Job Type" value=***REMOVED***job.jobType***REMOVED*** />
+            )***REMOVED***
+            ***REMOVED***job.salary && <JobInfoItem title="Salary" value=***REMOVED***job.salary***REMOVED*** />***REMOVED***
+            ***REMOVED***job.deadline && (
+              <JobInfoItem
+                title="Deadline"
+                value=***REMOVED***format(new Date(job.deadline), "MMM dd, yyyy")***REMOVED***
+                classes=***REMOVED******REMOVED*** value: classes.jobInfoDeadline ***REMOVED******REMOVED***
+              />
+            )***REMOVED***
           </HSPaper>
           <HSPaper className=***REMOVED***classes.jobMain***REMOVED***>
             <Typography variant="h5">Description</Typography>

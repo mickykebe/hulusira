@@ -13,6 +13,8 @@ import ***REMOVED***
   Fab,
   LinearProgress
 ***REMOVED*** from "@material-ui/core";
+import ***REMOVED*** MuiPickersUtilsProvider, DatePicker ***REMOVED*** from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
 import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
 import SaveIcon from "@material-ui/icons/Save";
 import ***REMOVED*** useDropzone ***REMOVED*** from "react-dropzone";
@@ -132,6 +134,9 @@ const validationSchema = Yup.object().shape(
         return true;
       ***REMOVED***
     ),
+    deadline: Yup.date()
+      .nullable()
+      .default(null),
     description: Yup.string().required("Required"),
     applyUrl: Yup.string().when("applyEmail", ***REMOVED***
       is: value => !value,
@@ -167,6 +172,10 @@ const jobTypes = [
   "Internship",
   "Temporary"
 ];
+
+function DatePickerTextField(props) ***REMOVED***
+  return <TextField margin="normal" fullWidth ***REMOVED***...props***REMOVED*** />;
+***REMOVED***
 
 function New(***REMOVED*** primaryTags ***REMOVED***) ***REMOVED***
   const classes = useStyles();
@@ -247,7 +256,8 @@ function New(***REMOVED*** primaryTags ***REMOVED***) ***REMOVED***
             howToApply: "",
             applyUrl: "",
             applyEmail: "",
-            companyEmail: ""
+            companyEmail: "",
+            deadline: null
           ***REMOVED******REMOVED***
           onSubmit=***REMOVED***handleSubmit***REMOVED***>
           ***REMOVED***(***REMOVED***
@@ -261,6 +271,7 @@ function New(***REMOVED*** primaryTags ***REMOVED***) ***REMOVED***
           ***REMOVED***) => ***REMOVED***
             const handleMdeChange = fieldName => value =>
               setFieldValue(fieldName, value);
+            console.log(***REMOVED*** errors, deadline: values.deadline ***REMOVED***);
             return (
               <form className=***REMOVED***classes.form***REMOVED*** onSubmit=***REMOVED***handleSubmit***REMOVED***>
                 <HSCard title="Job Details">
@@ -360,6 +371,16 @@ function New(***REMOVED*** primaryTags ***REMOVED***) ***REMOVED***
                         : "Salary is not required but highly recommended. Enter salary data for better results."
                     ***REMOVED***
                   />
+                  <MuiPickersUtilsProvider utils=***REMOVED***DateFnsUtils***REMOVED***>
+                    <DatePicker
+                      format="yyyy-MM-dd"
+                      label="Application Deadline"
+                      inputVariant="outlined"
+                      value=***REMOVED***values.deadline***REMOVED***
+                      onChange=***REMOVED***date => setFieldValue("deadline", date)***REMOVED***
+                      TextFieldComponent=***REMOVED***DatePickerTextField***REMOVED***
+                    />
+                  </MuiPickersUtilsProvider>
                   <MDEditor
                     id="description"
                     label="Job Description*"

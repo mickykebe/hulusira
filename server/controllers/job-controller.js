@@ -31,6 +31,9 @@ const validationSchema = Yup.object().shape(
         return true;
       ***REMOVED***
     ),
+    deadline: Yup.date()
+      .nullable()
+      .default(null),
     description: Yup.string().required("Required"),
     applyUrl: Yup.string().when("applyEmail", ***REMOVED***
       is: value => !value,

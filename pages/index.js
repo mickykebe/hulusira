@@ -143,6 +143,7 @@ function Index(***REMOVED*** jobPage, activeTags, primaryTags ***REMOVED***) ***
     Router.push(`/$***REMOVED***tagIds.length ? `?tags=$***REMOVED***tagIds.join(",")***REMOVED***` : ""***REMOVED***`);
   ***REMOVED***;
 
+  const metaImage = `$***REMOVED***process.env.ROOT_URL***REMOVED***/static/hulusira.png`;
   return (
     <Layout
       toolbarChildren=***REMOVED***
@@ -161,10 +162,10 @@ function Index(***REMOVED*** jobPage, activeTags, primaryTags ***REMOVED***) ***
         <meta property="og:title" content=***REMOVED***pageTitle***REMOVED*** />
         <meta property="og:url" content=***REMOVED***pageUrl***REMOVED*** />
         <meta property="og:description" content=***REMOVED***pageDescription***REMOVED*** />
-        ***REMOVED***/*<meta property="og:image" content="" />*/***REMOVED***
+        <meta property="og:image" content=***REMOVED***metaImage***REMOVED*** />
         <meta name="twitter:title" content=***REMOVED***pageTitle***REMOVED*** />
         <meta name="twitter:description" content=***REMOVED***pageDescription***REMOVED*** />
-        ***REMOVED***/*<meta name="twitter:image:src" content="" />*/***REMOVED***
+        <meta name="twitter:image:src" content=***REMOVED***metaImage***REMOVED*** />
         <meta name="twitter:url" content=***REMOVED***pageUrl***REMOVED*** />
       </Head>
       <Container className=***REMOVED***classes.root***REMOVED*** maxWidth="md">
