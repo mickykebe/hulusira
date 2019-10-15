@@ -21,15 +21,15 @@ const createJobMessage = ({ job, company }) => {
 To apply for this job visit: ${process.env.ROOT_URL}/jobs/${job.slug}`;
 };
 
-const sendPostToFacebook = async function(message) {
+const sendPostToFacebook = async function(message, jobUrl) {
   try {
     const { data: response } = await axios
       .post(
         `https://graph.facebook.com/${
           process.env.FB_PAGE_ID
-        }/feed?message=${encodeURIComponent(message)}&access_token=${
-          process.env.FB_PAGE_ACCESS_TOKEN
-        }`
+        }/feed?message=${encodeURIComponent(message)}&link=${encodeURIComponent(
+          jobUrl
+        )}&access_token=${process.env.FB_PAGE_ACCESS_TOKEN}`
       )
       .catch(logAxiosErrors);
     if (response.id) {
@@ -59,8 +59,9 @@ const sendPostToTelegram = async function(message) {
 
 exports.postJobToSocialMedia = async function(jobData) {
   const message = createJobMessage(jobData);
+  const jobUrl = `${process.env.ROOT_URL}/jobs/${jobData.job.slug}`;
   const [telegramMessageId, facebookPostId] = await Promise.all(
-    [sendPostToTelegram(message), sendPostToFacebook(message)].map(p =>
+    [sendPostToTelegram(message), sendPostToFacebook(message, jobUrl)].map(p =>
       p.catch(() => undefined)
     )
   );
