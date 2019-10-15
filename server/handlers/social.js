@@ -15,10 +15,8 @@ const createJobMessage = (***REMOVED*** job, company ***REMOVED***) => ***REMOVE
       ? `\n\n⏲️ Deadline: $***REMOVED***format(new Date(job.deadline), "MMM dd, yyyy")***REMOVED***`
       : ""
   ***REMOVED***
-
-📋 $***REMOVED***job.description***REMOVED***
-
-To apply for this job visit: $***REMOVED***process.env.ROOT_URL***REMOVED***/jobs/$***REMOVED***job.slug***REMOVED***`;
+  
+📋 $***REMOVED***job.description***REMOVED***`;
 ***REMOVED***;
 
 const sendPostToFacebook = async function(message, jobUrl) ***REMOVED***
@@ -58,12 +56,19 @@ const sendPostToTelegram = async function(message) ***REMOVED***
 ***REMOVED***;
 
 exports.postJobToSocialMedia = async function(jobData) ***REMOVED***
-  const message = createJobMessage(jobData);
+  const messageBody = createJobMessage(jobData);
   const jobUrl = `$***REMOVED***process.env.ROOT_URL***REMOVED***/jobs/$***REMOVED***jobData.job.slug***REMOVED***`;
+  const telegramMessage = `$***REMOVED***messageBody***REMOVED***
+  
+To apply for this job visit: $***REMOVED***jobUrl***REMOVED***`;
+  const facebookMessage = `ክፍት የስራ ቦታ ማስታወቅያ
+  
+$***REMOVED***messageBody***REMOVED***`;
   const [telegramMessageId, facebookPostId] = await Promise.all(
-    [sendPostToTelegram(message), sendPostToFacebook(message, jobUrl)].map(p =>
-      p.catch(() => undefined)
-    )
+    [
+      sendPostToTelegram(telegramMessage),
+      sendPostToFacebook(facebookMessage, jobUrl)
+    ].map(p => p.catch(() => undefined))
   );
   await db.createJobSocialPost(jobData.job.id, ***REMOVED***
     telegramMessageId,
