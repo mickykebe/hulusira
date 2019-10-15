@@ -87,6 +87,7 @@ function Job(***REMOVED*** jobData, adminToken ***REMOVED***) ***REMOVED***
   ***REMOVED***iring $***REMOVED***jobData.job.position***REMOVED***. $***REMOVED***jobData.job.description.slice(0, 250)***REMOVED***...`;
   const router = useRouter();
   const url = `$***REMOVED***process.env.ROOT_URL***REMOVED***$***REMOVED***router.asPath***REMOVED***`;
+  const defaultThumbnailUrl = `$***REMOVED***process.env.ROOT_URL***REMOVED***/static/hulusira.png`;
   return (
     <Layout>
       <Head>
@@ -95,14 +96,26 @@ function Job(***REMOVED*** jobData, adminToken ***REMOVED***) ***REMOVED***
         <meta property="og:title" content=***REMOVED***metaTitle***REMOVED*** />
         <meta property="og:url" content=***REMOVED***url***REMOVED*** />
         <meta property="og:description" content=***REMOVED***metaDescription***REMOVED*** />
-        ***REMOVED***jobData.company && jobData.company.logo && (
+        <meta
+          property="og:image"
+          content=***REMOVED***
+            (jobData.company && jobData.company.logo) || defaultThumbnailUrl
+          ***REMOVED***
+        />
+        ***REMOVED***/* ***REMOVED***jobData.company && jobData.company.logo && (
           <meta property="og:image" content=***REMOVED***jobData.company.logo***REMOVED*** />
-        )***REMOVED***
+        )***REMOVED*** */***REMOVED***
         <meta name="twitter:title" content=***REMOVED***metaTitle***REMOVED*** />
         <meta name="twitter:description" content=***REMOVED***metaDescription***REMOVED*** />
-        ***REMOVED***jobData.company && jobData.company.logo && (
+        <meta
+          property="twitter:image:src"
+          content=***REMOVED***
+            (jobData.company && jobData.company.logo) || defaultThumbnailUrl
+          ***REMOVED***
+        />
+        ***REMOVED***/* ***REMOVED***jobData.company && jobData.company.logo && (
           <meta property="twitter:image:src" content=***REMOVED***jobData.company.logo***REMOVED*** />
-        )***REMOVED***
+        )***REMOVED*** */***REMOVED***
         <meta property="twitter:url" content=***REMOVED***url***REMOVED*** />
       </Head>
       <Container>
