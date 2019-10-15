@@ -21,15 +21,15 @@ const createJobMessage = (***REMOVED*** job, company ***REMOVED***) => ***REMOVE
 To apply for this job visit: $***REMOVED***process.env.ROOT_URL***REMOVED***/jobs/$***REMOVED***job.slug***REMOVED***`;
 ***REMOVED***;
 
-const sendPostToFacebook = async function(message) ***REMOVED***
+const sendPostToFacebook = async function(message, jobUrl) ***REMOVED***
   try ***REMOVED***
     const ***REMOVED*** data: response ***REMOVED*** = await axios
       .post(
         `https://graph.facebook.com/$***REMOVED***
           process.env.FB_PAGE_ID
-        ***REMOVED***/feed?message=$***REMOVED***encodeURIComponent(message)***REMOVED***&access_token=$***REMOVED***
-          process.env.FB_PAGE_ACCESS_TOKEN
-        ***REMOVED***`
+        ***REMOVED***/feed?message=$***REMOVED***encodeURIComponent(message)***REMOVED***&link=$***REMOVED***encodeURIComponent(
+          jobUrl
+        )***REMOVED***&access_token=$***REMOVED***process.env.FB_PAGE_ACCESS_TOKEN***REMOVED***`
       )
       .catch(logAxiosErrors);
     if (response.id) ***REMOVED***
@@ -59,8 +59,9 @@ const sendPostToTelegram = async function(message) ***REMOVED***
 
 exports.postJobToSocialMedia = async function(jobData) ***REMOVED***
   const message = createJobMessage(jobData);
+  const jobUrl = `$***REMOVED***process.env.ROOT_URL***REMOVED***/jobs/$***REMOVED***jobData.job.slug***REMOVED***`;
   const [telegramMessageId, facebookPostId] = await Promise.all(
-    [sendPostToTelegram(message), sendPostToFacebook(message)].map(p =>
+    [sendPostToTelegram(message), sendPostToFacebook(message, jobUrl)].map(p =>
       p.catch(() => undefined)
     )
   );
