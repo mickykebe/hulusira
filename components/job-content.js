@@ -55,21 +55,24 @@ function JobInfoItem(***REMOVED*** title, value, classes = ***REMOVED******REMOV
   );
 ***REMOVED***
 
+function ApplyButton(***REMOVED*** job ***REMOVED***) ***REMOVED***
+  return (
+    <Button
+      variant="contained"
+      color="primary"
+      href=***REMOVED***job.applyUrl || `mailto:$***REMOVED***job.applyEmail***REMOVED***`***REMOVED***
+      target="_blank"
+      fullWidth>
+      Apply Now
+    </Button>
+  );
+***REMOVED***
+
 export default function JobContent(***REMOVED*** jobData ***REMOVED***) ***REMOVED***
   const classes = useStyles();
   const ***REMOVED*** job, company ***REMOVED*** = jobData;
-  const renderApplyButton = job => ***REMOVED***
-    return (
-      <Button
-        variant="contained"
-        color="primary"
-        href=***REMOVED***job.applyUrl || `mailto:$***REMOVED***job.applyEmail***REMOVED***`***REMOVED***
-        target="_blank"
-        fullWidth>
-        Apply Now
-      </Button>
-    );
-  ***REMOVED***;
+  const hasApplyButton = !!job.applyUrl || !!job.applyEmail;
+  const hasApplySection = !!job.howToApply || hasApplyButton;
   return (
     <Container className=***REMOVED***classes.root***REMOVED*** maxWidth="lg">
       <Box display="flex" alignItems="center" pb=***REMOVED***2***REMOVED***>
@@ -97,7 +100,11 @@ export default function JobContent(***REMOVED*** jobData ***REMOVED***) ***REMOV
         </Box>
       </Box>
       <Grid container spacing=***REMOVED***2***REMOVED***>
-        <Grid className=***REMOVED***classes.jobGrid***REMOVED*** item sm=***REMOVED***12***REMOVED*** lg=***REMOVED***9***REMOVED***>
+        <Grid
+          className=***REMOVED***classes.jobGrid***REMOVED***
+          item
+          sm=***REMOVED***12***REMOVED***
+          lg=***REMOVED***hasApplySection ? 9 : 12***REMOVED***>
           <HSPaper className=***REMOVED***classes.jobInfo***REMOVED***>
             ***REMOVED***job.location && (
               <JobInfoItem title="Location" value=***REMOVED***job.location***REMOVED*** />
@@ -131,22 +138,24 @@ export default function JobContent(***REMOVED*** jobData ***REMOVED***) ***REMOV
             )***REMOVED***
           </HSPaper>
         </Grid>
-        <Grid item sm=***REMOVED***12***REMOVED*** lg=***REMOVED***3***REMOVED*** className=***REMOVED***classes.applyGrid***REMOVED***>
-          ***REMOVED***!job.howToApply && renderApplyButton(job)***REMOVED***
-          ***REMOVED***!!job.howToApply && (
-            <HSPaper className=***REMOVED***classes.apply***REMOVED***>
-              ***REMOVED***renderApplyButton(job)***REMOVED***
-              ***REMOVED***job.howToApply && (
-                <Box pt=***REMOVED***2***REMOVED***>
-                  <Typography variant="subtitle1">
-                    Are you interested in this job?
-                  </Typography>
-                  <Markdown>***REMOVED***job.howToApply***REMOVED***</Markdown>
-                </Box>
-              )***REMOVED***
-            </HSPaper>
-          )***REMOVED***
-        </Grid>
+        ***REMOVED***hasApplySection && (
+          <Grid item sm=***REMOVED***12***REMOVED*** lg=***REMOVED***3***REMOVED*** className=***REMOVED***classes.applyGrid***REMOVED***>
+            ***REMOVED***!job.howToApply && hasApplyButton && <ApplyButton job=***REMOVED***job***REMOVED*** />***REMOVED***
+            ***REMOVED***!!job.howToApply && (
+              <HSPaper className=***REMOVED***classes.apply***REMOVED***>
+                ***REMOVED***(job.applyUrl || job.applyEmail) && <ApplyButton job=***REMOVED***job***REMOVED*** />***REMOVED***
+                ***REMOVED***job.howToApply && (
+                  <Box pt=***REMOVED***hasApplyButton ? 2 : 0***REMOVED***>
+                    <Typography variant="subtitle1">
+                      Are you interested in this job?
+                    </Typography>
+                    <Markdown>***REMOVED***job.howToApply***REMOVED***</Markdown>
+                  </Box>
+                )***REMOVED***
+              </HSPaper>
+            )***REMOVED***
+          </Grid>
+        )***REMOVED***
       </Grid>
     </Container>
   );

@@ -108,11 +108,12 @@ const pageDescription =
 const cleanTags = tags =>
   tags.map(tag => tag.trim()).filter(tag => tag.length > 0);
 
-const validationSchema = Yup.object().shape(
-  ***REMOVED***
-    position: Yup.string().required("Required"),
-    jobType: Yup.string().required("Required"),
-    primaryTagId: Yup.number().test(
+const validationSchema = Yup.object().shape(***REMOVED***
+  position: Yup.string().required("Required"),
+  jobType: Yup.string().required("Required"),
+  primaryTagId: Yup.number()
+    .nullable()
+    .test(
       "primaryTag-required",
       "Choose at least one tag here or enter a tag in the Extra Tags input below.",
       function(value) ***REMOVED***
@@ -123,46 +124,36 @@ const validationSchema = Yup.object().shape(
         return true;
       ***REMOVED***
     ),
-    tags: Yup.array().test(
-      "tags-required",
-      "Please enter at least one tag here or choose a tag in the Primary Tag input above.",
-      function(value) ***REMOVED***
-        const ***REMOVED*** primaryTagId ***REMOVED*** = this.parent;
-        if (primaryTagId === null || primaryTagId === undefined) ***REMOVED***
-          return value && cleanTags(value).length > 0;
-        ***REMOVED***
-        return true;
+  tags: Yup.array().test(
+    "tags-required",
+    "Please enter at least one tag here or choose a tag in the Primary Tag input above.",
+    function(value) ***REMOVED***
+      const ***REMOVED*** primaryTagId ***REMOVED*** = this.parent;
+      if (primaryTagId === null || primaryTagId === undefined) ***REMOVED***
+        return value && cleanTags(value).length > 0;
       ***REMOVED***
-    ),
-    deadline: Yup.date()
-      .nullable()
-      .default(null),
-    description: Yup.string().required("Required"),
-    applyUrl: Yup.string().when("applyEmail", ***REMOVED***
-      is: value => !value,
-      then: Yup.string().required("Provide application URL or email")
-    ***REMOVED***),
-    applyEmail: Yup.string()
+      return true;
+    ***REMOVED***
+  ),
+  deadline: Yup.date()
+    .nullable()
+    .default(null),
+  description: Yup.string().required("Required"),
+  applyEmail: Yup.string()
+    .nullable()
+    .notRequired()
+    .email(),
+  companyName: Yup.string().when("hasCompany", ***REMOVED***
+    is: true,
+    then: Yup.string().required("Required")
+  ***REMOVED***),
+  companyEmail: Yup.string().when("hasCompany", ***REMOVED***
+    is: true,
+    then: Yup.string()
       .email()
-      .when("applyUrl", ***REMOVED***
-        is: value => !value,
-        then: Yup.string()
-          .email()
-          .required("Provide application email or URL")
-      ***REMOVED***),
-    companyName: Yup.string().when("hasCompany", ***REMOVED***
-      is: true,
-      then: Yup.string().required("Required")
-    ***REMOVED***),
-    companyEmail: Yup.string().when("hasCompany", ***REMOVED***
-      is: true,
-      then: Yup.string()
-        .email()
-        .required("Required")
-    ***REMOVED***)
-  ***REMOVED***,
-  ["applyUrl", "applyEmail"]
-);
+      .required("Required")
+  ***REMOVED***)
+***REMOVED***);
 
 const jobTypes = [
   "Full-time",
@@ -271,7 +262,6 @@ function New(***REMOVED*** primaryTags ***REMOVED***) ***REMOVED***
           ***REMOVED***) => ***REMOVED***
             const handleMdeChange = fieldName => value =>
               setFieldValue(fieldName, value);
-            console.log(***REMOVED*** errors, deadline: values.deadline ***REMOVED***);
             return (
               <form className=***REMOVED***classes.form***REMOVED*** onSubmit=***REMOVED***handleSubmit***REMOVED***>
                 <HSCard title="Job Details">
