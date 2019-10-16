@@ -43,8 +43,7 @@ CREATE TABLE job (
   deadline Date,
   created TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   slug TEXT,
-  admin_token uuid DEFAULT uuid_generate_v4(), 
-  CONSTRAINT require_apply_method CHECK (apply_url IS NOT NULL OR apply_email IS NOT NULL)
+  admin_token uuid DEFAULT uuid_generate_v4()
 );
 
 CREATE TABLE job_tags (

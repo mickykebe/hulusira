@@ -3,63 +3,52 @@ const db = require("../db/index");
 const socialHandler = require("../handlers/social");
 const utils = require("../utils");
 
-const validationSchema = Yup.object().shape(
-  {
-    position: Yup.string().required("Required"),
-    jobType: Yup.string().required("Required"),
-    primaryTagId: Yup.number()
-      .nullable()
-      .test(
-        "primaryTag-required",
-        "Choose at least one tag here or enter a tag in the Extra Tags input below.",
-        function(value) {
-          const tags = this.parent.tags;
-          if (!tags || tags.length === 0) {
-            return !!value;
-          }
-          return true;
-        }
-      ),
-    tags: Yup.array().test(
-      "tags-required",
-      "Please enter at least one tag here or choose a tag in the Primary Tag input above.",
+const validationSchema = Yup.object().shape({
+  position: Yup.string().required("Required"),
+  jobType: Yup.string().required("Required"),
+  primaryTagId: Yup.number()
+    .nullable()
+    .test(
+      "primaryTag-required",
+      "Choose at least one tag here or enter a tag in the Extra Tags input below.",
       function(value) {
-        const { primaryTagId } = this.parent;
-        if (primaryTagId === null || primaryTagId === undefined) {
-          return value && value.length > 0;
+        const tags = this.parent.tags;
+        if (!tags || tags.length === 0) {
+          return !!value;
         }
         return true;
       }
     ),
-    deadline: Yup.date()
-      .nullable()
-      .default(null),
-    description: Yup.string().required("Required"),
-    applyUrl: Yup.string().when("applyEmail", {
-      is: value => !value,
-      then: Yup.string().required("Provide application URL or email")
-    }),
-    applyEmail: Yup.string()
+  tags: Yup.array().test(
+    "tags-required",
+    "Please enter at least one tag here or choose a tag in the Primary Tag input above.",
+    function(value) {
+      const { primaryTagId } = this.parent;
+      if (primaryTagId === null || primaryTagId === undefined) {
+        return value && value.length > 0;
+      }
+      return true;
+    }
+  ),
+  deadline: Yup.date()
+    .nullable()
+    .default(null),
+  description: Yup.string().required("Required"),
+  applyEmail: Yup.string()
+    .nullable()
+    .notRequired()
+    .email(),
+  companyName: Yup.string().when("hasCompany", {
+    is: true,
+    then: Yup.string().required("Required")
+  }),
+  companyEmail: Yup.string().when("hasCompany", {
+    is: true,
+    then: Yup.string()
       .email()
-      .when("applyUrl", {
-        is: value => !value,
-        then: Yup.string()
-          .email()
-          .required("Provide application email or URL")
-      }),
-    companyName: Yup.string().when("hasCompany", {
-      is: true,
-      then: Yup.string().required("Required")
-    }),
-    companyEmail: Yup.string().when("hasCompany", {
-      is: true,
-      then: Yup.string()
-        .email()
-        .required("Required")
-    })
-  },
-  ["applyUrl", "applyEmail"]
-);
+      .required("Required")
+  })
+});
 
 exports.validateJobPost = async (req, res, next) => {
   const jobData = req.body;

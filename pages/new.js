@@ -108,11 +108,12 @@ const pageDescription =
 const cleanTags = tags =>
   tags.map(tag => tag.trim()).filter(tag => tag.length > 0);
 
-const validationSchema = Yup.object().shape(
-  {
-    position: Yup.string().required("Required"),
-    jobType: Yup.string().required("Required"),
-    primaryTagId: Yup.number().test(
+const validationSchema = Yup.object().shape({
+  position: Yup.string().required("Required"),
+  jobType: Yup.string().required("Required"),
+  primaryTagId: Yup.number()
+    .nullable()
+    .test(
       "primaryTag-required",
       "Choose at least one tag here or enter a tag in the Extra Tags input below.",
       function(value) {
@@ -123,46 +124,36 @@ const validationSchema = Yup.object().shape(
         return true;
       }
     ),
-    tags: Yup.array().test(
-      "tags-required",
-      "Please enter at least one tag here or choose a tag in the Primary Tag input above.",
-      function(value) {
-        const { primaryTagId } = this.parent;
-        if (primaryTagId === null || primaryTagId === undefined) {
-          return value && cleanTags(value).length > 0;
-        }
-        return true;
+  tags: Yup.array().test(
+    "tags-required",
+    "Please enter at least one tag here or choose a tag in the Primary Tag input above.",
+    function(value) {
+      const { primaryTagId } = this.parent;
+      if (primaryTagId === null || primaryTagId === undefined) {
+        return value && cleanTags(value).length > 0;
       }
-    ),
-    deadline: Yup.date()
-      .nullable()
-      .default(null),
-    description: Yup.string().required("Required"),
-    applyUrl: Yup.string().when("applyEmail", {
-      is: value => !value,
-      then: Yup.string().required("Provide application URL or email")
-    }),
-    applyEmail: Yup.string()
+      return true;
+    }
+  ),
+  deadline: Yup.date()
+    .nullable()
+    .default(null),
+  description: Yup.string().required("Required"),
+  applyEmail: Yup.string()
+    .nullable()
+    .notRequired()
+    .email(),
+  companyName: Yup.string().when("hasCompany", {
+    is: true,
+    then: Yup.string().required("Required")
+  }),
+  companyEmail: Yup.string().when("hasCompany", {
+    is: true,
+    then: Yup.string()
       .email()
-      .when("applyUrl", {
-        is: value => !value,
-        then: Yup.string()
-          .email()
-          .required("Provide application email or URL")
-      }),
-    companyName: Yup.string().when("hasCompany", {
-      is: true,
-      then: Yup.string().required("Required")
-    }),
-    companyEmail: Yup.string().when("hasCompany", {
-      is: true,
-      then: Yup.string()
-        .email()
-        .required("Required")
-    })
-  },
-  ["applyUrl", "applyEmail"]
-);
+      .required("Required")
+  })
+});
 
 const jobTypes = [
   "Full-time",
@@ -271,7 +262,6 @@ function New({ primaryTags }) {
           }) => {
             const handleMdeChange = fieldName => value =>
               setFieldValue(fieldName, value);
-            console.log({ errors, deadline: values.deadline });
             return (
               <form className={classes.form} onSubmit={handleSubmit}>
                 <HSCard title="Job Details">

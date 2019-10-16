@@ -55,21 +55,24 @@ function JobInfoItem({ title, value, classes = {} }) {
   );
 }
 
+function ApplyButton({ job }) {
+  return (
+    <Button
+      variant="contained"
+      color="primary"
+      href={job.applyUrl || `mailto:${job.applyEmail}`}
+      target="_blank"
+      fullWidth>
+      Apply Now
+    </Button>
+  );
+}
+
 export default function JobContent({ jobData }) {
   const classes = useStyles();
   const { job, company } = jobData;
-  const renderApplyButton = job => {
-    return (
-      <Button
-        variant="contained"
-        color="primary"
-        href={job.applyUrl || `mailto:${job.applyEmail}`}
-        target="_blank"
-        fullWidth>
-        Apply Now
-      </Button>
-    );
-  };
+  const hasApplyButton = !!job.applyUrl || !!job.applyEmail;
+  const hasApplySection = !!job.howToApply || hasApplyButton;
   return (
     <Container className={classes.root} maxWidth="lg">
       <Box display="flex" alignItems="center" pb={2}>
@@ -97,7 +100,11 @@ export default function JobContent({ jobData }) {
         </Box>
       </Box>
       <Grid container spacing={2}>
-        <Grid className={classes.jobGrid} item sm={12} lg={9}>
+        <Grid
+          className={classes.jobGrid}
+          item
+          sm={12}
+          lg={hasApplySection ? 9 : 12}>
           <HSPaper className={classes.jobInfo}>
             {job.location && (
               <JobInfoItem title="Location" value={job.location} />
@@ -131,22 +138,24 @@ export default function JobContent({ jobData }) {
             )}
           </HSPaper>
         </Grid>
-        <Grid item sm={12} lg={3} className={classes.applyGrid}>
-          {!job.howToApply && renderApplyButton(job)}
-          {!!job.howToApply && (
-            <HSPaper className={classes.apply}>
-              {renderApplyButton(job)}
-              {job.howToApply && (
-                <Box pt={2}>
-                  <Typography variant="subtitle1">
-                    Are you interested in this job?
-                  </Typography>
-                  <Markdown>{job.howToApply}</Markdown>
-                </Box>
-              )}
-            </HSPaper>
-          )}
-        </Grid>
+        {hasApplySection && (
+          <Grid item sm={12} lg={3} className={classes.applyGrid}>
+            {!job.howToApply && hasApplyButton && <ApplyButton job={job} />}
+            {!!job.howToApply && (
+              <HSPaper className={classes.apply}>
+                {(job.applyUrl || job.applyEmail) && <ApplyButton job={job} />}
+                {job.howToApply && (
+                  <Box pt={hasApplyButton ? 2 : 0}>
+                    <Typography variant="subtitle1">
+                      Are you interested in this job?
+                    </Typography>
+                    <Markdown>{job.howToApply}</Markdown>
+                  </Box>
+                )}
+              </HSPaper>
+            )}
+          </Grid>
+        )}
       </Grid>
     </Container>
   );
