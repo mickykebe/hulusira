@@ -76,8 +76,8 @@ export default function JobContent({ jobData }) {
   return (
     <Container className={classes.root} maxWidth="lg">
       <Box display="flex" alignItems="center" pb={2}>
-        {company && (
-          <Box mr={2}>
+        {company && company.logo && (
+          <Box mr={1}>
             <CompanyLogo
               company={company}
               abbrevFallback={false}
@@ -85,7 +85,7 @@ export default function JobContent({ jobData }) {
             />
           </Box>
         )}
-        <Box>
+        <Box ml={1}>
           <Typography variant="h4">{job.position}</Typography>
           {company && company.name && (
             <React.Fragment>

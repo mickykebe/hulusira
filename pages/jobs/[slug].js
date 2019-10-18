@@ -27,7 +27,7 @@ const useStyles = makeStyles(theme => ({
     padding: 0
   },
   closeIcon: {
-    fontSize: 18,
+    fontSize: "1.125rem",
     marginRight: theme.spacing(0.5)
   }
 }));
@@ -102,9 +102,6 @@ function Job({ jobData, adminToken }) {
             (jobData.company && jobData.company.logo) || defaultThumbnailUrl
           }
         />
-        {/* {jobData.company && jobData.company.logo && (
-          <meta property="og:image" content={jobData.company.logo} />
-        )} */}
         <meta name="twitter:title" content={metaTitle} />
         <meta name="twitter:description" content={metaDescription} />
         <meta
@@ -113,9 +110,6 @@ function Job({ jobData, adminToken }) {
             (jobData.company && jobData.company.logo) || defaultThumbnailUrl
           }
         />
-        {/* {jobData.company && jobData.company.logo && (
-          <meta property="twitter:image:src" content={jobData.company.logo} />
-        )} */}
         <meta property="twitter:url" content={url} />
       </Head>
       <Container>

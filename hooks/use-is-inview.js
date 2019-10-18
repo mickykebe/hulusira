@@ -6,7 +6,6 @@ export default function useIsInview(bottomOffset = 0) {
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        console.log(entry.isIntersecting);
         setIsIntersecting(entry.isIntersecting);
       },
       { rootMargin: `0px 0px ${bottomOffset}px 0px` }

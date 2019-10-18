@@ -22,9 +22,6 @@ import { tagIdsfromQueryParam } from "../utils";
 import { useEffect, useRef, useState, useCallback } from "react";
 
 const useStyles = makeStyles(theme => ({
-  root: {
-    paddingTop: theme.spacing(1)
-  },
   jobItem: {
     marginBottom: theme.spacing(2)
   },
@@ -87,7 +84,6 @@ function Index({ jobPage, activeTags, primaryTags }) {
       isError: false
     }
   );
-  console.log("in staging");
   const ticker = useRef(0);
   useEffect(() => {
     if (ticker.current > 0) {
@@ -168,7 +164,7 @@ function Index({ jobPage, activeTags, primaryTags }) {
         <meta name="twitter:image:src" content={metaImage} />
         <meta name="twitter:url" content={pageUrl} />
       </Head>
-      <Container className={classes.root} maxWidth="md">
+      <Container maxWidth="md">
         {(!activeTags || activeTags.length === 0) && (
           <TextField
             value=""

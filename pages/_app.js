@@ -43,6 +43,7 @@ class MyApp extends App {
         </Head>
         <ThemeProvider theme={theme}>
           <CssBaseline />
+          <GlobalCss />
           <Component {...pageProps} />
         </ThemeProvider>
       </Container>
