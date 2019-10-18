@@ -76,8 +76,8 @@ export default function JobContent(***REMOVED*** jobData ***REMOVED***) ***REMOV
   return (
     <Container className=***REMOVED***classes.root***REMOVED*** maxWidth="lg">
       <Box display="flex" alignItems="center" pb=***REMOVED***2***REMOVED***>
-        ***REMOVED***company && (
-          <Box mr=***REMOVED***2***REMOVED***>
+        ***REMOVED***company && company.logo && (
+          <Box mr=***REMOVED***1***REMOVED***>
             <CompanyLogo
               company=***REMOVED***company***REMOVED***
               abbrevFallback=***REMOVED***false***REMOVED***
@@ -85,7 +85,7 @@ export default function JobContent(***REMOVED*** jobData ***REMOVED***) ***REMOV
             />
           </Box>
         )***REMOVED***
-        <Box>
+        <Box ml=***REMOVED***1***REMOVED***>
           <Typography variant="h4">***REMOVED***job.position***REMOVED***</Typography>
           ***REMOVED***company && company.name && (
             <React.Fragment>

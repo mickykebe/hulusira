@@ -1,4 +1,4 @@
-import ***REMOVED*** useState, useEffect ***REMOVED*** from 'react';
+import ***REMOVED*** useState, useEffect ***REMOVED*** from "react";
 import clsx from "clsx";
 import ***REMOVED*** Snackbar, SnackbarContent, IconButton ***REMOVED*** from "@material-ui/core";
 import ***REMOVED*** amber, green ***REMOVED*** from "@material-ui/core/colors";
@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme => (***REMOVED***
     backgroundColor: amber[700]
   ***REMOVED***,
   icon: ***REMOVED***
-    fontSize: 20
+    fontSize: "1.25rem"
   ***REMOVED***,
   iconVariant: ***REMOVED***
     opacity: 0.9,

@@ -22,9 +22,6 @@ import ***REMOVED*** tagIdsfromQueryParam ***REMOVED*** from "../utils";
 import ***REMOVED*** useEffect, useRef, useState, useCallback ***REMOVED*** from "react";
 
 const useStyles = makeStyles(theme => (***REMOVED***
-  root: ***REMOVED***
-    paddingTop: theme.spacing(1)
-  ***REMOVED***,
   jobItem: ***REMOVED***
     marginBottom: theme.spacing(2)
   ***REMOVED***,
@@ -87,7 +84,6 @@ function Index(***REMOVED*** jobPage, activeTags, primaryTags ***REMOVED***) ***
       isError: false
     ***REMOVED***
   );
-  console.log("in staging");
   const ticker = useRef(0);
   useEffect(() => ***REMOVED***
     if (ticker.current > 0) ***REMOVED***
@@ -168,7 +164,7 @@ function Index(***REMOVED*** jobPage, activeTags, primaryTags ***REMOVED***) ***
         <meta name="twitter:image:src" content=***REMOVED***metaImage***REMOVED*** />
         <meta name="twitter:url" content=***REMOVED***pageUrl***REMOVED*** />
       </Head>
-      <Container className=***REMOVED***classes.root***REMOVED*** maxWidth="md">
+      <Container maxWidth="md">
         ***REMOVED***(!activeTags || activeTags.length === 0) && (
           <TextField
             value=""

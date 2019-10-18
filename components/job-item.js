@@ -27,11 +27,11 @@ const useStyles = makeStyles(theme => (***REMOVED***
       zIndex: 1110
     ***REMOVED***)
   ***REMOVED***),
-  logoWrapper: ***REMOVED***
+  /* logoWrapper: ***REMOVED***
     "@media (max-width: 400px)": ***REMOVED***
       display: "none"
     ***REMOVED***
-  ***REMOVED***,
+  ***REMOVED***, */
   logoSmall: ***REMOVED***
     width: 48,
     height: 48
@@ -44,7 +44,7 @@ const useStyles = makeStyles(theme => (***REMOVED***
     marginRight: theme.spacing(1),
     marginBottom: theme.spacing(1),
     fontWeight: 800,
-    fontSize: 11,
+    fontSize: ".6875rem",
     color: theme.palette.grey[700]
   ***REMOVED***,
   applyButton: ***REMOVED***
@@ -53,24 +53,13 @@ const useStyles = makeStyles(theme => (***REMOVED***
       display: "none"
     ***REMOVED***
   ***REMOVED***,
-  jobType: ***REMOVED***
-    position: "absolute",
-    top: 0,
-    right: 0,
-    backgroundColor: theme.palette.secondary.main,
-    color: theme.palette.getContrastText(theme.palette.grey[700]),
-    padding: `2px $***REMOVED***theme.spacing(1)***REMOVED***px`,
-    borderRadius: "0 0 0 5px",
-    fontWeight: 800,
-    fontSize: 12
-  ***REMOVED***,
   extrasText: ***REMOVED***
     display: "inline-flex",
     alignItems: "center",
     marginRight: theme.spacing(1)
   ***REMOVED***,
   extrasIcon: ***REMOVED***
-    fontSize: 16,
+    fontSize: "1rem",
     marginRight: theme.spacing(0.5)
   ***REMOVED***
 ***REMOVED***));
@@ -87,7 +76,7 @@ export default function JobItem(***REMOVED***
 
   return (
     <Box className=***REMOVED***clsx(classes.root, className)***REMOVED***>
-      <Box className=***REMOVED***classes.logoWrapper***REMOVED*** pr=***REMOVED***3***REMOVED***>
+      <Box className=***REMOVED***classes.logoWrapper***REMOVED*** pr=***REMOVED***[2, 3]***REMOVED***>
         ***REMOVED***!!company && <CompanyLogo company=***REMOVED***company***REMOVED*** />***REMOVED***
       </Box>
       <Box display="flex" alignItems="center" flexWrap="wrap" flex=***REMOVED***1***REMOVED***>
@@ -157,7 +146,6 @@ export default function JobItem(***REMOVED***
           ***REMOVED***)***REMOVED***
         </Box>
       </Box>
-      ***REMOVED***/* ***REMOVED***job.jobType && <Box className=***REMOVED***classes.jobType***REMOVED***>***REMOVED***job.jobType***REMOVED***</Box>***REMOVED*** */***REMOVED***
     </Box>
   );
 ***REMOVED***
