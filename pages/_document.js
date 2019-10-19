@@ -31,10 +31,12 @@ class MyDocument extends Document {
           <script
             crossOrigin="anonymous"
             src="https://polyfill.io/v3/polyfill.min.js?features=IntersectionObserver"></script>
-          <script
-            data-ad-client="ca-pub-5352467626710029"
-            async
-            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+          {process.env.NODE_ENV === "production" && (
+            <script
+              data-ad-client="ca-pub-5352467626710029"
+              async
+              src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+          )}
         </Head>
         <body>
           <Main />
