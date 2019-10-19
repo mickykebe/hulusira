@@ -104,7 +104,7 @@ export default function JobItem(***REMOVED***
             </React.Fragment>
           )***REMOVED***
           ***REMOVED***(!preview || !!job.jobType) && (
-            <Box display="flex" alignItems="center" pt=***REMOVED***2***REMOVED***>
+            <Box display="flex" alignItems="center" pt="1rem">
               ***REMOVED***!!job.jobType && (
                 <Typography
                   className=***REMOVED***classes.extrasText***REMOVED***
