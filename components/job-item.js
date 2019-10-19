@@ -104,7 +104,7 @@ export default function JobItem({
             </React.Fragment>
           )}
           {(!preview || !!job.jobType) && (
-            <Box display="flex" alignItems="center" pt={2}>
+            <Box display="flex" alignItems="center" pt="1rem">
               {!!job.jobType && (
                 <Typography
                   className={classes.extrasText}
