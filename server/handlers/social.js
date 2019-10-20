@@ -38,12 +38,22 @@ const sendPostToFacebook = async function(message, jobUrl) {
   }
 };
 
-const sendPostToTelegram = async function(message) {
+const sendPostToTelegram = async function(message, jobUrl) {
   try {
     const { data: response } = await axios
       .post(TELEGRAM_SEND_MESSAGE_URL, {
         chat_id: `@${process.env.TELEGRAM_CHANNEL_USERNAME}`,
-        text: message
+        text: message,
+        reply_markup: {
+          inline_keyboard: [
+            [
+              {
+                text: "Apply",
+                url: jobUrl
+              }
+            ]
+          ]
+        }
       })
       .catch(logAxiosErrors);
     if (response.ok) {
@@ -58,15 +68,13 @@ const sendPostToTelegram = async function(message) {
 exports.postJobToSocialMedia = async function(jobData) {
   const messageBody = createJobMessage(jobData);
   const jobUrl = `${process.env.ROOT_URL}/jobs/${jobData.job.slug}`;
-  const telegramMessage = `${messageBody}
-  
-To apply for this job visit: ${jobUrl}`;
+  const telegramMessage = messageBody;
   const facebookMessage = `ክፍት የስራ ቦታ ማስታወቅያ
   
 ${messageBody}`;
   const [telegramMessageId, facebookPostId] = await Promise.all(
     [
-      sendPostToTelegram(telegramMessage),
+      sendPostToTelegram(telegramMessage, jobUrl),
       sendPostToFacebook(facebookMessage, jobUrl)
     ].map(p => p.catch(() => undefined))
   );
