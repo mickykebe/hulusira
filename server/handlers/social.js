@@ -114,9 +114,11 @@ const postCloseJobToTelegram = async function(messageId) ***REMOVED***
 ***REMOVED***;
 
 exports.postJobCloseToSocialMedia = async function(jobData) ***REMOVED***
-  const ***REMOVED*** telegramMessageId, facebookPostId ***REMOVED*** = await db.getJobSocialPost(
-    jobData.job.id
-  );
+  const messageIds = await db.getJobSocialPost(jobData.job.id);
+  if (!messageIds) ***REMOVED***
+    return;
+  ***REMOVED***
+  const ***REMOVED*** telegramMessageId, facebookPostId ***REMOVED*** = messageIds;
   try ***REMOVED***
     await Promise.all([
       postCloseJobToTelegram(telegramMessageId),
