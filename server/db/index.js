@@ -383,6 +383,22 @@ class Db {
       .del();
   }
 
+  createUserConfirmation(userId, confirmationKey) {
+    return this.knex("user_confirmation").insert({
+      user_id: userId,
+      confirmation_key: confirmationKey
+    });
+  }
+
+  async getUserConfirmation(confirmationKey) {
+    const row = await this.knex("user_confirmation")
+      .first()
+      .where("confirmation_key", confirmationKey);
+    if (row) {
+      return { userId: row.user_id, confirmationKey: row.confirmation_key };
+    }
+  }
+
   end() {
     return this.pool.end();
   }

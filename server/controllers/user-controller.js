@@ -1,11 +1,7 @@
 const bcrypt = require("bcryptjs");
+const { v4 } = require("uuid");
 const db = require("../db");
 const { sendEmail } = require("../utils/send-email");
-const {
-  createConfirmationUrl,
-  confirmUserPrefix
-} = require("../utils/create-confirmation-url");
-const redis = require("../redis");
 
 exports.me = async (req, res) => {
   if (req.user) {
@@ -32,7 +28,9 @@ exports.login = async (req, res) => {
 exports.register = async (req, res) => {
   const userData = req.body;
   const user = await db.createUser(userData);
-  const confirmationUrl = await createConfirmationUrl(user.id);
+  const confirmationKey = v4();
+  await db.createUserConfirmation(user.id, confirmationKey);
+  const confirmationUrl = `${process.env.ROOT_URL}/confirm-user/${confirmationKey}`;
   await sendEmail(
     user.email,
     `Hi ${user.firstName} ${user.lastName}, please verify your HuluSira account`,
@@ -43,14 +41,14 @@ exports.register = async (req, res) => {
 };
 
 exports.confirmUser = async (req, res) => {
-  const { token } = req.params;
-  const confirmationKey = confirmUserPrefix + token;
-  const userId = await redis.get(confirmationKey);
-  if (!userId) {
+  const { confirmationKey } = req.params;
+  const userConfirmation = await db.getUserConfirmation(confirmationKey);
+  if (!userConfirmation) {
     res.sendStatus(500);
+    return;
   }
+  const userId = userConfirmation.userId;
 
-  await db.confirmUser(parseInt(userId, 10));
-  redis.del(confirmationKey);
+  await db.confirmUser(userId);
   res.sendStatus(200);
 };

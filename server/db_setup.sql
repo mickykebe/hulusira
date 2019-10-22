@@ -57,5 +57,10 @@ CREATE TABLE job_tags (
 CREATE TABLE job_social_post (
   job_id INTEGER PRIMARY KEY REFERENCES job(id) ON DELETE CASCADE,
   telegram_message_id INTEGER,
-  facebook_post_id TEXT,
+  facebook_post_id TEXT
+);
+
+CREATE TABLE user_confirmation(
+  user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+  confirmation_key TEXT NOT NULL UNIQUE
 );
