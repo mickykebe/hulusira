@@ -16,15 +16,12 @@ import RefreshIcon from "@material-ui/icons/Refresh";
 import api from "../api";
 import Layout from "../components/layout";
 import JobItem from "../components/job-item";
-import useInfiniteScroller from "../hooks/use-infinite-scroll";
+import useIsInview from "../hooks/use-is-inview";
 import TagFilter from "../components/tag-filter";
 import { tagIdsfromQueryParam } from "../utils";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 
 const useStyles = makeStyles(theme => ({
-  root: {
-    paddingTop: theme.spacing(1)
-  },
   jobItem: {
     marginBottom: theme.spacing(2)
   },
@@ -81,23 +78,34 @@ function Index({ jobPage, activeTags, primaryTags }) {
   const [{ jobs, nextCursor, isLoading, isError }, dispatch] = React.useReducer(
     jobsReducer,
     {
-      jobs: [],
-      nextCursor: null,
+      jobs: jobPage.jobs,
+      nextCursor: jobPage.nextCursor,
       isLoading: false,
       isError: false
     }
   );
   const ticker = useRef(0);
   useEffect(() => {
-    dispatch({ type: "TAG_FILTER", payload: jobPage });
+    if (ticker.current > 0) {
+      dispatch({ type: "TAG_FILTER", payload: jobPage });
+    }
     ticker.current++;
   }, [jobPage]);
+
   const classes = useStyles();
+  const router = useRouter();
+
   const fetchMoreJobs = async () => {
     const tickerVal = ticker.current;
+    if (isLoading || !nextCursor) {
+      return;
+    }
     dispatch({ type: "FETCH_INIT" });
     try {
-      const jobPage = await api.getJobs({ cursor: nextCursor });
+      const jobPage = await api.getJobs({
+        tags: router.query.tags || "",
+        cursor: nextCursor
+      });
       if (tickerVal === ticker.current) {
         dispatch({ type: "FETCH_SUCCESS", payload: jobPage });
       }
@@ -107,7 +115,13 @@ function Index({ jobPage, activeTags, primaryTags }) {
       }
     }
   };
-  useInfiniteScroller(isLoading, !!nextCursor, fetchMoreJobs, isError);
+
+  const [isIntersecting, sentinelRef] = useIsInview(300);
+  useEffect(() => {
+    if (isIntersecting) {
+      fetchMoreJobs();
+    }
+  }, [isIntersecting]);
   const handleTagClick = tagId => {
     const tagIndex = activeTags.findIndex(tag => tag.id === tagId);
     if (tagIndex !== -1) {
@@ -125,6 +139,7 @@ function Index({ jobPage, activeTags, primaryTags }) {
     Router.push(`/${tagIds.length ? `?tags=${tagIds.join(",")}` : ""}`);
   };
 
+  const metaImage = `${process.env.ROOT_URL}/static/hulusira.png`;
   return (
     <Layout
       toolbarChildren={
@@ -143,13 +158,13 @@ function Index({ jobPage, activeTags, primaryTags }) {
         <meta property="og:title" content={pageTitle} />
         <meta property="og:url" content={pageUrl} />
         <meta property="og:description" content={pageDescription} />
-        {/*<meta property="og:image" content="" />*/}
+        <meta property="og:image" content={metaImage} />
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDescription} />
-        {/*<meta name="twitter:image:src" content="" />*/}
+        <meta name="twitter:image:src" content={metaImage} />
         <meta name="twitter:url" content={pageUrl} />
       </Head>
-      <Container className={classes.root} maxWidth="md">
+      <Container maxWidth="md">
         {(!activeTags || activeTags.length === 0) && (
           <TextField
             value=""
@@ -195,6 +210,7 @@ function Index({ jobPage, activeTags, primaryTags }) {
               />
             );
           })}
+          <div ref={sentinelRef} style={{ height: "1px" }} />
           {ticker.current > 0 && jobs.length === 0 && (
             <Typography
               variant="h4"
@@ -237,7 +253,6 @@ Index.getInitialProps = async ctx => {
     api.getJobs({ ctx, tags }),
     api.getPrimaryTags(ctx)
   ]);
-  //const jobPage = await api.getJobs({ ctx, tags });
   let activeTags = [];
   if (!!tags) {
     activeTags = await api.getTags(tags, ctx);

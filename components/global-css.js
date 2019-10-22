@@ -1,8 +1,8 @@
 import { makeStyles } from "@material-ui/styles";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   "@global": {
-    html: {
+    /* html: {
       height: "100%"
     },
     body: {
@@ -10,9 +10,14 @@ const useStyles = makeStyles({
     },
     "#__next": {
       height: "100%"
+    } */
+    html: {
+      [theme.breakpoints.down("xs")]: {
+        fontSize: "75%"
+      }
     }
   }
-});
+}));
 
 export default function GlobalCss() {
   useStyles();

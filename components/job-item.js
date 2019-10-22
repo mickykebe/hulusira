@@ -27,11 +27,11 @@ const useStyles = makeStyles(theme => ({
       zIndex: 1110
     })
   }),
-  logoWrapper: {
+  /* logoWrapper: {
     "@media (max-width: 400px)": {
       display: "none"
     }
-  },
+  }, */
   logoSmall: {
     width: 48,
     height: 48
@@ -44,7 +44,7 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(1),
     marginBottom: theme.spacing(1),
     fontWeight: 800,
-    fontSize: 11,
+    fontSize: ".6875rem",
     color: theme.palette.grey[700]
   },
   applyButton: {
@@ -53,24 +53,13 @@ const useStyles = makeStyles(theme => ({
       display: "none"
     }
   },
-  jobType: {
-    position: "absolute",
-    top: 0,
-    right: 0,
-    backgroundColor: theme.palette.secondary.main,
-    color: theme.palette.getContrastText(theme.palette.grey[700]),
-    padding: `2px ${theme.spacing(1)}px`,
-    borderRadius: "0 0 0 5px",
-    fontWeight: 800,
-    fontSize: 12
-  },
   extrasText: {
     display: "inline-flex",
     alignItems: "center",
     marginRight: theme.spacing(1)
   },
   extrasIcon: {
-    fontSize: 16,
+    fontSize: "1rem",
     marginRight: theme.spacing(0.5)
   }
 }));
@@ -87,7 +76,7 @@ export default function JobItem({
 
   return (
     <Box className={clsx(classes.root, className)}>
-      <Box className={classes.logoWrapper} pr={3}>
+      <Box className={classes.logoWrapper} pr={[2, 3]}>
         {!!company && <CompanyLogo company={company} />}
       </Box>
       <Box display="flex" alignItems="center" flexWrap="wrap" flex={1}>
@@ -115,7 +104,7 @@ export default function JobItem({
             </React.Fragment>
           )}
           {(!preview || !!job.jobType) && (
-            <Box display="flex" alignItems="center" pt={2}>
+            <Box display="flex" alignItems="center" pt="1rem">
               {!!job.jobType && (
                 <Typography
                   className={classes.extrasText}
@@ -157,7 +146,6 @@ export default function JobItem({
           })}
         </Box>
       </Box>
-      {/* {job.jobType && <Box className={classes.jobType}>{job.jobType}</Box>} */}
     </Box>
   );
 }

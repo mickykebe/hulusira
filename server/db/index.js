@@ -20,7 +20,7 @@ class Db {
       "job_type",
       "company_id",
       "location",
-      "monthly_salary",
+      "salary",
       "description",
       "responsibilities",
       "requirements",
@@ -31,7 +31,8 @@ class Db {
       "closed",
       "created",
       "slug",
-      "admin_token"
+      "admin_token",
+      "deadline"
     ];
     this.companyColumns = ["id", "name", "email", "logo", "verified"];
   }
@@ -79,7 +80,8 @@ class Db {
           job_type: jobData.jobType,
           company_id: companyId,
           location: jobData.location,
-          monthly_salary: jobData.monthlySalary,
+          salary: jobData.salary,
+          deadline: jobData.deadline,
           description: jobData.description,
           responsibilities: jobData.responsibilities,
           requirements: jobData.requirements,
@@ -344,6 +346,40 @@ class Db {
   deleteJob(id) {
     return this.knex("job")
       .where("id", id)
+      .del();
+  }
+
+  createJobSocialPost(jobId, { telegramMessageId, facebookPostId }) {
+    const data = {
+      job_id: jobId
+    };
+    if (!telegramMessageId && !facebookPostId) {
+      return;
+    }
+    if (telegramMessageId) {
+      data.telegram_message_id = telegramMessageId;
+    }
+    if (facebookPostId) {
+      data.facebook_post_id = facebookPostId;
+    }
+    return this.knex("job_social_post").insert(data);
+  }
+
+  async getJobSocialPost(jobId) {
+    const row = await this.knex("job_social_post")
+      .first()
+      .where("job_id", jobId);
+    if (!!row) {
+      return {
+        telegramMessageId: row.telegram_message_id,
+        facebookPostId: row.facebook_post_id
+      };
+    }
+  }
+
+  deleteJobSocialPost(jobId) {
+    return this.knex("job_social_post")
+      .where("job_id", jobId)
       .del();
   }
 

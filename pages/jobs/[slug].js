@@ -27,7 +27,7 @@ const useStyles = makeStyles(theme => ({
     padding: 0
   },
   closeIcon: {
-    fontSize: 18,
+    fontSize: "1.125rem",
     marginRight: theme.spacing(0.5)
   }
 }));
@@ -87,6 +87,7 @@ function Job({ jobData, adminToken }) {
   }iring ${jobData.job.position}. ${jobData.job.description.slice(0, 250)}...`;
   const router = useRouter();
   const url = `${process.env.ROOT_URL}${router.asPath}`;
+  const defaultThumbnailUrl = `${process.env.ROOT_URL}/static/hulusira.png`;
   return (
     <Layout>
       <Head>
@@ -95,14 +96,20 @@ function Job({ jobData, adminToken }) {
         <meta property="og:title" content={metaTitle} />
         <meta property="og:url" content={url} />
         <meta property="og:description" content={metaDescription} />
-        {jobData.company && jobData.company.logo && (
-          <meta property="og:image" content={jobData.company.logo} />
-        )}
+        <meta
+          property="og:image"
+          content={
+            (jobData.company && jobData.company.logo) || defaultThumbnailUrl
+          }
+        />
         <meta name="twitter:title" content={metaTitle} />
         <meta name="twitter:description" content={metaDescription} />
-        {jobData.company && jobData.company.logo && (
-          <meta property="twitter:image:src" content={jobData.company.logo} />
-        )}
+        <meta
+          property="twitter:image:src"
+          content={
+            (jobData.company && jobData.company.logo) || defaultThumbnailUrl
+          }
+        />
         <meta property="twitter:url" content={url} />
       </Head>
       <Container>

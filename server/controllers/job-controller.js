@@ -1,61 +1,54 @@
 const Yup = require("yup");
 const db = require("../db/index");
+const socialHandler = require("../handlers/social");
 const utils = require("../utils");
 
-const validationSchema = Yup.object().shape(
-  {
-    position: Yup.string().required("Required"),
-    jobType: Yup.string().required("Required"),
-    primaryTagId: Yup.number()
-      .nullable()
-      .test(
-        "primaryTag-required",
-        "Choose at least one tag here or enter a tag in the Extra Tags input below.",
-        function(value) {
-          const tags = this.parent.tags;
-          if (!tags || tags.length === 0) {
-            return !!value;
-          }
-          return true;
-        }
-      ),
-    tags: Yup.array().test(
-      "tags-required",
-      "Please enter at least one tag here or choose a tag in the Primary Tag input above.",
+const validationSchema = Yup.object().shape({
+  position: Yup.string().required("Required"),
+  jobType: Yup.string().required("Required"),
+  primaryTagId: Yup.number()
+    .nullable()
+    .test(
+      "primaryTag-required",
+      "Choose at least one tag here or enter a tag in the Extra Tags input below.",
       function(value) {
-        const { primaryTagId } = this.parent;
-        if (primaryTagId === null || primaryTagId === undefined) {
-          return value && value.length > 0;
+        const tags = this.parent.tags;
+        if (!tags || tags.length === 0) {
+          return !!value;
         }
         return true;
       }
     ),
-    description: Yup.string().required("Required"),
-    applyUrl: Yup.string().when("applyEmail", {
-      is: value => !value,
-      then: Yup.string().required("Provide application URL or email")
-    }),
-    applyEmail: Yup.string()
+  tags: Yup.array().test(
+    "tags-required",
+    "Please enter at least one tag here or choose a tag in the Primary Tag input above.",
+    function(value) {
+      const { primaryTagId } = this.parent;
+      if (primaryTagId === null || primaryTagId === undefined) {
+        return value && value.length > 0;
+      }
+      return true;
+    }
+  ),
+  deadline: Yup.date()
+    .nullable()
+    .default(null),
+  description: Yup.string().required("Required"),
+  applyEmail: Yup.string()
+    .nullable()
+    .notRequired()
+    .email(),
+  companyName: Yup.string().when("hasCompany", {
+    is: true,
+    then: Yup.string().required("Required")
+  }),
+  companyEmail: Yup.string().when("hasCompany", {
+    is: true,
+    then: Yup.string()
       .email()
-      .when("applyUrl", {
-        is: value => !value,
-        then: Yup.string()
-          .email()
-          .required("Provide application email or URL")
-      }),
-    companyName: Yup.string().when("hasCompany", {
-      is: true,
-      then: Yup.string().required("Required")
-    }),
-    companyEmail: Yup.string().when("hasCompany", {
-      is: true,
-      then: Yup.string()
-        .email()
-        .required("Required")
-    })
-  },
-  ["applyUrl", "applyEmail"]
-);
+      .required("Required")
+  })
+});
 
 exports.validateJobPost = async (req, res, next) => {
   const jobData = req.body;
@@ -85,8 +78,14 @@ exports.createJob = async (req, res) => {
       logo: companyLogo
     };
   }
-  jobData.approved = req.user && req.user.role === "admin";
+  const isAdminUser = req.user && req.user.role === "admin";
+  if (isAdminUser) {
+    jobData.approved = true;
+  }
   const resData = await db.createJobAndCompany({ company, job: jobData });
+  if (isAdminUser) {
+    socialHandler.postJobToSocialMedia(resData);
+  }
   res.status(200).send(resData);
 };
 
@@ -158,6 +157,9 @@ exports.closeJob = async (req, res) => {
   const affectedRows = await db.closeJob(id);
   if (affectedRows === 1) {
     res.status(200).send(true);
+    const jobData = await db.getJobById(id);
+    await socialHandler.postJobCloseToSocialMedia(jobData);
+    db.deleteJobSocialPost(id);
     return;
   }
   res.sendStatus(404);
@@ -168,6 +170,8 @@ exports.approveJob = async (req, res) => {
   const affectedRows = await db.approveJob(jobId);
   if (affectedRows === 1) {
     res.status(200).send(true);
+    const jobData = await db.getJobById(jobId);
+    socialHandler.postJobToSocialMedia(jobData);
     return;
   }
   res.sendStatus(404);

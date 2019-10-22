@@ -27,11 +27,11 @@ CREATE TABLE tag (
 CREATE TABLE job (
   id SERIAL PRIMARY KEY,
   position TEXT NOT NULL,
-  job_type TEXT NOT NULL CONSTRAINT check_value CHECK (job_type IN ('Full-time', 'Part-time', 'Freelance', 'Internship', 'Temporary')),
+  job_type TEXT NOT NULL CONSTRAINT check_value CHECK (job_type IN ('Full-time', 'Part-time', 'Freelance', 'Internship', 'Temporary', 'Contract')),
   company_id INTEGER REFERENCES company(id),
   location TEXT,
   primary_tag INTEGER REFERENCES tag(id),
-  monthly_salary TEXT,
+  salary TEXT,
   description TEXT NOT NULL,
   responsibilities TEXT,
   requirements TEXT,
@@ -40,10 +40,10 @@ CREATE TABLE job (
   apply_email TEXT,
   approved BOOLEAN NOT NULL DEFAULT FALSE,
   closed BOOLEAN NOT NULL DEFAULT FALSE,
+  deadline Date,
   created TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   slug TEXT,
-  admin_token uuid DEFAULT uuid_generate_v4(), 
-  CONSTRAINT require_apply_method CHECK (apply_url IS NOT NULL OR apply_email IS NOT NULL)
+  admin_token uuid DEFAULT uuid_generate_v4()
 );
 
 CREATE TABLE job_tags (
@@ -52,4 +52,10 @@ CREATE TABLE job_tags (
   tag_id INTEGER NOT NULL REFERENCES tag(id),
   is_primary BOOLEAN DEFAULT FALSE,
   UNIQUE (job_id, tag_id)
+);
+
+CREATE TABLE job_social_post (
+  job_id INTEGER PRIMARY KEY REFERENCES job(id) ON DELETE CASCADE,
+  telegram_message_id INTEGER,
+  facebook_post_id TEXT,
 );
