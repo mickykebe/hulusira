@@ -383,6 +383,22 @@ class Db ***REMOVED***
       .del();
   ***REMOVED***
 
+  createUserConfirmation(userId, confirmationKey) ***REMOVED***
+    return this.knex("user_confirmation").insert(***REMOVED***
+      user_id: userId,
+      confirmation_key: confirmationKey
+    ***REMOVED***);
+  ***REMOVED***
+
+  async getUserConfirmation(confirmationKey) ***REMOVED***
+    const row = await this.knex("user_confirmation")
+      .first()
+      .where("confirmation_key", confirmationKey);
+    if (row) ***REMOVED***
+      return ***REMOVED*** userId: row.user_id, confirmationKey: row.confirmation_key ***REMOVED***;
+    ***REMOVED***
+  ***REMOVED***
+
   end() ***REMOVED***
     return this.pool.end();
   ***REMOVED***
