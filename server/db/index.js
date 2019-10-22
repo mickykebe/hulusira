@@ -20,7 +20,7 @@ class Db ***REMOVED***
       "job_type",
       "company_id",
       "location",
-      "monthly_salary",
+      "salary",
       "description",
       "responsibilities",
       "requirements",
@@ -31,7 +31,8 @@ class Db ***REMOVED***
       "closed",
       "created",
       "slug",
-      "admin_token"
+      "admin_token",
+      "deadline"
     ];
     this.companyColumns = ["id", "name", "email", "logo", "verified"];
   ***REMOVED***
@@ -79,7 +80,8 @@ class Db ***REMOVED***
           job_type: jobData.jobType,
           company_id: companyId,
           location: jobData.location,
-          monthly_salary: jobData.monthlySalary,
+          salary: jobData.salary,
+          deadline: jobData.deadline,
           description: jobData.description,
           responsibilities: jobData.responsibilities,
           requirements: jobData.requirements,
@@ -344,6 +346,40 @@ class Db ***REMOVED***
   deleteJob(id) ***REMOVED***
     return this.knex("job")
       .where("id", id)
+      .del();
+  ***REMOVED***
+
+  createJobSocialPost(jobId, ***REMOVED*** telegramMessageId, facebookPostId ***REMOVED***) ***REMOVED***
+    const data = ***REMOVED***
+      job_id: jobId
+    ***REMOVED***;
+    if (!telegramMessageId && !facebookPostId) ***REMOVED***
+      return;
+    ***REMOVED***
+    if (telegramMessageId) ***REMOVED***
+      data.telegram_message_id = telegramMessageId;
+    ***REMOVED***
+    if (facebookPostId) ***REMOVED***
+      data.facebook_post_id = facebookPostId;
+    ***REMOVED***
+    return this.knex("job_social_post").insert(data);
+  ***REMOVED***
+
+  async getJobSocialPost(jobId) ***REMOVED***
+    const row = await this.knex("job_social_post")
+      .first()
+      .where("job_id", jobId);
+    if (!!row) ***REMOVED***
+      return ***REMOVED***
+        telegramMessageId: row.telegram_message_id,
+        facebookPostId: row.facebook_post_id
+      ***REMOVED***;
+    ***REMOVED***
+  ***REMOVED***
+
+  deleteJobSocialPost(jobId) ***REMOVED***
+    return this.knex("job_social_post")
+      .where("job_id", jobId)
       .del();
   ***REMOVED***
 

@@ -13,6 +13,8 @@ import ***REMOVED***
   Fab,
   LinearProgress
 ***REMOVED*** from "@material-ui/core";
+import ***REMOVED*** MuiPickersUtilsProvider, DatePicker ***REMOVED*** from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
 import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
 import SaveIcon from "@material-ui/icons/Save";
 import ***REMOVED*** useDropzone ***REMOVED*** from "react-dropzone";
@@ -106,11 +108,12 @@ const pageDescription =
 const cleanTags = tags =>
   tags.map(tag => tag.trim()).filter(tag => tag.length > 0);
 
-const validationSchema = Yup.object().shape(
-  ***REMOVED***
-    position: Yup.string().required("Required"),
-    jobType: Yup.string().required("Required"),
-    primaryTagId: Yup.number().test(
+const validationSchema = Yup.object().shape(***REMOVED***
+  position: Yup.string().required("Required"),
+  jobType: Yup.string().required("Required"),
+  primaryTagId: Yup.number()
+    .nullable()
+    .test(
       "primaryTag-required",
       "Choose at least one tag here or enter a tag in the Extra Tags input below.",
       function(value) ***REMOVED***
@@ -121,51 +124,49 @@ const validationSchema = Yup.object().shape(
         return true;
       ***REMOVED***
     ),
-    tags: Yup.array().test(
-      "tags-required",
-      "Please enter at least one tag here or choose a tag in the Primary Tag input above.",
-      function(value) ***REMOVED***
-        const ***REMOVED*** primaryTagId ***REMOVED*** = this.parent;
-        if (primaryTagId === null || primaryTagId === undefined) ***REMOVED***
-          return value && cleanTags(value).length > 0;
-        ***REMOVED***
-        return true;
+  tags: Yup.array().test(
+    "tags-required",
+    "Please enter at least one tag here or choose a tag in the Primary Tag input above.",
+    function(value) ***REMOVED***
+      const ***REMOVED*** primaryTagId ***REMOVED*** = this.parent;
+      if (primaryTagId === null || primaryTagId === undefined) ***REMOVED***
+        return value && cleanTags(value).length > 0;
       ***REMOVED***
-    ),
-    description: Yup.string().required("Required"),
-    applyUrl: Yup.string().when("applyEmail", ***REMOVED***
-      is: value => !value,
-      then: Yup.string().required("Provide application URL or email")
-    ***REMOVED***),
-    applyEmail: Yup.string()
+      return true;
+    ***REMOVED***
+  ),
+  deadline: Yup.date()
+    .nullable()
+    .default(null),
+  description: Yup.string().required("Required"),
+  applyEmail: Yup.string()
+    .nullable()
+    .notRequired()
+    .email(),
+  companyName: Yup.string().when("hasCompany", ***REMOVED***
+    is: true,
+    then: Yup.string().required("Required")
+  ***REMOVED***),
+  companyEmail: Yup.string().when("hasCompany", ***REMOVED***
+    is: true,
+    then: Yup.string()
       .email()
-      .when("applyUrl", ***REMOVED***
-        is: value => !value,
-        then: Yup.string()
-          .email()
-          .required("Provide application email or URL")
-      ***REMOVED***),
-    companyName: Yup.string().when("hasCompany", ***REMOVED***
-      is: true,
-      then: Yup.string().required("Required")
-    ***REMOVED***),
-    companyEmail: Yup.string().when("hasCompany", ***REMOVED***
-      is: true,
-      then: Yup.string()
-        .email()
-        .required("Required")
-    ***REMOVED***)
-  ***REMOVED***,
-  ["applyUrl", "applyEmail"]
-);
+      .required("Required")
+  ***REMOVED***)
+***REMOVED***);
 
 const jobTypes = [
   "Full-time",
   "Part-time",
+  "Contract",
   "Freelance",
   "Internship",
   "Temporary"
 ];
+
+function DatePickerTextField(props) ***REMOVED***
+  return <TextField margin="normal" fullWidth ***REMOVED***...props***REMOVED*** />;
+***REMOVED***
 
 function New(***REMOVED*** primaryTags ***REMOVED***) ***REMOVED***
   const classes = useStyles();
@@ -239,14 +240,15 @@ function New(***REMOVED*** primaryTags ***REMOVED***) ***REMOVED***
             location: "Addis Ababa",
             primaryTagId: "",
             tags: [],
-            monthlySalary: "",
+            salary: "",
             description: "",
             requirements: "",
             responsibilites: "",
             howToApply: "",
             applyUrl: "",
             applyEmail: "",
-            companyEmail: ""
+            companyEmail: "",
+            deadline: null
           ***REMOVED******REMOVED***
           onSubmit=***REMOVED***handleSubmit***REMOVED***>
           ***REMOVED***(***REMOVED***
@@ -345,20 +347,30 @@ function New(***REMOVED*** primaryTags ***REMOVED***) ***REMOVED***
                     ***REMOVED***
                   />
                   <TextField
-                    name="monthlySalary"
-                    label="Monthly Salary"
+                    name="salary"
+                    label="Salary"
                     variant="outlined"
                     margin="normal"
                     fullWidth
-                    value=***REMOVED***values.monthlySalary***REMOVED***
+                    value=***REMOVED***values.salary***REMOVED***
                     onChange=***REMOVED***handleChange***REMOVED***
-                    error=***REMOVED***!!(touched.monthlySalary && errors.monthlySalary)***REMOVED***
+                    error=***REMOVED***!!(touched.salary && errors.salary)***REMOVED***
                     helperText=***REMOVED***
-                      !!(touched.monthlySalary && errors.monthlySalary)
-                        ? errors.monthlySalary
+                      !!(touched.salary && errors.salary)
+                        ? errors.salary
                         : "Salary is not required but highly recommended. Enter salary data for better results."
                     ***REMOVED***
                   />
+                  <MuiPickersUtilsProvider utils=***REMOVED***DateFnsUtils***REMOVED***>
+                    <DatePicker
+                      format="yyyy-MM-dd"
+                      label="Application Deadline"
+                      inputVariant="outlined"
+                      value=***REMOVED***values.deadline***REMOVED***
+                      onChange=***REMOVED***date => setFieldValue("deadline", date)***REMOVED***
+                      TextFieldComponent=***REMOVED***DatePickerTextField***REMOVED***
+                    />
+                  </MuiPickersUtilsProvider>
                   <MDEditor
                     id="description"
                     label="Job Description*"

@@ -111,7 +111,7 @@ describe("db", () => ***REMOVED***
       location: faker.address.city(),
       primaryTagId: tagId,
       tags: [faker.random.word(), faker.random.word()],
-      monthlySalary: faker.finance.amount(),
+      salary: faker.finance.amount(),
       description: faker.lorem.sentences(),
       responsibilities: faker.lorem.sentences(),
       requirements: faker.lorem.sentences(),
@@ -139,7 +139,7 @@ describe("db", () => ***REMOVED***
           isPrimary: false
         ***REMOVED***
       ],
-      monthlySalary: jobData.monthlySalary,
+      salary: jobData.salary,
       description: jobData.description,
       requirements: jobData.requirements,
       howToApply: jobData.howToApply,

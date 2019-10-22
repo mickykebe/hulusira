@@ -7,7 +7,7 @@ class Job ***REMOVED***
     tags,
     location,
     primaryTagId,
-    monthlySalary,
+    salary,
     description,
     responsibilities,
     requirements,
@@ -18,7 +18,8 @@ class Job ***REMOVED***
     approved,
     closed,
     slug,
-    adminToken
+    adminToken,
+    deadline
   ) ***REMOVED***
     this.id = id;
     this.position = position;
@@ -27,7 +28,7 @@ class Job ***REMOVED***
     this.tags = tags;
     this.location = location;
     this.primaryTagId = primaryTagId;
-    this.monthlySalary = monthlySalary;
+    this.salary = salary;
     this.description = description;
     this.responsibilities = responsibilities;
     this.requirements = requirements;
@@ -39,6 +40,7 @@ class Job ***REMOVED***
     this.closed = closed;
     this.slug = slug;
     this.adminToken = adminToken;
+    this.deadline = deadline;
   ***REMOVED***
 
   publicData() ***REMOVED***
@@ -55,7 +57,7 @@ class Job ***REMOVED***
       tags,
       dbJob.job_location,
       dbJob.job_primary_tag,
-      dbJob.job_monthly_salary,
+      dbJob.job_salary,
       dbJob.job_description,
       dbJob.job_responsibilities,
       dbJob.job_requirements,
@@ -66,7 +68,8 @@ class Job ***REMOVED***
       dbJob.job_approved,
       dbJob.job_closed,
       dbJob.job_slug,
-      dbJob.job_admin_token
+      dbJob.job_admin_token,
+      dbJob.job_deadline
     );
   ***REMOVED***
 ***REMOVED***

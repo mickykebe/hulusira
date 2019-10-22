@@ -28,6 +28,15 @@ class MyDocument extends Document ***REMOVED***
           <meta name="twitter:card" content="summary" />
           <meta name="twitter:site" content="@HuluSira" />
           <meta name="twitter:creator" content="@HuluSira" />
+          <script
+            crossOrigin="anonymous"
+            src="https://polyfill.io/v3/polyfill.min.js?features=IntersectionObserver"></script>
+          ***REMOVED***process.env.NODE_ENV === "production" && (
+            <script
+              data-ad-client="ca-pub-5352467626710029"
+              async
+              src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+          )***REMOVED***
         </Head>
         <body>
           <Main />

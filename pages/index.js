@@ -16,15 +16,12 @@ import RefreshIcon from "@material-ui/icons/Refresh";
 import api from "../api";
 import Layout from "../components/layout";
 import JobItem from "../components/job-item";
-import useInfiniteScroller from "../hooks/use-infinite-scroll";
+import useIsInview from "../hooks/use-is-inview";
 import TagFilter from "../components/tag-filter";
 import ***REMOVED*** tagIdsfromQueryParam ***REMOVED*** from "../utils";
-import ***REMOVED*** useEffect, useRef, useState ***REMOVED*** from "react";
+import ***REMOVED*** useEffect, useRef, useState, useCallback ***REMOVED*** from "react";
 
 const useStyles = makeStyles(theme => (***REMOVED***
-  root: ***REMOVED***
-    paddingTop: theme.spacing(1)
-  ***REMOVED***,
   jobItem: ***REMOVED***
     marginBottom: theme.spacing(2)
   ***REMOVED***,
@@ -81,23 +78,34 @@ function Index(***REMOVED*** jobPage, activeTags, primaryTags ***REMOVED***) ***
   const [***REMOVED*** jobs, nextCursor, isLoading, isError ***REMOVED***, dispatch] = React.useReducer(
     jobsReducer,
     ***REMOVED***
-      jobs: [],
-      nextCursor: null,
+      jobs: jobPage.jobs,
+      nextCursor: jobPage.nextCursor,
       isLoading: false,
       isError: false
     ***REMOVED***
   );
   const ticker = useRef(0);
   useEffect(() => ***REMOVED***
-    dispatch(***REMOVED*** type: "TAG_FILTER", payload: jobPage ***REMOVED***);
+    if (ticker.current > 0) ***REMOVED***
+      dispatch(***REMOVED*** type: "TAG_FILTER", payload: jobPage ***REMOVED***);
+    ***REMOVED***
     ticker.current++;
   ***REMOVED***, [jobPage]);
+
   const classes = useStyles();
+  const router = useRouter();
+
   const fetchMoreJobs = async () => ***REMOVED***
     const tickerVal = ticker.current;
+    if (isLoading || !nextCursor) ***REMOVED***
+      return;
+    ***REMOVED***
     dispatch(***REMOVED*** type: "FETCH_INIT" ***REMOVED***);
     try ***REMOVED***
-      const jobPage = await api.getJobs(***REMOVED*** cursor: nextCursor ***REMOVED***);
+      const jobPage = await api.getJobs(***REMOVED***
+        tags: router.query.tags || "",
+        cursor: nextCursor
+      ***REMOVED***);
       if (tickerVal === ticker.current) ***REMOVED***
         dispatch(***REMOVED*** type: "FETCH_SUCCESS", payload: jobPage ***REMOVED***);
       ***REMOVED***
@@ -107,7 +115,13 @@ function Index(***REMOVED*** jobPage, activeTags, primaryTags ***REMOVED***) ***
       ***REMOVED***
     ***REMOVED***
   ***REMOVED***;
-  useInfiniteScroller(isLoading, !!nextCursor, fetchMoreJobs, isError);
+
+  const [isIntersecting, sentinelRef] = useIsInview(300);
+  useEffect(() => ***REMOVED***
+    if (isIntersecting) ***REMOVED***
+      fetchMoreJobs();
+    ***REMOVED***
+  ***REMOVED***, [isIntersecting]);
   const handleTagClick = tagId => ***REMOVED***
     const tagIndex = activeTags.findIndex(tag => tag.id === tagId);
     if (tagIndex !== -1) ***REMOVED***
@@ -125,6 +139,7 @@ function Index(***REMOVED*** jobPage, activeTags, primaryTags ***REMOVED***) ***
     Router.push(`/$***REMOVED***tagIds.length ? `?tags=$***REMOVED***tagIds.join(",")***REMOVED***` : ""***REMOVED***`);
   ***REMOVED***;
 
+  const metaImage = `$***REMOVED***process.env.ROOT_URL***REMOVED***/static/hulusira.png`;
   return (
     <Layout
       toolbarChildren=***REMOVED***
@@ -143,13 +158,13 @@ function Index(***REMOVED*** jobPage, activeTags, primaryTags ***REMOVED***) ***
         <meta property="og:title" content=***REMOVED***pageTitle***REMOVED*** />
         <meta property="og:url" content=***REMOVED***pageUrl***REMOVED*** />
         <meta property="og:description" content=***REMOVED***pageDescription***REMOVED*** />
-        ***REMOVED***/*<meta property="og:image" content="" />*/***REMOVED***
+        <meta property="og:image" content=***REMOVED***metaImage***REMOVED*** />
         <meta name="twitter:title" content=***REMOVED***pageTitle***REMOVED*** />
         <meta name="twitter:description" content=***REMOVED***pageDescription***REMOVED*** />
-        ***REMOVED***/*<meta name="twitter:image:src" content="" />*/***REMOVED***
+        <meta name="twitter:image:src" content=***REMOVED***metaImage***REMOVED*** />
         <meta name="twitter:url" content=***REMOVED***pageUrl***REMOVED*** />
       </Head>
-      <Container className=***REMOVED***classes.root***REMOVED*** maxWidth="md">
+      <Container maxWidth="md">
         ***REMOVED***(!activeTags || activeTags.length === 0) && (
           <TextField
             value=""
@@ -195,6 +210,7 @@ function Index(***REMOVED*** jobPage, activeTags, primaryTags ***REMOVED***) ***
               />
             );
           ***REMOVED***)***REMOVED***
+          <div ref=***REMOVED***sentinelRef***REMOVED*** style=***REMOVED******REMOVED*** height: "1px" ***REMOVED******REMOVED*** />
           ***REMOVED***ticker.current > 0 && jobs.length === 0 && (
             <Typography
               variant="h4"
@@ -237,7 +253,6 @@ Index.getInitialProps = async ctx => ***REMOVED***
     api.getJobs(***REMOVED*** ctx, tags ***REMOVED***),
     api.getPrimaryTags(ctx)
   ]);
-  //const jobPage = await api.getJobs(***REMOVED*** ctx, tags ***REMOVED***);
   let activeTags = [];
   if (!!tags) ***REMOVED***
     activeTags = await api.getTags(tags, ctx);
