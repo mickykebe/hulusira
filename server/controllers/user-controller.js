@@ -52,3 +52,14 @@ exports.confirmUser = async (req, res) => ***REMOVED***
   await db.confirmUser(userId);
   res.sendStatus(200);
 ***REMOVED***;
+
+exports.logout = async (req, res) => ***REMOVED***
+  if (req.session) ***REMOVED***
+    req.session.destroy(err => ***REMOVED***
+      if (err) ***REMOVED***
+        throw err;
+      ***REMOVED***
+      res.sendStatus(200);
+    ***REMOVED***);
+  ***REMOVED***
+***REMOVED***;

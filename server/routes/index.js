@@ -90,6 +90,7 @@ router.get(
   "/confirm-user/:confirmationKey",
   catchErrors(userController.confirmUser)
 );
+router.get("/logout", catchErrors(userController.logout));
 
 router.get("/tags", catchErrors(tagController.getTags));
 

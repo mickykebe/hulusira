@@ -60,6 +60,10 @@ class Api ***REMOVED***
     return user;
   ***REMOVED***
 
+  logout() ***REMOVED***
+    return this.request().get("/logout");
+  ***REMOVED***
+
   async activeUser(ctx) ***REMOVED***
     const ***REMOVED*** data: user ***REMOVED*** = await this.request(ctx).get(`/me`);
     return user;

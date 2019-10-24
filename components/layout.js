@@ -1,5 +1,6 @@
 import React, ***REMOVED*** useState ***REMOVED*** from "react";
 import Link from "next/link";
+import Router from "next/router";
 import ***REMOVED***
   Box,
   AppBar,
@@ -14,6 +15,7 @@ import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
+import api from "../api";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   appBar: ***REMOVED***
@@ -62,7 +64,13 @@ export default function Layout(***REMOVED***
         <DashboardIcon className=***REMOVED***classes.menuIcon***REMOVED*** />
         <span>Dashboard</span>
       </MenuItem>
-      <MenuItem classes=***REMOVED******REMOVED*** root: classes.menuItem ***REMOVED******REMOVED***>
+      <MenuItem
+        classes=***REMOVED******REMOVED*** root: classes.menuItem ***REMOVED******REMOVED***
+        onClick=***REMOVED***async () => ***REMOVED***
+          await api.logout();
+          handleMenuClose();
+          Router.push("/");
+        ***REMOVED******REMOVED***>
         <ExitToAppIcon className=***REMOVED***classes.menuIcon***REMOVED*** />
         <span>Sign out</span>
       </MenuItem>
