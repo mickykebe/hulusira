@@ -74,7 +74,7 @@ const jobsReducer = (state, action) => ***REMOVED***
   ***REMOVED***
 ***REMOVED***;
 
-function Index(***REMOVED*** jobPage, activeTags, primaryTags ***REMOVED***) ***REMOVED***
+function Index(***REMOVED*** user, jobPage, activeTags, primaryTags ***REMOVED***) ***REMOVED***
   const [***REMOVED*** jobs, nextCursor, isLoading, isError ***REMOVED***, dispatch] = React.useReducer(
     jobsReducer,
     ***REMOVED***
@@ -142,15 +142,17 @@ function Index(***REMOVED*** jobPage, activeTags, primaryTags ***REMOVED***) ***
   const metaImage = `$***REMOVED***process.env.ROOT_URL***REMOVED***/static/hulusira.png`;
   return (
     <Layout
+      user=***REMOVED***user***REMOVED***
       toolbarChildren=***REMOVED***
-        <React.Fragment>
-          <Box flex="1" />
-          <Link href="/new" passHref>
-            <Button variant="contained" color="primary">
-              Post a Job
-            </Button>
-          </Link>
-        </React.Fragment>
+        user ? null : (
+          <React.Fragment>
+            <Link href="/new" passHref>
+              <Button variant="contained" color="primary">
+                Post a Job
+              </Button>
+            </Link>
+          </React.Fragment>
+        )
       ***REMOVED***>
       <Head>
         <title>***REMOVED***pageTitle***REMOVED***</title>

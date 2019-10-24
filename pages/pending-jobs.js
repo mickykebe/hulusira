@@ -175,28 +175,20 @@ function PendingJobs(***REMOVED*** jobs ***REMOVED***) ***REMOVED***
 ***REMOVED***
 
 PendingJobs.getInitialProps = async function(ctx) ***REMOVED***
-  if (ctx.req) ***REMOVED***
-    const ***REMOVED*** qid: sessionId ***REMOVED*** = nextCookie(ctx);
-    if (!sessionId) ***REMOVED***
-      redirect(ctx, "/");
-      return ***REMOVED******REMOVED***;
-    ***REMOVED***
-  ***REMOVED***
+  const ***REMOVED*** user ***REMOVED*** = ctx;
 
-  let user;
-
-  try ***REMOVED***
-    user = await api.activeUser(ctx);
-    if (user.role !== "admin") ***REMOVED***
-      throw new Error("Not permitted");
-    ***REMOVED***
-  ***REMOVED*** catch (err) ***REMOVED***
+  if (!user || user.role !== "admin") ***REMOVED***
     redirect(ctx, "/");
     return ***REMOVED******REMOVED***;
   ***REMOVED***
 
-  const jobs = await api.getPendingJobs(ctx);
-  return ***REMOVED*** user, jobs ***REMOVED***;
+  let jobs;
+  try ***REMOVED***
+    jobs = await api.getPendingJobs(ctx);
+  ***REMOVED*** catch (err) ***REMOVED***
+    console.log(err);
+  ***REMOVED***
+  return ***REMOVED*** jobs ***REMOVED***;
 ***REMOVED***;
 
 export default PendingJobs;
