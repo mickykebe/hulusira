@@ -175,28 +175,20 @@ function PendingJobs({ jobs }) {
 }
 
 PendingJobs.getInitialProps = async function(ctx) {
-  if (ctx.req) {
-    const { qid: sessionId } = nextCookie(ctx);
-    if (!sessionId) {
-      redirect(ctx, "/");
-      return {};
-    }
-  }
+  const { user } = ctx;
 
-  let user;
-
-  try {
-    user = await api.activeUser(ctx);
-    if (user.role !== "admin") {
-      throw new Error("Not permitted");
-    }
-  } catch (err) {
+  if (!user || user.role !== "admin") {
     redirect(ctx, "/");
     return {};
   }
 
-  const jobs = await api.getPendingJobs(ctx);
-  return { user, jobs };
+  let jobs;
+  try {
+    jobs = await api.getPendingJobs(ctx);
+  } catch (err) {
+    console.log(err);
+  }
+  return { jobs };
 };
 
 export default PendingJobs;

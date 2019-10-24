@@ -1,6 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
-import { Box, AppBar, Toolbar, Link as MuiLink } from "@material-ui/core";
+import {
+  Box,
+  AppBar,
+  Toolbar,
+  Link as MuiLink,
+  Button,
+  IconButton,
+  Menu,
+  MenuItem
+} from "@material-ui/core";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import DashboardIcon from "@material-ui/icons/Dashboard";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { makeStyles } from "@material-ui/styles";
 
 const useStyles = makeStyles(theme => ({
@@ -11,11 +23,51 @@ const useStyles = makeStyles(theme => ({
   },
   logo: {
     width: 120
+  },
+  linkButton: {
+    color: theme.palette.text.secondary,
+    margin: theme.spacing(1)
+  },
+  menuItem: {
+    color: theme.palette.text.secondary
+  },
+  menuIcon: {
+    marginRight: theme.spacing(1)
   }
 }));
 
-export default function Layout({ children, toolbarChildren = null }) {
+export default function Layout({
+  user = null,
+  children,
+  toolbarChildren = null
+}) {
   const classes = useStyles();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const isMenuOpen = Boolean(anchorEl);
+  const handleProfileMenuOpen = event => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+  const renderMenu = (
+    <Menu
+      anchorEl={anchorEl}
+      anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      keepMounted
+      transformOrigin={{ vertical: "top", horizontal: "right" }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}>
+      <MenuItem classes={{ root: classes.menuItem }}>
+        <DashboardIcon className={classes.menuIcon} />
+        <span>Dashboard</span>
+      </MenuItem>
+      <MenuItem classes={{ root: classes.menuItem }}>
+        <ExitToAppIcon className={classes.menuIcon} />
+        <span>Sign out</span>
+      </MenuItem>
+    </Menu>
+  );
   return (
     <Box>
       <AppBar className={classes.appBar}>
@@ -25,8 +77,22 @@ export default function Layout({ children, toolbarChildren = null }) {
               HuluSira
             </MuiLink>
           </Link>
+          <Box flex="1" />
+          {!user && (
+            <Button className={classes.linkButton} href="/login">
+              Login
+            </Button>
+          )}
+          {!!user && (
+            <IconButton
+              className={classes.linkButton}
+              onClick={handleProfileMenuOpen}>
+              <AccountCircleIcon />
+            </IconButton>
+          )}
           {toolbarChildren}
         </Toolbar>
+        {renderMenu}
       </AppBar>
       <Box pt={[8, 9]} pb={2}>
         {children}
