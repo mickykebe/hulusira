@@ -52,3 +52,14 @@ exports.confirmUser = async (req, res) => {
   await db.confirmUser(userId);
   res.sendStatus(200);
 };
+
+exports.logout = async (req, res) => {
+  if (req.session) {
+    req.session.destroy(err => {
+      if (err) {
+        throw err;
+      }
+      res.sendStatus(200);
+    });
+  }
+};

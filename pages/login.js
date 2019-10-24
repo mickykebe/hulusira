@@ -122,20 +122,13 @@ function Login() {
 }
 
 Login.getInitialProps = async function(ctx) {
-  if (ctx.req) {
-    const { qid: sessionId } = nextCookie(ctx);
-    if (sessionId) {
-      redirect(ctx, "/");
-    }
-    return {};
+  const { user } = ctx;
+
+  if (user) {
+    redirect(ctx, "/");
   }
 
-  try {
-    await api.activeUser();
-    redirect(ctx, "/");
-  } finally {
-    return {};
-  }
+  return {};
 };
 
 export default Login;

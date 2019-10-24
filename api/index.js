@@ -60,6 +60,10 @@ class Api {
     return user;
   }
 
+  logout() {
+    return this.request().get("/logout");
+  }
+
   async activeUser(ctx) {
     const { data: user } = await this.request(ctx).get(`/me`);
     return user;

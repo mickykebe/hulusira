@@ -77,7 +77,7 @@ const jobReducer = (state, action) => {
   }
 };
 
-function PendingJobs({ jobs }) {
+function PendingJobs({ jobs, user }) {
   const [jobUpdateState, dispatch] = useReducer(jobReducer, {
     inProgress: false,
     error: false
@@ -113,7 +113,7 @@ function PendingJobs({ jobs }) {
   };
   const classes = useStyles({ activeJob: !!activeJobData });
   return (
-    <Layout>
+    <Layout user={user}>
       <Box className={classes.jobList}>
         <List className={classes.list}>
           {jobs.map(({ job, company }, index) => (
