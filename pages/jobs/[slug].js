@@ -47,7 +47,7 @@ function jobCloseReducer(state, action) {
   }
 }
 
-function Job({ jobData, adminToken }) {
+function Job({ user, jobData, adminToken }) {
   const [{ isClosingJob, errorClosingJob }, dispatch] = useReducer(
     jobCloseReducer,
     { isClosingJob: false, errorClosingJob: false }
@@ -89,7 +89,7 @@ function Job({ jobData, adminToken }) {
   const url = `${process.env.ROOT_URL}${router.asPath}`;
   const defaultThumbnailUrl = `${process.env.ROOT_URL}/static/hulusira.png`;
   return (
-    <Layout>
+    <Layout user={user}>
       <Head>
         <title>{metaTitle}</title>
         <meta name="description" content={metaDescription} />
