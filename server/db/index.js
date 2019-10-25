@@ -399,6 +399,12 @@ class Db ***REMOVED***
     ***REMOVED***
   ***REMOVED***
 
+  deleteUserConfirmation(userId) ***REMOVED***
+    return this.knex("user_confirmation")
+      .where("user_id", userId)
+      .del();
+  ***REMOVED***
+
   end() ***REMOVED***
     return this.pool.end();
   ***REMOVED***

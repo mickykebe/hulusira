@@ -60,6 +60,14 @@ class Api ***REMOVED***
     return user;
   ***REMOVED***
 
+  register(data) ***REMOVED***
+    return this.request().post("/register", data);
+  ***REMOVED***
+
+  confirmUser(confirmationKey) ***REMOVED***
+    return this.request().get(`/confirm-user/$***REMOVED***confirmationKey***REMOVED***`);
+  ***REMOVED***
+
   logout() ***REMOVED***
     return this.request().get("/logout");
   ***REMOVED***

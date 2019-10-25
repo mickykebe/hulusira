@@ -26,9 +26,11 @@ const useStyles = makeStyles(theme => (***REMOVED***
   logo: ***REMOVED***
     width: 120
   ***REMOVED***,
-  linkButton: ***REMOVED***
+  navLink: ***REMOVED***
     color: theme.palette.text.secondary,
-    margin: theme.spacing(1)
+    fontWeight: 800,
+    fontSize: "1rem",
+    marginRight: theme.spacing(3)
   ***REMOVED***,
   menuItem: ***REMOVED***
     color: theme.palette.text.secondary
@@ -87,9 +89,9 @@ export default function Layout(***REMOVED***
           </Link>
           <Box flex="1" />
           ***REMOVED***!user && (
-            <Button className=***REMOVED***classes.linkButton***REMOVED*** href="/login">
+            <MuiLink className=***REMOVED***classes.navLink***REMOVED*** href="/login">
               Login
-            </Button>
+            </MuiLink>
           )***REMOVED***
           ***REMOVED***!!user && (
             <IconButton

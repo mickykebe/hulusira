@@ -26,7 +26,7 @@ exports.login = async (req, res) => ***REMOVED***
 ***REMOVED***;
 
 exports.register = async (req, res) => ***REMOVED***
-  const userData = req.body;
+  const userData = ***REMOVED*** role: "user", ...req.body ***REMOVED***;
   const user = await db.createUser(userData);
   const confirmationKey = v4();
   await db.createUserConfirmation(user.id, confirmationKey);
@@ -50,6 +50,8 @@ exports.confirmUser = async (req, res) => ***REMOVED***
   const userId = userConfirmation.userId;
 
   await db.confirmUser(userId);
+  req.session.userId = userId;
+  await db.deleteUserConfirmation(userId);
   res.sendStatus(200);
 ***REMOVED***;
 

@@ -10,8 +10,7 @@ import ***REMOVED***
   MenuItem,
   FormControlLabel,
   Switch,
-  Fab,
-  LinearProgress
+  Fab
 ***REMOVED*** from "@material-ui/core";
 import ***REMOVED*** MuiPickersUtilsProvider, DatePicker ***REMOVED*** from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
@@ -26,6 +25,7 @@ import HSCard from "../components/hs-card";
 import JobItem from "../components/job-item";
 import MDEditor from "../components/md-editor";
 import HSSnackbar from "../components/hs-snackbar";
+import PageProgress from "../components/page-progress";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   root: ***REMOVED***
@@ -91,13 +91,6 @@ const useStyles = makeStyles(theme => (***REMOVED***
   ***REMOVED***,
   saveButtonIcon: ***REMOVED***
     marginRight: theme.spacing(1)
-  ***REMOVED***,
-  submittingProgress: ***REMOVED***
-    position: "fixed",
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 1350
   ***REMOVED***
 ***REMOVED***));
 
@@ -549,12 +542,7 @@ function New(***REMOVED*** primaryTags ***REMOVED***) ***REMOVED***
                   ]***REMOVED***
                   preview
                 />
-                ***REMOVED***isSubmitting && (
-                  <LinearProgress
-                    classes=***REMOVED******REMOVED*** root: classes.submittingProgress ***REMOVED******REMOVED***
-                    color="primary"
-                  />
-                )***REMOVED***
+                ***REMOVED***isSubmitting && <PageProgress />***REMOVED***
                 <HSSnackbar
                   variant="error"
                   open=***REMOVED***showErrorSubmitting***REMOVED***
