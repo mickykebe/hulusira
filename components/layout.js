@@ -7,7 +7,6 @@ import {
   Toolbar,
   Link as MuiLink,
   Button,
-  IconButton,
   Menu,
   MenuItem
 } from "@material-ui/core";
@@ -15,6 +14,7 @@ import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { makeStyles } from "@material-ui/styles";
+import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import api from "../api";
 
 const useStyles = makeStyles(theme => ({
@@ -33,10 +33,14 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(3)
   },
   menuItem: {
+    fontWeight: 800,
     color: theme.palette.text.secondary
   },
   menuIcon: {
     marginRight: theme.spacing(1)
+  },
+  accountButton: {
+    color: theme.palette.text.secondary
   }
 }));
 
@@ -94,11 +98,13 @@ export default function Layout({
             </MuiLink>
           )}
           {!!user && (
-            <IconButton
-              className={classes.linkButton}
+            <Button
+              className={classes.accountButton}
+              startIcon={<AccountCircleIcon />}
+              endIcon={<ArrowDropDownIcon />}
               onClick={handleProfileMenuOpen}>
-              <AccountCircleIcon />
-            </IconButton>
+              {`${user.firstName} ${user.lastName}`}
+            </Button>
           )}
           {toolbarChildren}
         </Toolbar>
