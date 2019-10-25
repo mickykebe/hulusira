@@ -161,7 +161,7 @@ function DatePickerTextField(props) ***REMOVED***
   return <TextField margin="normal" fullWidth ***REMOVED***...props***REMOVED*** />;
 ***REMOVED***
 
-function New(***REMOVED*** primaryTags ***REMOVED***) ***REMOVED***
+function New(***REMOVED*** primaryTags, user ***REMOVED***) ***REMOVED***
   const classes = useStyles();
   const [files, setFiles] = React.useState([]);
   const [showErrorSubmitting, setShowErrorSubmitting] = React.useState(false);
@@ -211,7 +211,7 @@ function New(***REMOVED*** primaryTags ***REMOVED***) ***REMOVED***
   const pageUrl = `$***REMOVED***process.env.ROOT_URL***REMOVED***$***REMOVED***router.asPath***REMOVED***`;
 
   return (
-    <Layout>
+    <Layout user=***REMOVED***user***REMOVED***>
       <Head>
         <title>***REMOVED***pageTitle***REMOVED***</title>
         <meta name="description" content=***REMOVED***pageDescription***REMOVED*** />

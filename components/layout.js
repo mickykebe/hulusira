@@ -7,7 +7,6 @@ import ***REMOVED***
   Toolbar,
   Link as MuiLink,
   Button,
-  IconButton,
   Menu,
   MenuItem
 ***REMOVED*** from "@material-ui/core";
@@ -15,6 +14,7 @@ import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
+import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import api from "../api";
 
 const useStyles = makeStyles(theme => (***REMOVED***
@@ -33,10 +33,14 @@ const useStyles = makeStyles(theme => (***REMOVED***
     marginRight: theme.spacing(3)
   ***REMOVED***,
   menuItem: ***REMOVED***
+    fontWeight: 800,
     color: theme.palette.text.secondary
   ***REMOVED***,
   menuIcon: ***REMOVED***
     marginRight: theme.spacing(1)
+  ***REMOVED***,
+  accountButton: ***REMOVED***
+    color: theme.palette.text.secondary
   ***REMOVED***
 ***REMOVED***));
 
@@ -94,11 +98,13 @@ export default function Layout(***REMOVED***
             </MuiLink>
           )***REMOVED***
           ***REMOVED***!!user && (
-            <IconButton
-              className=***REMOVED***classes.linkButton***REMOVED***
+            <Button
+              className=***REMOVED***classes.accountButton***REMOVED***
+              startIcon=***REMOVED***<AccountCircleIcon />***REMOVED***
+              endIcon=***REMOVED***<ArrowDropDownIcon />***REMOVED***
               onClick=***REMOVED***handleProfileMenuOpen***REMOVED***>
-              <AccountCircleIcon />
-            </IconButton>
+              ***REMOVED***`$***REMOVED***user.firstName***REMOVED*** $***REMOVED***user.lastName***REMOVED***`***REMOVED***
+            </Button>
           )***REMOVED***
           ***REMOVED***toolbarChildren***REMOVED***
         </Toolbar>
