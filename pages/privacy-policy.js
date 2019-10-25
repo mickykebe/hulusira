@@ -8,10 +8,10 @@ const useStyles = makeStyles(theme => (***REMOVED***
   ***REMOVED***
 ***REMOVED***));
 
-export default function PrivacyPolicy() ***REMOVED***
+export default function PrivacyPolicy(***REMOVED*** user ***REMOVED***) ***REMOVED***
   const classes = useStyles();
   return (
-    <Layout>
+    <Layout user=***REMOVED***user***REMOVED***>
       <Container>
         <HSPaper className=***REMOVED***classes.root***REMOVED***>
           <Typography variant="h4" paragraph>

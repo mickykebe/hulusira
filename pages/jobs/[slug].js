@@ -47,7 +47,7 @@ function jobCloseReducer(state, action) ***REMOVED***
   ***REMOVED***
 ***REMOVED***
 
-function Job(***REMOVED*** jobData, adminToken ***REMOVED***) ***REMOVED***
+function Job(***REMOVED*** user, jobData, adminToken ***REMOVED***) ***REMOVED***
   const [***REMOVED*** isClosingJob, errorClosingJob ***REMOVED***, dispatch] = useReducer(
     jobCloseReducer,
     ***REMOVED*** isClosingJob: false, errorClosingJob: false ***REMOVED***
@@ -89,7 +89,7 @@ function Job(***REMOVED*** jobData, adminToken ***REMOVED***) ***REMOVED***
   const url = `$***REMOVED***process.env.ROOT_URL***REMOVED***$***REMOVED***router.asPath***REMOVED***`;
   const defaultThumbnailUrl = `$***REMOVED***process.env.ROOT_URL***REMOVED***/static/hulusira.png`;
   return (
-    <Layout>
+    <Layout user=***REMOVED***user***REMOVED***>
       <Head>
         <title>***REMOVED***metaTitle***REMOVED***</title>
         <meta name="description" content=***REMOVED***metaDescription***REMOVED*** />
