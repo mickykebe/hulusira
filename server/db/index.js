@@ -399,6 +399,12 @@ class Db {
     }
   }
 
+  deleteUserConfirmation(userId) {
+    return this.knex("user_confirmation")
+      .where("user_id", userId)
+      .del();
+  }
+
   end() {
     return this.pool.end();
   }

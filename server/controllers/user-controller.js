@@ -26,7 +26,7 @@ exports.login = async (req, res) => {
 };
 
 exports.register = async (req, res) => {
-  const userData = req.body;
+  const userData = { role: "user", ...req.body };
   const user = await db.createUser(userData);
   const confirmationKey = v4();
   await db.createUserConfirmation(user.id, confirmationKey);
@@ -50,6 +50,8 @@ exports.confirmUser = async (req, res) => {
   const userId = userConfirmation.userId;
 
   await db.confirmUser(userId);
+  req.session.userId = userId;
+  await db.deleteUserConfirmation(userId);
   res.sendStatus(200);
 };
 

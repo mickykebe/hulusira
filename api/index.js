@@ -60,6 +60,14 @@ class Api {
     return user;
   }
 
+  register(data) {
+    return this.request().post("/register", data);
+  }
+
+  confirmUser(confirmationKey) {
+    return this.request().get(`/confirm-user/${confirmationKey}`);
+  }
+
   logout() {
     return this.request().get("/logout");
   }

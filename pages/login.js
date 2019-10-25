@@ -1,31 +1,22 @@
-import { Fragment, useState } from "react";
+import { useState } from "react";
+import Link from "next/link";
 import Router from "next/router";
-import nextCookie from "next-cookies";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { makeStyles } from "@material-ui/styles";
-import HSPaper from "../components/hs-paper";
-import { Typography, TextField, Fab } from "@material-ui/core";
+import { Box, TextField, Fab, Link as MuiLink } from "@material-ui/core";
 import api from "../api";
 import HSSnackbar from "../components/hs-snackbar";
 import redirect from "../utils/redirect";
+import AuthLayout from "../components/auth-layout";
 
 const useStyles = makeStyles(theme => ({
-  root: {
-    position: "absolute",
-    top: "50%",
-    transform: "translateY(-50%)",
-    width: "100%",
-    padding: `0 ${theme.spacing(2)}px`
-  },
-  signinCard: {
-    padding: theme.spacing(2),
-    maxWidth: 400,
-    margin: "auto"
-  },
   signinButton: {
     width: "100% !important",
     marginTop: theme.spacing(1)
+  },
+  registerLink: {
+    fontWeight: 800
   }
 }));
 
@@ -50,66 +41,67 @@ function Login() {
     actions.setSubmitting(false);
   };
   return (
-    <Fragment>
-      <div className={classes.root}>
-        <HSPaper className={classes.signinCard}>
-          <Typography variant="h5" align="center">
-            HuluSira
-          </Typography>
-          <Formik
-            validationSchema={validationSchema}
-            initialValues={{
-              email: "",
-              password: ""
-            }}
-            onSubmit={handleSubmit}>
-            {({
-              values,
-              isSubmitting,
-              handleChange,
-              errors,
-              touched,
-              handleSubmit
-            }) => {
-              return (
-                <form onSubmit={handleSubmit}>
-                  <TextField
-                    name="email"
-                    value={values.email}
-                    onChange={handleChange}
-                    error={!!(touched.email && errors.email)}
-                    helperText={touched.email && errors.email}
-                    label="Email"
-                    margin="normal"
-                    variant="outlined"
-                    fullWidth
-                  />
-                  <TextField
-                    name="password"
-                    value={values.password}
-                    onChange={handleChange}
-                    error={!!(touched.password && errors.password)}
-                    helperText={touched.password && errors.password}
-                    label="Password"
-                    type="password"
-                    margin="normal"
-                    variant="outlined"
-                    fullWidth
-                  />
-                  <Fab
-                    classes={{ root: classes.signinButton }}
-                    type="submit"
-                    variant="extended"
-                    color="primary"
-                    disabled={isSubmitting}>
-                    Sign In
-                  </Fab>
-                </form>
-              );
-            }}
-          </Formik>
-        </HSPaper>
-      </div>
+    <AuthLayout>
+      <Formik
+        validationSchema={validationSchema}
+        initialValues={{
+          email: "",
+          password: ""
+        }}
+        onSubmit={handleSubmit}>
+        {({
+          values,
+          isSubmitting,
+          handleChange,
+          errors,
+          touched,
+          handleSubmit
+        }) => {
+          return (
+            <form onSubmit={handleSubmit}>
+              <TextField
+                name="email"
+                value={values.email}
+                onChange={handleChange}
+                error={!!(touched.email && errors.email)}
+                helperText={touched.email && errors.email}
+                label="Email"
+                margin="normal"
+                variant="outlined"
+                fullWidth
+              />
+              <TextField
+                name="password"
+                value={values.password}
+                onChange={handleChange}
+                error={!!(touched.password && errors.password)}
+                helperText={touched.password && errors.password}
+                label="Password"
+                type="password"
+                margin="normal"
+                variant="outlined"
+                fullWidth
+              />
+              <Fab
+                classes={{ root: classes.signinButton }}
+                type="submit"
+                variant="extended"
+                color="primary"
+                disabled={isSubmitting}>
+                Sign In
+              </Fab>
+              <Box textAlign="right" pt={2} fontSize="1rem">
+                <Link href="/register" passHref>
+                  <MuiLink classes={{ root: classes.registerLink }}>
+                    Register
+                  </MuiLink>
+                </Link>{" "}
+                for an account
+              </Box>
+            </form>
+          );
+        }}
+      </Formik>
       <HSSnackbar
         variant="error"
         message="Login Failed."
@@ -117,7 +109,7 @@ function Login() {
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
         autoHideDuration={3000}
       />
-    </Fragment>
+    </AuthLayout>
   );
 }
 
