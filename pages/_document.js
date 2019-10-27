@@ -36,13 +36,13 @@ class MyDocument extends Document {
               <script
                 async
                 src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-              <script>
-                {(adsbygoogle = window.adsbygoogle || []).push({
-                  google_ad_client: "ca-pub-6776285394109977",
-                  enable_page_level_ads: true
-                })}
-                ;
-              </script>
+              <script
+                dangerouslySetInnerHTML={{
+                  __html: `(adsbygoogle = window.adsbygoogle || []).push({
+                google_ad_client: "ca-pub-6776285394109977",
+                enable_page_level_ads: true
+              });`
+                }}></script>
             </Fragment>
           )}
         </Head>
