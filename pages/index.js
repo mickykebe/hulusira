@@ -34,6 +34,8 @@ const useStyles = makeStyles(theme => (***REMOVED***
     background: theme.palette.common.white
   ***REMOVED***,
   categoryItem: ***REMOVED***
+    fontWeight: 800,
+    padding: `$***REMOVED***theme.spacing(1)***REMOVED***px $***REMOVED***theme.spacing(2)***REMOVED***px`,
     fontSize: "0.8rem"
   ***REMOVED***,
   nothingFound: ***REMOVED***
