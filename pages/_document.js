@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import Document, { Head, Main, NextScript } from "next/document";
 import { ServerStyleSheets } from "@material-ui/styles";
 import theme from "../components/theme";
@@ -32,10 +32,18 @@ class MyDocument extends Document {
             crossOrigin="anonymous"
             src="https://polyfill.io/v3/polyfill.min.js?features=IntersectionObserver"></script>
           {process.env.NODE_ENV === "production" && (
-            <script
-              data-ad-client="ca-pub-5352467626710029"
-              async
-              src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+            <Fragment>
+              <script
+                async
+                src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+              <script>
+                {(adsbygoogle = window.adsbygoogle || []).push({
+                  google_ad_client: "ca-pub-6776285394109977",
+                  enable_page_level_ads: true
+                })}
+                ;
+              </script>
+            </Fragment>
           )}
         </Head>
         <body>
