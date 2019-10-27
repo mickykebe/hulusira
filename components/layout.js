@@ -20,8 +20,11 @@ import api from "../api";
 const useStyles = makeStyles(theme => ({
   appBar: {
     backgroundColor: theme.palette.common.white,
-    boxShadow: `0 2px 4px rgba(0,0,0,.1)`,
-    color: theme.palette.getContrastText(theme.palette.common.white)
+    boxShadow: "none",
+    borderBottom: "1px solid #dadce0",
+    //boxShadow: `0 2px 4px rgba(0,0,0,.1)`,
+    color: theme.palette.getContrastText(theme.palette.common.white),
+    zIndex: theme.zIndex.drawer + 1
   },
   logo: {
     width: 120
@@ -66,7 +69,12 @@ export default function Layout({
       transformOrigin={{ vertical: "top", horizontal: "right" }}
       open={isMenuOpen}
       onClose={handleMenuClose}>
-      <MenuItem classes={{ root: classes.menuItem }}>
+      <MenuItem
+        classes={{ root: classes.menuItem }}
+        onClick={() => {
+          console.log("dashboard menu click");
+          Router.push("/dashboard");
+        }}>
         <DashboardIcon className={classes.menuIcon} />
         <span>Dashboard</span>
       </MenuItem>
