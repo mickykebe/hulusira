@@ -1,37 +1,18 @@
-import ***REMOVED*** Drawer, Paper, makeStyles, Typography ***REMOVED*** from "@material-ui/core";
-import Layout from "../components/layout";
+import DashboardLayout from "../components/dashboard-layout";
+import redirect from "../utils/redirect";
 
-const drawerWidth = 240;
-
-const useStyles = makeStyles(theme => (***REMOVED***
-  drawer: ***REMOVED***
-    width: drawerWidth,
-    flexShrink: 0
-  ***REMOVED***,
-  drawerPaper: ***REMOVED***
-    width: drawerWidth
-  ***REMOVED***,
-  drawerContent: ***REMOVED***
-    padding: theme.spacing(2)
-  ***REMOVED***,
-  toolbar: theme.mixins.toolbar
-***REMOVED***));
-
-export default function Dashboard(***REMOVED*** user ***REMOVED***) ***REMOVED***
-  const classes = useStyles();
-  return (
-    <Layout user=***REMOVED***user***REMOVED***>
-      <Drawer
-        className=***REMOVED***classes.drawer***REMOVED***
-        classes=***REMOVED******REMOVED*** paper: classes.drawerPaper ***REMOVED******REMOVED***
-        variant="permanent">
-        <div className=***REMOVED***classes.toolbar***REMOVED*** />
-        <div className=***REMOVED***classes.drawerContent***REMOVED***>
-          <Typography variant="overline" color="textSecondary">
-            Employer
-          </Typography>
-        </div>
-      </Drawer>
-    </Layout>
-  );
+function Dashboard(***REMOVED*** user ***REMOVED***) ***REMOVED***
+  return <DashboardLayout user=***REMOVED***user***REMOVED*** />;
 ***REMOVED***
+
+Dashboard.getInitialProps = async function(ctx) ***REMOVED***
+  const ***REMOVED*** user ***REMOVED*** = ctx;
+
+  if (!user) ***REMOVED***
+    redirect(ctx, "/");
+  ***REMOVED***
+
+  return ***REMOVED******REMOVED***;
+***REMOVED***;
+
+export default Dashboard;

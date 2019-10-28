@@ -135,7 +135,8 @@ class Db ***REMOVED***
       .insert(***REMOVED***
         name: companyData.name,
         email: companyData.email,
-        logo: companyData.logo
+        logo: companyData.logo,
+        owner: companyData.owner || null
       ***REMOVED***)
       .returning(this.selectColumns("company", "company", this.companyColumns));
     return Company.fromDb(rows[0]);

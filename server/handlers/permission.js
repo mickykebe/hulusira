@@ -10,3 +10,14 @@ exports.permit = (...allowed) => ***REMOVED***
     res.sendStatus(403);
   ***REMOVED***;
 ***REMOVED***;
+
+exports.permitAuthenticated = () => ***REMOVED***
+  return (req, res, next) => ***REMOVED***
+    const ***REMOVED*** user ***REMOVED*** = req;
+    if (user && user.confirmed) ***REMOVED***
+      next();
+      return;
+    ***REMOVED***
+    res.sendStatus(403);
+  ***REMOVED***;
+***REMOVED***;

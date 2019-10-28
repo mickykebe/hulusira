@@ -15,7 +15,8 @@ CREATE TABLE company (
   name TEXT NOT NULL,
   email TEXT NOT NULL,
   logo TEXT,
-  verified BOOLEAN NOT NULL DEFAULT FALSE
+  verified BOOLEAN NOT NULL DEFAULT FALSE,
+  owner INTEGER REFERENCES users(id) ON DELETE SET NULL,
 );
 
 CREATE TABLE tag (
@@ -43,7 +44,8 @@ CREATE TABLE job (
   deadline Date,
   created TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   slug TEXT,
-  admin_token uuid DEFAULT uuid_generate_v4()
+  admin_token uuid DEFAULT uuid_generate_v4(),
+  owner INTEGER REFERENCES users(id) ON DELETE SET NULL,
 );
 
 CREATE TABLE job_tags (

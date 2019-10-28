@@ -5,6 +5,7 @@ const express = require("express");
 const logger = require("morgan");
 const bodyParser = require("body-parser");
 const errorHandlers = require("../handlers/errorHandler");
+const companyController = require("../controllers/company-controller");
 const jobController = require("../controllers/job-controller");
 const uploadController = require("../controllers/upload-controller");
 const userController = require("../controllers/user-controller");
@@ -13,7 +14,7 @@ const ***REMOVED*** catchErrors ***REMOVED*** = require("../handlers/errorHandle
 const ***REMOVED*** isProduction ***REMOVED*** = require("../utils");
 const redis = require("../redis");
 const ***REMOVED*** loadUser ***REMOVED*** = require("../handlers/loadUser");
-const ***REMOVED*** permit ***REMOVED*** = require("../handlers/permission");
+const ***REMOVED*** permit, permitAuthenticated ***REMOVED*** = require("../handlers/permission");
 
 const RedisStore = connectRedis(session);
 
@@ -59,6 +60,7 @@ router.post(
     res.status(200).send(true);
   ***REMOVED***
 );
+
 router.patch(
   "/jobs/:id/close-job",
   catchErrors(jobController.permitJobAdmin),
@@ -80,6 +82,12 @@ router.delete(
   "/jobs/:jobId",
   permit("admin"),
   catchErrors(jobController.removeJob)
+);
+
+router.post(
+  "/company",
+  permitAuthenticated(),
+  catchErrors(companyController.createCompany)
 );
 router.get("/primary-tags", catchErrors(jobController.getPrimaryTags));
 
