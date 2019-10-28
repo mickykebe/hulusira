@@ -44,7 +44,8 @@ const useStyles = makeStyles(theme => ({
   },
   accountButton: {
     color: theme.palette.text.secondary
-  }
+  },
+  toolbar: theme.mixins.toolbar
 }));
 
 export default function Layout({
@@ -91,7 +92,7 @@ export default function Layout({
     </Menu>
   );
   return (
-    <Box>
+    <Box display="flex" flexDirection="column" height="100%">
       <AppBar className={classes.appBar}>
         <Toolbar>
           <Link href="/" passHref>
@@ -118,7 +119,8 @@ export default function Layout({
         </Toolbar>
         {renderMenu}
       </AppBar>
-      <Box pt={[8, 9]} pb={2}>
+      <div className={classes.toolbar} />
+      <Box pb={2} height="100%">
         {children}
       </Box>
     </Box>
