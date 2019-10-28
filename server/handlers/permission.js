@@ -10,3 +10,14 @@ exports.permit = (...allowed) => {
     res.sendStatus(403);
   };
 };
+
+exports.permitAuthenticated = () => {
+  return (req, res, next) => {
+    const { user } = req;
+    if (user && user.confirmed) {
+      next();
+      return;
+    }
+    res.sendStatus(403);
+  };
+};

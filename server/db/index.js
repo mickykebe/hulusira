@@ -135,7 +135,8 @@ class Db {
       .insert({
         name: companyData.name,
         email: companyData.email,
-        logo: companyData.logo
+        logo: companyData.logo,
+        owner: companyData.owner || null
       })
       .returning(this.selectColumns("company", "company", this.companyColumns));
     return Company.fromDb(rows[0]);
