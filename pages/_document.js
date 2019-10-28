@@ -32,18 +32,10 @@ class MyDocument extends Document {
             crossOrigin="anonymous"
             src="https://polyfill.io/v3/polyfill.min.js?features=IntersectionObserver"></script>
           {process.env.NODE_ENV === "production" && (
-            <Fragment>
-              <script
-                async
-                src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-              <script
-                dangerouslySetInnerHTML={{
-                  __html: `(adsbygoogle = window.adsbygoogle || []).push({
-                google_ad_client: "ca-pub-6776285394109977",
-                enable_page_level_ads: true
-              });`
-                }}></script>
-            </Fragment>
+            <script
+              data-ad-client="ca-pub-6776285394109977"
+              async
+              src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
           )}
         </Head>
         <body>
