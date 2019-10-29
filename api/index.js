@@ -20,6 +20,11 @@ class Api {
     return jobData;
   }
 
+  async createCompany(data) {
+    const { data: company } = await this.request().post("/company", data);
+    return company;
+  }
+
   async uploadImage(file) {
     const formData = new FormData();
     formData.append("image", file);

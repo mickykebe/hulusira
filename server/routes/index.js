@@ -87,6 +87,7 @@ router.delete(
 router.post(
   "/company",
   permitAuthenticated(),
+  catchErrors(companyController.validateCompany),
   catchErrors(companyController.createCompany)
 );
 router.get("/primary-tags", catchErrors(jobController.getPrimaryTags));

@@ -177,12 +177,9 @@ function New({ primaryTags, user }) {
       );
     }
   });
-  React.useEffect(
-    () => () => {
-      files.forEach(file => URL.revokeObjectURL(file.preview));
-    },
-    [files]
-  );
+  React.useEffect(() => {
+    files.forEach(file => URL.revokeObjectURL(file.preview));
+  }, [files]);
 
   const handleSubmit = async function(values, actions) {
     let companyLogo = null;
