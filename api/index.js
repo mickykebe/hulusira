@@ -48,6 +48,11 @@ class Api {
     return data;
   }
 
+  async getCompanies(ctx) {
+    const { data: companies } = await this.request(ctx).get(`/company`);
+    return companies;
+  }
+
   async getPendingJobs(ctx) {
     const { data } = await this.request(ctx).get(`/pending-jobs`);
     return data;

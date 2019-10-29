@@ -19,6 +19,15 @@ exports.validateCompany = async (req, res, next) => {
   next();
 };
 
+exports.companies = async (req, res) => {
+  const owner = req.user.id;
+  if (!owner) {
+    throw new Error("No company owner");
+  }
+  const companies = await db.getCompanies(owner);
+  res.status(200).send(companies);
+};
+
 exports.createCompany = async (req, res) => {
   const data = req.body;
   const owner = req.user.id;

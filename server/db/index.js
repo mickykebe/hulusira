@@ -142,6 +142,12 @@ class Db {
     return Company.fromDb(rows[0]);
   }
 
+  getCompanies(ownerId) {
+    return this.knex("company")
+      .select()
+      .where("owner", ownerId);
+  }
+
   async findOrCreateTag(name, { trx = null } = {}) {
     const res = await (trx || this.knex).raw(
       "with new_row as (insert into tag(name) select :name where not exists (select * from tag where name = :name) returning *) select * from new_row union select * from tag where name = :name",
