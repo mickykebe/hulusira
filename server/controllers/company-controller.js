@@ -19,6 +19,15 @@ exports.validateCompany = async (req, res, next) => ***REMOVED***
   next();
 ***REMOVED***;
 
+exports.companies = async (req, res) => ***REMOVED***
+  const owner = req.user.id;
+  if (!owner) ***REMOVED***
+    throw new Error("No company owner");
+  ***REMOVED***
+  const companies = await db.getCompanies(owner);
+  res.status(200).send(companies);
+***REMOVED***;
+
 exports.createCompany = async (req, res) => ***REMOVED***
   const data = req.body;
   const owner = req.user.id;

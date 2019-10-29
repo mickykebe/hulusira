@@ -90,6 +90,12 @@ router.post(
   catchErrors(companyController.validateCompany),
   catchErrors(companyController.createCompany)
 );
+router.get(
+  "/company",
+  permitAuthenticated(),
+  catchErrors(companyController.companies)
+);
+
 router.get("/primary-tags", catchErrors(jobController.getPrimaryTags));
 
 router.get("/me", catchErrors(userController.me));

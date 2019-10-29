@@ -1,5 +1,6 @@
 import DashboardLayout from "../../components/dashboard-layout";
 import redirect from "../../utils/redirect";
+import Router from "next/router";
 import ***REMOVED***
   Box,
   Button,
@@ -45,6 +46,7 @@ export default function NewCompany(***REMOVED*** user ***REMOVED***) ***REMOVED*
         ...values,
         logo
       ***REMOVED***);
+      Router.push("/company");
     ***REMOVED*** catch (err) ***REMOVED***
       console.error(err);
       setShowErrorSubmitting(true);
@@ -103,6 +105,7 @@ export default function NewCompany(***REMOVED*** user ***REMOVED***) ***REMOVED*
                       className=***REMOVED***classes.saveBtn***REMOVED***
                       color="primary"
                       variant="contained"
+                      disabled=***REMOVED***isSubmitting***REMOVED***
                       startIcon=***REMOVED***<SaveIcon />***REMOVED***>
                       Save
                     </Button>

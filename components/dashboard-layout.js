@@ -1,8 +1,7 @@
+import Router from "next/router";
 import ***REMOVED***
   Drawer,
-  Paper,
   makeStyles,
-  Typography,
   List,
   ListSubheader,
   ListItem,
@@ -63,7 +62,10 @@ export default function DashboardLayout(***REMOVED*** user, children, selectedIt
                   primary="Jobs"
                 />
               </ListItem>
-              <ListItem selected=***REMOVED***selectedItem === "company"***REMOVED*** button>
+              <ListItem
+                selected=***REMOVED***selectedItem === "company"***REMOVED***
+                button
+                onClick=***REMOVED***() => Router.push("/company")***REMOVED***>
                 <ListItemIcon>
                   <BusinessIcon />
                 </ListItemIcon>
