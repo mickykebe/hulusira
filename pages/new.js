@@ -177,12 +177,9 @@ function New(***REMOVED*** primaryTags, user ***REMOVED***) ***REMOVED***
       );
     ***REMOVED***
   ***REMOVED***);
-  React.useEffect(
-    () => () => ***REMOVED***
-      files.forEach(file => URL.revokeObjectURL(file.preview));
-    ***REMOVED***,
-    [files]
-  );
+  React.useEffect(() => ***REMOVED***
+    files.forEach(file => URL.revokeObjectURL(file.preview));
+  ***REMOVED***, [files]);
 
   const handleSubmit = async function(values, actions) ***REMOVED***
     let companyLogo = null;

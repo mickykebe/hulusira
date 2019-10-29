@@ -20,6 +20,11 @@ class Api ***REMOVED***
     return jobData;
   ***REMOVED***
 
+  async createCompany(data) ***REMOVED***
+    const ***REMOVED*** data: company ***REMOVED*** = await this.request().post("/company", data);
+    return company;
+  ***REMOVED***
+
   async uploadImage(file) ***REMOVED***
     const formData = new FormData();
     formData.append("image", file);
