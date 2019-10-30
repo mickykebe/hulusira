@@ -281,6 +281,15 @@ class Db ***REMOVED***
     return null;
   ***REMOVED***
 
+  getCompany(companyId, ownerId) ***REMOVED***
+    return this.knex("company")
+      .first()
+      .where(***REMOVED***
+        id: companyId,
+        owner: ownerId
+      ***REMOVED***);
+  ***REMOVED***
+
   async getUserByEmail(email) ***REMOVED***
     const row = await this.knex("users")
       .first()

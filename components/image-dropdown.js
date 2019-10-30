@@ -1,5 +1,6 @@
 import useImageDropzone from "../hooks/use-image-dropzone";
 import ***REMOVED*** makeStyles, Box, Typography, Button ***REMOVED*** from "@material-ui/core";
+import FormImagePreview from "./form-image-preview";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   uploader: ***REMOVED***
@@ -14,31 +15,12 @@ const useStyles = makeStyles(theme => (***REMOVED***
   uploaderThumbnail: ***REMOVED***
     width: 130
   ***REMOVED***,
-  previewThumb: ***REMOVED***
-    width: 150,
-    height: 150,
-    position: "relative",
-    backgroundColor: "#fafbfc",
-    margin: `$***REMOVED***theme.spacing(2)***REMOVED***px 0`,
-    border: `1px solid #eee`
-  ***REMOVED***,
-  previewThumbImg: ***REMOVED***
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    right: 0,
-    left: 0,
-    margin: "auto",
-    display: "block",
-    maxWidth: "100%",
-    maxHeight: "100%"
-  ***REMOVED***,
   flex: ***REMOVED***
     flex: 1
   ***REMOVED***
 ***REMOVED***));
 
-export default function ImageDropdown(***REMOVED*** files, onFilesChange ***REMOVED***) ***REMOVED***
+export default function ImageDropdown(***REMOVED*** preview = "", files, onFilesChange ***REMOVED***) ***REMOVED***
   const ***REMOVED*** getRootProps, getInputProps ***REMOVED*** = useImageDropzone(
     files,
     onFilesChange
@@ -64,14 +46,15 @@ export default function ImageDropdown(***REMOVED*** files, onFilesChange ***REMO
           </Typography>
         </div>
       </div>
+      ***REMOVED***files.length === 0 && preview && (
+        <FormImagePreview src=***REMOVED***preview***REMOVED*** alt="Company logo preview" />
+      )***REMOVED***
       ***REMOVED***files.map(file => (
-        <Box className=***REMOVED***classes.previewThumb***REMOVED*** key=***REMOVED***file.name***REMOVED***>
-          <img
-            className=***REMOVED***classes.previewThumbImg***REMOVED***
-            src=***REMOVED***file.preview***REMOVED***
-            alt="Company logo preview"
-          />
-        </Box>
+        <FormImagePreview
+          key=***REMOVED***file.name***REMOVED***
+          src=***REMOVED***file.preview***REMOVED***
+          alt="Company logo preview"
+        />
       ))***REMOVED***
     </Box>
   );

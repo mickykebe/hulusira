@@ -47,7 +47,9 @@ function Companies(***REMOVED*** user, companies ***REMOVED***) ***REMOVED***
               </Box>
               <Typography variant="subtitle1">***REMOVED***company.name***REMOVED***</Typography>
               <Box flex="1" />
-              <IconButton className=***REMOVED***classes.actionButton***REMOVED***>
+              <IconButton
+                className=***REMOVED***classes.actionButton***REMOVED***
+                onClick=***REMOVED***() => Router.push(`/company/$***REMOVED***company.id***REMOVED***`)***REMOVED***>
                 <EditIcon />
               </IconButton>
               <IconButton className=***REMOVED***classes.actionButton***REMOVED***>

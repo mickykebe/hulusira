@@ -95,6 +95,11 @@ router.get(
   permitAuthenticated(),
   catchErrors(companyController.companies)
 );
+router.get(
+  "/company/:companyId",
+  permitAuthenticated(),
+  catchErrors(companyController.getCompany)
+);
 
 router.get("/primary-tags", catchErrors(jobController.getPrimaryTags));
 

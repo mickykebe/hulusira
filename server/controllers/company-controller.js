@@ -28,6 +28,16 @@ exports.companies = async (req, res) => ***REMOVED***
   res.status(200).send(companies);
 ***REMOVED***;
 
+exports.getCompany = async (req, res) => ***REMOVED***
+  const ***REMOVED*** companyId ***REMOVED*** = req.params;
+  const ownerId = req.user.id;
+  const company = await db.getCompany(companyId, ownerId);
+  if (!company) ***REMOVED***
+    throw new Error("Company not found!");
+  ***REMOVED***
+  res.status(200).send(company);
+***REMOVED***;
+
 exports.createCompany = async (req, res) => ***REMOVED***
   const data = req.body;
   const owner = req.user.id;

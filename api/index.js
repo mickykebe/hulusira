@@ -53,6 +53,13 @@ class Api ***REMOVED***
     return companies;
   ***REMOVED***
 
+  async getCompany(ctx, companyId) ***REMOVED***
+    const ***REMOVED*** data: company ***REMOVED*** = await this.request(ctx).get(
+      `/company/$***REMOVED***companyId***REMOVED***`
+    );
+    return company;
+  ***REMOVED***
+
   async getPendingJobs(ctx) ***REMOVED***
     const ***REMOVED*** data ***REMOVED*** = await this.request(ctx).get(`/pending-jobs`);
     return data;
