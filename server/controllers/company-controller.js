@@ -56,3 +56,13 @@ exports.editCompany = async (req, res) => ***REMOVED***
   ***REMOVED***
   res.status(200).send(company);
 ***REMOVED***;
+
+exports.deleteCompany = async (req, res) => ***REMOVED***
+  const ***REMOVED*** companyId ***REMOVED*** = req.params;
+  const ownerId = req.user.id;
+  const numDeleted = await db.deleteCompany(companyId, ownerId);
+  if (numDeleted !== 1) ***REMOVED***
+    throw new Error("Problem occurred deleting company");
+  ***REMOVED***
+  res.sendStatus(200);
+***REMOVED***;

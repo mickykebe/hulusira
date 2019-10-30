@@ -382,6 +382,15 @@ class Db ***REMOVED***
       .del();
   ***REMOVED***
 
+  deleteCompany(id, ownerId) ***REMOVED***
+    return this.knex("company")
+      .where(***REMOVED***
+        id,
+        owner: ownerId
+      ***REMOVED***)
+      .del();
+  ***REMOVED***
+
   createJobSocialPost(jobId, ***REMOVED*** telegramMessageId, facebookPostId ***REMOVED***) ***REMOVED***
     const data = ***REMOVED***
       job_id: jobId

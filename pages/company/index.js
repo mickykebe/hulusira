@@ -4,7 +4,12 @@ import ***REMOVED***
   Button,
   Typography,
   IconButton,
-  makeStyles
+  makeStyles,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions
 ***REMOVED*** from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import EditIcon from "@material-ui/icons/Edit";
@@ -14,6 +19,8 @@ import Router from "next/router";
 import api from "../../api";
 import CompanyLogo from "../../components/company-logo";
 import HSPaper from "../../components/hs-paper";
+import ***REMOVED*** useReducer, useState ***REMOVED*** from "react";
+import HSSnackBar from "../../components/hs-snackbar";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   companyItem: ***REMOVED***
@@ -24,8 +31,39 @@ const useStyles = makeStyles(theme => (***REMOVED***
   ***REMOVED***
 ***REMOVED***));
 
+function deleteCompanyReducer(state, action) ***REMOVED***
+  switch (action.type) ***REMOVED***
+    case "DELETING_COMPANY":
+      return ***REMOVED*** isDeletingCompany: true, errorDeletingCompany: false ***REMOVED***;
+    case "DELETED_COMPANY":
+      return ***REMOVED*** isDeletingCompany: false, errorDeletingCompany: false ***REMOVED***;
+    case "ERROR_DELETING_COMPANY":
+      return ***REMOVED*** isDeletingCompany: false, errorDeletingCompany: true ***REMOVED***;
+    case "CLEAR_ERROR":
+      return ***REMOVED*** ...state, errorDeletingCompany: false ***REMOVED***;
+    default:
+      throw new Error("Unidentified action type");
+  ***REMOVED***
+***REMOVED***
+
 function Companies(***REMOVED*** user, companies ***REMOVED***) ***REMOVED***
   const classes = useStyles();
+  const [***REMOVED*** isDeletingCompany, errorDeletingCompany ***REMOVED***, dispatch] = useReducer(
+    deleteCompanyReducer,
+    ***REMOVED*** isDeletingCompany: false, errorDeletingCompany: false ***REMOVED***
+  );
+  const [companyIdPendingDelete, setCompanyIdPendingDelete] = useState(null);
+  const handleDeleteCompany = async () => ***REMOVED***
+    setCompanyIdPendingDelete(null);
+    dispatch(***REMOVED*** type: "DELETING_COMPANY" ***REMOVED***);
+    try ***REMOVED***
+      await api.deleteCompany(companyIdPendingDelete);
+      Router.push("/company");
+      dispatch(***REMOVED*** type: "DELETED_COMPANY" ***REMOVED***);
+    ***REMOVED*** catch (err) ***REMOVED***
+      dispatch(***REMOVED*** type: "ERROR_DELETING_COMPANY" ***REMOVED***);
+    ***REMOVED***
+  ***REMOVED***;
   return (
     <DashboardLayout user=***REMOVED***user***REMOVED*** selectedItem="company">
       <Container maxWidth="md">
@@ -40,8 +78,8 @@ function Companies(***REMOVED*** user, companies ***REMOVED***) ***REMOVED***
           </Button>
         </Box>
         ***REMOVED***companies.map(company => (
-          <HSPaper className=***REMOVED***classes.companyItem***REMOVED***>
-            <Box p=***REMOVED***2***REMOVED*** key=***REMOVED***company.id***REMOVED*** display="flex" alignItems="center">
+          <HSPaper key=***REMOVED***company.id***REMOVED*** className=***REMOVED***classes.companyItem***REMOVED***>
+            <Box p=***REMOVED***2***REMOVED*** display="flex" alignItems="center">
               <Box pr=***REMOVED***[2, 3]***REMOVED***>
                 <CompanyLogo company=***REMOVED***company***REMOVED*** />
               </Box>
@@ -52,13 +90,44 @@ function Companies(***REMOVED*** user, companies ***REMOVED***) ***REMOVED***
                 onClick=***REMOVED***() => Router.push(`/company/$***REMOVED***company.id***REMOVED***`)***REMOVED***>
                 <EditIcon />
               </IconButton>
-              <IconButton className=***REMOVED***classes.actionButton***REMOVED***>
+              <IconButton
+                className=***REMOVED***classes.actionButton***REMOVED***
+                disabled=***REMOVED***isDeletingCompany***REMOVED***
+                onClick=***REMOVED***() => setCompanyIdPendingDelete(company.id)***REMOVED***>
                 <DeleteIcon />
               </IconButton>
             </Box>
           </HSPaper>
         ))***REMOVED***
       </Container>
+      <Dialog
+        open=***REMOVED***companyIdPendingDelete !== null***REMOVED***
+        onClose=***REMOVED***() => setCompanyIdPendingDelete(null)***REMOVED***>
+        <DialogTitle>Delete this company?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Deleting this company will dissociate it from all jobs created under
+            it.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick=***REMOVED***() => setCompanyIdPendingDelete(null)***REMOVED***
+            color="primary">
+            Cancel
+          </Button>
+          <Button onClick=***REMOVED***handleDeleteCompany***REMOVED*** color="primary">
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <HSSnackBar
+        open=***REMOVED***errorDeletingCompany***REMOVED***
+        variant="error"
+        message="Problem occurred deleting company."
+        autoHideDuration=***REMOVED***3000***REMOVED***
+        onClose=***REMOVED***() => dispatch("CLEAR_ERROR")***REMOVED***
+      />
     </DashboardLayout>
   );
 ***REMOVED***

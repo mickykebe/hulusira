@@ -106,6 +106,11 @@ router.put(
   permitAuthenticated(),
   catchErrors(companyController.editCompany)
 );
+router.delete(
+  "/company/:companyId",
+  permitAuthenticated(),
+  catchErrors(companyController.deleteCompany)
+);
 
 router.get("/primary-tags", catchErrors(jobController.getPrimaryTags));
 
