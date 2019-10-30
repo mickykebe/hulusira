@@ -45,3 +45,14 @@ exports.createCompany = async (req, res) => ***REMOVED***
   const company = await db.createCompany(companyData);
   res.status(200).send(company);
 ***REMOVED***;
+
+exports.editCompany = async (req, res) => ***REMOVED***
+  const ***REMOVED*** companyId ***REMOVED*** = req.params;
+  const data = req.body;
+  const ownerId = req.user.id;
+  const company = await db.updateCompany(companyId, ownerId, data);
+  if (!company) ***REMOVED***
+    throw new Error("Failed to update company");
+  ***REMOVED***
+  res.status(200).send(company);
+***REMOVED***;

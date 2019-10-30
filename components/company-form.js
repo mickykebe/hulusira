@@ -23,7 +23,7 @@ const validationSchema = Yup.object().shape(***REMOVED***
 ***REMOVED***);
 
 export default function CompanyForm(***REMOVED***
-  initialValues = ***REMOVED*** name: "", email: "" ***REMOVED***,
+  initialValues = ***REMOVED*** name: "", email: "", logo: "" ***REMOVED***,
   onSubmit
 ***REMOVED***) ***REMOVED***
   const classes = useStyles();

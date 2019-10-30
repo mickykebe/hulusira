@@ -25,6 +25,14 @@ class Api ***REMOVED***
     return company;
   ***REMOVED***
 
+  async updateCompany(companyId, data) ***REMOVED***
+    const ***REMOVED*** data: company ***REMOVED*** = await this.request().put(
+      `/company/$***REMOVED***companyId***REMOVED***`,
+      data
+    );
+    return company;
+  ***REMOVED***
+
   async uploadImage(file) ***REMOVED***
     const formData = new FormData();
     formData.append("image", file);

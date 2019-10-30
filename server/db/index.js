@@ -142,6 +142,22 @@ class Db ***REMOVED***
     return Company.fromDb(rows[0]);
   ***REMOVED***
 
+  async updateCompany(companyId, ownerId, companyData) ***REMOVED***
+    const rows = this.knex("company")
+      .where(***REMOVED***
+        id: companyId,
+        owner: ownerId
+      ***REMOVED***)
+      .update(***REMOVED***
+        name: companyData.name,
+        email: companyData.email,
+        logo: companyData.logo
+      ***REMOVED***);
+    if (rows.length > 0) ***REMOVED***
+      return rows[0];
+    ***REMOVED***
+  ***REMOVED***
+
   getCompanies(ownerId) ***REMOVED***
     return this.knex("company")
       .select()
