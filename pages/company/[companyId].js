@@ -1,3 +1,4 @@
+import Router from "next/router";
 import redirect from "../../utils/redirect";
 import api from "../../api";
 import DashboardLayout from "../../components/dashboard-layout";
@@ -10,7 +11,7 @@ export default function EditCompany({ user, company }) {
     if (files.length > 0) {
       logo = await api.uploadImage(files[0]);
     }
-    await api.updateCompany({
+    await api.updateCompany(company.id, {
       ...values,
       logo
     });

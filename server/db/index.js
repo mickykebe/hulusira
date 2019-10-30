@@ -143,7 +143,7 @@ class Db {
   }
 
   async updateCompany(companyId, ownerId, companyData) {
-    const rows = this.knex("company")
+    const rows = await this.knex("company")
       .where({
         id: companyId,
         owner: ownerId
@@ -152,7 +152,8 @@ class Db {
         name: companyData.name,
         email: companyData.email,
         logo: companyData.logo
-      });
+      })
+      .returning("*");
     if (rows.length > 0) {
       return rows[0];
     }
