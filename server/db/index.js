@@ -143,7 +143,7 @@ class Db ***REMOVED***
   ***REMOVED***
 
   async updateCompany(companyId, ownerId, companyData) ***REMOVED***
-    const rows = this.knex("company")
+    const rows = await this.knex("company")
       .where(***REMOVED***
         id: companyId,
         owner: ownerId
@@ -152,7 +152,8 @@ class Db ***REMOVED***
         name: companyData.name,
         email: companyData.email,
         logo: companyData.logo
-      ***REMOVED***);
+      ***REMOVED***)
+      .returning("*");
     if (rows.length > 0) ***REMOVED***
       return rows[0];
     ***REMOVED***
