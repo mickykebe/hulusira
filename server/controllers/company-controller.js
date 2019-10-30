@@ -28,6 +28,16 @@ exports.companies = async (req, res) => {
   res.status(200).send(companies);
 };
 
+exports.getCompany = async (req, res) => {
+  const { companyId } = req.params;
+  const ownerId = req.user.id;
+  const company = await db.getCompany(companyId, ownerId);
+  if (!company) {
+    throw new Error("Company not found!");
+  }
+  res.status(200).send(company);
+};
+
 exports.createCompany = async (req, res) => {
   const data = req.body;
   const owner = req.user.id;

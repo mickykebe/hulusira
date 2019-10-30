@@ -47,7 +47,9 @@ function Companies({ user, companies }) {
               </Box>
               <Typography variant="subtitle1">{company.name}</Typography>
               <Box flex="1" />
-              <IconButton className={classes.actionButton}>
+              <IconButton
+                className={classes.actionButton}
+                onClick={() => Router.push(`/company/${company.id}`)}>
                 <EditIcon />
               </IconButton>
               <IconButton className={classes.actionButton}>

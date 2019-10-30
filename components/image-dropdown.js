@@ -1,5 +1,6 @@
 import useImageDropzone from "../hooks/use-image-dropzone";
 import { makeStyles, Box, Typography, Button } from "@material-ui/core";
+import FormImagePreview from "./form-image-preview";
 
 const useStyles = makeStyles(theme => ({
   uploader: {
@@ -14,31 +15,12 @@ const useStyles = makeStyles(theme => ({
   uploaderThumbnail: {
     width: 130
   },
-  previewThumb: {
-    width: 150,
-    height: 150,
-    position: "relative",
-    backgroundColor: "#fafbfc",
-    margin: `${theme.spacing(2)}px 0`,
-    border: `1px solid #eee`
-  },
-  previewThumbImg: {
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    right: 0,
-    left: 0,
-    margin: "auto",
-    display: "block",
-    maxWidth: "100%",
-    maxHeight: "100%"
-  },
   flex: {
     flex: 1
   }
 }));
 
-export default function ImageDropdown({ files, onFilesChange }) {
+export default function ImageDropdown({ preview = "", files, onFilesChange }) {
   const { getRootProps, getInputProps } = useImageDropzone(
     files,
     onFilesChange
@@ -64,14 +46,15 @@ export default function ImageDropdown({ files, onFilesChange }) {
           </Typography>
         </div>
       </div>
+      {files.length === 0 && preview && (
+        <FormImagePreview src={preview} alt="Company logo preview" />
+      )}
       {files.map(file => (
-        <Box className={classes.previewThumb} key={file.name}>
-          <img
-            className={classes.previewThumbImg}
-            src={file.preview}
-            alt="Company logo preview"
-          />
-        </Box>
+        <FormImagePreview
+          key={file.name}
+          src={file.preview}
+          alt="Company logo preview"
+        />
       ))}
     </Box>
   );

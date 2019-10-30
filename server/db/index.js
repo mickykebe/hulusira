@@ -281,6 +281,15 @@ class Db {
     return null;
   }
 
+  getCompany(companyId, ownerId) {
+    return this.knex("company")
+      .first()
+      .where({
+        id: companyId,
+        owner: ownerId
+      });
+  }
+
   async getUserByEmail(email) {
     const row = await this.knex("users")
       .first()
