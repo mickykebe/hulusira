@@ -25,6 +25,14 @@ class Api {
     return company;
   }
 
+  async updateCompany(companyId, data) {
+    const { data: company } = await this.request().put(
+      `/company/${companyId}`,
+      data
+    );
+    return company;
+  }
+
   async uploadImage(file) {
     const formData = new FormData();
     formData.append("image", file);

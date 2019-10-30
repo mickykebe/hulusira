@@ -45,3 +45,14 @@ exports.createCompany = async (req, res) => {
   const company = await db.createCompany(companyData);
   res.status(200).send(company);
 };
+
+exports.editCompany = async (req, res) => {
+  const { companyId } = req.params;
+  const data = req.body;
+  const ownerId = req.user.id;
+  const company = await db.updateCompany(companyId, ownerId, data);
+  if (!company) {
+    throw new Error("Failed to update company");
+  }
+  res.status(200).send(company);
+};

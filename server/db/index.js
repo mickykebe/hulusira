@@ -142,6 +142,22 @@ class Db {
     return Company.fromDb(rows[0]);
   }
 
+  async updateCompany(companyId, ownerId, companyData) {
+    const rows = this.knex("company")
+      .where({
+        id: companyId,
+        owner: ownerId
+      })
+      .update({
+        name: companyData.name,
+        email: companyData.email,
+        logo: companyData.logo
+      });
+    if (rows.length > 0) {
+      return rows[0];
+    }
+  }
+
   getCompanies(ownerId) {
     return this.knex("company")
       .select()
