@@ -33,6 +33,10 @@ class Api {
     return company;
   }
 
+  deleteCompany(companyId) {
+    return this.request().delete(`/company/${companyId}`);
+  }
+
   async uploadImage(file) {
     const formData = new FormData();
     formData.append("image", file);

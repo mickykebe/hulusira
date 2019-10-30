@@ -4,7 +4,12 @@ import {
   Button,
   Typography,
   IconButton,
-  makeStyles
+  makeStyles,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import EditIcon from "@material-ui/icons/Edit";
@@ -14,6 +19,8 @@ import Router from "next/router";
 import api from "../../api";
 import CompanyLogo from "../../components/company-logo";
 import HSPaper from "../../components/hs-paper";
+import { useReducer, useState } from "react";
+import HSSnackBar from "../../components/hs-snackbar";
 
 const useStyles = makeStyles(theme => ({
   companyItem: {
@@ -24,8 +31,39 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+function deleteCompanyReducer(state, action) {
+  switch (action.type) {
+    case "DELETING_COMPANY":
+      return { isDeletingCompany: true, errorDeletingCompany: false };
+    case "DELETED_COMPANY":
+      return { isDeletingCompany: false, errorDeletingCompany: false };
+    case "ERROR_DELETING_COMPANY":
+      return { isDeletingCompany: false, errorDeletingCompany: true };
+    case "CLEAR_ERROR":
+      return { ...state, errorDeletingCompany: false };
+    default:
+      throw new Error("Unidentified action type");
+  }
+}
+
 function Companies({ user, companies }) {
   const classes = useStyles();
+  const [{ isDeletingCompany, errorDeletingCompany }, dispatch] = useReducer(
+    deleteCompanyReducer,
+    { isDeletingCompany: false, errorDeletingCompany: false }
+  );
+  const [companyIdPendingDelete, setCompanyIdPendingDelete] = useState(null);
+  const handleDeleteCompany = async () => {
+    setCompanyIdPendingDelete(null);
+    dispatch({ type: "DELETING_COMPANY" });
+    try {
+      await api.deleteCompany(companyIdPendingDelete);
+      Router.push("/company");
+      dispatch({ type: "DELETED_COMPANY" });
+    } catch (err) {
+      dispatch({ type: "ERROR_DELETING_COMPANY" });
+    }
+  };
   return (
     <DashboardLayout user={user} selectedItem="company">
       <Container maxWidth="md">
@@ -40,8 +78,8 @@ function Companies({ user, companies }) {
           </Button>
         </Box>
         {companies.map(company => (
-          <HSPaper className={classes.companyItem}>
-            <Box p={2} key={company.id} display="flex" alignItems="center">
+          <HSPaper key={company.id} className={classes.companyItem}>
+            <Box p={2} display="flex" alignItems="center">
               <Box pr={[2, 3]}>
                 <CompanyLogo company={company} />
               </Box>
@@ -52,13 +90,44 @@ function Companies({ user, companies }) {
                 onClick={() => Router.push(`/company/${company.id}`)}>
                 <EditIcon />
               </IconButton>
-              <IconButton className={classes.actionButton}>
+              <IconButton
+                className={classes.actionButton}
+                disabled={isDeletingCompany}
+                onClick={() => setCompanyIdPendingDelete(company.id)}>
                 <DeleteIcon />
               </IconButton>
             </Box>
           </HSPaper>
         ))}
       </Container>
+      <Dialog
+        open={companyIdPendingDelete !== null}
+        onClose={() => setCompanyIdPendingDelete(null)}>
+        <DialogTitle>Delete this company?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Deleting this company will dissociate it from all jobs created under
+            it.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setCompanyIdPendingDelete(null)}
+            color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteCompany} color="primary">
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <HSSnackBar
+        open={errorDeletingCompany}
+        variant="error"
+        message="Problem occurred deleting company."
+        autoHideDuration={3000}
+        onClose={() => dispatch("CLEAR_ERROR")}
+      />
     </DashboardLayout>
   );
 }
