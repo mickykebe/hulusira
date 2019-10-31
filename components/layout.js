@@ -22,7 +22,6 @@ const useStyles = makeStyles(theme => (***REMOVED***
     backgroundColor: theme.palette.common.white,
     boxShadow: "none",
     borderBottom: "1px solid #dadce0",
-    //boxShadow: `0 2px 4px rgba(0,0,0,.1)`,
     color: theme.palette.getContrastText(theme.palette.common.white),
     zIndex: theme.zIndex.drawer + 1
   ***REMOVED***,
@@ -75,7 +74,7 @@ export default function Layout(***REMOVED***
         classes=***REMOVED******REMOVED*** root: classes.menuItem ***REMOVED******REMOVED***
         onClick=***REMOVED***() => ***REMOVED***
           console.log("dashboard menu click");
-          Router.push("/dashboard");
+          Router.push("/dashboard/jobs");
         ***REMOVED******REMOVED***>
         <DashboardIcon className=***REMOVED***classes.menuIcon***REMOVED*** />
         <span>Dashboard</span>

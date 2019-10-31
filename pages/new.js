@@ -27,6 +27,7 @@ import MDEditor from "../components/md-editor";
 import HSSnackbar from "../components/hs-snackbar";
 import PageProgress from "../components/page-progress";
 import ImageDropdown from "../components/image-dropdown";
+import redirect from "../utils/redirect";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   root: ***REMOVED***
@@ -518,6 +519,13 @@ function New(***REMOVED*** primaryTags, user ***REMOVED***) ***REMOVED***
 ***REMOVED***
 
 New.getInitialProps = async ctx => ***REMOVED***
+  const ***REMOVED*** user ***REMOVED*** = ctx;
+
+  if (user) ***REMOVED***
+    redirect(ctx, "/dashboard/jobs");
+    return ***REMOVED******REMOVED***;
+  ***REMOVED***
+
   const primaryTags = await api.getPrimaryTags(ctx);
   return ***REMOVED*** primaryTags ***REMOVED***;
 ***REMOVED***;

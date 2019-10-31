@@ -34,7 +34,7 @@ function Login() ***REMOVED***
     setErrorLogin(false);
     try ***REMOVED***
       await api.login(values);
-      Router.push("/dashboard");
+      Router.push("/dashboard/jobs");
     ***REMOVED*** catch (err) ***REMOVED***
       setErrorLogin(true);
     ***REMOVED***
