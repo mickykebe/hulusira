@@ -26,6 +26,7 @@ import JobItem from "../components/job-item";
 import MDEditor from "../components/md-editor";
 import HSSnackbar from "../components/hs-snackbar";
 import PageProgress from "../components/page-progress";
+import ImageDropdown from "../components/image-dropdown";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -165,18 +166,6 @@ function New({ primaryTags, user }) {
   const classes = useStyles();
   const [files, setFiles] = React.useState([]);
   const [showErrorSubmitting, setShowErrorSubmitting] = React.useState(false);
-  const { getRootProps, getInputProps } = useDropzone({
-    accept: "image/*",
-    multiple: false,
-    onDrop: acceptedFiles => {
-      setFiles(
-        acceptedFiles.map(file => {
-          file.preview = URL.createObjectURL(file);
-          return file;
-        })
-      );
-    }
-  });
   React.useEffect(() => {
     files.forEach(file => URL.revokeObjectURL(file.preview));
   }, [files]);
@@ -476,35 +465,7 @@ function New({ primaryTags, user }) {
                       error={!!(touched.companyEmail && errors.companyEmail)}
                       helperText={touched.companyEmail && errors.companyEmail}
                     />
-                    <div className={classes.uploadContainer}>
-                      <div {...getRootProps({ className: classes.uploader })}>
-                        <input {...getInputProps()} />
-                        <div>
-                          <img
-                            className={classes.uploaderThumbnail}
-                            src="/static/photo.png"
-                            alt="Uploader thumbnail"
-                          />
-                        </div>
-                        <div>
-                          <Typography align="center" variant="h6">
-                            Company Logo
-                          </Typography>
-                          <Typography align="center" variant="body1">
-                            Drag 'n' drop or click to upload company logo
-                          </Typography>
-                        </div>
-                      </div>
-                      {files.map(file => (
-                        <Box className={classes.previewThumb} key={file.name}>
-                          <img
-                            className={classes.previewThumbImg}
-                            src={file.preview}
-                            alt="Company logo preview"
-                          />
-                        </Box>
-                      ))}
-                    </div>
+                    <ImageDropdown files={files} onFilesChange={setFiles} />
                     <Box />
                   </HSCard>
                 )}
