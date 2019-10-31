@@ -23,11 +23,14 @@ const useStyles = makeStyles(theme => ({
   },
   drawerPaper: {
     position: "static",
-    width: drawerWidth
+    width: drawerWidth,
+    overflowY: "auto"
   },
-  drawerContent: {},
   drawerHeader: {
     fontWeight: 800
+  },
+  main: {
+    overflowY: "auto"
   }
 }));
 
@@ -35,7 +38,7 @@ export default function DashboardLayout({ user, children, selectedItem }) {
   const classes = useStyles();
   return (
     <Layout user={user}>
-      <Box width="100%" height="100%" display="flex">
+      <Box width="100%" height="100%" display="flex" overflow="hidden">
         <Drawer
           className={classes.drawer}
           classes={{ paper: classes.drawerPaper }}
@@ -83,7 +86,7 @@ export default function DashboardLayout({ user, children, selectedItem }) {
             </List>
           </div>
         </Drawer>
-        <Box pt={2} width="100%">
+        <Box className={classes.main} pt={2} width="100%">
           {children}
         </Box>
       </Box>

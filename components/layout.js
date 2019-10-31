@@ -120,9 +120,7 @@ export default function Layout({
         {renderMenu}
       </AppBar>
       <div className={classes.toolbar} />
-      <Box pb={2} height="100%">
-        {children}
-      </Box>
+      <Box height="100%">{children}</Box>
     </Box>
   );
 }
