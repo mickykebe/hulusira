@@ -50,7 +50,10 @@ export default function DashboardLayout(***REMOVED*** user, children, selectedIt
                   Employer
                 </ListSubheader>
               ***REMOVED***>
-              <ListItem selected=***REMOVED***selectedItem === "jobs"***REMOVED*** button>
+              <ListItem
+                selected=***REMOVED***selectedItem === "jobs"***REMOVED***
+                button
+                onClick=***REMOVED***() => Router.push("/dashboard/jobs")***REMOVED***>
                 <ListItemIcon>
                   <WorkIcon />
                 </ListItemIcon>
