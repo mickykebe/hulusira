@@ -34,7 +34,7 @@ function Login() {
     setErrorLogin(false);
     try {
       await api.login(values);
-      Router.push("/dashboard");
+      Router.push("/dashboard/jobs");
     } catch (err) {
       setErrorLogin(true);
     }

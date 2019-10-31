@@ -21,6 +21,7 @@ import CompanyLogo from "../../components/company-logo";
 import HSPaper from "../../components/hs-paper";
 import { useReducer, useState } from "react";
 import HSSnackBar from "../../components/hs-snackbar";
+import redirect from "../../utils/redirect";
 
 const useStyles = makeStyles(theme => ({
   companyItem: {

@@ -27,6 +27,7 @@ import MDEditor from "../components/md-editor";
 import HSSnackbar from "../components/hs-snackbar";
 import PageProgress from "../components/page-progress";
 import ImageDropdown from "../components/image-dropdown";
+import redirect from "../utils/redirect";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -518,6 +519,13 @@ function New({ primaryTags, user }) {
 }
 
 New.getInitialProps = async ctx => {
+  const { user } = ctx;
+
+  if (user) {
+    redirect(ctx, "/dashboard/jobs");
+    return {};
+  }
+
   const primaryTags = await api.getPrimaryTags(ctx);
   return { primaryTags };
 };
