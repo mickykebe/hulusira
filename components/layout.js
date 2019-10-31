@@ -120,9 +120,7 @@ export default function Layout(***REMOVED***
         ***REMOVED***renderMenu***REMOVED***
       </AppBar>
       <div className=***REMOVED***classes.toolbar***REMOVED*** />
-      <Box pb=***REMOVED***2***REMOVED*** height="100%">
-        ***REMOVED***children***REMOVED***
-      </Box>
+      <Box height="100%">***REMOVED***children***REMOVED***</Box>
     </Box>
   );
 ***REMOVED***
