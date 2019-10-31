@@ -50,7 +50,10 @@ export default function DashboardLayout({ user, children, selectedItem }) {
                   Employer
                 </ListSubheader>
               }>
-              <ListItem selected={selectedItem === "jobs"} button>
+              <ListItem
+                selected={selectedItem === "jobs"}
+                button
+                onClick={() => Router.push("/dashboard/jobs")}>
                 <ListItemIcon>
                   <WorkIcon />
                 </ListItemIcon>

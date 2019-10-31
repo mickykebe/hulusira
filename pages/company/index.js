@@ -9,7 +9,8 @@ import {
   DialogTitle,
   DialogContent,
   DialogContentText,
-  DialogActions
+  DialogActions,
+  Toolbar
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import EditIcon from "@material-ui/icons/Edit";
@@ -68,10 +69,11 @@ function Companies({ user, companies }) {
   return (
     <DashboardLayout user={user} selectedItem="company">
       <Container maxWidth="md">
-        <Box display="flex" pb={2}>
+        <Box display="flex" py={2}>
           <Box flex="1" />
           <Button
             variant="contained"
+            size="small"
             color="primary"
             startIcon={<AddIcon />}
             onClick={() => Router.push("/company/new")}>
