@@ -37,7 +37,8 @@ const useStyles = makeStyles(theme => (***REMOVED***
   ***REMOVED***,
   menuItem: ***REMOVED***
     fontWeight: 800,
-    color: theme.palette.text.secondary
+    color: theme.palette.text.secondary,
+    padding: theme.spacing(2)
   ***REMOVED***,
   menuIcon: ***REMOVED***
     marginRight: theme.spacing(1)

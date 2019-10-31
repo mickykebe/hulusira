@@ -26,6 +26,7 @@ import JobItem from "../components/job-item";
 import MDEditor from "../components/md-editor";
 import HSSnackbar from "../components/hs-snackbar";
 import PageProgress from "../components/page-progress";
+import ImageDropdown from "../components/image-dropdown";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   root: ***REMOVED***
@@ -165,18 +166,6 @@ function New(***REMOVED*** primaryTags, user ***REMOVED***) ***REMOVED***
   const classes = useStyles();
   const [files, setFiles] = React.useState([]);
   const [showErrorSubmitting, setShowErrorSubmitting] = React.useState(false);
-  const ***REMOVED*** getRootProps, getInputProps ***REMOVED*** = useDropzone(***REMOVED***
-    accept: "image/*",
-    multiple: false,
-    onDrop: acceptedFiles => ***REMOVED***
-      setFiles(
-        acceptedFiles.map(file => ***REMOVED***
-          file.preview = URL.createObjectURL(file);
-          return file;
-        ***REMOVED***)
-      );
-    ***REMOVED***
-  ***REMOVED***);
   React.useEffect(() => ***REMOVED***
     files.forEach(file => URL.revokeObjectURL(file.preview));
   ***REMOVED***, [files]);
@@ -476,35 +465,7 @@ function New(***REMOVED*** primaryTags, user ***REMOVED***) ***REMOVED***
                       error=***REMOVED***!!(touched.companyEmail && errors.companyEmail)***REMOVED***
                       helperText=***REMOVED***touched.companyEmail && errors.companyEmail***REMOVED***
                     />
-                    <div className=***REMOVED***classes.uploadContainer***REMOVED***>
-                      <div ***REMOVED***...getRootProps(***REMOVED*** className: classes.uploader ***REMOVED***)***REMOVED***>
-                        <input ***REMOVED***...getInputProps()***REMOVED*** />
-                        <div>
-                          <img
-                            className=***REMOVED***classes.uploaderThumbnail***REMOVED***
-                            src="/static/photo.png"
-                            alt="Uploader thumbnail"
-                          />
-                        </div>
-                        <div>
-                          <Typography align="center" variant="h6">
-                            Company Logo
-                          </Typography>
-                          <Typography align="center" variant="body1">
-                            Drag 'n' drop or click to upload company logo
-                          </Typography>
-                        </div>
-                      </div>
-                      ***REMOVED***files.map(file => (
-                        <Box className=***REMOVED***classes.previewThumb***REMOVED*** key=***REMOVED***file.name***REMOVED***>
-                          <img
-                            className=***REMOVED***classes.previewThumbImg***REMOVED***
-                            src=***REMOVED***file.preview***REMOVED***
-                            alt="Company logo preview"
-                          />
-                        </Box>
-                      ))***REMOVED***
-                    </div>
+                    <ImageDropdown files=***REMOVED***files***REMOVED*** onFilesChange=***REMOVED***setFiles***REMOVED*** />
                     <Box />
                   </HSCard>
                 )***REMOVED***
