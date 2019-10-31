@@ -3,7 +3,7 @@ import SaveIcon from "@material-ui/icons/Save";
 import ***REMOVED*** Formik ***REMOVED*** from "formik";
 import * as Yup from "yup";
 import HSCard from "./hs-card";
-import ***REMOVED*** useState ***REMOVED*** from "react";
+import ***REMOVED*** useState, useEffect ***REMOVED*** from "react";
 import ImageDropdown from "./image-dropdown";
 import PageProgress from "./page-progress";
 import HSSnackBar from "./hs-snackbar";
@@ -29,6 +29,9 @@ export default function CompanyForm(***REMOVED***
   const classes = useStyles();
   const [files, setFiles] = useState([]);
   const [showErrorSubmitting, setShowErrorSubmitting] = useState(false);
+  useEffect(() => ***REMOVED***
+    files.forEach(file => URL.revokeObjectURL(file.preview));
+  ***REMOVED***, [files]);
   const handleSubmit = async function(values, actions) ***REMOVED***
     try ***REMOVED***
       await onSubmit(values, files);
