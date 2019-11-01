@@ -13,17 +13,19 @@ import {
 } from "@material-ui/core";
 import BusinessIcon from "@material-ui/icons/Business";
 import SaveIcon from "@material-ui/icons/Save";
-import * as Yup from "yup";
 import redirect from "../../../utils/redirect";
 import api from "../../../api";
 import JobDetailsFormElement from "../../../components/job-details-form-element";
 import JobSettingFormElement from "../../../components/job-setting-form-element";
 import HSCard from "../../../components/hs-card";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import CompanyLogo from "../../../components/company-logo";
 import Router from "next/router";
 import JobPreviewFormElement from "../../../components/job-preview-form-element";
 import { jobValidationSchema } from "../../../utils/validation";
+import { cleanTags } from "../../../utils";
+import PageProgress from "../../../components/page-progress";
+import HSSnackBar from "../../../components/hs-snackbar";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -54,7 +56,24 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function DashboardNewJob({ user, companies, primaryTags }) {
-  const handleSubmit = () => {};
+  const [showErrorSubmitting, setShowErrorSubmitting] = useState(false);
+  const handleSubmit = async function(values, actions) {
+    try {
+      const tags = cleanTags(values.tags);
+      const primaryTagId =
+        values.primaryTagId !== "" ? values.primaryTagId : null;
+      await api.createJob({
+        ...values,
+        tags,
+        primaryTagId
+      });
+      Router.push("/dashboard/jobs");
+    } catch (err) {
+      console.error(err);
+      setShowErrorSubmitting(true);
+      actions.setSubmitting(false);
+    }
+  };
   const classes = useStyles();
   return (
     <DashboardLayout user={user}>
@@ -113,7 +132,7 @@ export default function DashboardNewJob({ user, companies, primaryTags }) {
                             margin="normal"
                             variant="outlined"
                             fullWidth
-                            value={values.companyId}
+                            value={values.companyId || ""}
                             onChange={handleChange}
                             error={!!(touched.companyId && errors.companyId)}
                             helperText={touched.companyId && errors.companyId}>
@@ -174,6 +193,14 @@ export default function DashboardNewJob({ user, companies, primaryTags }) {
                   values={values}
                   company={selectedCompany}
                   primaryTags={primaryTags}
+                />
+                {isSubmitting && <PageProgress />}
+                <HSSnackBar
+                  variant="error"
+                  open={showErrorSubmitting}
+                  onClose={() => setShowErrorSubmitting(false)}
+                  message="Couldn't submit data. Please try again later."
+                  autoHideDuration={3000}
                 />
               </form>
             );

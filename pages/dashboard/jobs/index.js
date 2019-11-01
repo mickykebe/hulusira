@@ -3,6 +3,8 @@ import Router from "next/router";
 import { Container, Button, Box } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import redirect from "../../../utils/redirect";
+import api from "../../../api";
+import JobItem from "../../../components/job-item";
 
 export default function DashboardJobs({ user, jobs }) {
   return (
@@ -19,6 +21,13 @@ export default function DashboardJobs({ user, jobs }) {
             Post Job
           </Button>
         </Box>
+        {jobs.map(({ job, company }) => {
+          return (
+            <Box mb={2} key={job.id}>
+              <JobItem job={job} tags={job.tags} company={company} />
+            </Box>
+          );
+        })}
       </Container>
     </DashboardLayout>
   );
@@ -31,5 +40,7 @@ DashboardJobs.getInitialProps = async function(ctx) {
     redirect(ctx, "/");
   }
 
-  return {};
+  const jobs = await api.getMyJobs(ctx);
+
+  return { jobs };
 };

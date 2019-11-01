@@ -60,6 +60,11 @@ class Api {
     return data;
   }
 
+  async getMyJobs(ctx) {
+    const { data: jobs } = await this.request(ctx).get(`/myjobs`);
+    return jobs;
+  }
+
   async getCompanies(ctx) {
     const { data: companies } = await this.request(ctx).get(`/company`);
     return companies;

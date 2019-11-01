@@ -68,6 +68,7 @@ router.patch(
 );
 router.get("/jobs/:slug", catchErrors(jobController.getJob));
 router.get("/jobs", catchErrors(jobController.getJobs));
+router.get("/myjobs", permitAuthenticated(), catchErrors(jobController.myJobs));
 router.get(
   "/pending-jobs",
   permit("admin"),
