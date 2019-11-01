@@ -35,10 +35,10 @@ const useStyles = makeStyles(theme => (***REMOVED***
   ***REMOVED***
 ***REMOVED***));
 
-export default function Banner(***REMOVED*** message, variant = "info" ***REMOVED***) ***REMOVED***
+export default function Banner(***REMOVED*** className = "", message, variant = "info" ***REMOVED***) ***REMOVED***
   const classes = useStyles(***REMOVED*** variant ***REMOVED***);
   return (
-    <Paper classes=***REMOVED******REMOVED*** root: classes.root ***REMOVED******REMOVED***>
+    <Paper className=***REMOVED***className***REMOVED*** classes=***REMOVED******REMOVED*** root: classes.root ***REMOVED******REMOVED***>
       <Typography
         className=***REMOVED***classes.bannerText***REMOVED***
         variant="subtitle1"

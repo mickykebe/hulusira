@@ -2,7 +2,7 @@ import React from "react";
 import Router, ***REMOVED*** useRouter ***REMOVED*** from "next/router";
 import Head from "next/head";
 import Cookies from "js-cookie";
-import ***REMOVED*** Box, Container, TextField, Fab ***REMOVED*** from "@material-ui/core";
+import ***REMOVED*** Box, Container, TextField, Fab, Collapse ***REMOVED*** from "@material-ui/core";
 import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
 import SaveIcon from "@material-ui/icons/Save";
 import ***REMOVED*** Formik ***REMOVED*** from "formik";
@@ -10,16 +10,23 @@ import * as Yup from "yup";
 import api from "../api";
 import Layout from "../components/layout";
 import HSCard from "../components/hs-card";
-import JobItem from "../components/job-item";
 import HSSnackbar from "../components/hs-snackbar";
 import PageProgress from "../components/page-progress";
 import ImageDropdown from "../components/image-dropdown";
 import redirect from "../utils/redirect";
-import JobFormFields from "../components/job-form-fields";
+import JobSettingFormElement from "../components/job-setting-form-element";
+import JobDetailsFormElement from "../components/job-details-form-element";
+import ***REMOVED*** jobValidationFields ***REMOVED*** from "../utils/validation";
+import ***REMOVED*** cleanTags ***REMOVED*** from "../utils";
+import JobPreviewFormElement from "../components/job-preview-form-element";
+import Banner from "../components/banner";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   root: ***REMOVED***
     paddingTop: theme.spacing(1)
+  ***REMOVED***,
+  banner: ***REMOVED***
+    marginBottom: theme.spacing(3)
   ***REMOVED***,
   form: ***REMOVED***
     display: "flex",
@@ -28,8 +35,11 @@ const useStyles = makeStyles(theme => (***REMOVED***
   headline: ***REMOVED***
     fontWeight: 800
   ***REMOVED***,
+  jobSetting: ***REMOVED***
+    marginBottom: theme.spacing(3)
+  ***REMOVED***,
   companyDetails: ***REMOVED***
-    marginTop: theme.spacing(3)
+    marginBottom: theme.spacing(3)
   ***REMOVED***,
   jobPreview: ***REMOVED***
     marginTop: theme.spacing(3)
@@ -46,44 +56,8 @@ const pageTitle = "Post job on HuluSira";
 const pageDescription =
   "Access thousands of job applicants by posting on HuluSira";
 
-const cleanTags = tags =>
-  tags.map(tag => tag.trim()).filter(tag => tag.length > 0);
-
 const validationSchema = Yup.object().shape(***REMOVED***
-  position: Yup.string().required("Required"),
-  jobType: Yup.string().required("Required"),
-  primaryTagId: Yup.number()
-    .nullable()
-    .test(
-      "primaryTag-required",
-      "Choose at least one tag here or enter a tag in the Extra Tags input below.",
-      function(value) ***REMOVED***
-        const tags = cleanTags(this.parent.tags);
-        if (!tags || tags.length === 0) ***REMOVED***
-          return !!value;
-        ***REMOVED***
-        return true;
-      ***REMOVED***
-    ),
-  tags: Yup.array().test(
-    "tags-required",
-    "Please enter at least one tag here or choose a tag in the Primary Tag input above.",
-    function(value) ***REMOVED***
-      const ***REMOVED*** primaryTagId ***REMOVED*** = this.parent;
-      if (primaryTagId === null || primaryTagId === undefined) ***REMOVED***
-        return value && cleanTags(value).length > 0;
-      ***REMOVED***
-      return true;
-    ***REMOVED***
-  ),
-  deadline: Yup.date()
-    .nullable()
-    .default(null),
-  description: Yup.string().required("Required"),
-  applyEmail: Yup.string()
-    .nullable()
-    .notRequired()
-    .email(),
+  ...jobValidationFields,
   companyName: Yup.string().when("hasCompany", ***REMOVED***
     is: true,
     then: Yup.string().required("Required")
@@ -95,15 +69,6 @@ const validationSchema = Yup.object().shape(***REMOVED***
       .required("Required")
   ***REMOVED***)
 ***REMOVED***);
-
-const jobTypes = [
-  "Full-time",
-  "Part-time",
-  "Contract",
-  "Freelance",
-  "Internship",
-  "Temporary"
-];
 
 function New(***REMOVED*** primaryTags, user ***REMOVED***) ***REMOVED***
   const classes = useStyles();
@@ -152,6 +117,11 @@ function New(***REMOVED*** primaryTags, user ***REMOVED***) ***REMOVED***
         <meta property="twitter:url" content=***REMOVED***pageUrl***REMOVED*** />
       </Head>
       <Container className=***REMOVED***classes.root***REMOVED*** maxWidth="md">
+        <Banner
+          className=***REMOVED***classes.banner***REMOVED***
+          message="You can post a job without signing up. But creating a job after signing in gives you better job management capabilities. Consider signing in before posting a job."
+          variant="warning"
+        />
         <Formik
           validationSchema=***REMOVED***validationSchema***REMOVED***
           initialValues=***REMOVED******REMOVED***
@@ -184,17 +154,12 @@ function New(***REMOVED*** primaryTags, user ***REMOVED***) ***REMOVED***
           ***REMOVED***) => ***REMOVED***
             return (
               <form className=***REMOVED***classes.form***REMOVED*** onSubmit=***REMOVED***handleSubmit***REMOVED***>
-                <HSCard title="Job Details">
-                  <JobFormFields
-                    values=***REMOVED***values***REMOVED***
-                    errors=***REMOVED***errors***REMOVED***
-                    touched=***REMOVED***touched***REMOVED***
-                    handleChange=***REMOVED***handleChange***REMOVED***
-                    setFieldValue=***REMOVED***setFieldValue***REMOVED***
-                    primaryTags=***REMOVED***primaryTags***REMOVED***
-                  />
-                </HSCard>
-                ***REMOVED***values.hasCompany && (
+                <JobSettingFormElement
+                  className=***REMOVED***classes.jobSetting***REMOVED***
+                  values=***REMOVED***values***REMOVED***
+                  setFieldValue=***REMOVED***setFieldValue***REMOVED***
+                />
+                <Collapse in=***REMOVED***values.hasCompany***REMOVED*** unmountOnExit>
                   <HSCard
                     className=***REMOVED***classes.companyDetails***REMOVED***
                     title="Company Details">
@@ -224,7 +189,15 @@ function New(***REMOVED*** primaryTags, user ***REMOVED***) ***REMOVED***
                     <ImageDropdown files=***REMOVED***files***REMOVED*** onFilesChange=***REMOVED***setFiles***REMOVED*** />
                     <Box />
                   </HSCard>
-                )***REMOVED***
+                </Collapse>
+                <JobDetailsFormElement
+                  values=***REMOVED***values***REMOVED***
+                  errors=***REMOVED***errors***REMOVED***
+                  touched=***REMOVED***touched***REMOVED***
+                  handleChange=***REMOVED***handleChange***REMOVED***
+                  setFieldValue=***REMOVED***setFieldValue***REMOVED***
+                  primaryTags=***REMOVED***primaryTags***REMOVED***
+                />
                 <Fab
                   type="submit"
                   variant="extended"
@@ -234,8 +207,9 @@ function New(***REMOVED*** primaryTags, user ***REMOVED***) ***REMOVED***
                   <SaveIcon className=***REMOVED***classes.saveButtonIcon***REMOVED*** />
                   Post your job
                 </Fab>
-                <JobItem
+                <JobPreviewFormElement
                   className=***REMOVED***classes.jobPreview***REMOVED***
+                  values=***REMOVED***values***REMOVED***
                   company=***REMOVED***
                     values.hasCompany
                       ? ***REMOVED***
@@ -244,17 +218,8 @@ function New(***REMOVED*** primaryTags, user ***REMOVED***) ***REMOVED***
                         ***REMOVED***
                       : null
                   ***REMOVED***
-                  job=***REMOVED******REMOVED***
-                    position: values.position || "Position",
-                    jobType: values.jobType
-                  ***REMOVED******REMOVED***
-                  tags=***REMOVED***[
-                    ...primaryTags
-                      .filter(tag => tag.id === values.primaryTagId)
-                      .map(tag => tag.name),
-                    ...cleanTags(values.tags)
-                  ]***REMOVED***
-                  preview
+                  companyLogo=***REMOVED***files[0] && files[0].preview***REMOVED***
+                  primaryTags=***REMOVED***primaryTags***REMOVED***
                 />
                 ***REMOVED***isSubmitting && <PageProgress />***REMOVED***
                 <HSSnackbar

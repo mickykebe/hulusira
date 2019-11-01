@@ -1,15 +1,8 @@
-import ***REMOVED*** Fragment ***REMOVED*** from "react";
-import ***REMOVED***
-  TextField,
-  MenuItem,
-  Box,
-  Typography,
-  FormControlLabel,
-  Switch
-***REMOVED*** from "@material-ui/core";
+import ***REMOVED*** TextField, MenuItem, Box, Typography ***REMOVED*** from "@material-ui/core";
 import ***REMOVED*** MuiPickersUtilsProvider, DatePicker ***REMOVED*** from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import MDEditor from "./md-editor";
+import HSCard from "./hs-card";
 
 const jobTypes = [
   "Full-time",
@@ -24,7 +17,7 @@ function DatePickerTextField(props) ***REMOVED***
   return <TextField margin="normal" fullWidth ***REMOVED***...props***REMOVED*** />;
 ***REMOVED***
 
-export default function JobFormFields(***REMOVED***
+export default function JobDetailsFormElement(***REMOVED***
   values,
   errors,
   touched,
@@ -34,7 +27,7 @@ export default function JobFormFields(***REMOVED***
 ***REMOVED***) ***REMOVED***
   const handleMdeChange = fieldName => value => setFieldValue(fieldName, value);
   return (
-    <Fragment>
+    <HSCard title="Job Details">
       <TextField
         name="position"
         label="Position"
@@ -207,20 +200,6 @@ export default function JobFormFields(***REMOVED***
           />
         </Box>
       </Box>
-      <Box mt=***REMOVED***2***REMOVED*** mb=***REMOVED***1***REMOVED***>
-        <FormControlLabel
-          control=***REMOVED***
-            <Switch
-              onChange=***REMOVED***ev => setFieldValue("hasCompany", ev.target.checked)***REMOVED***
-              checked=***REMOVED***values.hasCompany***REMOVED***
-              color="primary"
-            />
-          ***REMOVED***
-          label=***REMOVED***
-            <Typography variant="subtitle2">This is a company job</Typography>
-          ***REMOVED***
-        />
-      </Box>
-    </Fragment>
+    </HSCard>
   );
 ***REMOVED***
