@@ -35,10 +35,10 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function Banner({ message, variant = "info" }) {
+export default function Banner({ className = "", message, variant = "info" }) {
   const classes = useStyles({ variant });
   return (
-    <Paper classes={{ root: classes.root }}>
+    <Paper className={className} classes={{ root: classes.root }}>
       <Typography
         className={classes.bannerText}
         variant="subtitle1"

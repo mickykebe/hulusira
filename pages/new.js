@@ -2,7 +2,7 @@ import React from "react";
 import Router, { useRouter } from "next/router";
 import Head from "next/head";
 import Cookies from "js-cookie";
-import { Box, Container, TextField, Fab } from "@material-ui/core";
+import { Box, Container, TextField, Fab, Collapse } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import SaveIcon from "@material-ui/icons/Save";
 import { Formik } from "formik";
@@ -10,16 +10,23 @@ import * as Yup from "yup";
 import api from "../api";
 import Layout from "../components/layout";
 import HSCard from "../components/hs-card";
-import JobItem from "../components/job-item";
 import HSSnackbar from "../components/hs-snackbar";
 import PageProgress from "../components/page-progress";
 import ImageDropdown from "../components/image-dropdown";
 import redirect from "../utils/redirect";
-import JobFormFields from "../components/job-form-fields";
+import JobSettingFormElement from "../components/job-setting-form-element";
+import JobDetailsFormElement from "../components/job-details-form-element";
+import { jobValidationFields } from "../utils/validation";
+import { cleanTags } from "../utils";
+import JobPreviewFormElement from "../components/job-preview-form-element";
+import Banner from "../components/banner";
 
 const useStyles = makeStyles(theme => ({
   root: {
     paddingTop: theme.spacing(1)
+  },
+  banner: {
+    marginBottom: theme.spacing(3)
   },
   form: {
     display: "flex",
@@ -28,8 +35,11 @@ const useStyles = makeStyles(theme => ({
   headline: {
     fontWeight: 800
   },
+  jobSetting: {
+    marginBottom: theme.spacing(3)
+  },
   companyDetails: {
-    marginTop: theme.spacing(3)
+    marginBottom: theme.spacing(3)
   },
   jobPreview: {
     marginTop: theme.spacing(3)
@@ -46,44 +56,8 @@ const pageTitle = "Post job on HuluSira";
 const pageDescription =
   "Access thousands of job applicants by posting on HuluSira";
 
-const cleanTags = tags =>
-  tags.map(tag => tag.trim()).filter(tag => tag.length > 0);
-
 const validationSchema = Yup.object().shape({
-  position: Yup.string().required("Required"),
-  jobType: Yup.string().required("Required"),
-  primaryTagId: Yup.number()
-    .nullable()
-    .test(
-      "primaryTag-required",
-      "Choose at least one tag here or enter a tag in the Extra Tags input below.",
-      function(value) {
-        const tags = cleanTags(this.parent.tags);
-        if (!tags || tags.length === 0) {
-          return !!value;
-        }
-        return true;
-      }
-    ),
-  tags: Yup.array().test(
-    "tags-required",
-    "Please enter at least one tag here or choose a tag in the Primary Tag input above.",
-    function(value) {
-      const { primaryTagId } = this.parent;
-      if (primaryTagId === null || primaryTagId === undefined) {
-        return value && cleanTags(value).length > 0;
-      }
-      return true;
-    }
-  ),
-  deadline: Yup.date()
-    .nullable()
-    .default(null),
-  description: Yup.string().required("Required"),
-  applyEmail: Yup.string()
-    .nullable()
-    .notRequired()
-    .email(),
+  ...jobValidationFields,
   companyName: Yup.string().when("hasCompany", {
     is: true,
     then: Yup.string().required("Required")
@@ -95,15 +69,6 @@ const validationSchema = Yup.object().shape({
       .required("Required")
   })
 });
-
-const jobTypes = [
-  "Full-time",
-  "Part-time",
-  "Contract",
-  "Freelance",
-  "Internship",
-  "Temporary"
-];
 
 function New({ primaryTags, user }) {
   const classes = useStyles();
@@ -152,6 +117,11 @@ function New({ primaryTags, user }) {
         <meta property="twitter:url" content={pageUrl} />
       </Head>
       <Container className={classes.root} maxWidth="md">
+        <Banner
+          className={classes.banner}
+          message="You can post a job without signing up. But creating a job after signing in gives you better job management capabilities. Consider signing in before posting a job."
+          variant="warning"
+        />
         <Formik
           validationSchema={validationSchema}
           initialValues={{
@@ -184,17 +154,12 @@ function New({ primaryTags, user }) {
           }) => {
             return (
               <form className={classes.form} onSubmit={handleSubmit}>
-                <HSCard title="Job Details">
-                  <JobFormFields
-                    values={values}
-                    errors={errors}
-                    touched={touched}
-                    handleChange={handleChange}
-                    setFieldValue={setFieldValue}
-                    primaryTags={primaryTags}
-                  />
-                </HSCard>
-                {values.hasCompany && (
+                <JobSettingFormElement
+                  className={classes.jobSetting}
+                  values={values}
+                  setFieldValue={setFieldValue}
+                />
+                <Collapse in={values.hasCompany} unmountOnExit>
                   <HSCard
                     className={classes.companyDetails}
                     title="Company Details">
@@ -224,7 +189,15 @@ function New({ primaryTags, user }) {
                     <ImageDropdown files={files} onFilesChange={setFiles} />
                     <Box />
                   </HSCard>
-                )}
+                </Collapse>
+                <JobDetailsFormElement
+                  values={values}
+                  errors={errors}
+                  touched={touched}
+                  handleChange={handleChange}
+                  setFieldValue={setFieldValue}
+                  primaryTags={primaryTags}
+                />
                 <Fab
                   type="submit"
                   variant="extended"
@@ -234,8 +207,9 @@ function New({ primaryTags, user }) {
                   <SaveIcon className={classes.saveButtonIcon} />
                   Post your job
                 </Fab>
-                <JobItem
+                <JobPreviewFormElement
                   className={classes.jobPreview}
+                  values={values}
                   company={
                     values.hasCompany
                       ? {
@@ -244,17 +218,8 @@ function New({ primaryTags, user }) {
                         }
                       : null
                   }
-                  job={{
-                    position: values.position || "Position",
-                    jobType: values.jobType
-                  }}
-                  tags={[
-                    ...primaryTags
-                      .filter(tag => tag.id === values.primaryTagId)
-                      .map(tag => tag.name),
-                    ...cleanTags(values.tags)
-                  ]}
-                  preview
+                  companyLogo={files[0] && files[0].preview}
+                  primaryTags={primaryTags}
                 />
                 {isSubmitting && <PageProgress />}
                 <HSSnackbar

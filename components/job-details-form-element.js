@@ -1,15 +1,8 @@
-import { Fragment } from "react";
-import {
-  TextField,
-  MenuItem,
-  Box,
-  Typography,
-  FormControlLabel,
-  Switch
-} from "@material-ui/core";
+import { TextField, MenuItem, Box, Typography } from "@material-ui/core";
 import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import MDEditor from "./md-editor";
+import HSCard from "./hs-card";
 
 const jobTypes = [
   "Full-time",
@@ -24,7 +17,7 @@ function DatePickerTextField(props) {
   return <TextField margin="normal" fullWidth {...props} />;
 }
 
-export default function JobFormFields({
+export default function JobDetailsFormElement({
   values,
   errors,
   touched,
@@ -34,7 +27,7 @@ export default function JobFormFields({
 }) {
   const handleMdeChange = fieldName => value => setFieldValue(fieldName, value);
   return (
-    <Fragment>
+    <HSCard title="Job Details">
       <TextField
         name="position"
         label="Position"
@@ -207,20 +200,6 @@ export default function JobFormFields({
           />
         </Box>
       </Box>
-      <Box mt={2} mb={1}>
-        <FormControlLabel
-          control={
-            <Switch
-              onChange={ev => setFieldValue("hasCompany", ev.target.checked)}
-              checked={values.hasCompany}
-              color="primary"
-            />
-          }
-          label={
-            <Typography variant="subtitle2">This is a company job</Typography>
-          }
-        />
-      </Box>
-    </Fragment>
+    </HSCard>
   );
 }

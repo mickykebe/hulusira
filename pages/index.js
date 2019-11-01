@@ -18,7 +18,6 @@ import Layout from "../components/layout";
 import JobItem from "../components/job-item";
 import useIsInview from "../hooks/use-is-inview";
 import TagFilter from "../components/tag-filter";
-import { tagIdsfromQueryParam } from "../utils";
 import { useEffect, useRef, useState, useCallback } from "react";
 
 const useStyles = makeStyles(theme => ({
