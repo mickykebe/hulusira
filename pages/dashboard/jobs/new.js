@@ -23,7 +23,7 @@ import ***REMOVED*** Fragment ***REMOVED*** from "react";
 import CompanyLogo from "../../../components/company-logo";
 import Router from "next/router";
 import JobPreviewFormElement from "../../../components/job-preview-form-element";
-import ***REMOVED*** jobValidationFields ***REMOVED*** from "../../../utils/validation";
+import ***REMOVED*** jobValidationSchema ***REMOVED*** from "../../../utils/validation";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   root: ***REMOVED***
@@ -53,16 +53,6 @@ const useStyles = makeStyles(theme => (***REMOVED***
   ***REMOVED***
 ***REMOVED***));
 
-const validationSchema = Yup.object().shape(***REMOVED***
-  ...jobValidationFields,
-  companyId: Yup.number()
-    .nullable()
-    .when("hasCompany", ***REMOVED***
-      is: true,
-      then: Yup.number().required("Required")
-    ***REMOVED***)
-***REMOVED***);
-
 export default function DashboardNewJob(***REMOVED*** user, companies, primaryTags ***REMOVED***) ***REMOVED***
   const handleSubmit = () => ***REMOVED******REMOVED***;
   const classes = useStyles();
@@ -70,7 +60,7 @@ export default function DashboardNewJob(***REMOVED*** user, companies, primaryTa
     <DashboardLayout user=***REMOVED***user***REMOVED***>
       <Container maxWidth="md" className=***REMOVED***classes.root***REMOVED***>
         <Formik
-          validationSchema=***REMOVED***validationSchema***REMOVED***
+          validationSchema=***REMOVED***jobValidationSchema***REMOVED***
           initialValues=***REMOVED******REMOVED***
             position: "",
             jobType: "",

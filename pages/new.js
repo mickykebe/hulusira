@@ -16,7 +16,7 @@ import ImageDropdown from "../components/image-dropdown";
 import redirect from "../utils/redirect";
 import JobSettingFormElement from "../components/job-setting-form-element";
 import JobDetailsFormElement from "../components/job-details-form-element";
-import ***REMOVED*** jobValidationFields ***REMOVED*** from "../utils/validation";
+import ***REMOVED*** jobValidationSchema ***REMOVED*** from "../utils/validation";
 import ***REMOVED*** cleanTags ***REMOVED*** from "../utils";
 import JobPreviewFormElement from "../components/job-preview-form-element";
 import Banner from "../components/banner";
@@ -55,20 +55,6 @@ const useStyles = makeStyles(theme => (***REMOVED***
 const pageTitle = "Post job on HuluSira";
 const pageDescription =
   "Access thousands of job applicants by posting on HuluSira";
-
-const validationSchema = Yup.object().shape(***REMOVED***
-  ...jobValidationFields,
-  companyName: Yup.string().when("hasCompany", ***REMOVED***
-    is: true,
-    then: Yup.string().required("Required")
-  ***REMOVED***),
-  companyEmail: Yup.string().when("hasCompany", ***REMOVED***
-    is: true,
-    then: Yup.string()
-      .email()
-      .required("Required")
-  ***REMOVED***)
-***REMOVED***);
 
 function New(***REMOVED*** primaryTags, user ***REMOVED***) ***REMOVED***
   const classes = useStyles();
@@ -123,7 +109,7 @@ function New(***REMOVED*** primaryTags, user ***REMOVED***) ***REMOVED***
           variant="warning"
         />
         <Formik
-          validationSchema=***REMOVED***validationSchema***REMOVED***
+          validationSchema=***REMOVED***jobValidationSchema***REMOVED***
           initialValues=***REMOVED******REMOVED***
             position: "",
             jobType: "",
