@@ -3,6 +3,8 @@ import Router from "next/router";
 import ***REMOVED*** Container, Button, Box ***REMOVED*** from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import redirect from "../../../utils/redirect";
+import api from "../../../api";
+import JobItem from "../../../components/job-item";
 
 export default function DashboardJobs(***REMOVED*** user, jobs ***REMOVED***) ***REMOVED***
   return (
@@ -19,6 +21,13 @@ export default function DashboardJobs(***REMOVED*** user, jobs ***REMOVED***) **
             Post Job
           </Button>
         </Box>
+        ***REMOVED***jobs.map((***REMOVED*** job, company ***REMOVED***) => ***REMOVED***
+          return (
+            <Box mb=***REMOVED***2***REMOVED*** key=***REMOVED***job.id***REMOVED***>
+              <JobItem job=***REMOVED***job***REMOVED*** tags=***REMOVED***job.tags***REMOVED*** company=***REMOVED***company***REMOVED*** />
+            </Box>
+          );
+        ***REMOVED***)***REMOVED***
       </Container>
     </DashboardLayout>
   );
@@ -31,5 +40,7 @@ DashboardJobs.getInitialProps = async function(ctx) ***REMOVED***
     redirect(ctx, "/");
   ***REMOVED***
 
-  return ***REMOVED******REMOVED***;
+  const jobs = await api.getMyJobs(ctx);
+
+  return ***REMOVED*** jobs ***REMOVED***;
 ***REMOVED***;

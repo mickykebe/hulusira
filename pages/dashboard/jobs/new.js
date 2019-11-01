@@ -13,17 +13,19 @@ import ***REMOVED***
 ***REMOVED*** from "@material-ui/core";
 import BusinessIcon from "@material-ui/icons/Business";
 import SaveIcon from "@material-ui/icons/Save";
-import * as Yup from "yup";
 import redirect from "../../../utils/redirect";
 import api from "../../../api";
 import JobDetailsFormElement from "../../../components/job-details-form-element";
 import JobSettingFormElement from "../../../components/job-setting-form-element";
 import HSCard from "../../../components/hs-card";
-import ***REMOVED*** Fragment ***REMOVED*** from "react";
+import ***REMOVED*** Fragment, useState ***REMOVED*** from "react";
 import CompanyLogo from "../../../components/company-logo";
 import Router from "next/router";
 import JobPreviewFormElement from "../../../components/job-preview-form-element";
 import ***REMOVED*** jobValidationSchema ***REMOVED*** from "../../../utils/validation";
+import ***REMOVED*** cleanTags ***REMOVED*** from "../../../utils";
+import PageProgress from "../../../components/page-progress";
+import HSSnackBar from "../../../components/hs-snackbar";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   root: ***REMOVED***
@@ -54,7 +56,24 @@ const useStyles = makeStyles(theme => (***REMOVED***
 ***REMOVED***));
 
 export default function DashboardNewJob(***REMOVED*** user, companies, primaryTags ***REMOVED***) ***REMOVED***
-  const handleSubmit = () => ***REMOVED******REMOVED***;
+  const [showErrorSubmitting, setShowErrorSubmitting] = useState(false);
+  const handleSubmit = async function(values, actions) ***REMOVED***
+    try ***REMOVED***
+      const tags = cleanTags(values.tags);
+      const primaryTagId =
+        values.primaryTagId !== "" ? values.primaryTagId : null;
+      await api.createJob(***REMOVED***
+        ...values,
+        tags,
+        primaryTagId
+      ***REMOVED***);
+      Router.push("/dashboard/jobs");
+    ***REMOVED*** catch (err) ***REMOVED***
+      console.error(err);
+      setShowErrorSubmitting(true);
+      actions.setSubmitting(false);
+    ***REMOVED***
+  ***REMOVED***;
   const classes = useStyles();
   return (
     <DashboardLayout user=***REMOVED***user***REMOVED***>
@@ -113,7 +132,7 @@ export default function DashboardNewJob(***REMOVED*** user, companies, primaryTa
                             margin="normal"
                             variant="outlined"
                             fullWidth
-                            value=***REMOVED***values.companyId***REMOVED***
+                            value=***REMOVED***values.companyId || ""***REMOVED***
                             onChange=***REMOVED***handleChange***REMOVED***
                             error=***REMOVED***!!(touched.companyId && errors.companyId)***REMOVED***
                             helperText=***REMOVED***touched.companyId && errors.companyId***REMOVED***>
@@ -174,6 +193,14 @@ export default function DashboardNewJob(***REMOVED*** user, companies, primaryTa
                   values=***REMOVED***values***REMOVED***
                   company=***REMOVED***selectedCompany***REMOVED***
                   primaryTags=***REMOVED***primaryTags***REMOVED***
+                />
+                ***REMOVED***isSubmitting && <PageProgress />***REMOVED***
+                <HSSnackBar
+                  variant="error"
+                  open=***REMOVED***showErrorSubmitting***REMOVED***
+                  onClose=***REMOVED***() => setShowErrorSubmitting(false)***REMOVED***
+                  message="Couldn't submit data. Please try again later."
+                  autoHideDuration=***REMOVED***3000***REMOVED***
                 />
               </form>
             );

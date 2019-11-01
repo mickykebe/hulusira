@@ -3,52 +3,61 @@ const db = require("../db/index");
 const socialHandler = require("../handlers/social");
 const utils = require("../utils");
 
-const validationSchema = Yup.object().shape(***REMOVED***
-  position: Yup.string().required("Required"),
-  jobType: Yup.string().required("Required"),
-  primaryTagId: Yup.number()
-    .nullable()
-    .test(
-      "primaryTag-required",
-      "Choose at least one tag here or enter a tag in the Extra Tags input below.",
+const validationSchema = Yup.object().shape(
+  ***REMOVED***
+    position: Yup.string().required("Required"),
+    jobType: Yup.string().required("Required"),
+    primaryTagId: Yup.number()
+      .nullable()
+      .test(
+        "primaryTag-required",
+        "Choose at least one tag here or enter a tag in the Extra Tags input below.",
+        function(value) ***REMOVED***
+          const tags = this.parent.tags;
+          if (!tags || tags.length === 0) ***REMOVED***
+            return !!value;
+          ***REMOVED***
+          return true;
+        ***REMOVED***
+      ),
+    tags: Yup.array().test(
+      "tags-required",
+      "Please enter at least one tag here or choose a tag in the Primary Tag input above.",
       function(value) ***REMOVED***
-        const tags = this.parent.tags;
-        if (!tags || tags.length === 0) ***REMOVED***
-          return !!value;
+        const ***REMOVED*** primaryTagId ***REMOVED*** = this.parent;
+        if (primaryTagId === null || primaryTagId === undefined) ***REMOVED***
+          return value && value.length > 0;
         ***REMOVED***
         return true;
       ***REMOVED***
     ),
-  tags: Yup.array().test(
-    "tags-required",
-    "Please enter at least one tag here or choose a tag in the Primary Tag input above.",
-    function(value) ***REMOVED***
-      const ***REMOVED*** primaryTagId ***REMOVED*** = this.parent;
-      if (primaryTagId === null || primaryTagId === undefined) ***REMOVED***
-        return value && value.length > 0;
-      ***REMOVED***
-      return true;
-    ***REMOVED***
-  ),
-  deadline: Yup.date()
-    .nullable()
-    .default(null),
-  description: Yup.string().required("Required"),
-  applyEmail: Yup.string()
-    .nullable()
-    .notRequired()
-    .email(),
-  companyName: Yup.string().when("hasCompany", ***REMOVED***
-    is: true,
-    then: Yup.string().required("Required")
-  ***REMOVED***),
-  companyEmail: Yup.string().when("hasCompany", ***REMOVED***
-    is: true,
-    then: Yup.string()
-      .email()
-      .required("Required")
-  ***REMOVED***)
-***REMOVED***);
+    deadline: Yup.date()
+      .nullable()
+      .default(null),
+    description: Yup.string().required("Required"),
+    applyEmail: Yup.string()
+      .nullable()
+      .notRequired()
+      .email(),
+    companyName: Yup.string().when(["hasCompany", "companyId"], ***REMOVED***
+      is: (hasCompany, companyId) => hasCompany && !companyId,
+      then: Yup.string().required("Required")
+    ***REMOVED***),
+    companyEmail: Yup.string().when(["hasCompany", "companyId"], ***REMOVED***
+      is: (hasCompany, companyId) => hasCompany && !companyId,
+      then: Yup.string()
+        .email()
+        .required("Required")
+    ***REMOVED***),
+    companyId: Yup.number()
+      .nullable()
+      .when(["hasCompany", "companyName"], ***REMOVED***
+        is: (hasCompany, companyName) => hasCompany && !companyName,
+        then: Yup.number().required("Required")
+      ***REMOVED***)
+  ***REMOVED***,
+  ["companyId", "companyName"]
+);
 
 exports.validateJobPost = async (req, res, next) => ***REMOVED***
   const jobData = req.body;
@@ -68,21 +77,37 @@ exports.createJob = async (req, res) => ***REMOVED***
     companyName,
     companyEmail,
     companyLogo,
+    companyId,
     ...jobData
   ***REMOVED*** = data;
-  let company = null;
-  if (hasCompany) ***REMOVED***
-    company = ***REMOVED***
-      name: companyName,
-      email: companyEmail,
-      logo: companyLogo
-    ***REMOVED***;
-  ***REMOVED***
   const isAdminUser = req.user && req.user.role === "admin";
+  if (req.user) ***REMOVED***
+    jobData.owner = req.user.id;
+  ***REMOVED***
   if (isAdminUser) ***REMOVED***
     jobData.approved = true;
   ***REMOVED***
-  const resData = await db.createJobAndCompany(***REMOVED*** company, job: jobData ***REMOVED***);
+  let resData;
+  if (hasCompany) ***REMOVED***
+    if (companyId) ***REMOVED***
+      const company = await db.getCompany(companyId, req.user.id);
+      if (!company) ***REMOVED***
+        throw new Error("Company not found");
+      ***REMOVED***
+      const job = db.createJob(jobData, companyId);
+      resData = ***REMOVED*** job, company ***REMOVED***;
+    ***REMOVED*** else ***REMOVED***
+      const company = ***REMOVED***
+        name: companyName,
+        email: companyEmail,
+        logo: companyLogo
+      ***REMOVED***;
+      if (req.user) ***REMOVED***
+        company.owner = req.user.id;
+      ***REMOVED***
+      resData = await db.createJobAndCompany(***REMOVED*** company, job: jobData ***REMOVED***);
+    ***REMOVED***
+  ***REMOVED***
   if (isAdminUser) ***REMOVED***
     socialHandler.postJobToSocialMedia(resData);
   ***REMOVED***
@@ -124,6 +149,15 @@ exports.getJobs = async (req, res) => ***REMOVED***
     ***REMOVED***;
   ***REMOVED***
   res.status(200).send(data);
+***REMOVED***;
+
+exports.myJobs = async (req, res) => ***REMOVED***
+  const ownerId = req.user.id;
+  if (!ownerId) ***REMOVED***
+    throw new Error("Not logged in");
+  ***REMOVED***
+  const jobs = await db.getJobs(***REMOVED*** ownerId ***REMOVED***);
+  res.status(200).send(jobs);
 ***REMOVED***;
 
 exports.pendingJobs = async (_, res) => ***REMOVED***

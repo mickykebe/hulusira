@@ -60,6 +60,11 @@ class Api ***REMOVED***
     return data;
   ***REMOVED***
 
+  async getMyJobs(ctx) ***REMOVED***
+    const ***REMOVED*** data: jobs ***REMOVED*** = await this.request(ctx).get(`/myjobs`);
+    return jobs;
+  ***REMOVED***
+
   async getCompanies(ctx) ***REMOVED***
     const ***REMOVED*** data: companies ***REMOVED*** = await this.request(ctx).get(`/company`);
     return companies;

@@ -88,7 +88,8 @@ class Db ***REMOVED***
           how_to_apply: jobData.howToApply,
           apply_url: jobData.applyUrl,
           apply_email: jobData.applyEmail,
-          approved: !!jobData.approved || false
+          approved: !!jobData.approved || false,
+          owner: jobData.owner || null
         ***REMOVED***)
         .returning(this.selectColumns("job", "job", this.jobColumns));
 
@@ -188,7 +189,8 @@ class Db ***REMOVED***
     approved,
     withinDays,
     tagIds = [],
-    publicOnly = false
+    publicOnly = false,
+    ownerId
   ***REMOVED*** = ***REMOVED******REMOVED***) ***REMOVED***
     let query = this.knex("job")
       .select(
@@ -209,6 +211,9 @@ class Db ***REMOVED***
 
     if (typeof fromJobId === "number") ***REMOVED***
       query = query.andWhere("job.id", "<=", fromJobId);
+    ***REMOVED***
+    if (ownerId) ***REMOVED***
+      query = query.andWhere("job.owner", ownerId);
     ***REMOVED***
     if (typeof approved === "boolean") ***REMOVED***
       query = query.andWhere("job.approved", approved);
