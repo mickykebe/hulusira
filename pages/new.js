@@ -16,7 +16,7 @@ import ImageDropdown from "../components/image-dropdown";
 import redirect from "../utils/redirect";
 import JobSettingFormElement from "../components/job-setting-form-element";
 import JobDetailsFormElement from "../components/job-details-form-element";
-import { jobValidationFields } from "../utils/validation";
+import { jobValidationSchema } from "../utils/validation";
 import { cleanTags } from "../utils";
 import JobPreviewFormElement from "../components/job-preview-form-element";
 import Banner from "../components/banner";
@@ -55,20 +55,6 @@ const useStyles = makeStyles(theme => ({
 const pageTitle = "Post job on HuluSira";
 const pageDescription =
   "Access thousands of job applicants by posting on HuluSira";
-
-const validationSchema = Yup.object().shape({
-  ...jobValidationFields,
-  companyName: Yup.string().when("hasCompany", {
-    is: true,
-    then: Yup.string().required("Required")
-  }),
-  companyEmail: Yup.string().when("hasCompany", {
-    is: true,
-    then: Yup.string()
-      .email()
-      .required("Required")
-  })
-});
 
 function New({ primaryTags, user }) {
   const classes = useStyles();
@@ -123,7 +109,7 @@ function New({ primaryTags, user }) {
           variant="warning"
         />
         <Formik
-          validationSchema={validationSchema}
+          validationSchema={jobValidationSchema}
           initialValues={{
             position: "",
             jobType: "",

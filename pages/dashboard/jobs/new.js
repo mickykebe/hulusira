@@ -23,7 +23,7 @@ import { Fragment } from "react";
 import CompanyLogo from "../../../components/company-logo";
 import Router from "next/router";
 import JobPreviewFormElement from "../../../components/job-preview-form-element";
-import { jobValidationFields } from "../../../utils/validation";
+import { jobValidationSchema } from "../../../utils/validation";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -53,16 +53,6 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const validationSchema = Yup.object().shape({
-  ...jobValidationFields,
-  companyId: Yup.number()
-    .nullable()
-    .when("hasCompany", {
-      is: true,
-      then: Yup.number().required("Required")
-    })
-});
-
 export default function DashboardNewJob({ user, companies, primaryTags }) {
   const handleSubmit = () => {};
   const classes = useStyles();
@@ -70,7 +60,7 @@ export default function DashboardNewJob({ user, companies, primaryTags }) {
     <DashboardLayout user={user}>
       <Container maxWidth="md" className={classes.root}>
         <Formik
-          validationSchema={validationSchema}
+          validationSchema={jobValidationSchema}
           initialValues={{
             position: "",
             jobType: "",
