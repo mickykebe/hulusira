@@ -1,12 +1,35 @@
 import DashboardLayout from "../../../components/dashboard-layout";
 import Router from "next/router";
-import { Container, Button, Box } from "@material-ui/core";
+import {
+  Container,
+  Button,
+  Box,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  IconButton,
+  makeStyles,
+  Link as MuiLink
+} from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
+import EditIcon from "@material-ui/icons/Edit";
 import redirect from "../../../utils/redirect";
 import api from "../../../api";
 import JobItem from "../../../components/job-item";
+import HSPaper from "../../../components/hs-paper";
+import CompanyLogo from "../../../components/company-logo";
+import Link from "next/link";
+
+const useStyles = makeStyles(theme => ({
+  tableHead: {
+    fontWeight: 800
+  }
+}));
 
 export default function DashboardJobs({ user, jobs }) {
+  const classes = useStyles();
   return (
     <DashboardLayout user={user} selectedItem="jobs">
       <Container maxWidth="md">
@@ -21,13 +44,67 @@ export default function DashboardJobs({ user, jobs }) {
             Post Job
           </Button>
         </Box>
-        {jobs.map(({ job, company }) => {
+        <HSPaper>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell classes={{ head: classes.tableHead }}>
+                  Position
+                </TableCell>
+                <TableCell classes={{ head: classes.tableHead }}>
+                  Company
+                </TableCell>
+                <TableCell classes={{ head: classes.tableHead }}>
+                  Actions
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {jobs.map(({ job, company }) => {
+                return (
+                  <TableRow key={job.id}>
+                    <TableCell
+                      variant="head"
+                      classes={{ head: classes.tableHead }}>
+                      <Link
+                        href="/jobs/[slug]"
+                        as={`/jobs/${job.slug}`}
+                        passHref>
+                        <MuiLink color="inherit">{job.position}</MuiLink>
+                      </Link>
+                    </TableCell>
+                    <TableCell>
+                      <Box display="flex" alignItems="center">
+                        {company.logo && (
+                          <Box pr={1}>
+                            <CompanyLogo
+                              company={company}
+                              abbrevFallback={false}
+                              size="small"
+                            />
+                          </Box>
+                        )}
+                        {company.name}
+                      </Box>
+                    </TableCell>
+                    <TableCell>
+                      <IconButton size="small" color="secondary">
+                        <EditIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </HSPaper>
+        {/* {jobs.map(({ job, company }) => {
           return (
             <Box mb={2} key={job.id}>
               <JobItem job={job} tags={job.tags} company={company} />
             </Box>
           );
-        })}
+        })} */}
       </Container>
     </DashboardLayout>
   );
