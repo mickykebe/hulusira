@@ -17,7 +17,6 @@ import AddIcon from "@material-ui/icons/Add";
 import EditIcon from "@material-ui/icons/Edit";
 import redirect from "../../../utils/redirect";
 import api from "../../../api";
-import JobItem from "../../../components/job-item";
 import HSPaper from "../../../components/hs-paper";
 import CompanyLogo from "../../../components/company-logo";
 import Link from "next/link";
