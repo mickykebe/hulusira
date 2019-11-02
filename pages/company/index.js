@@ -27,9 +27,6 @@ import redirect from "../../utils/redirect";
 const useStyles = makeStyles(theme => (***REMOVED***
   companyItem: ***REMOVED***
     marginBottom: theme.spacing(1)
-  ***REMOVED***,
-  actionButton: ***REMOVED***
-    padding: theme.spacing(1)
   ***REMOVED***
 ***REMOVED***));
 
@@ -89,11 +86,15 @@ function Companies(***REMOVED*** user, companies ***REMOVED***) ***REMOVED***
               <Typography variant="subtitle1">***REMOVED***company.name***REMOVED***</Typography>
               <Box flex="1" />
               <IconButton
+                size="small"
+                color="secondary"
                 className=***REMOVED***classes.actionButton***REMOVED***
                 onClick=***REMOVED***() => Router.push(`/company/$***REMOVED***company.id***REMOVED***`)***REMOVED***>
                 <EditIcon />
               </IconButton>
               <IconButton
+                size="small"
+                color="secondary"
                 className=***REMOVED***classes.actionButton***REMOVED***
                 disabled=***REMOVED***isDeletingCompany***REMOVED***
                 onClick=***REMOVED***() => setCompanyIdPendingDelete(company.id)***REMOVED***>
