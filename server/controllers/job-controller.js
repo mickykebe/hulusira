@@ -165,6 +165,11 @@ exports.pendingJobs = async (_, res) => ***REMOVED***
   res.status(200).send(jobs);
 ***REMOVED***;
 
+function publicCompany(company) ***REMOVED***
+  const ***REMOVED*** owner, ...companyData ***REMOVED*** = company;
+  return companyData;
+***REMOVED***
+
 exports.getJob = async (req, res) => ***REMOVED***
   const ***REMOVED*** slug ***REMOVED*** = req.params;
   const jobData = await db.getJobBySlug(slug);
@@ -173,13 +178,23 @@ exports.getJob = async (req, res) => ***REMOVED***
     return;
   ***REMOVED***
   const ***REMOVED*** adminToken ***REMOVED*** = req.query;
-  const isJobAdmin = !!adminToken && jobData.job.adminToken === adminToken;
+  let hasAdminPermission = false;
 
-  if (!isJobAdmin) ***REMOVED***
-    jobData.job = jobData.job.publicData();
+  if (req.user) ***REMOVED***
+    hasAdminPermission =
+      req.user.role === "admin" || req.user.id === jobData.job.owner;
+  ***REMOVED*** else if (adminToken) ***REMOVED***
+    hasAdminPermission = jobData.job.adminToken === adminToken;
   ***REMOVED***
 
-  if ((jobData.job.closed || !jobData.job.approved) && !isJobAdmin) ***REMOVED***
+  if (!hasAdminPermission) ***REMOVED***
+    jobData.job = jobData.job.publicData();
+    if (jobData.company) ***REMOVED***
+      jobData.company = publicCompany(jobData.company);
+    ***REMOVED***
+  ***REMOVED***
+
+  if ((jobData.job.closed || !jobData.job.approved) && !hasAdminPermission) ***REMOVED***
     res.sendStatus(404);
     return;
   ***REMOVED***

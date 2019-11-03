@@ -16,10 +16,10 @@ import ***REMOVED***
 import AddIcon from "@material-ui/icons/Add";
 import EditIcon from "@material-ui/icons/Edit";
 import redirect from "../../../utils/redirect";
-import api from "../../../api";
 import HSPaper from "../../../components/hs-paper";
 import CompanyLogo from "../../../components/company-logo";
 import Link from "next/link";
+import api from "../../../api";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   tableHead: ***REMOVED***
@@ -87,7 +87,12 @@ export default function DashboardJobs(***REMOVED*** user, jobs ***REMOVED***) **
                       </Box>
                     </TableCell>
                     <TableCell>
-                      <IconButton size="small" color="secondary">
+                      <IconButton
+                        size="small"
+                        color="secondary"
+                        onClick=***REMOVED***() =>
+                          Router.push(`/dashboard/jobs/edit/$***REMOVED***job.slug***REMOVED***`)
+                        ***REMOVED***>
                         <EditIcon />
                       </IconButton>
                     </TableCell>
@@ -97,13 +102,6 @@ export default function DashboardJobs(***REMOVED*** user, jobs ***REMOVED***) **
             </TableBody>
           </Table>
         </HSPaper>
-        ***REMOVED***/* ***REMOVED***jobs.map((***REMOVED*** job, company ***REMOVED***) => ***REMOVED***
-          return (
-            <Box mb=***REMOVED***2***REMOVED*** key=***REMOVED***job.id***REMOVED***>
-              <JobItem job=***REMOVED***job***REMOVED*** tags=***REMOVED***job.tags***REMOVED*** company=***REMOVED***company***REMOVED*** />
-            </Box>
-          );
-        ***REMOVED***)***REMOVED*** */***REMOVED***
       </Container>
     </DashboardLayout>
   );

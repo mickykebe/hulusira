@@ -82,7 +82,7 @@ class Api ***REMOVED***
     return data;
   ***REMOVED***
 
-  async getJob(slug, adminToken, ctx) ***REMOVED***
+  async getJob(ctx, slug, adminToken) ***REMOVED***
     const ***REMOVED*** data ***REMOVED*** = await this.request(ctx).get(
       `/jobs/$***REMOVED***slug***REMOVED***?$***REMOVED***!!adminToken ? `adminToken=$***REMOVED***adminToken***REMOVED***` : ""***REMOVED***`
     );
