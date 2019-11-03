@@ -82,7 +82,7 @@ class Api {
     return data;
   }
 
-  async getJob(slug, adminToken, ctx) {
+  async getJob(ctx, slug, adminToken) {
     const { data } = await this.request(ctx).get(
       `/jobs/${slug}?${!!adminToken ? `adminToken=${adminToken}` : ""}`
     );

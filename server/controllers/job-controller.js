@@ -165,6 +165,11 @@ exports.pendingJobs = async (_, res) => {
   res.status(200).send(jobs);
 };
 
+function publicCompany(company) {
+  const { owner, ...companyData } = company;
+  return companyData;
+}
+
 exports.getJob = async (req, res) => {
   const { slug } = req.params;
   const jobData = await db.getJobBySlug(slug);
@@ -173,13 +178,23 @@ exports.getJob = async (req, res) => {
     return;
   }
   const { adminToken } = req.query;
-  const isJobAdmin = !!adminToken && jobData.job.adminToken === adminToken;
+  let hasAdminPermission = false;
 
-  if (!isJobAdmin) {
-    jobData.job = jobData.job.publicData();
+  if (req.user) {
+    hasAdminPermission =
+      req.user.role === "admin" || req.user.id === jobData.job.owner;
+  } else if (adminToken) {
+    hasAdminPermission = jobData.job.adminToken === adminToken;
   }
 
-  if ((jobData.job.closed || !jobData.job.approved) && !isJobAdmin) {
+  if (!hasAdminPermission) {
+    jobData.job = jobData.job.publicData();
+    if (jobData.company) {
+      jobData.company = publicCompany(jobData.company);
+    }
+  }
+
+  if ((jobData.job.closed || !jobData.job.approved) && !hasAdminPermission) {
     res.sendStatus(404);
     return;
   }

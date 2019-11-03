@@ -16,10 +16,10 @@ import {
 import AddIcon from "@material-ui/icons/Add";
 import EditIcon from "@material-ui/icons/Edit";
 import redirect from "../../../utils/redirect";
-import api from "../../../api";
 import HSPaper from "../../../components/hs-paper";
 import CompanyLogo from "../../../components/company-logo";
 import Link from "next/link";
+import api from "../../../api";
 
 const useStyles = makeStyles(theme => ({
   tableHead: {
@@ -87,7 +87,12 @@ export default function DashboardJobs({ user, jobs }) {
                       </Box>
                     </TableCell>
                     <TableCell>
-                      <IconButton size="small" color="secondary">
+                      <IconButton
+                        size="small"
+                        color="secondary"
+                        onClick={() =>
+                          Router.push(`/dashboard/jobs/edit/${job.slug}`)
+                        }>
                         <EditIcon />
                       </IconButton>
                     </TableCell>
@@ -97,13 +102,6 @@ export default function DashboardJobs({ user, jobs }) {
             </TableBody>
           </Table>
         </HSPaper>
-        {/* {jobs.map(({ job, company }) => {
-          return (
-            <Box mb={2} key={job.id}>
-              <JobItem job={job} tags={job.tags} company={company} />
-            </Box>
-          );
-        })} */}
       </Container>
     </DashboardLayout>
   );

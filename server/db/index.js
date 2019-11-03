@@ -264,7 +264,7 @@ class Db {
       )
       .first(
         this.knex.raw(
-          `coalesce(json_agg(json_build_object('id', extra_tags.id, 'name', extra_tags.name, 'isPrimary', extra_tags.is_primary)) filter (where extra_tags.id IS NOT NULL), '[]') as tags`
+          `coalesce(json_agg(json_build_object('id', extra_tags.id, 'name', extra_tags.name, 'isPrimary', job_tags.is_primary)) filter (where extra_tags.id IS NOT NULL), '[]') as tags`
         )
       )
       .leftJoin("company", "job.company_id", "company.id")
