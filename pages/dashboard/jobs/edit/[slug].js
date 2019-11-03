@@ -8,7 +8,7 @@ export default function EditJob({ user, jobData, companies, primaryTags }) {
   const handleSubmit = () => {};
   const tags = jobData.job.tags;
   const primaryTag = tags.find(tag => tag.isPrimary === true);
-  const initailValues = {
+  const initialValues = {
     ...jobData.job,
     primaryTagId: primaryTag ? primaryTag.id : "",
     tags: tags.filter(tag => !tag.isPrimary).map(tag => tag.name),
@@ -18,7 +18,7 @@ export default function EditJob({ user, jobData, companies, primaryTags }) {
     <DashboardLayout user={user}>
       <Container maxWidth="md">
         <JobForm
-          initailValues={initailValues}
+          initialValues={initialValues}
           companies={companies}
           primaryTags={primaryTags}
           onSubmit={handleSubmit}

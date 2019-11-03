@@ -151,7 +151,7 @@ export default function JobDetailsFormElement({
       <MDEditor
         id="responsibilities"
         label="Job Responsibilities"
-        value={values.responsibilites}
+        value={values.responsibilities}
         onChange={handleMdeChange("responsibilities")}
       />
       <MDEditor

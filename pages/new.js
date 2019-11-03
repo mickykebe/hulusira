@@ -121,7 +121,7 @@ function New({ primaryTags, user }) {
             salary: "",
             description: "",
             requirements: "",
-            responsibilites: "",
+            responsibilities: "",
             howToApply: "",
             applyUrl: "",
             applyEmail: "",
