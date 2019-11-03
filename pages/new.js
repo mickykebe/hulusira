@@ -121,7 +121,7 @@ function New(***REMOVED*** primaryTags, user ***REMOVED***) ***REMOVED***
             salary: "",
             description: "",
             requirements: "",
-            responsibilites: "",
+            responsibilities: "",
             howToApply: "",
             applyUrl: "",
             applyEmail: "",

@@ -151,7 +151,7 @@ export default function JobDetailsFormElement(***REMOVED***
       <MDEditor
         id="responsibilities"
         label="Job Responsibilities"
-        value=***REMOVED***values.responsibilites***REMOVED***
+        value=***REMOVED***values.responsibilities***REMOVED***
         onChange=***REMOVED***handleMdeChange("responsibilities")***REMOVED***
       />
       <MDEditor

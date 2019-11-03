@@ -20,6 +20,7 @@ import JobDetailsFormElement from "./job-details-form-element";
 import JobPreviewFormElement from "./job-preview-form-element";
 import PageProgress from "./page-progress";
 import HSSnackBar from "./hs-snackbar";
+import Router from "next/router";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   form: ***REMOVED***
@@ -47,7 +48,7 @@ const useStyles = makeStyles(theme => (***REMOVED***
 ***REMOVED***));
 
 export default function JobForm(***REMOVED***
-  initailValues = ***REMOVED***
+  initialValues = ***REMOVED***
     position: "",
     jobType: "",
     hasCompany: true,
@@ -57,7 +58,7 @@ export default function JobForm(***REMOVED***
     salary: "",
     description: "",
     requirements: "",
-    responsibilites: "",
+    responsibilities: "",
     howToApply: "",
     applyUrl: "",
     applyEmail: "",
@@ -82,7 +83,7 @@ export default function JobForm(***REMOVED***
   return (
     <Formik
       validationSchema=***REMOVED***jobValidationSchema***REMOVED***
-      initialValues=***REMOVED***initailValues***REMOVED***
+      initialValues=***REMOVED***initialValues***REMOVED***
       onSubmit=***REMOVED***handleSubmit***REMOVED***>
       ***REMOVED***(***REMOVED***
         values,
