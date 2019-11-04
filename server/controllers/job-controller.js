@@ -180,7 +180,7 @@ exports.myJobs = async (req, res) => {
   if (!ownerId) {
     throw new Error("Not logged in");
   }
-  const jobs = await db.getJobs({ ownerId });
+  const jobs = await db.getJobs({ ownerId, withinDays: 30 });
   res.status(200).send(jobs);
 };
 

@@ -11,11 +11,13 @@ import {
   TableBody,
   IconButton,
   makeStyles,
-  Link as MuiLink,
-  Typography
+  Link as MuiLink
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import EditIcon from "@material-ui/icons/Edit";
+import addDays from "date-fns/addDays";
+import formatDistance from "date-fns/formatDistance";
+import isAfter from "date-fns/isAfter";
 import redirect from "../../../utils/redirect";
 import HSPaper from "../../../components/hs-paper";
 import CompanyLogo from "../../../components/company-logo";
@@ -66,12 +68,16 @@ export default function DashboardJobs({ user, jobs }) {
                     Status
                   </TableCell>
                   <TableCell classes={{ head: classes.tableHead }}>
+                    Expires in
+                  </TableCell>
+                  <TableCell classes={{ head: classes.tableHead }}>
                     Actions
                   </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {jobs.map(({ job, company }) => {
+                  const expirationDate = addDays(new Date(job.created), 30);
                   return (
                     <TableRow key={job.id}>
                       <TableCell
@@ -110,8 +116,15 @@ export default function DashboardJobs({ user, jobs }) {
                         />
                       </TableCell>
                       <TableCell>
+                        {isAfter(new Date(), expirationDate)
+                          ? "Expired"
+                          : formatDistance(
+                              addDays(new Date(job.created), 30),
+                              new Date()
+                            )}
+                      </TableCell>
+                      <TableCell>
                         <IconButton
-                          size="small"
                           color="secondary"
                           onClick={() =>
                             Router.push(`/dashboard/jobs/edit/${job.slug}`)
