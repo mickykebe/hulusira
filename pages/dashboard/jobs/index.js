@@ -22,6 +22,7 @@ import CompanyLogo from "../../../components/company-logo";
 import Link from "next/link";
 import api from "../../../api";
 import EmptyList from "../../../components/empty-list";
+import JobApprovalStatus from "../../../components/job-approval-status";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   tableHead: ***REMOVED***
@@ -62,6 +63,9 @@ export default function DashboardJobs(***REMOVED*** user, jobs ***REMOVED***) **
                     Company
                   </TableCell>
                   <TableCell classes=***REMOVED******REMOVED*** head: classes.tableHead ***REMOVED******REMOVED***>
+                    Status
+                  </TableCell>
+                  <TableCell classes=***REMOVED******REMOVED*** head: classes.tableHead ***REMOVED******REMOVED***>
                     Actions
                   </TableCell>
                 </TableRow>
@@ -99,6 +103,11 @@ export default function DashboardJobs(***REMOVED*** user, jobs ***REMOVED***) **
                         ) : (
                           "None"
                         )***REMOVED***
+                      </TableCell>
+                      <TableCell>
+                        <JobApprovalStatus
+                          approvalStatus=***REMOVED***job.approvalStatus***REMOVED***
+                        />
                       </TableCell>
                       <TableCell>
                         <IconButton
