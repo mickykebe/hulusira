@@ -11,7 +11,8 @@ import {
   TableBody,
   IconButton,
   makeStyles,
-  Link as MuiLink
+  Link as MuiLink,
+  Typography
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import EditIcon from "@material-ui/icons/Edit";
@@ -24,6 +25,10 @@ import api from "../../../api";
 const useStyles = makeStyles(theme => ({
   tableHead: {
     fontWeight: 800
+  },
+  noJobsImage: {
+    width: "20rem",
+    height: "20rem"
   }
 }));
 
@@ -43,69 +48,83 @@ export default function DashboardJobs({ user, jobs }) {
             Post Job
           </Button>
         </Box>
-        <HSPaper>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell classes={{ head: classes.tableHead }}>
-                  Position
-                </TableCell>
-                <TableCell classes={{ head: classes.tableHead }}>
-                  Company
-                </TableCell>
-                <TableCell classes={{ head: classes.tableHead }}>
-                  Actions
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {jobs.map(({ job, company }) => {
-                return (
-                  <TableRow key={job.id}>
-                    <TableCell
-                      variant="head"
-                      classes={{ head: classes.tableHead }}>
-                      <Link
-                        href="/jobs/[slug]"
-                        as={`/jobs/${job.slug}`}
-                        passHref>
-                        <MuiLink color="inherit">{job.position}</MuiLink>
-                      </Link>
-                    </TableCell>
-                    <TableCell>
-                      {company ? (
-                        <Box display="flex" alignItems="center">
-                          {company.logo && (
-                            <Box pr={1}>
-                              <CompanyLogo
-                                company={company}
-                                abbrevFallback={false}
-                                size="small"
-                              />
-                            </Box>
-                          )}
-                          {company.name}
-                        </Box>
-                      ) : (
-                        "None"
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <IconButton
-                        size="small"
-                        color="secondary"
-                        onClick={() =>
-                          Router.push(`/dashboard/jobs/edit/${job.slug}`)
-                        }>
-                        <EditIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </HSPaper>
+        {jobs.length === 0 && (
+          <Box display="flex" flexDirection="column" alignItems="center">
+            <img
+              className={classes.noJobsImage}
+              src="/static/nodata.svg"
+              alt="No Jobs Available"
+            />
+            <Typography variant="h6">
+              You haven't posted any jobs yet
+            </Typography>
+          </Box>
+        )}
+        {jobs.length > 0 && (
+          <HSPaper>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell classes={{ head: classes.tableHead }}>
+                    Position
+                  </TableCell>
+                  <TableCell classes={{ head: classes.tableHead }}>
+                    Company
+                  </TableCell>
+                  <TableCell classes={{ head: classes.tableHead }}>
+                    Actions
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {jobs.map(({ job, company }) => {
+                  return (
+                    <TableRow key={job.id}>
+                      <TableCell
+                        variant="head"
+                        classes={{ head: classes.tableHead }}>
+                        <Link
+                          href="/jobs/[slug]"
+                          as={`/jobs/${job.slug}`}
+                          passHref>
+                          <MuiLink color="inherit">{job.position}</MuiLink>
+                        </Link>
+                      </TableCell>
+                      <TableCell>
+                        {company ? (
+                          <Box display="flex" alignItems="center">
+                            {company.logo && (
+                              <Box pr={1}>
+                                <CompanyLogo
+                                  company={company}
+                                  abbrevFallback={false}
+                                  size="small"
+                                />
+                              </Box>
+                            )}
+                            {company.name}
+                          </Box>
+                        ) : (
+                          "None"
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <IconButton
+                          size="small"
+                          color="secondary"
+                          onClick={() =>
+                            Router.push(`/dashboard/jobs/edit/${job.slug}`)
+                          }>
+                          <EditIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </HSPaper>
+        )}
       </Container>
     </DashboardLayout>
   );
@@ -120,5 +139,5 @@ DashboardJobs.getInitialProps = async function(ctx) {
 
   const jobs = await api.getMyJobs(ctx);
 
-  return { jobs };
+  return { jobs: [] };
 };
