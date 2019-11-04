@@ -70,6 +70,30 @@ exports.validateJobPost = async (req, res, next) => {
   next();
 };
 
+exports.editJob = async (req, res) => {
+  const { id } = req.params;
+  const data = req.body;
+  const { hasCompany, ...jobData } = data;
+  const count = await db.jobCount({ id, owner: req.user.id });
+  if (count !== 1) {
+    throw new Error("Job unavailable");
+  }
+
+  if (!hasCompany) {
+    jobData.companyId = null;
+  }
+
+  if (jobData.companyId) {
+    const company = await db.getCompany(jobData.companyId, req.user.id);
+    if (!company) {
+      throw new Error("Company not found");
+    }
+  }
+
+  const job = await db.updateJob(id, jobData);
+  res.status(200).send(job);
+};
+
 exports.createJob = async (req, res) => {
   const data = req.body;
   const {
@@ -94,7 +118,7 @@ exports.createJob = async (req, res) => {
       if (!company) {
         throw new Error("Company not found");
       }
-      const job = db.createJob(jobData, companyId);
+      const job = await db.createJob(jobData, companyId);
       resData = { job, company };
     } else {
       const company = {

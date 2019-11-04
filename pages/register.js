@@ -148,6 +148,7 @@ export default function Register() {
         open={registerError}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
         autoHideDuration={3000}
+        onClose={() => setRegisterError(false)}
       />
     </AuthLayout>
   );

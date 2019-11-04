@@ -108,6 +108,7 @@ function Login() {
         open={errorLogin}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
         autoHideDuration={3000}
+        onClose={() => setErrorLogin(false)}
       />
     </AuthLayout>
   );

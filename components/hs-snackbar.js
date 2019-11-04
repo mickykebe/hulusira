@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import clsx from "clsx";
 import { Snackbar, SnackbarContent, IconButton } from "@material-ui/core";
 import { amber, green } from "@material-ui/core/colors";
@@ -49,15 +48,10 @@ export default function HSSnackBar({
   onClose,
   ...props
 }) {
-  const [show, setShow] = useState(open);
   const classes = useStyles();
   const Icon = variantIcon[variant];
-  useEffect(() => {
-    setShow(open);
-  }, [open]);
-  const handleClose = () => setShow(false);
   return (
-    <Snackbar onClose={handleClose} open={show} {...props}>
+    <Snackbar onClose={onClose} open={open} {...props}>
       <SnackbarContent
         className={classes[variant]}
         message={
@@ -67,7 +61,7 @@ export default function HSSnackBar({
           </span>
         }
         action={[
-          <IconButton key="close" color="inherit" onClick={handleClose}>
+          <IconButton key="close" color="inherit" onClick={onClose}>
             <CloseIcon className={classes.icon} />
           </IconButton>
         ]}

@@ -65,6 +65,7 @@ export default function JobForm({
     deadline: null,
     companyId: null
   },
+  reactivateAfterSubmit = false,
   companies,
   primaryTags,
   onSubmit
@@ -74,6 +75,9 @@ export default function JobForm({
   const handleSubmit = async function(values, actions) {
     try {
       await onSubmit(values);
+      if (reactivateAfterSubmit) {
+        actions.setSubmitting(false);
+      }
     } catch (err) {
       console.error(err);
       setShowErrorSubmitting(true);

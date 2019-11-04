@@ -70,9 +70,9 @@ class Db {
     }
 
     const job = await this.knex.transaction(async trx => {
-      const tags = await await Promise.all(
+      const tags = (await Promise.all(
         jobData.tags.map(tagName => this.findOrCreateTag(tagName, { trx }))
-      );
+      )).map(tag => ({ ...tag, isPrimary: false }));
 
       let rows = await trx("job")
         .insert({
@@ -113,6 +113,71 @@ class Db {
       if (jobData.primaryTagId) {
         await this.createJobTag(job.id, jobData.primaryTagId, true, { trx });
       }
+      await Promise.all(
+        tags.map(tag => this.createJobTag(job.id, tag.id, false, { trx }))
+      );
+
+      return job;
+    });
+
+    return job;
+  }
+
+  async updateJob(jobId, jobData) {
+    let primaryTag;
+
+    if (jobData.primaryTagId) {
+      const primaryTagRow = await this.knex("tag")
+        .first()
+        .where("id", jobData.primaryTagId);
+      if (!primaryTagRow || primaryTagRow.is_primary === false) {
+        throw new Error("Primary tag value set to invalid tag");
+      }
+      primaryTag = Tag.fromDb(primaryTagRow);
+    }
+
+    const job = await this.knex.transaction(async trx => {
+      await trx("job_tags")
+        .where({
+          job_id: jobId
+        })
+        .del();
+
+      const tags = (await Promise.all(
+        jobData.tags.map(tagName => this.findOrCreateTag(tagName, { trx }))
+      )).map(tag => ({ ...tag, isPrimary: false }));
+
+      let rows = await trx("job")
+        .where("id", jobId)
+        .update({
+          position: jobData.position,
+          job_type: jobData.jobType,
+          company_id: jobData.companyId,
+          location: jobData.location,
+          salary: jobData.salary,
+          deadline: jobData.deadline,
+          description: jobData.description,
+          responsibilities: jobData.responsibilities,
+          requirements: jobData.requirements,
+          how_to_apply: jobData.howToApply,
+          apply_url: jobData.applyUrl,
+          apply_email: jobData.applyEmail
+        })
+        .returning(this.selectColumns("job", "job", this.jobColumns));
+
+      if (rows.length !== 1) {
+        throw new Error("Problem occurred updating job");
+      }
+
+      const job = Job.fromDb(
+        rows[0],
+        primaryTag ? [primaryTag, ...tags] : tags
+      );
+
+      if (jobData.primaryTagId) {
+        await this.createJobTag(job.id, jobData.primaryTagId, true, { trx });
+      }
+
       await Promise.all(
         tags.map(tag => this.createJobTag(job.id, tag.id, false, { trx }))
       );
@@ -273,6 +338,20 @@ class Db {
         this.knex.raw("tag extra_tags on job_tags.tag_id = extra_tags.id")
       )
       .groupBy("job.id", "company.id");
+  }
+
+  async jobCount({ id, owner }) {
+    const result = await this.knex("job")
+      .count("id")
+      .where({
+        ...(id && {
+          id
+        }),
+        ...(owner && {
+          owner
+        })
+      });
+    return parseInt(result[0].count);
   }
 
   async getJobBySlug(slug, where) {

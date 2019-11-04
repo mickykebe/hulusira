@@ -20,6 +20,11 @@ class Api {
     return jobData;
   }
 
+  async updateJob(id, data) {
+    const { data: jobData } = await this.request().put(`/jobs/${id}`, data);
+    return jobData;
+  }
+
   async createCompany(data) {
     const { data: company } = await this.request().post("/company", data);
     return company;

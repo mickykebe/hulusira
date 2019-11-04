@@ -73,18 +73,22 @@ export default function DashboardJobs({ user, jobs }) {
                       </Link>
                     </TableCell>
                     <TableCell>
-                      <Box display="flex" alignItems="center">
-                        {company.logo && (
-                          <Box pr={1}>
-                            <CompanyLogo
-                              company={company}
-                              abbrevFallback={false}
-                              size="small"
-                            />
-                          </Box>
-                        )}
-                        {company.name}
-                      </Box>
+                      {company ? (
+                        <Box display="flex" alignItems="center">
+                          {company.logo && (
+                            <Box pr={1}>
+                              <CompanyLogo
+                                company={company}
+                                abbrevFallback={false}
+                                size="small"
+                              />
+                            </Box>
+                          )}
+                          {company.name}
+                        </Box>
+                      ) : (
+                        "None"
+                      )}
                     </TableCell>
                     <TableCell>
                       <IconButton

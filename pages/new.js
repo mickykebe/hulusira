@@ -213,7 +213,7 @@ function New({ primaryTags, user }) {
                   open={showErrorSubmitting}
                   onClose={() => setShowErrorSubmitting(false)}
                   message="Couldn't submit data. Please try again later."
-                  autoHideDuration={6000}
+                  autoHideDuration={3000}
                 />
               </form>
             );
