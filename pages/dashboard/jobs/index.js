@@ -77,7 +77,9 @@ export default function DashboardJobs({ user, jobs }) {
                           href="/jobs/[slug]"
                           as={`/jobs/${job.slug}`}
                           passHref>
-                          <MuiLink color="inherit">{job.position}</MuiLink>
+                          <MuiLink color="inherit" variant="subtitle1">
+                            {job.position}
+                          </MuiLink>
                         </Link>
                       </TableCell>
                       <TableCell>

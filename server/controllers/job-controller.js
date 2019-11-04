@@ -109,7 +109,7 @@ exports.createJob = async (req, res) => {
     jobData.owner = req.user.id;
   }
   if (isAdminUser) {
-    jobData.approved = true;
+    jobData.approvalStatus = "Approved";
   }
   let resData;
   if (hasCompany) {
@@ -159,7 +159,7 @@ exports.getJobs = async (req, res) => {
   const jobs = await db.getJobs({
     fromJobId,
     limit: count + 1,
-    approved: true,
+    approvalStatus: "Approved",
     withinDays: 30,
     tagIds,
     publicOnly: true
@@ -185,7 +185,7 @@ exports.myJobs = async (req, res) => {
 };
 
 exports.pendingJobs = async (_, res) => {
-  const jobs = await db.getJobs({ approved: false });
+  const jobs = await db.getJobs({ approvalStatus: "Pending" });
   res.status(200).send(jobs);
 };
 
@@ -218,7 +218,10 @@ exports.getJob = async (req, res) => {
     }
   }
 
-  if ((jobData.job.closed || !jobData.job.approved) && !hasAdminPermission) {
+  if (
+    (jobData.job.closed || jobData.job.approvalStatus !== "Approved") &&
+    !hasAdminPermission
+  ) {
     res.sendStatus(404);
     return;
   }
@@ -245,6 +248,16 @@ exports.approveJob = async (req, res) => {
     res.status(200).send(true);
     const jobData = await db.getJobById(jobId);
     socialHandler.postJobToSocialMedia(jobData);
+    return;
+  }
+  res.sendStatus(404);
+};
+
+exports.declineJob = async (req, res) => {
+  const { id } = req.params;
+  const affectedRows = await db.declineJob(id);
+  if (affectedRows === 1) {
+    res.status(200).send(true);
     return;
   }
   res.sendStatus(404);

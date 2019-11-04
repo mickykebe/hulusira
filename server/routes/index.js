@@ -85,6 +85,12 @@ router.put(
   permit("admin"),
   catchErrors(jobController.approveJob)
 );
+
+router.patch(
+  "/jobs/:id/decline-job",
+  permit("admin"),
+  catchErrors(jobController.declineJob)
+);
 router.delete(
   "/jobs/:jobId",
   permit("admin"),

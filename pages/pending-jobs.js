@@ -100,10 +100,10 @@ function PendingJobs({ jobs, user }) {
       dispatch({ type: "ERROR_UPDATING_JOB" });
     }
   };
-  const removeJob = async jobId => {
+  const declineJob = async jobId => {
     dispatch({ type: "UPDATING_JOB" });
     try {
-      await api.removeJob(jobId);
+      await api.declineJob(jobId);
       dispatch({ type: "UPDATED_JOB" });
       Router.replace("/pending-jobs");
     } catch (err) {
@@ -156,7 +156,7 @@ function PendingJobs({ jobs, user }) {
               variant="contained"
               className={classes.actionButton}
               disabled={jobUpdateState.inProgress}
-              onClick={() => removeJob(activeJobId)}>
+              onClick={() => declineJob(activeJobId)}>
               <ClearIcon /> Drop
             </Button>
           </Toolbar>

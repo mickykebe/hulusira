@@ -116,8 +116,14 @@ function Job({ user, jobData, adminToken }) {
         {jobData.job.closed && (
           <Banner message="This job is closed and thus no longer publicly accessible." />
         )}
-        {!jobData.job.closed && !jobData.job.approved && (
+        {!jobData.job.closed && jobData.job.approvalStatus === "Pending" && (
           <Banner message="This job is pending. It will be live once it gets admin approval." />
+        )}
+        {!jobData.job.closed && jobData.job.approvalStatus === "Declined" && (
+          <Banner
+            variant="error"
+            message="Administrator has declined to approve this post."
+          />
         )}
         {!!isValidToken && !jobData.job.closed && (
           <Toolbar className={classes.toolbar}>

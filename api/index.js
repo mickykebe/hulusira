@@ -121,6 +121,11 @@ class Api {
     return data;
   }
 
+  async declineJob(jobId) {
+    const { data } = await this.request().patch(`/jobs/${jobId}/decline-job`);
+    return data;
+  }
+
   async removeJob(jobId) {
     const { data } = await this.request().delete(`/jobs/${jobId}`);
     return data;
