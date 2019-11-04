@@ -23,6 +23,7 @@ import HSPaper from "../../components/hs-paper";
 import ***REMOVED*** useReducer, useState ***REMOVED*** from "react";
 import HSSnackBar from "../../components/hs-snackbar";
 import redirect from "../../utils/redirect";
+import EmptyList from "../../components/empty-list";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   companyItem: ***REMOVED***
@@ -77,6 +78,9 @@ function Companies(***REMOVED*** user, companies ***REMOVED***) ***REMOVED***
             Add Company
           </Button>
         </Box>
+        ***REMOVED***companies.length === 0 && (
+          <EmptyList message="No Companies Available" />
+        )***REMOVED***
         ***REMOVED***companies.map(company => (
           <HSPaper key=***REMOVED***company.id***REMOVED*** className=***REMOVED***classes.companyItem***REMOVED***>
             <Box p=***REMOVED***2***REMOVED*** display="flex" alignItems="center">

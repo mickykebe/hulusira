@@ -21,6 +21,7 @@ import HSPaper from "../../../components/hs-paper";
 import CompanyLogo from "../../../components/company-logo";
 import Link from "next/link";
 import api from "../../../api";
+import EmptyList from "../../../components/empty-list";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   tableHead: ***REMOVED***
@@ -48,18 +49,7 @@ export default function DashboardJobs(***REMOVED*** user, jobs ***REMOVED***) **
             Post Job
           </Button>
         </Box>
-        ***REMOVED***jobs.length === 0 && (
-          <Box display="flex" flexDirection="column" alignItems="center">
-            <img
-              className=***REMOVED***classes.noJobsImage***REMOVED***
-              src="/static/nodata.svg"
-              alt="No Jobs Available"
-            />
-            <Typography variant="h6">
-              You haven't posted any jobs yet
-            </Typography>
-          </Box>
-        )***REMOVED***
+        ***REMOVED***jobs.length === 0 && <EmptyList message="No Jobs Available" />***REMOVED***
         ***REMOVED***jobs.length > 0 && (
           <HSPaper>
             <Table>
@@ -139,5 +129,5 @@ DashboardJobs.getInitialProps = async function(ctx) ***REMOVED***
 
   const jobs = await api.getMyJobs(ctx);
 
-  return ***REMOVED*** jobs: [] ***REMOVED***;
+  return ***REMOVED*** jobs ***REMOVED***;
 ***REMOVED***;
