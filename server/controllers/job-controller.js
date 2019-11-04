@@ -109,7 +109,7 @@ exports.createJob = async (req, res) => ***REMOVED***
     jobData.owner = req.user.id;
   ***REMOVED***
   if (isAdminUser) ***REMOVED***
-    jobData.approved = true;
+    jobData.approvalStatus = "Approved";
   ***REMOVED***
   let resData;
   if (hasCompany) ***REMOVED***
@@ -159,7 +159,7 @@ exports.getJobs = async (req, res) => ***REMOVED***
   const jobs = await db.getJobs(***REMOVED***
     fromJobId,
     limit: count + 1,
-    approved: true,
+    approvalStatus: "Approved",
     withinDays: 30,
     tagIds,
     publicOnly: true
@@ -185,7 +185,7 @@ exports.myJobs = async (req, res) => ***REMOVED***
 ***REMOVED***;
 
 exports.pendingJobs = async (_, res) => ***REMOVED***
-  const jobs = await db.getJobs(***REMOVED*** approved: false ***REMOVED***);
+  const jobs = await db.getJobs(***REMOVED*** approvalStatus: "Pending" ***REMOVED***);
   res.status(200).send(jobs);
 ***REMOVED***;
 
@@ -218,7 +218,10 @@ exports.getJob = async (req, res) => ***REMOVED***
     ***REMOVED***
   ***REMOVED***
 
-  if ((jobData.job.closed || !jobData.job.approved) && !hasAdminPermission) ***REMOVED***
+  if (
+    (jobData.job.closed || jobData.job.approvalStatus !== "Approved") &&
+    !hasAdminPermission
+  ) ***REMOVED***
     res.sendStatus(404);
     return;
   ***REMOVED***
@@ -245,6 +248,16 @@ exports.approveJob = async (req, res) => ***REMOVED***
     res.status(200).send(true);
     const jobData = await db.getJobById(jobId);
     socialHandler.postJobToSocialMedia(jobData);
+    return;
+  ***REMOVED***
+  res.sendStatus(404);
+***REMOVED***;
+
+exports.declineJob = async (req, res) => ***REMOVED***
+  const ***REMOVED*** id ***REMOVED*** = req.params;
+  const affectedRows = await db.declineJob(id);
+  if (affectedRows === 1) ***REMOVED***
+    res.status(200).send(true);
     return;
   ***REMOVED***
   res.sendStatus(404);

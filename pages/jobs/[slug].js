@@ -116,8 +116,14 @@ function Job(***REMOVED*** user, jobData, adminToken ***REMOVED***) ***REMOVED**
         ***REMOVED***jobData.job.closed && (
           <Banner message="This job is closed and thus no longer publicly accessible." />
         )***REMOVED***
-        ***REMOVED***!jobData.job.closed && !jobData.job.approved && (
+        ***REMOVED***!jobData.job.closed && jobData.job.approvalStatus === "Pending" && (
           <Banner message="This job is pending. It will be live once it gets admin approval." />
+        )***REMOVED***
+        ***REMOVED***!jobData.job.closed && jobData.job.approvalStatus === "Declined" && (
+          <Banner
+            variant="error"
+            message="Administrator has declined to approve this post."
+          />
         )***REMOVED***
         ***REMOVED***!!isValidToken && !jobData.job.closed && (
           <Toolbar className=***REMOVED***classes.toolbar***REMOVED***>

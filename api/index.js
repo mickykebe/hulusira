@@ -121,6 +121,11 @@ class Api ***REMOVED***
     return data;
   ***REMOVED***
 
+  async declineJob(jobId) ***REMOVED***
+    const ***REMOVED*** data ***REMOVED*** = await this.request().patch(`/jobs/$***REMOVED***jobId***REMOVED***/decline-job`);
+    return data;
+  ***REMOVED***
+
   async removeJob(jobId) ***REMOVED***
     const ***REMOVED*** data ***REMOVED*** = await this.request().delete(`/jobs/$***REMOVED***jobId***REMOVED***`);
     return data;

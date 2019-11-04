@@ -15,7 +15,7 @@ class Job ***REMOVED***
     applyUrl,
     applyEmail,
     created,
-    approved,
+    approvalStatus,
     closed,
     slug,
     adminToken,
@@ -36,7 +36,7 @@ class Job ***REMOVED***
     this.applyUrl = applyUrl;
     this.applyEmail = applyEmail;
     this.created = created;
-    this.approved = approved;
+    this.approvalStatus = approvalStatus;
     this.closed = closed;
     this.slug = slug;
     this.adminToken = adminToken;
@@ -65,7 +65,7 @@ class Job ***REMOVED***
       dbJob.job_apply_url,
       dbJob.job_apply_email,
       dbJob.job_created,
-      dbJob.job_approved,
+      dbJob.job_approval_status,
       dbJob.job_closed,
       dbJob.job_slug,
       dbJob.job_admin_token,

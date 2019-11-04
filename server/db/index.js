@@ -32,7 +32,9 @@ class Db ***REMOVED***
       "created",
       "slug",
       "admin_token",
-      "deadline"
+      "deadline",
+      "owner",
+      "approval_status"
     ];
     this.companyColumns = ["id", "name", "email", "logo", "verified"];
   ***REMOVED***
@@ -88,7 +90,7 @@ class Db ***REMOVED***
           how_to_apply: jobData.howToApply,
           apply_url: jobData.applyUrl,
           apply_email: jobData.applyEmail,
-          approved: !!jobData.approved || false,
+          approval_status: jobData.approvalStatus || "Pending",
           owner: jobData.owner || null
         ***REMOVED***)
         .returning(this.selectColumns("job", "job", this.jobColumns));
@@ -251,7 +253,7 @@ class Db ***REMOVED***
     fromJobId,
     limit,
     closed = false,
-    approved,
+    approvalStatus,
     withinDays,
     tagIds = [],
     publicOnly = false,
@@ -280,8 +282,8 @@ class Db ***REMOVED***
     if (ownerId) ***REMOVED***
       query = query.andWhere("job.owner", ownerId);
     ***REMOVED***
-    if (typeof approved === "boolean") ***REMOVED***
-      query = query.andWhere("job.approved", approved);
+    if (approvalStatus) ***REMOVED***
+      query = query.andWhere("job.approval_status", approvalStatus);
     ***REMOVED***
     if (typeof withinDays === "number") ***REMOVED***
       query = query.andWhere(
@@ -456,7 +458,15 @@ class Db ***REMOVED***
     return this.knex("job")
       .where("id", id)
       .update(***REMOVED***
-        approved: true
+        approval_status: "Approved"
+      ***REMOVED***);
+  ***REMOVED***
+
+  declineJob(id) ***REMOVED***
+    return this.knex("job")
+      .where("id", id)
+      .update(***REMOVED***
+        approval_status: "Declined"
       ***REMOVED***);
   ***REMOVED***
 

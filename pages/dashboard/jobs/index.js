@@ -77,7 +77,9 @@ export default function DashboardJobs(***REMOVED*** user, jobs ***REMOVED***) **
                           href="/jobs/[slug]"
                           as=***REMOVED***`/jobs/$***REMOVED***job.slug***REMOVED***`***REMOVED***
                           passHref>
-                          <MuiLink color="inherit">***REMOVED***job.position***REMOVED***</MuiLink>
+                          <MuiLink color="inherit" variant="subtitle1">
+                            ***REMOVED***job.position***REMOVED***
+                          </MuiLink>
                         </Link>
                       </TableCell>
                       <TableCell>
