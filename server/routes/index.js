@@ -53,6 +53,12 @@ router.post(
   catchErrors(jobController.createJob)
 );
 
+router.put(
+  "/jobs/:id",
+  catchErrors(jobController.validateJobPost),
+  catchErrors(jobController.editJob)
+);
+
 router.post(
   "/jobs/:id/verify-token",
   catchErrors(jobController.permitJobAdmin),

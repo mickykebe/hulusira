@@ -73,18 +73,22 @@ export default function DashboardJobs(***REMOVED*** user, jobs ***REMOVED***) **
                       </Link>
                     </TableCell>
                     <TableCell>
-                      <Box display="flex" alignItems="center">
-                        ***REMOVED***company.logo && (
-                          <Box pr=***REMOVED***1***REMOVED***>
-                            <CompanyLogo
-                              company=***REMOVED***company***REMOVED***
-                              abbrevFallback=***REMOVED***false***REMOVED***
-                              size="small"
-                            />
-                          </Box>
-                        )***REMOVED***
-                        ***REMOVED***company.name***REMOVED***
-                      </Box>
+                      ***REMOVED***company ? (
+                        <Box display="flex" alignItems="center">
+                          ***REMOVED***company.logo && (
+                            <Box pr=***REMOVED***1***REMOVED***>
+                              <CompanyLogo
+                                company=***REMOVED***company***REMOVED***
+                                abbrevFallback=***REMOVED***false***REMOVED***
+                                size="small"
+                              />
+                            </Box>
+                          )***REMOVED***
+                          ***REMOVED***company.name***REMOVED***
+                        </Box>
+                      ) : (
+                        "None"
+                      )***REMOVED***
                     </TableCell>
                     <TableCell>
                       <IconButton

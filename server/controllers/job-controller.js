@@ -70,6 +70,30 @@ exports.validateJobPost = async (req, res, next) => ***REMOVED***
   next();
 ***REMOVED***;
 
+exports.editJob = async (req, res) => ***REMOVED***
+  const ***REMOVED*** id ***REMOVED*** = req.params;
+  const data = req.body;
+  const ***REMOVED*** hasCompany, ...jobData ***REMOVED*** = data;
+  const count = await db.jobCount(***REMOVED*** id, owner: req.user.id ***REMOVED***);
+  if (count !== 1) ***REMOVED***
+    throw new Error("Job unavailable");
+  ***REMOVED***
+
+  if (!hasCompany) ***REMOVED***
+    jobData.companyId = null;
+  ***REMOVED***
+
+  if (jobData.companyId) ***REMOVED***
+    const company = await db.getCompany(jobData.companyId, req.user.id);
+    if (!company) ***REMOVED***
+      throw new Error("Company not found");
+    ***REMOVED***
+  ***REMOVED***
+
+  const job = await db.updateJob(id, jobData);
+  res.status(200).send(job);
+***REMOVED***;
+
 exports.createJob = async (req, res) => ***REMOVED***
   const data = req.body;
   const ***REMOVED***
@@ -94,7 +118,7 @@ exports.createJob = async (req, res) => ***REMOVED***
       if (!company) ***REMOVED***
         throw new Error("Company not found");
       ***REMOVED***
-      const job = db.createJob(jobData, companyId);
+      const job = await db.createJob(jobData, companyId);
       resData = ***REMOVED*** job, company ***REMOVED***;
     ***REMOVED*** else ***REMOVED***
       const company = ***REMOVED***

@@ -108,6 +108,7 @@ function Login() ***REMOVED***
         open=***REMOVED***errorLogin***REMOVED***
         anchorOrigin=***REMOVED******REMOVED*** vertical: "bottom", horizontal: "center" ***REMOVED******REMOVED***
         autoHideDuration=***REMOVED***3000***REMOVED***
+        onClose=***REMOVED***() => setErrorLogin(false)***REMOVED***
       />
     </AuthLayout>
   );

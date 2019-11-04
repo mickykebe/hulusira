@@ -148,6 +148,7 @@ export default function Register() ***REMOVED***
         open=***REMOVED***registerError***REMOVED***
         anchorOrigin=***REMOVED******REMOVED*** vertical: "bottom", horizontal: "center" ***REMOVED******REMOVED***
         autoHideDuration=***REMOVED***3000***REMOVED***
+        onClose=***REMOVED***() => setRegisterError(false)***REMOVED***
       />
     </AuthLayout>
   );

@@ -213,7 +213,7 @@ function New(***REMOVED*** primaryTags, user ***REMOVED***) ***REMOVED***
                   open=***REMOVED***showErrorSubmitting***REMOVED***
                   onClose=***REMOVED***() => setShowErrorSubmitting(false)***REMOVED***
                   message="Couldn't submit data. Please try again later."
-                  autoHideDuration=***REMOVED***6000***REMOVED***
+                  autoHideDuration=***REMOVED***3000***REMOVED***
                 />
               </form>
             );
