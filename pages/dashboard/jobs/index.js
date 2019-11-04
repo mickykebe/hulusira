@@ -11,11 +11,13 @@ import ***REMOVED***
   TableBody,
   IconButton,
   makeStyles,
-  Link as MuiLink,
-  Typography
+  Link as MuiLink
 ***REMOVED*** from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import EditIcon from "@material-ui/icons/Edit";
+import addDays from "date-fns/addDays";
+import formatDistance from "date-fns/formatDistance";
+import isAfter from "date-fns/isAfter";
 import redirect from "../../../utils/redirect";
 import HSPaper from "../../../components/hs-paper";
 import CompanyLogo from "../../../components/company-logo";
@@ -66,12 +68,16 @@ export default function DashboardJobs(***REMOVED*** user, jobs ***REMOVED***) **
                     Status
                   </TableCell>
                   <TableCell classes=***REMOVED******REMOVED*** head: classes.tableHead ***REMOVED******REMOVED***>
+                    Expires in
+                  </TableCell>
+                  <TableCell classes=***REMOVED******REMOVED*** head: classes.tableHead ***REMOVED******REMOVED***>
                     Actions
                   </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 ***REMOVED***jobs.map((***REMOVED*** job, company ***REMOVED***) => ***REMOVED***
+                  const expirationDate = addDays(new Date(job.created), 30);
                   return (
                     <TableRow key=***REMOVED***job.id***REMOVED***>
                       <TableCell
@@ -110,8 +116,15 @@ export default function DashboardJobs(***REMOVED*** user, jobs ***REMOVED***) **
                         />
                       </TableCell>
                       <TableCell>
+                        ***REMOVED***isAfter(new Date(), expirationDate)
+                          ? "Expired"
+                          : formatDistance(
+                              addDays(new Date(job.created), 30),
+                              new Date()
+                            )***REMOVED***
+                      </TableCell>
+                      <TableCell>
                         <IconButton
-                          size="small"
                           color="secondary"
                           onClick=***REMOVED***() =>
                             Router.push(`/dashboard/jobs/edit/$***REMOVED***job.slug***REMOVED***`)
