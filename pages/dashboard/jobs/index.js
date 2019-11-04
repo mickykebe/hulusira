@@ -11,7 +11,8 @@ import ***REMOVED***
   TableBody,
   IconButton,
   makeStyles,
-  Link as MuiLink
+  Link as MuiLink,
+  Typography
 ***REMOVED*** from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import EditIcon from "@material-ui/icons/Edit";
@@ -24,6 +25,10 @@ import api from "../../../api";
 const useStyles = makeStyles(theme => (***REMOVED***
   tableHead: ***REMOVED***
     fontWeight: 800
+  ***REMOVED***,
+  noJobsImage: ***REMOVED***
+    width: "20rem",
+    height: "20rem"
   ***REMOVED***
 ***REMOVED***));
 
@@ -43,69 +48,83 @@ export default function DashboardJobs(***REMOVED*** user, jobs ***REMOVED***) **
             Post Job
           </Button>
         </Box>
-        <HSPaper>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell classes=***REMOVED******REMOVED*** head: classes.tableHead ***REMOVED******REMOVED***>
-                  Position
-                </TableCell>
-                <TableCell classes=***REMOVED******REMOVED*** head: classes.tableHead ***REMOVED******REMOVED***>
-                  Company
-                </TableCell>
-                <TableCell classes=***REMOVED******REMOVED*** head: classes.tableHead ***REMOVED******REMOVED***>
-                  Actions
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              ***REMOVED***jobs.map((***REMOVED*** job, company ***REMOVED***) => ***REMOVED***
-                return (
-                  <TableRow key=***REMOVED***job.id***REMOVED***>
-                    <TableCell
-                      variant="head"
-                      classes=***REMOVED******REMOVED*** head: classes.tableHead ***REMOVED******REMOVED***>
-                      <Link
-                        href="/jobs/[slug]"
-                        as=***REMOVED***`/jobs/$***REMOVED***job.slug***REMOVED***`***REMOVED***
-                        passHref>
-                        <MuiLink color="inherit">***REMOVED***job.position***REMOVED***</MuiLink>
-                      </Link>
-                    </TableCell>
-                    <TableCell>
-                      ***REMOVED***company ? (
-                        <Box display="flex" alignItems="center">
-                          ***REMOVED***company.logo && (
-                            <Box pr=***REMOVED***1***REMOVED***>
-                              <CompanyLogo
-                                company=***REMOVED***company***REMOVED***
-                                abbrevFallback=***REMOVED***false***REMOVED***
-                                size="small"
-                              />
-                            </Box>
-                          )***REMOVED***
-                          ***REMOVED***company.name***REMOVED***
-                        </Box>
-                      ) : (
-                        "None"
-                      )***REMOVED***
-                    </TableCell>
-                    <TableCell>
-                      <IconButton
-                        size="small"
-                        color="secondary"
-                        onClick=***REMOVED***() =>
-                          Router.push(`/dashboard/jobs/edit/$***REMOVED***job.slug***REMOVED***`)
-                        ***REMOVED***>
-                        <EditIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                );
-              ***REMOVED***)***REMOVED***
-            </TableBody>
-          </Table>
-        </HSPaper>
+        ***REMOVED***jobs.length === 0 && (
+          <Box display="flex" flexDirection="column" alignItems="center">
+            <img
+              className=***REMOVED***classes.noJobsImage***REMOVED***
+              src="/static/nodata.svg"
+              alt="No Jobs Available"
+            />
+            <Typography variant="h6">
+              You haven't posted any jobs yet
+            </Typography>
+          </Box>
+        )***REMOVED***
+        ***REMOVED***jobs.length > 0 && (
+          <HSPaper>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell classes=***REMOVED******REMOVED*** head: classes.tableHead ***REMOVED******REMOVED***>
+                    Position
+                  </TableCell>
+                  <TableCell classes=***REMOVED******REMOVED*** head: classes.tableHead ***REMOVED******REMOVED***>
+                    Company
+                  </TableCell>
+                  <TableCell classes=***REMOVED******REMOVED*** head: classes.tableHead ***REMOVED******REMOVED***>
+                    Actions
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                ***REMOVED***jobs.map((***REMOVED*** job, company ***REMOVED***) => ***REMOVED***
+                  return (
+                    <TableRow key=***REMOVED***job.id***REMOVED***>
+                      <TableCell
+                        variant="head"
+                        classes=***REMOVED******REMOVED*** head: classes.tableHead ***REMOVED******REMOVED***>
+                        <Link
+                          href="/jobs/[slug]"
+                          as=***REMOVED***`/jobs/$***REMOVED***job.slug***REMOVED***`***REMOVED***
+                          passHref>
+                          <MuiLink color="inherit">***REMOVED***job.position***REMOVED***</MuiLink>
+                        </Link>
+                      </TableCell>
+                      <TableCell>
+                        ***REMOVED***company ? (
+                          <Box display="flex" alignItems="center">
+                            ***REMOVED***company.logo && (
+                              <Box pr=***REMOVED***1***REMOVED***>
+                                <CompanyLogo
+                                  company=***REMOVED***company***REMOVED***
+                                  abbrevFallback=***REMOVED***false***REMOVED***
+                                  size="small"
+                                />
+                              </Box>
+                            )***REMOVED***
+                            ***REMOVED***company.name***REMOVED***
+                          </Box>
+                        ) : (
+                          "None"
+                        )***REMOVED***
+                      </TableCell>
+                      <TableCell>
+                        <IconButton
+                          size="small"
+                          color="secondary"
+                          onClick=***REMOVED***() =>
+                            Router.push(`/dashboard/jobs/edit/$***REMOVED***job.slug***REMOVED***`)
+                          ***REMOVED***>
+                          <EditIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  );
+                ***REMOVED***)***REMOVED***
+              </TableBody>
+            </Table>
+          </HSPaper>
+        )***REMOVED***
       </Container>
     </DashboardLayout>
   );
@@ -120,5 +139,5 @@ DashboardJobs.getInitialProps = async function(ctx) ***REMOVED***
 
   const jobs = await api.getMyJobs(ctx);
 
-  return ***REMOVED*** jobs ***REMOVED***;
+  return ***REMOVED*** jobs: [] ***REMOVED***;
 ***REMOVED***;
