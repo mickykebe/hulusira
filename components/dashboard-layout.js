@@ -7,15 +7,23 @@ import {
   ListItem,
   ListItemText,
   ListItemIcon,
-  Box
+  Box,
+  useMediaQuery,
+  IconButton
 } from "@material-ui/core";
+import MenuIcon from "@material-ui/icons/Menu";
 import WorkIcon from "@material-ui/icons/Work";
 import BusinessIcon from "@material-ui/icons/Business";
 import Layout from "../components/layout";
+import { useTheme } from "@material-ui/styles";
+import { useState } from "react";
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
+  menuButton: {
+    marginRight: theme.spacing(2)
+  },
   drawer: {
     height: "100%",
     width: drawerWidth,
@@ -36,13 +44,29 @@ const useStyles = makeStyles(theme => ({
 
 export default function DashboardLayout({ user, children, selectedItem }) {
   const classes = useStyles();
+  const theme = useTheme();
+  const sizeSm = useMediaQuery(theme.breakpoints.down("sm"));
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   return (
-    <Layout user={user}>
+    <Layout
+      user={user}
+      toolbarChildrenStart={
+        sizeSm ? (
+          <IconButton
+            color="inherit"
+            className={classes.menuButton}
+            onClick={() => setMobileDrawerOpen(!mobileDrawerOpen)}>
+            <MenuIcon />
+          </IconButton>
+        ) : null
+      }>
       <Box width="100%" height="100%" display="flex" overflow="hidden">
         <Drawer
+          open={sizeSm ? mobileDrawerOpen : false}
+          onClose={() => setMobileDrawerOpen(false)}
           className={classes.drawer}
           classes={{ paper: classes.drawerPaper }}
-          variant="permanent">
+          variant={sizeSm ? "temporary" : "permanent"}>
           <div className={classes.drawerContent}>
             <List
               component="nav"

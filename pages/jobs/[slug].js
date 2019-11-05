@@ -9,7 +9,6 @@ import { Toolbar, Button, Box, Container } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/styles";
 import Banner from "../../components/banner";
-
 import HSSnackbar from "../../components/hs-snackbar";
 import JobCloseDialog from "../../components/job-close-dialog";
 
