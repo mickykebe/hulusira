@@ -45,7 +45,7 @@ CREATE TABLE job (
   slug TEXT,
   admin_token uuid DEFAULT uuid_generate_v4(),
   owner INTEGER REFERENCES users(id) ON DELETE SET NULL,
-  approval_status TEXT NOT NULL CONSTRAINT approval_values CHECK (approval_status IN ("Pending", "Approved", "Declined")) DEFAULT "Pending",
+  approval_status TEXT NOT NULL CONSTRAINT approval_values CHECK (approval_status IN ('Pending', 'Approved', 'Declined')) DEFAULT 'Pending',
 );
 
 CREATE TABLE job_tags (
