@@ -279,7 +279,10 @@ exports.permitJobAdmin = async (req, res, next) => {
   const jobData = await db.getJobById(id);
   if (jobData !== null) {
     const { job } = jobData;
-    if (job.adminToken === adminToken) {
+    if (
+      (adminToken && job.adminToken === adminToken) ||
+      (req.user && req.user.id === job.owner)
+    ) {
       next();
       return;
     }

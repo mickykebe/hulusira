@@ -90,14 +90,12 @@ function Companies({ user, companies }) {
               <Typography variant="subtitle1">{company.name}</Typography>
               <Box flex="1" />
               <IconButton
-                size="small"
                 color="secondary"
                 className={classes.actionButton}
                 onClick={() => Router.push(`/company/${company.id}`)}>
                 <EditIcon />
               </IconButton>
               <IconButton
-                size="small"
                 color="secondary"
                 className={classes.actionButton}
                 disabled={isDeletingCompany}
