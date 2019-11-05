@@ -51,7 +51,8 @@ const useStyles = makeStyles(theme => (***REMOVED***
 export default function Layout(***REMOVED***
   user = null,
   children,
-  toolbarChildren = null
+  toolbarChildren = null,
+  toolbarChildrenStart = null
 ***REMOVED***) ***REMOVED***
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -95,6 +96,7 @@ export default function Layout(***REMOVED***
     <Box display="flex" flexDirection="column" height="100%">
       <AppBar className=***REMOVED***classes.appBar***REMOVED***>
         <Toolbar>
+          ***REMOVED***toolbarChildrenStart***REMOVED***
           <Link href="/" passHref>
             <MuiLink variant="h5" color="inherit" underline="none">
               HuluSira

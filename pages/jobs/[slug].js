@@ -9,7 +9,6 @@ import ***REMOVED*** Toolbar, Button, Box, Container ***REMOVED*** from "@materi
 import CloseIcon from "@material-ui/icons/Close";
 import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
 import Banner from "../../components/banner";
-
 import HSSnackbar from "../../components/hs-snackbar";
 import JobCloseDialog from "../../components/job-close-dialog";
 

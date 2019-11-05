@@ -7,15 +7,23 @@ import ***REMOVED***
   ListItem,
   ListItemText,
   ListItemIcon,
-  Box
+  Box,
+  useMediaQuery,
+  IconButton
 ***REMOVED*** from "@material-ui/core";
+import MenuIcon from "@material-ui/icons/Menu";
 import WorkIcon from "@material-ui/icons/Work";
 import BusinessIcon from "@material-ui/icons/Business";
 import Layout from "../components/layout";
+import ***REMOVED*** useTheme ***REMOVED*** from "@material-ui/styles";
+import ***REMOVED*** useState ***REMOVED*** from "react";
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => (***REMOVED***
+  menuButton: ***REMOVED***
+    marginRight: theme.spacing(2)
+  ***REMOVED***,
   drawer: ***REMOVED***
     height: "100%",
     width: drawerWidth,
@@ -36,13 +44,29 @@ const useStyles = makeStyles(theme => (***REMOVED***
 
 export default function DashboardLayout(***REMOVED*** user, children, selectedItem ***REMOVED***) ***REMOVED***
   const classes = useStyles();
+  const theme = useTheme();
+  const sizeSm = useMediaQuery(theme.breakpoints.down("sm"));
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   return (
-    <Layout user=***REMOVED***user***REMOVED***>
+    <Layout
+      user=***REMOVED***user***REMOVED***
+      toolbarChildrenStart=***REMOVED***
+        sizeSm ? (
+          <IconButton
+            color="inherit"
+            className=***REMOVED***classes.menuButton***REMOVED***
+            onClick=***REMOVED***() => setMobileDrawerOpen(!mobileDrawerOpen)***REMOVED***>
+            <MenuIcon />
+          </IconButton>
+        ) : null
+      ***REMOVED***>
       <Box width="100%" height="100%" display="flex" overflow="hidden">
         <Drawer
+          open=***REMOVED***sizeSm ? mobileDrawerOpen : false***REMOVED***
+          onClose=***REMOVED***() => setMobileDrawerOpen(false)***REMOVED***
           className=***REMOVED***classes.drawer***REMOVED***
           classes=***REMOVED******REMOVED*** paper: classes.drawerPaper ***REMOVED******REMOVED***
-          variant="permanent">
+          variant=***REMOVED***sizeSm ? "temporary" : "permanent"***REMOVED***>
           <div className=***REMOVED***classes.drawerContent***REMOVED***>
             <List
               component="nav"
