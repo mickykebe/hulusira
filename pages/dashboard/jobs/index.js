@@ -11,9 +11,11 @@ import ***REMOVED***
   TableBody,
   IconButton,
   makeStyles,
-  Link as MuiLink
+  Link as MuiLink,
+  Tooltip
 ***REMOVED*** from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
+import CloseIcon from "@material-ui/icons/Close";
 import EditIcon from "@material-ui/icons/Edit";
 import addDays from "date-fns/addDays";
 import formatDistance from "date-fns/formatDistance";
@@ -25,6 +27,10 @@ import Link from "next/link";
 import api from "../../../api";
 import EmptyList from "../../../components/empty-list";
 import JobApprovalStatus from "../../../components/job-approval-status";
+import ***REMOVED*** useReducer, useState ***REMOVED*** from "react";
+import jobCloseReducer from "../../../reducers/close-job";
+import JobCloseDialog from "../../../components/job-close-dialog";
+import HSSnackBar from "../../../components/hs-snackbar";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   tableHead: ***REMOVED***
@@ -38,6 +44,23 @@ const useStyles = makeStyles(theme => (***REMOVED***
 
 export default function DashboardJobs(***REMOVED*** user, jobs ***REMOVED***) ***REMOVED***
   const classes = useStyles();
+  const [***REMOVED*** isClosingJob, errorClosingJob ***REMOVED***, dispatch] = useReducer(
+    jobCloseReducer,
+    ***REMOVED*** isClosingJob: false, errorClosingJob: false ***REMOVED***
+  );
+  const [jobPendingClose, setJobPendingClose] = useState(null);
+  const handleCloseJob = async jobId => ***REMOVED***
+    dispatch(***REMOVED*** type: "CLOSING_JOB" ***REMOVED***);
+    try ***REMOVED***
+      await api.closeJob(jobId);
+      Router.replace("/dashboard/jobs");
+      dispatch(***REMOVED*** type: "CLOSED_JOB" ***REMOVED***);
+    ***REMOVED*** catch (err) ***REMOVED***
+      dispatch(***REMOVED*** type: "ERROR_CLOSING_JOB" ***REMOVED***);
+    ***REMOVED***
+    setJobPendingClose(null);
+  ***REMOVED***;
+
   return (
     <DashboardLayout user=***REMOVED***user***REMOVED*** selectedItem="jobs">
       <Container maxWidth="md">
@@ -123,20 +146,42 @@ export default function DashboardJobs(***REMOVED*** user, jobs ***REMOVED***) **
                               new Date()
                             )***REMOVED***
                       </TableCell>
-                      <TableCell>
-                        <IconButton
-                          color="secondary"
-                          onClick=***REMOVED***() =>
-                            Router.push(`/dashboard/jobs/edit/$***REMOVED***job.slug***REMOVED***`)
-                          ***REMOVED***>
-                          <EditIcon />
-                        </IconButton>
+                      <TableCell align="left">
+                        <Tooltip title="Edit Job">
+                          <IconButton
+                            color="secondary"
+                            onClick=***REMOVED***() =>
+                              Router.push(`/dashboard/jobs/edit/$***REMOVED***job.slug***REMOVED***`)
+                            ***REMOVED***>
+                            <EditIcon />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Close Job">
+                          <IconButton
+                            disabled=***REMOVED***isClosingJob***REMOVED***
+                            color="secondary"
+                            onClick=***REMOVED***() => setJobPendingClose(job.id)***REMOVED***>
+                            <CloseIcon />
+                          </IconButton>
+                        </Tooltip>
                       </TableCell>
                     </TableRow>
                   );
                 ***REMOVED***)***REMOVED***
               </TableBody>
             </Table>
+            <JobCloseDialog
+              open=***REMOVED***!!jobPendingClose***REMOVED***
+              onClose=***REMOVED***() => setJobPendingClose(null)***REMOVED***
+              onConfirmation=***REMOVED***() => handleCloseJob(jobPendingClose)***REMOVED***
+            />
+            <HSSnackBar
+              open=***REMOVED***errorClosingJob***REMOVED***
+              variant="error"
+              message="Problem occurred closing job."
+              autoHideDuration=***REMOVED***3000***REMOVED***
+              onClose=***REMOVED***() => dispatch(***REMOVED*** type: "CLEAR_ERROR" ***REMOVED***)***REMOVED***
+            />
           </HSPaper>
         )***REMOVED***
       </Container>

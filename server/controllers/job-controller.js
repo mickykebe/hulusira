@@ -279,7 +279,10 @@ exports.permitJobAdmin = async (req, res, next) => ***REMOVED***
   const jobData = await db.getJobById(id);
   if (jobData !== null) ***REMOVED***
     const ***REMOVED*** job ***REMOVED*** = jobData;
-    if (job.adminToken === adminToken) ***REMOVED***
+    if (
+      (adminToken && job.adminToken === adminToken) ||
+      (req.user && req.user.id === job.owner)
+    ) ***REMOVED***
       next();
       return;
     ***REMOVED***

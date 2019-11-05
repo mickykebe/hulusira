@@ -19,7 +19,8 @@ class Job ***REMOVED***
     closed,
     slug,
     adminToken,
-    deadline
+    deadline,
+    owner
   ) ***REMOVED***
     this.id = id;
     this.position = position;
@@ -41,6 +42,7 @@ class Job ***REMOVED***
     this.slug = slug;
     this.adminToken = adminToken;
     this.deadline = deadline;
+    this.owner = owner;
   ***REMOVED***
 
   publicData() ***REMOVED***
@@ -69,7 +71,8 @@ class Job ***REMOVED***
       dbJob.job_closed,
       dbJob.job_slug,
       dbJob.job_admin_token,
-      dbJob.job_deadline
+      dbJob.job_deadline,
+      dbJob.job_owner
     );
   ***REMOVED***
 ***REMOVED***

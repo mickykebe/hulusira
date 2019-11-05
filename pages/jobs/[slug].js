@@ -5,22 +5,13 @@ import nextCookie from "next-cookies";
 import api from "../../api";
 import Layout from "../../components/layout";
 import JobContent from "../../components/job-content";
-import ***REMOVED***
-  Toolbar,
-  Button,
-  Box,
-  Container,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions
-***REMOVED*** from "@material-ui/core";
+import ***REMOVED*** Toolbar, Button, Box, Container ***REMOVED*** from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
 import Banner from "../../components/banner";
 
 import HSSnackbar from "../../components/hs-snackbar";
+import JobCloseDialog from "../../components/job-close-dialog";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   toolbar: ***REMOVED***
@@ -78,6 +69,7 @@ function Job(***REMOVED*** user, jobData, adminToken ***REMOVED***) ***REMOVED**
     ***REMOVED*** catch (err) ***REMOVED***
       dispatch(***REMOVED*** type: "ERROR_CLOSING_JOB" ***REMOVED***);
     ***REMOVED***
+    setJobDialogOpen(false);
   ***REMOVED***;
   const metaTitle = `$***REMOVED***jobData.job.position***REMOVED***$***REMOVED***
     jobData.company ? ` at $***REMOVED***jobData.company.name***REMOVED***` : ""
@@ -140,28 +132,17 @@ function Job(***REMOVED*** user, jobData, adminToken ***REMOVED***) ***REMOVED**
         )***REMOVED***
       </Container>
       <JobContent jobData=***REMOVED***jobData***REMOVED*** />
-      <Dialog open=***REMOVED***jobDialogOpen***REMOVED*** onClose=***REMOVED***() => setJobDialogOpen(false)***REMOVED***>
-        <DialogTitle>Close this job?</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Closing a job renders it publicly inaccessible from the site.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick=***REMOVED***() => setJobDialogOpen(false)***REMOVED*** color="primary">
-            Cancel
-          </Button>
-          <Button onClick=***REMOVED***handleCloseJob***REMOVED*** color="primary">
-            Yes
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <JobCloseDialog
+        open=***REMOVED***jobDialogOpen***REMOVED***
+        onClose=***REMOVED***() => setJobDialogOpen(false)***REMOVED***
+        onConfirmation=***REMOVED***handleCloseJob***REMOVED***
+      />
       <HSSnackbar
         open=***REMOVED***errorClosingJob***REMOVED***
         variant="error"
         message="Problem occurred closing job."
         autoHideDuration=***REMOVED***3000***REMOVED***
-        onClose=***REMOVED***() => dispatch("CLEAR_ERROR")***REMOVED***
+        onClose=***REMOVED***() => dispatch(***REMOVED*** type: "CLEAR_ERROR" ***REMOVED***)***REMOVED***
       />
     </Layout>
   );
