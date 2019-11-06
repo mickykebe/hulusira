@@ -5,22 +5,12 @@ import nextCookie from "next-cookies";
 import api from "../../api";
 import Layout from "../../components/layout";
 import JobContent from "../../components/job-content";
-import {
-  Toolbar,
-  Button,
-  Box,
-  Container,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions
-} from "@material-ui/core";
+import { Toolbar, Button, Box, Container } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/styles";
 import Banner from "../../components/banner";
-
 import HSSnackbar from "../../components/hs-snackbar";
+import JobCloseDialog from "../../components/job-close-dialog";
 
 const useStyles = makeStyles(theme => ({
   toolbar: {
@@ -47,7 +37,7 @@ function jobCloseReducer(state, action) {
   }
 }
 
-function Job({ jobData, adminToken }) {
+function Job({ user, jobData, adminToken }) {
   const [{ isClosingJob, errorClosingJob }, dispatch] = useReducer(
     jobCloseReducer,
     { isClosingJob: false, errorClosingJob: false }
@@ -78,6 +68,7 @@ function Job({ jobData, adminToken }) {
     } catch (err) {
       dispatch({ type: "ERROR_CLOSING_JOB" });
     }
+    setJobDialogOpen(false);
   };
   const metaTitle = `${jobData.job.position}${
     jobData.company ? ` at ${jobData.company.name}` : ""
@@ -89,7 +80,7 @@ function Job({ jobData, adminToken }) {
   const url = `${process.env.ROOT_URL}${router.asPath}`;
   const defaultThumbnailUrl = `${process.env.ROOT_URL}/static/hulusira.png`;
   return (
-    <Layout>
+    <Layout user={user}>
       <Head>
         <title>{metaTitle}</title>
         <meta name="description" content={metaDescription} />
@@ -116,8 +107,14 @@ function Job({ jobData, adminToken }) {
         {jobData.job.closed && (
           <Banner message="This job is closed and thus no longer publicly accessible." />
         )}
-        {!jobData.job.closed && !jobData.job.approved && (
+        {!jobData.job.closed && jobData.job.approvalStatus === "Pending" && (
           <Banner message="This job is pending. It will be live once it gets admin approval." />
+        )}
+        {!jobData.job.closed && jobData.job.approvalStatus === "Declined" && (
+          <Banner
+            variant="error"
+            message="Administrator has declined to approve this post."
+          />
         )}
         {!!isValidToken && !jobData.job.closed && (
           <Toolbar className={classes.toolbar}>
@@ -134,28 +131,17 @@ function Job({ jobData, adminToken }) {
         )}
       </Container>
       <JobContent jobData={jobData} />
-      <Dialog open={jobDialogOpen} onClose={() => setJobDialogOpen(false)}>
-        <DialogTitle>Close this job?</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Closing a job renders it publicly inaccessible from the site.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setJobDialogOpen(false)} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleCloseJob} color="primary">
-            Yes
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <JobCloseDialog
+        open={jobDialogOpen}
+        onClose={() => setJobDialogOpen(false)}
+        onConfirmation={handleCloseJob}
+      />
       <HSSnackbar
         open={errorClosingJob}
         variant="error"
         message="Problem occurred closing job."
         autoHideDuration={3000}
-        onClose={() => dispatch("CLEAR_ERROR")}
+        onClose={() => dispatch({ type: "CLEAR_ERROR" })}
       />
     </Layout>
   );
@@ -167,7 +153,7 @@ Job.getInitialProps = async ctx => {
   const adminToken = cookies[slug];
   const [primaryTags, jobData] = await Promise.all([
     api.getPrimaryTags(ctx),
-    api.getJob(slug, adminToken, ctx)
+    api.getJob(ctx, slug, adminToken)
   ]);
   return { jobData, primaryTags, adminToken };
 };

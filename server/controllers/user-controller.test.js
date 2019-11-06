@@ -2,9 +2,15 @@ const faker = require("faker");
 const bcrypt = require("bcryptjs");
 const db = require("../db");
 const { User } = require("../models");
-const { login } = require("./user-controller");
+const { login, register, confirmUser } = require("./user-controller");
+const sendEmailUtil = require("../utils/send-email");
+const redis = require("../redis");
+
+jest.mock("../redis");
 jest.mock("../db");
 jest.mock("bcryptjs");
+jest.mock("../utils/create-confirmation-url");
+jest.mock("../utils/send-email");
 
 const mockRequest = ({
   body = {},
@@ -31,6 +37,39 @@ const mockResponse = () => {
 const sampleUser = (userData = {}) => {
   return Object.assign(new User(), userData);
 };
+
+describe(`/register`, () => {
+  it("registers user and sends confirmation email", async () => {
+    const req = mockRequest({ body: {} });
+    const res = mockResponse();
+    db.createUser.mockResolvedValue(new User());
+    await register(req, res);
+    expect(sendEmailUtil.sendEmail).toHaveBeenCalledTimes(1);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.send).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("/confirm-user", () => {
+  it("confirms a user if confirmation token", async () => {
+    const req = mockRequest({ params: { token: faker.random.uuid() } });
+    const res = mockResponse();
+    const userId = faker.random.number();
+    redis.get.mockResolvedValue(userId);
+    await confirmUser(req, res);
+    expect(db.confirmUser).toHaveBeenCalledWith(userId);
+    expect(redis.del).toHaveBeenCalledTimes(1);
+    expect(res.sendStatus).toHaveBeenCalledWith(200);
+  });
+
+  it("responds with status 500 for non-existent confirmation", async () => {
+    const req = mockRequest({ params: { token: faker.random.uuid() } });
+    const res = mockResponse();
+    redis.get.mockResolvedValue(null);
+    await confirmUser(req, res);
+    expect(res.sendStatus).toHaveBeenCalledWith(500);
+  });
+});
 
 describe(`/login`, () => {
   it("wrong email returns 401", async () => {

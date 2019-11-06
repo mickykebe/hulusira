@@ -3,11 +3,27 @@ import App, { Container } from "next/app";
 import Head from "next/head";
 import { ThemeProvider } from "@material-ui/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
+import api from "../api";
 import theme from "../components/theme";
 import GlobalCss from "../components/global-css";
 import "easymde/dist/easymde.min.css";
 
 class MyApp extends App {
+  static async getInitialProps({ Component, ctx }) {
+    let user;
+    let pageProps = {};
+    try {
+      user = await api.activeUser(ctx);
+    } catch (err) {
+      user = null;
+    }
+    ctx.user = user;
+    if (Component.getInitialProps) {
+      pageProps = await Component.getInitialProps(ctx);
+    }
+    return { pageProps: { user, ...pageProps } };
+  }
+
   componentDidMount() {
     // Remove the server-side injected CSS.
     const jssStyles = document.querySelector("#jss-server-side");

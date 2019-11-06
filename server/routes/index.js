@@ -5,6 +5,7 @@ const express = require("express");
 const logger = require("morgan");
 const bodyParser = require("body-parser");
 const errorHandlers = require("../handlers/errorHandler");
+const companyController = require("../controllers/company-controller");
 const jobController = require("../controllers/job-controller");
 const uploadController = require("../controllers/upload-controller");
 const userController = require("../controllers/user-controller");
@@ -13,7 +14,7 @@ const { catchErrors } = require("../handlers/errorHandler");
 const { isProduction } = require("../utils");
 const redis = require("../redis");
 const { loadUser } = require("../handlers/loadUser");
-const { permit } = require("../handlers/permission");
+const { permit, permitAuthenticated } = require("../handlers/permission");
 
 const RedisStore = connectRedis(session);
 
@@ -52,6 +53,12 @@ router.post(
   catchErrors(jobController.createJob)
 );
 
+router.put(
+  "/jobs/:id",
+  catchErrors(jobController.validateJobPost),
+  catchErrors(jobController.editJob)
+);
+
 router.post(
   "/jobs/:id/verify-token",
   catchErrors(jobController.permitJobAdmin),
@@ -59,6 +66,7 @@ router.post(
     res.status(200).send(true);
   }
 );
+
 router.patch(
   "/jobs/:id/close-job",
   catchErrors(jobController.permitJobAdmin),
@@ -66,6 +74,7 @@ router.patch(
 );
 router.get("/jobs/:slug", catchErrors(jobController.getJob));
 router.get("/jobs", catchErrors(jobController.getJobs));
+router.get("/myjobs", permitAuthenticated(), catchErrors(jobController.myJobs));
 router.get(
   "/pending-jobs",
   permit("admin"),
@@ -76,15 +85,56 @@ router.put(
   permit("admin"),
   catchErrors(jobController.approveJob)
 );
+
+router.patch(
+  "/jobs/:id/decline-job",
+  permit("admin"),
+  catchErrors(jobController.declineJob)
+);
 router.delete(
   "/jobs/:jobId",
   permit("admin"),
   catchErrors(jobController.removeJob)
 );
+
+router.post(
+  "/company",
+  permitAuthenticated(),
+  catchErrors(companyController.validateCompany),
+  catchErrors(companyController.createCompany)
+);
+router.get(
+  "/company",
+  permitAuthenticated(),
+  catchErrors(companyController.companies)
+);
+router.get(
+  "/company/:companyId",
+  permitAuthenticated(),
+  catchErrors(companyController.getCompany)
+);
+
+router.put(
+  "/company/:companyId",
+  permitAuthenticated(),
+  catchErrors(companyController.editCompany)
+);
+router.delete(
+  "/company/:companyId",
+  permitAuthenticated(),
+  catchErrors(companyController.deleteCompany)
+);
+
 router.get("/primary-tags", catchErrors(jobController.getPrimaryTags));
 
 router.get("/me", catchErrors(userController.me));
 router.post("/login", catchErrors(userController.login));
+router.post("/register", catchErrors(userController.register));
+router.get(
+  "/confirm-user/:confirmationKey",
+  catchErrors(userController.confirmUser)
+);
+router.get("/logout", catchErrors(userController.logout));
 
 router.get("/tags", catchErrors(tagController.getTags));
 

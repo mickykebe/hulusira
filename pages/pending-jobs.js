@@ -77,7 +77,7 @@ const jobReducer = (state, action) => {
   }
 };
 
-function PendingJobs({ jobs }) {
+function PendingJobs({ jobs, user }) {
   const [jobUpdateState, dispatch] = useReducer(jobReducer, {
     inProgress: false,
     error: false
@@ -100,10 +100,10 @@ function PendingJobs({ jobs }) {
       dispatch({ type: "ERROR_UPDATING_JOB" });
     }
   };
-  const removeJob = async jobId => {
+  const declineJob = async jobId => {
     dispatch({ type: "UPDATING_JOB" });
     try {
-      await api.removeJob(jobId);
+      await api.declineJob(jobId);
       dispatch({ type: "UPDATED_JOB" });
       Router.replace("/pending-jobs");
     } catch (err) {
@@ -113,7 +113,7 @@ function PendingJobs({ jobs }) {
   };
   const classes = useStyles({ activeJob: !!activeJobData });
   return (
-    <Layout>
+    <Layout user={user}>
       <Box className={classes.jobList}>
         <List className={classes.list}>
           {jobs.map(({ job, company }, index) => (
@@ -156,7 +156,7 @@ function PendingJobs({ jobs }) {
               variant="contained"
               className={classes.actionButton}
               disabled={jobUpdateState.inProgress}
-              onClick={() => removeJob(activeJobId)}>
+              onClick={() => declineJob(activeJobId)}>
               <ClearIcon /> Drop
             </Button>
           </Toolbar>
@@ -175,28 +175,20 @@ function PendingJobs({ jobs }) {
 }
 
 PendingJobs.getInitialProps = async function(ctx) {
-  if (ctx.req) {
-    const { qid: sessionId } = nextCookie(ctx);
-    if (!sessionId) {
-      redirect(ctx, "/");
-      return {};
-    }
-  }
+  const { user } = ctx;
 
-  let user;
-
-  try {
-    user = await api.activeUser(ctx);
-    if (user.role !== "admin") {
-      throw new Error("Not permitted");
-    }
-  } catch (err) {
+  if (!user || user.role !== "admin") {
     redirect(ctx, "/");
     return {};
   }
 
-  const jobs = await api.getPendingJobs(ctx);
-  return { user, jobs };
+  let jobs;
+  try {
+    jobs = await api.getPendingJobs(ctx);
+  } catch (err) {
+    console.log(err);
+  }
+  return { jobs };
 };
 
 export default PendingJobs;

@@ -10,10 +10,11 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function HSPaper(props) {
+export default function HSPaper({ className = "", ...props }) {
   const classes = useStyles();
   return (
     <Paper
+      className={className}
       classes={{
         root: classes.root,
         elevation1: classes.elevation1

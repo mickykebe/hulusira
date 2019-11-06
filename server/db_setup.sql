@@ -15,7 +15,8 @@ CREATE TABLE company (
   name TEXT NOT NULL,
   email TEXT NOT NULL,
   logo TEXT,
-  verified BOOLEAN NOT NULL DEFAULT FALSE
+  verified BOOLEAN NOT NULL DEFAULT FALSE,
+  owner INTEGER REFERENCES users(id) ON DELETE SET NULL,
 );
 
 CREATE TABLE tag (
@@ -28,9 +29,8 @@ CREATE TABLE job (
   id SERIAL PRIMARY KEY,
   position TEXT NOT NULL,
   job_type TEXT NOT NULL CONSTRAINT check_value CHECK (job_type IN ('Full-time', 'Part-time', 'Freelance', 'Internship', 'Temporary', 'Contract')),
-  company_id INTEGER REFERENCES company(id),
+  company_id INTEGER REFERENCES company(id) ON DELETE SET NULL,
   location TEXT,
-  primary_tag INTEGER REFERENCES tag(id),
   salary TEXT,
   description TEXT NOT NULL,
   responsibilities TEXT,
@@ -43,7 +43,9 @@ CREATE TABLE job (
   deadline Date,
   created TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   slug TEXT,
-  admin_token uuid DEFAULT uuid_generate_v4()
+  admin_token uuid DEFAULT uuid_generate_v4(),
+  owner INTEGER REFERENCES users(id) ON DELETE SET NULL,
+  approval_status TEXT NOT NULL CONSTRAINT approval_values CHECK (approval_status IN ('Pending', 'Approved', 'Declined')) DEFAULT 'Pending',
 );
 
 CREATE TABLE job_tags (
@@ -57,5 +59,10 @@ CREATE TABLE job_tags (
 CREATE TABLE job_social_post (
   job_id INTEGER PRIMARY KEY REFERENCES job(id) ON DELETE CASCADE,
   telegram_message_id INTEGER,
-  facebook_post_id TEXT,
+  facebook_post_id TEXT
+);
+
+CREATE TABLE user_confirmation(
+  user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+  confirmation_key TEXT NOT NULL UNIQUE
 );

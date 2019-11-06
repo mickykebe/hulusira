@@ -3,52 +3,61 @@ const db = require("../db/index");
 const socialHandler = require("../handlers/social");
 const utils = require("../utils");
 
-const validationSchema = Yup.object().shape({
-  position: Yup.string().required("Required"),
-  jobType: Yup.string().required("Required"),
-  primaryTagId: Yup.number()
-    .nullable()
-    .test(
-      "primaryTag-required",
-      "Choose at least one tag here or enter a tag in the Extra Tags input below.",
+const validationSchema = Yup.object().shape(
+  {
+    position: Yup.string().required("Required"),
+    jobType: Yup.string().required("Required"),
+    primaryTagId: Yup.number()
+      .nullable()
+      .test(
+        "primaryTag-required",
+        "Choose at least one tag here or enter a tag in the Extra Tags input below.",
+        function(value) {
+          const tags = this.parent.tags;
+          if (!tags || tags.length === 0) {
+            return !!value;
+          }
+          return true;
+        }
+      ),
+    tags: Yup.array().test(
+      "tags-required",
+      "Please enter at least one tag here or choose a tag in the Primary Tag input above.",
       function(value) {
-        const tags = this.parent.tags;
-        if (!tags || tags.length === 0) {
-          return !!value;
+        const { primaryTagId } = this.parent;
+        if (primaryTagId === null || primaryTagId === undefined) {
+          return value && value.length > 0;
         }
         return true;
       }
     ),
-  tags: Yup.array().test(
-    "tags-required",
-    "Please enter at least one tag here or choose a tag in the Primary Tag input above.",
-    function(value) {
-      const { primaryTagId } = this.parent;
-      if (primaryTagId === null || primaryTagId === undefined) {
-        return value && value.length > 0;
-      }
-      return true;
-    }
-  ),
-  deadline: Yup.date()
-    .nullable()
-    .default(null),
-  description: Yup.string().required("Required"),
-  applyEmail: Yup.string()
-    .nullable()
-    .notRequired()
-    .email(),
-  companyName: Yup.string().when("hasCompany", {
-    is: true,
-    then: Yup.string().required("Required")
-  }),
-  companyEmail: Yup.string().when("hasCompany", {
-    is: true,
-    then: Yup.string()
-      .email()
-      .required("Required")
-  })
-});
+    deadline: Yup.date()
+      .nullable()
+      .default(null),
+    description: Yup.string().required("Required"),
+    applyEmail: Yup.string()
+      .nullable()
+      .notRequired()
+      .email(),
+    companyName: Yup.string().when(["hasCompany", "companyId"], {
+      is: (hasCompany, companyId) => hasCompany && !companyId,
+      then: Yup.string().required("Required")
+    }),
+    companyEmail: Yup.string().when(["hasCompany", "companyId"], {
+      is: (hasCompany, companyId) => hasCompany && !companyId,
+      then: Yup.string()
+        .email()
+        .required("Required")
+    }),
+    companyId: Yup.number()
+      .nullable()
+      .when(["hasCompany", "companyName"], {
+        is: (hasCompany, companyName) => hasCompany && !companyName,
+        then: Yup.number().required("Required")
+      })
+  },
+  ["companyId", "companyName"]
+);
 
 exports.validateJobPost = async (req, res, next) => {
   const jobData = req.body;
@@ -61,6 +70,30 @@ exports.validateJobPost = async (req, res, next) => {
   next();
 };
 
+exports.editJob = async (req, res) => {
+  const { id } = req.params;
+  const data = req.body;
+  const { hasCompany, ...jobData } = data;
+  const count = await db.jobCount({ id, owner: req.user.id });
+  if (count !== 1) {
+    throw new Error("Job unavailable");
+  }
+
+  if (!hasCompany) {
+    jobData.companyId = null;
+  }
+
+  if (jobData.companyId) {
+    const company = await db.getCompany(jobData.companyId, req.user.id);
+    if (!company) {
+      throw new Error("Company not found");
+    }
+  }
+
+  const job = await db.updateJob(id, jobData);
+  res.status(200).send(job);
+};
+
 exports.createJob = async (req, res) => {
   const data = req.body;
   const {
@@ -68,21 +101,37 @@ exports.createJob = async (req, res) => {
     companyName,
     companyEmail,
     companyLogo,
+    companyId,
     ...jobData
   } = data;
-  let company = null;
-  if (hasCompany) {
-    company = {
-      name: companyName,
-      email: companyEmail,
-      logo: companyLogo
-    };
-  }
   const isAdminUser = req.user && req.user.role === "admin";
-  if (isAdminUser) {
-    jobData.approved = true;
+  if (req.user) {
+    jobData.owner = req.user.id;
   }
-  const resData = await db.createJobAndCompany({ company, job: jobData });
+  if (isAdminUser) {
+    jobData.approvalStatus = "Approved";
+  }
+  let resData;
+  if (hasCompany) {
+    if (companyId) {
+      const company = await db.getCompany(companyId, req.user.id);
+      if (!company) {
+        throw new Error("Company not found");
+      }
+      const job = await db.createJob(jobData, companyId);
+      resData = { job, company };
+    } else {
+      const company = {
+        name: companyName,
+        email: companyEmail,
+        logo: companyLogo
+      };
+      if (req.user) {
+        company.owner = req.user.id;
+      }
+      resData = await db.createJobAndCompany({ company, job: jobData });
+    }
+  }
   if (isAdminUser) {
     socialHandler.postJobToSocialMedia(resData);
   }
@@ -110,7 +159,7 @@ exports.getJobs = async (req, res) => {
   const jobs = await db.getJobs({
     fromJobId,
     limit: count + 1,
-    approved: true,
+    approvalStatus: "Approved",
     withinDays: 30,
     tagIds,
     publicOnly: true
@@ -126,10 +175,24 @@ exports.getJobs = async (req, res) => {
   res.status(200).send(data);
 };
 
-exports.pendingJobs = async (_, res) => {
-  const jobs = await db.getJobs({ approved: false });
+exports.myJobs = async (req, res) => {
+  const ownerId = req.user.id;
+  if (!ownerId) {
+    throw new Error("Not logged in");
+  }
+  const jobs = await db.getJobs({ ownerId, withinDays: 30 });
   res.status(200).send(jobs);
 };
+
+exports.pendingJobs = async (_, res) => {
+  const jobs = await db.getJobs({ approvalStatus: "Pending" });
+  res.status(200).send(jobs);
+};
+
+function publicCompany(company) {
+  const { owner, ...companyData } = company;
+  return companyData;
+}
 
 exports.getJob = async (req, res) => {
   const { slug } = req.params;
@@ -139,13 +202,26 @@ exports.getJob = async (req, res) => {
     return;
   }
   const { adminToken } = req.query;
-  const isJobAdmin = !!adminToken && jobData.job.adminToken === adminToken;
+  let hasAdminPermission = false;
 
-  if (!isJobAdmin) {
-    jobData.job = jobData.job.publicData();
+  if (req.user) {
+    hasAdminPermission =
+      req.user.role === "admin" || req.user.id === jobData.job.owner;
+  } else if (adminToken) {
+    hasAdminPermission = jobData.job.adminToken === adminToken;
   }
 
-  if ((jobData.job.closed || !jobData.job.approved) && !isJobAdmin) {
+  if (!hasAdminPermission) {
+    jobData.job = jobData.job.publicData();
+    if (jobData.company) {
+      jobData.company = publicCompany(jobData.company);
+    }
+  }
+
+  if (
+    (jobData.job.closed || jobData.job.approvalStatus !== "Approved") &&
+    !hasAdminPermission
+  ) {
     res.sendStatus(404);
     return;
   }
@@ -177,6 +253,16 @@ exports.approveJob = async (req, res) => {
   res.sendStatus(404);
 };
 
+exports.declineJob = async (req, res) => {
+  const { id } = req.params;
+  const affectedRows = await db.declineJob(id);
+  if (affectedRows === 1) {
+    res.status(200).send(true);
+    return;
+  }
+  res.sendStatus(404);
+};
+
 exports.removeJob = async (req, res) => {
   const { jobId } = req.params;
   const affectedRows = await db.deleteJob(jobId);
@@ -193,7 +279,10 @@ exports.permitJobAdmin = async (req, res, next) => {
   const jobData = await db.getJobById(id);
   if (jobData !== null) {
     const { job } = jobData;
-    if (job.adminToken === adminToken) {
+    if (
+      (adminToken && job.adminToken === adminToken) ||
+      (req.user && req.user.id === job.owner)
+    ) {
       next();
       return;
     }

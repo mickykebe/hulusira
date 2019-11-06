@@ -18,7 +18,6 @@ import Layout from "../components/layout";
 import JobItem from "../components/job-item";
 import useIsInview from "../hooks/use-is-inview";
 import TagFilter from "../components/tag-filter";
-import { tagIdsfromQueryParam } from "../utils";
 import { useEffect, useRef, useState, useCallback } from "react";
 
 const useStyles = makeStyles(theme => ({
@@ -34,6 +33,8 @@ const useStyles = makeStyles(theme => ({
     background: theme.palette.common.white
   },
   categoryItem: {
+    fontWeight: 800,
+    padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
     fontSize: "0.8rem"
   },
   nothingFound: {
@@ -74,7 +75,7 @@ const jobsReducer = (state, action) => {
   }
 };
 
-function Index({ jobPage, activeTags, primaryTags }) {
+function Index({ user, jobPage, activeTags, primaryTags }) {
   const [{ jobs, nextCursor, isLoading, isError }, dispatch] = React.useReducer(
     jobsReducer,
     {
@@ -142,15 +143,17 @@ function Index({ jobPage, activeTags, primaryTags }) {
   const metaImage = `${process.env.ROOT_URL}/static/hulusira.png`;
   return (
     <Layout
+      user={user}
       toolbarChildren={
-        <React.Fragment>
-          <Box flex="1" />
-          <Link href="/new" passHref>
-            <Button variant="contained" color="primary">
-              Post a Job
-            </Button>
-          </Link>
-        </React.Fragment>
+        user ? null : (
+          <React.Fragment>
+            <Link href="/new" passHref>
+              <Button variant="contained" color="primary">
+                Post a Job
+              </Button>
+            </Link>
+          </React.Fragment>
+        )
       }>
       <Head>
         <title>{pageTitle}</title>
