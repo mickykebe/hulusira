@@ -30,7 +30,7 @@ export default function JobDetailsFormElement(***REMOVED***
     <HSCard title="Job Details">
       <TextField
         name="position"
-        label="Position"
+        label="Position*"
         variant="outlined"
         fullWidth
         margin="normal"
@@ -58,7 +58,7 @@ export default function JobDetailsFormElement(***REMOVED***
       </TextField>
       <TextField
         name="location"
-        label="Location"
+        label="Location (optional)"
         variant="outlined"
         fullWidth
         margin="normal"
@@ -111,7 +111,7 @@ export default function JobDetailsFormElement(***REMOVED***
       />
       <TextField
         name="salary"
-        label="Salary"
+        label="Salary (optional)"
         variant="outlined"
         margin="normal"
         fullWidth
@@ -127,7 +127,7 @@ export default function JobDetailsFormElement(***REMOVED***
       <MuiPickersUtilsProvider utils=***REMOVED***DateFnsUtils***REMOVED***>
         <DatePicker
           format="yyyy-MM-dd"
-          label="Application Deadline"
+          label="Application Deadline (optional)"
           inputVariant="outlined"
           value=***REMOVED***values.deadline***REMOVED***
           onChange=***REMOVED***date => setFieldValue("deadline", date)***REMOVED***
@@ -144,19 +144,19 @@ export default function JobDetailsFormElement(***REMOVED***
       />
       <MDEditor
         id="requirements"
-        label="Job Requirements"
+        label="Job Requirements (optional)"
         value=***REMOVED***values.requirements***REMOVED***
         onChange=***REMOVED***handleMdeChange("requirements")***REMOVED***
       />
       <MDEditor
         id="responsibilities"
-        label="Job Responsibilities"
+        label="Job Responsibilities (optional)"
         value=***REMOVED***values.responsibilities***REMOVED***
         onChange=***REMOVED***handleMdeChange("responsibilities")***REMOVED***
       />
       <MDEditor
         id="how_to_apply"
-        label="How to Apply"
+        label="How to Apply (optional)"
         value=***REMOVED***values.howToApply***REMOVED***
         onChange=***REMOVED***handleMdeChange("howToApply")***REMOVED***
       />
@@ -164,7 +164,7 @@ export default function JobDetailsFormElement(***REMOVED***
         <Box flex="1" flexBasis=***REMOVED***["100%", "0"]***REMOVED***>
           <TextField
             name="applyUrl"
-            label="Apply URL*"
+            label="Apply URL (optional)"
             variant="outlined"
             margin="normal"
             helperText="The url can be a link to your telegram account, facebook URL or to a site where the job is posted."
@@ -184,7 +184,7 @@ export default function JobDetailsFormElement(***REMOVED***
         <Box flex="1" flexBasis=***REMOVED***["100%", "0"]***REMOVED***>
           <TextField
             name="applyEmail"
-            label="Apply Email*"
+            label="Apply Email (optional)"
             variant="outlined"
             margin="normal"
             helperText="Your email address"
