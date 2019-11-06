@@ -77,7 +77,7 @@ const jobReducer = (state, action) => ***REMOVED***
   ***REMOVED***
 ***REMOVED***;
 
-function PendingJobs(***REMOVED*** jobs ***REMOVED***) ***REMOVED***
+function PendingJobs(***REMOVED*** jobs, user ***REMOVED***) ***REMOVED***
   const [jobUpdateState, dispatch] = useReducer(jobReducer, ***REMOVED***
     inProgress: false,
     error: false
@@ -100,10 +100,10 @@ function PendingJobs(***REMOVED*** jobs ***REMOVED***) ***REMOVED***
       dispatch(***REMOVED*** type: "ERROR_UPDATING_JOB" ***REMOVED***);
     ***REMOVED***
   ***REMOVED***;
-  const removeJob = async jobId => ***REMOVED***
+  const declineJob = async jobId => ***REMOVED***
     dispatch(***REMOVED*** type: "UPDATING_JOB" ***REMOVED***);
     try ***REMOVED***
-      await api.removeJob(jobId);
+      await api.declineJob(jobId);
       dispatch(***REMOVED*** type: "UPDATED_JOB" ***REMOVED***);
       Router.replace("/pending-jobs");
     ***REMOVED*** catch (err) ***REMOVED***
@@ -113,7 +113,7 @@ function PendingJobs(***REMOVED*** jobs ***REMOVED***) ***REMOVED***
   ***REMOVED***;
   const classes = useStyles(***REMOVED*** activeJob: !!activeJobData ***REMOVED***);
   return (
-    <Layout>
+    <Layout user=***REMOVED***user***REMOVED***>
       <Box className=***REMOVED***classes.jobList***REMOVED***>
         <List className=***REMOVED***classes.list***REMOVED***>
           ***REMOVED***jobs.map((***REMOVED*** job, company ***REMOVED***, index) => (
@@ -156,7 +156,7 @@ function PendingJobs(***REMOVED*** jobs ***REMOVED***) ***REMOVED***
               variant="contained"
               className=***REMOVED***classes.actionButton***REMOVED***
               disabled=***REMOVED***jobUpdateState.inProgress***REMOVED***
-              onClick=***REMOVED***() => removeJob(activeJobId)***REMOVED***>
+              onClick=***REMOVED***() => declineJob(activeJobId)***REMOVED***>
               <ClearIcon /> Drop
             </Button>
           </Toolbar>
@@ -175,28 +175,20 @@ function PendingJobs(***REMOVED*** jobs ***REMOVED***) ***REMOVED***
 ***REMOVED***
 
 PendingJobs.getInitialProps = async function(ctx) ***REMOVED***
-  if (ctx.req) ***REMOVED***
-    const ***REMOVED*** qid: sessionId ***REMOVED*** = nextCookie(ctx);
-    if (!sessionId) ***REMOVED***
-      redirect(ctx, "/");
-      return ***REMOVED******REMOVED***;
-    ***REMOVED***
-  ***REMOVED***
+  const ***REMOVED*** user ***REMOVED*** = ctx;
 
-  let user;
-
-  try ***REMOVED***
-    user = await api.activeUser(ctx);
-    if (user.role !== "admin") ***REMOVED***
-      throw new Error("Not permitted");
-    ***REMOVED***
-  ***REMOVED*** catch (err) ***REMOVED***
+  if (!user || user.role !== "admin") ***REMOVED***
     redirect(ctx, "/");
     return ***REMOVED******REMOVED***;
   ***REMOVED***
 
-  const jobs = await api.getPendingJobs(ctx);
-  return ***REMOVED*** user, jobs ***REMOVED***;
+  let jobs;
+  try ***REMOVED***
+    jobs = await api.getPendingJobs(ctx);
+  ***REMOVED*** catch (err) ***REMOVED***
+    console.log(err);
+  ***REMOVED***
+  return ***REMOVED*** jobs ***REMOVED***;
 ***REMOVED***;
 
 export default PendingJobs;

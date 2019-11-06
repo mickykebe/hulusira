@@ -46,6 +46,9 @@ const theme = createMuiTheme(***REMOVED***
     ***REMOVED***,
     button: ***REMOVED***
       fontWeight: 800
+    ***REMOVED***,
+    overline: ***REMOVED***
+      fontWeight: 800
     ***REMOVED***
   ***REMOVED***,
   boxShadows: ["0 1px 3px 0 rgba(0, 0, 0, 0.04)"]

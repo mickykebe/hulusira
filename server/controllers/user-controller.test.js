@@ -2,9 +2,15 @@ const faker = require("faker");
 const bcrypt = require("bcryptjs");
 const db = require("../db");
 const ***REMOVED*** User ***REMOVED*** = require("../models");
-const ***REMOVED*** login ***REMOVED*** = require("./user-controller");
+const ***REMOVED*** login, register, confirmUser ***REMOVED*** = require("./user-controller");
+const sendEmailUtil = require("../utils/send-email");
+const redis = require("../redis");
+
+jest.mock("../redis");
 jest.mock("../db");
 jest.mock("bcryptjs");
+jest.mock("../utils/create-confirmation-url");
+jest.mock("../utils/send-email");
 
 const mockRequest = (***REMOVED***
   body = ***REMOVED******REMOVED***,
@@ -31,6 +37,39 @@ const mockResponse = () => ***REMOVED***
 const sampleUser = (userData = ***REMOVED******REMOVED***) => ***REMOVED***
   return Object.assign(new User(), userData);
 ***REMOVED***;
+
+describe(`/register`, () => ***REMOVED***
+  it("registers user and sends confirmation email", async () => ***REMOVED***
+    const req = mockRequest(***REMOVED*** body: ***REMOVED******REMOVED*** ***REMOVED***);
+    const res = mockResponse();
+    db.createUser.mockResolvedValue(new User());
+    await register(req, res);
+    expect(sendEmailUtil.sendEmail).toHaveBeenCalledTimes(1);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.send).toHaveBeenCalledTimes(1);
+  ***REMOVED***);
+***REMOVED***);
+
+describe("/confirm-user", () => ***REMOVED***
+  it("confirms a user if confirmation token", async () => ***REMOVED***
+    const req = mockRequest(***REMOVED*** params: ***REMOVED*** token: faker.random.uuid() ***REMOVED*** ***REMOVED***);
+    const res = mockResponse();
+    const userId = faker.random.number();
+    redis.get.mockResolvedValue(userId);
+    await confirmUser(req, res);
+    expect(db.confirmUser).toHaveBeenCalledWith(userId);
+    expect(redis.del).toHaveBeenCalledTimes(1);
+    expect(res.sendStatus).toHaveBeenCalledWith(200);
+  ***REMOVED***);
+
+  it("responds with status 500 for non-existent confirmation", async () => ***REMOVED***
+    const req = mockRequest(***REMOVED*** params: ***REMOVED*** token: faker.random.uuid() ***REMOVED*** ***REMOVED***);
+    const res = mockResponse();
+    redis.get.mockResolvedValue(null);
+    await confirmUser(req, res);
+    expect(res.sendStatus).toHaveBeenCalledWith(500);
+  ***REMOVED***);
+***REMOVED***);
 
 describe(`/login`, () => ***REMOVED***
   it("wrong email returns 401", async () => ***REMOVED***

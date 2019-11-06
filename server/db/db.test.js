@@ -94,9 +94,10 @@ describe("db", () => ***REMOVED***
   ***REMOVED***);
 
   it("createJob creates job", async () => ***REMOVED***
+    const primaryTag = ***REMOVED*** name: "dev", isPrimary: true ***REMOVED***;
     const tagRes = await db.pool.query(
       `INSERT INTO tag(name, is_primary) VALUES ($1, $2) RETURNING *`,
-      ["dev", true]
+      [primaryTag.name, primaryTag.isPrimary]
     );
     const tagId = tagRes.rows[0].id;
     const company = await db.createCompany(***REMOVED***
@@ -124,8 +125,11 @@ describe("db", () => ***REMOVED***
       jobType: jobData.jobType,
       location: jobData.location,
       companyId: company.id,
-      primaryTagId: tagId,
       tags: [
+        ***REMOVED***
+          name: primaryTag.name,
+          isPrimary: true
+        ***REMOVED***,
         ***REMOVED***
           name: jobData.tags[0],
           isPrimary: false
@@ -146,7 +150,7 @@ describe("db", () => ***REMOVED***
     const tagCountRes = await db.pool.query(`SELECT COUNT(*) FROM tag`);
     expect(tagCountRes.rows[0].count).toBe("3");
     const jobTagRes = await db.pool.query(`SELECT COUNT(*) FROM job_tags`);
-    expect(jobTagRes.rows[0].count).toBe("2");
+    expect(jobTagRes.rows[0].count).toBe("3");
   ***REMOVED***);
 
   it("createJob should work without company", async () => ***REMOVED***
@@ -432,7 +436,7 @@ describe("db", () => ***REMOVED***
     expect(result2).toBe(0);
   ***REMOVED***);
 
-  it.only("getTags returns tags", async () => ***REMOVED***
+  it("getTags returns tags", async () => ***REMOVED***
     const rows = await db
       .knex("tag")
       .insert([sampleTagData(), sampleTagData()])

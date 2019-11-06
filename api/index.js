@@ -20,6 +20,28 @@ class Api ***REMOVED***
     return jobData;
   ***REMOVED***
 
+  async updateJob(id, data) ***REMOVED***
+    const ***REMOVED*** data: jobData ***REMOVED*** = await this.request().put(`/jobs/$***REMOVED***id***REMOVED***`, data);
+    return jobData;
+  ***REMOVED***
+
+  async createCompany(data) ***REMOVED***
+    const ***REMOVED*** data: company ***REMOVED*** = await this.request().post("/company", data);
+    return company;
+  ***REMOVED***
+
+  async updateCompany(companyId, data) ***REMOVED***
+    const ***REMOVED*** data: company ***REMOVED*** = await this.request().put(
+      `/company/$***REMOVED***companyId***REMOVED***`,
+      data
+    );
+    return company;
+  ***REMOVED***
+
+  deleteCompany(companyId) ***REMOVED***
+    return this.request().delete(`/company/$***REMOVED***companyId***REMOVED***`);
+  ***REMOVED***
+
   async uploadImage(file) ***REMOVED***
     const formData = new FormData();
     formData.append("image", file);
@@ -43,12 +65,29 @@ class Api ***REMOVED***
     return data;
   ***REMOVED***
 
+  async getMyJobs(ctx) ***REMOVED***
+    const ***REMOVED*** data: jobs ***REMOVED*** = await this.request(ctx).get(`/myjobs`);
+    return jobs;
+  ***REMOVED***
+
+  async getCompanies(ctx) ***REMOVED***
+    const ***REMOVED*** data: companies ***REMOVED*** = await this.request(ctx).get(`/company`);
+    return companies;
+  ***REMOVED***
+
+  async getCompany(ctx, companyId) ***REMOVED***
+    const ***REMOVED*** data: company ***REMOVED*** = await this.request(ctx).get(
+      `/company/$***REMOVED***companyId***REMOVED***`
+    );
+    return company;
+  ***REMOVED***
+
   async getPendingJobs(ctx) ***REMOVED***
     const ***REMOVED*** data ***REMOVED*** = await this.request(ctx).get(`/pending-jobs`);
     return data;
   ***REMOVED***
 
-  async getJob(slug, adminToken, ctx) ***REMOVED***
+  async getJob(ctx, slug, adminToken) ***REMOVED***
     const ***REMOVED*** data ***REMOVED*** = await this.request(ctx).get(
       `/jobs/$***REMOVED***slug***REMOVED***?$***REMOVED***!!adminToken ? `adminToken=$***REMOVED***adminToken***REMOVED***` : ""***REMOVED***`
     );
@@ -60,6 +99,18 @@ class Api ***REMOVED***
     return user;
   ***REMOVED***
 
+  register(data) ***REMOVED***
+    return this.request().post("/register", data);
+  ***REMOVED***
+
+  confirmUser(confirmationKey) ***REMOVED***
+    return this.request().get(`/confirm-user/$***REMOVED***confirmationKey***REMOVED***`);
+  ***REMOVED***
+
+  logout() ***REMOVED***
+    return this.request().get("/logout");
+  ***REMOVED***
+
   async activeUser(ctx) ***REMOVED***
     const ***REMOVED*** data: user ***REMOVED*** = await this.request(ctx).get(`/me`);
     return user;
@@ -67,6 +118,11 @@ class Api ***REMOVED***
 
   async approveJob(jobId) ***REMOVED***
     const ***REMOVED*** data ***REMOVED*** = await this.request().put("/approve-job", ***REMOVED*** jobId ***REMOVED***);
+    return data;
+  ***REMOVED***
+
+  async declineJob(jobId) ***REMOVED***
+    const ***REMOVED*** data ***REMOVED*** = await this.request().patch(`/jobs/$***REMOVED***jobId***REMOVED***/decline-job`);
     return data;
   ***REMOVED***
 

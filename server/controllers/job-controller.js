@@ -3,52 +3,61 @@ const db = require("../db/index");
 const socialHandler = require("../handlers/social");
 const utils = require("../utils");
 
-const validationSchema = Yup.object().shape(***REMOVED***
-  position: Yup.string().required("Required"),
-  jobType: Yup.string().required("Required"),
-  primaryTagId: Yup.number()
-    .nullable()
-    .test(
-      "primaryTag-required",
-      "Choose at least one tag here or enter a tag in the Extra Tags input below.",
+const validationSchema = Yup.object().shape(
+  ***REMOVED***
+    position: Yup.string().required("Required"),
+    jobType: Yup.string().required("Required"),
+    primaryTagId: Yup.number()
+      .nullable()
+      .test(
+        "primaryTag-required",
+        "Choose at least one tag here or enter a tag in the Extra Tags input below.",
+        function(value) ***REMOVED***
+          const tags = this.parent.tags;
+          if (!tags || tags.length === 0) ***REMOVED***
+            return !!value;
+          ***REMOVED***
+          return true;
+        ***REMOVED***
+      ),
+    tags: Yup.array().test(
+      "tags-required",
+      "Please enter at least one tag here or choose a tag in the Primary Tag input above.",
       function(value) ***REMOVED***
-        const tags = this.parent.tags;
-        if (!tags || tags.length === 0) ***REMOVED***
-          return !!value;
+        const ***REMOVED*** primaryTagId ***REMOVED*** = this.parent;
+        if (primaryTagId === null || primaryTagId === undefined) ***REMOVED***
+          return value && value.length > 0;
         ***REMOVED***
         return true;
       ***REMOVED***
     ),
-  tags: Yup.array().test(
-    "tags-required",
-    "Please enter at least one tag here or choose a tag in the Primary Tag input above.",
-    function(value) ***REMOVED***
-      const ***REMOVED*** primaryTagId ***REMOVED*** = this.parent;
-      if (primaryTagId === null || primaryTagId === undefined) ***REMOVED***
-        return value && value.length > 0;
-      ***REMOVED***
-      return true;
-    ***REMOVED***
-  ),
-  deadline: Yup.date()
-    .nullable()
-    .default(null),
-  description: Yup.string().required("Required"),
-  applyEmail: Yup.string()
-    .nullable()
-    .notRequired()
-    .email(),
-  companyName: Yup.string().when("hasCompany", ***REMOVED***
-    is: true,
-    then: Yup.string().required("Required")
-  ***REMOVED***),
-  companyEmail: Yup.string().when("hasCompany", ***REMOVED***
-    is: true,
-    then: Yup.string()
-      .email()
-      .required("Required")
-  ***REMOVED***)
-***REMOVED***);
+    deadline: Yup.date()
+      .nullable()
+      .default(null),
+    description: Yup.string().required("Required"),
+    applyEmail: Yup.string()
+      .nullable()
+      .notRequired()
+      .email(),
+    companyName: Yup.string().when(["hasCompany", "companyId"], ***REMOVED***
+      is: (hasCompany, companyId) => hasCompany && !companyId,
+      then: Yup.string().required("Required")
+    ***REMOVED***),
+    companyEmail: Yup.string().when(["hasCompany", "companyId"], ***REMOVED***
+      is: (hasCompany, companyId) => hasCompany && !companyId,
+      then: Yup.string()
+        .email()
+        .required("Required")
+    ***REMOVED***),
+    companyId: Yup.number()
+      .nullable()
+      .when(["hasCompany", "companyName"], ***REMOVED***
+        is: (hasCompany, companyName) => hasCompany && !companyName,
+        then: Yup.number().required("Required")
+      ***REMOVED***)
+  ***REMOVED***,
+  ["companyId", "companyName"]
+);
 
 exports.validateJobPost = async (req, res, next) => ***REMOVED***
   const jobData = req.body;
@@ -61,6 +70,30 @@ exports.validateJobPost = async (req, res, next) => ***REMOVED***
   next();
 ***REMOVED***;
 
+exports.editJob = async (req, res) => ***REMOVED***
+  const ***REMOVED*** id ***REMOVED*** = req.params;
+  const data = req.body;
+  const ***REMOVED*** hasCompany, ...jobData ***REMOVED*** = data;
+  const count = await db.jobCount(***REMOVED*** id, owner: req.user.id ***REMOVED***);
+  if (count !== 1) ***REMOVED***
+    throw new Error("Job unavailable");
+  ***REMOVED***
+
+  if (!hasCompany) ***REMOVED***
+    jobData.companyId = null;
+  ***REMOVED***
+
+  if (jobData.companyId) ***REMOVED***
+    const company = await db.getCompany(jobData.companyId, req.user.id);
+    if (!company) ***REMOVED***
+      throw new Error("Company not found");
+    ***REMOVED***
+  ***REMOVED***
+
+  const job = await db.updateJob(id, jobData);
+  res.status(200).send(job);
+***REMOVED***;
+
 exports.createJob = async (req, res) => ***REMOVED***
   const data = req.body;
   const ***REMOVED***
@@ -68,21 +101,37 @@ exports.createJob = async (req, res) => ***REMOVED***
     companyName,
     companyEmail,
     companyLogo,
+    companyId,
     ...jobData
   ***REMOVED*** = data;
-  let company = null;
-  if (hasCompany) ***REMOVED***
-    company = ***REMOVED***
-      name: companyName,
-      email: companyEmail,
-      logo: companyLogo
-    ***REMOVED***;
-  ***REMOVED***
   const isAdminUser = req.user && req.user.role === "admin";
-  if (isAdminUser) ***REMOVED***
-    jobData.approved = true;
+  if (req.user) ***REMOVED***
+    jobData.owner = req.user.id;
   ***REMOVED***
-  const resData = await db.createJobAndCompany(***REMOVED*** company, job: jobData ***REMOVED***);
+  if (isAdminUser) ***REMOVED***
+    jobData.approvalStatus = "Approved";
+  ***REMOVED***
+  let resData;
+  if (hasCompany) ***REMOVED***
+    if (companyId) ***REMOVED***
+      const company = await db.getCompany(companyId, req.user.id);
+      if (!company) ***REMOVED***
+        throw new Error("Company not found");
+      ***REMOVED***
+      const job = await db.createJob(jobData, companyId);
+      resData = ***REMOVED*** job, company ***REMOVED***;
+    ***REMOVED*** else ***REMOVED***
+      const company = ***REMOVED***
+        name: companyName,
+        email: companyEmail,
+        logo: companyLogo
+      ***REMOVED***;
+      if (req.user) ***REMOVED***
+        company.owner = req.user.id;
+      ***REMOVED***
+      resData = await db.createJobAndCompany(***REMOVED*** company, job: jobData ***REMOVED***);
+    ***REMOVED***
+  ***REMOVED***
   if (isAdminUser) ***REMOVED***
     socialHandler.postJobToSocialMedia(resData);
   ***REMOVED***
@@ -110,7 +159,7 @@ exports.getJobs = async (req, res) => ***REMOVED***
   const jobs = await db.getJobs(***REMOVED***
     fromJobId,
     limit: count + 1,
-    approved: true,
+    approvalStatus: "Approved",
     withinDays: 30,
     tagIds,
     publicOnly: true
@@ -126,10 +175,24 @@ exports.getJobs = async (req, res) => ***REMOVED***
   res.status(200).send(data);
 ***REMOVED***;
 
-exports.pendingJobs = async (_, res) => ***REMOVED***
-  const jobs = await db.getJobs(***REMOVED*** approved: false ***REMOVED***);
+exports.myJobs = async (req, res) => ***REMOVED***
+  const ownerId = req.user.id;
+  if (!ownerId) ***REMOVED***
+    throw new Error("Not logged in");
+  ***REMOVED***
+  const jobs = await db.getJobs(***REMOVED*** ownerId, withinDays: 30 ***REMOVED***);
   res.status(200).send(jobs);
 ***REMOVED***;
+
+exports.pendingJobs = async (_, res) => ***REMOVED***
+  const jobs = await db.getJobs(***REMOVED*** approvalStatus: "Pending" ***REMOVED***);
+  res.status(200).send(jobs);
+***REMOVED***;
+
+function publicCompany(company) ***REMOVED***
+  const ***REMOVED*** owner, ...companyData ***REMOVED*** = company;
+  return companyData;
+***REMOVED***
 
 exports.getJob = async (req, res) => ***REMOVED***
   const ***REMOVED*** slug ***REMOVED*** = req.params;
@@ -139,13 +202,26 @@ exports.getJob = async (req, res) => ***REMOVED***
     return;
   ***REMOVED***
   const ***REMOVED*** adminToken ***REMOVED*** = req.query;
-  const isJobAdmin = !!adminToken && jobData.job.adminToken === adminToken;
+  let hasAdminPermission = false;
 
-  if (!isJobAdmin) ***REMOVED***
-    jobData.job = jobData.job.publicData();
+  if (req.user) ***REMOVED***
+    hasAdminPermission =
+      req.user.role === "admin" || req.user.id === jobData.job.owner;
+  ***REMOVED*** else if (adminToken) ***REMOVED***
+    hasAdminPermission = jobData.job.adminToken === adminToken;
   ***REMOVED***
 
-  if ((jobData.job.closed || !jobData.job.approved) && !isJobAdmin) ***REMOVED***
+  if (!hasAdminPermission) ***REMOVED***
+    jobData.job = jobData.job.publicData();
+    if (jobData.company) ***REMOVED***
+      jobData.company = publicCompany(jobData.company);
+    ***REMOVED***
+  ***REMOVED***
+
+  if (
+    (jobData.job.closed || jobData.job.approvalStatus !== "Approved") &&
+    !hasAdminPermission
+  ) ***REMOVED***
     res.sendStatus(404);
     return;
   ***REMOVED***
@@ -177,6 +253,16 @@ exports.approveJob = async (req, res) => ***REMOVED***
   res.sendStatus(404);
 ***REMOVED***;
 
+exports.declineJob = async (req, res) => ***REMOVED***
+  const ***REMOVED*** id ***REMOVED*** = req.params;
+  const affectedRows = await db.declineJob(id);
+  if (affectedRows === 1) ***REMOVED***
+    res.status(200).send(true);
+    return;
+  ***REMOVED***
+  res.sendStatus(404);
+***REMOVED***;
+
 exports.removeJob = async (req, res) => ***REMOVED***
   const ***REMOVED*** jobId ***REMOVED*** = req.params;
   const affectedRows = await db.deleteJob(jobId);
@@ -193,7 +279,10 @@ exports.permitJobAdmin = async (req, res, next) => ***REMOVED***
   const jobData = await db.getJobById(id);
   if (jobData !== null) ***REMOVED***
     const ***REMOVED*** job ***REMOVED*** = jobData;
-    if (job.adminToken === adminToken) ***REMOVED***
+    if (
+      (adminToken && job.adminToken === adminToken) ||
+      (req.user && req.user.id === job.owner)
+    ) ***REMOVED***
       next();
       return;
     ***REMOVED***

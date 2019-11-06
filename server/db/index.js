@@ -3,6 +3,7 @@ const ***REMOVED*** Pool ***REMOVED*** = require("pg");
 const ***REMOVED*** Company, Tag, Job, User ***REMOVED*** = require("../models");
 const Knex = require("knex");
 const slug = require("slug");
+const bcrypt = require("bcryptjs");
 
 class Db ***REMOVED***
   constructor() ***REMOVED***
@@ -31,7 +32,9 @@ class Db ***REMOVED***
       "created",
       "slug",
       "admin_token",
-      "deadline"
+      "deadline",
+      "owner",
+      "approval_status"
     ];
     this.companyColumns = ["id", "name", "email", "logo", "verified"];
   ***REMOVED***
@@ -56,20 +59,22 @@ class Db ***REMOVED***
 
   async createJob(jobData, companyId = null) ***REMOVED***
     assert(!!jobData);
+    let primaryTag;
 
     if (jobData.primaryTagId) ***REMOVED***
-      const tagRows = await this.knex("tag")
-        .select()
+      const primaryTagRow = await this.knex("tag")
+        .first()
         .where("id", jobData.primaryTagId);
-      if (tagRows.length === 0 || tagRows[0].is_primary === false) ***REMOVED***
+      if (!primaryTagRow || primaryTagRow.is_primary === false) ***REMOVED***
         throw new Error("Primary tag value set to invalid tag");
       ***REMOVED***
+      primaryTag = Tag.fromDb(primaryTagRow);
     ***REMOVED***
 
     const job = await this.knex.transaction(async trx => ***REMOVED***
-      const tags = await await Promise.all(
+      const tags = (await Promise.all(
         jobData.tags.map(tagName => this.findOrCreateTag(tagName, ***REMOVED*** trx ***REMOVED***))
-      );
+      )).map(tag => (***REMOVED*** ...tag, isPrimary: false ***REMOVED***));
 
       let rows = await trx("job")
         .insert(***REMOVED***
@@ -85,7 +90,8 @@ class Db ***REMOVED***
           how_to_apply: jobData.howToApply,
           apply_url: jobData.applyUrl,
           apply_email: jobData.applyEmail,
-          approved: !!jobData.approved || false
+          approval_status: jobData.approvalStatus || "Pending",
+          owner: jobData.owner || null
         ***REMOVED***)
         .returning(this.selectColumns("job", "job", this.jobColumns));
 
@@ -101,11 +107,79 @@ class Db ***REMOVED***
         ***REMOVED***)
         .returning(this.selectColumns("job", "job", this.jobColumns));
 
-      const job = Job.fromDb(rows[0], tags);
+      const job = Job.fromDb(
+        rows[0],
+        primaryTag ? [primaryTag, ...tags] : tags
+      );
 
       if (jobData.primaryTagId) ***REMOVED***
         await this.createJobTag(job.id, jobData.primaryTagId, true, ***REMOVED*** trx ***REMOVED***);
       ***REMOVED***
+      await Promise.all(
+        tags.map(tag => this.createJobTag(job.id, tag.id, false, ***REMOVED*** trx ***REMOVED***))
+      );
+
+      return job;
+    ***REMOVED***);
+
+    return job;
+  ***REMOVED***
+
+  async updateJob(jobId, jobData) ***REMOVED***
+    let primaryTag;
+
+    if (jobData.primaryTagId) ***REMOVED***
+      const primaryTagRow = await this.knex("tag")
+        .first()
+        .where("id", jobData.primaryTagId);
+      if (!primaryTagRow || primaryTagRow.is_primary === false) ***REMOVED***
+        throw new Error("Primary tag value set to invalid tag");
+      ***REMOVED***
+      primaryTag = Tag.fromDb(primaryTagRow);
+    ***REMOVED***
+
+    const job = await this.knex.transaction(async trx => ***REMOVED***
+      await trx("job_tags")
+        .where(***REMOVED***
+          job_id: jobId
+        ***REMOVED***)
+        .del();
+
+      const tags = (await Promise.all(
+        jobData.tags.map(tagName => this.findOrCreateTag(tagName, ***REMOVED*** trx ***REMOVED***))
+      )).map(tag => (***REMOVED*** ...tag, isPrimary: false ***REMOVED***));
+
+      let rows = await trx("job")
+        .where("id", jobId)
+        .update(***REMOVED***
+          position: jobData.position,
+          job_type: jobData.jobType,
+          company_id: jobData.companyId,
+          location: jobData.location,
+          salary: jobData.salary,
+          deadline: jobData.deadline,
+          description: jobData.description,
+          responsibilities: jobData.responsibilities,
+          requirements: jobData.requirements,
+          how_to_apply: jobData.howToApply,
+          apply_url: jobData.applyUrl,
+          apply_email: jobData.applyEmail
+        ***REMOVED***)
+        .returning(this.selectColumns("job", "job", this.jobColumns));
+
+      if (rows.length !== 1) ***REMOVED***
+        throw new Error("Problem occurred updating job");
+      ***REMOVED***
+
+      const job = Job.fromDb(
+        rows[0],
+        primaryTag ? [primaryTag, ...tags] : tags
+      );
+
+      if (jobData.primaryTagId) ***REMOVED***
+        await this.createJobTag(job.id, jobData.primaryTagId, true, ***REMOVED*** trx ***REMOVED***);
+      ***REMOVED***
+
       await Promise.all(
         tags.map(tag => this.createJobTag(job.id, tag.id, false, ***REMOVED*** trx ***REMOVED***))
       );
@@ -129,10 +203,34 @@ class Db ***REMOVED***
       .insert(***REMOVED***
         name: companyData.name,
         email: companyData.email,
-        logo: companyData.logo
+        logo: companyData.logo,
+        owner: companyData.owner || null
       ***REMOVED***)
       .returning(this.selectColumns("company", "company", this.companyColumns));
     return Company.fromDb(rows[0]);
+  ***REMOVED***
+
+  async updateCompany(companyId, ownerId, companyData) ***REMOVED***
+    const rows = await this.knex("company")
+      .where(***REMOVED***
+        id: companyId,
+        owner: ownerId
+      ***REMOVED***)
+      .update(***REMOVED***
+        name: companyData.name,
+        email: companyData.email,
+        logo: companyData.logo
+      ***REMOVED***)
+      .returning("*");
+    if (rows.length > 0) ***REMOVED***
+      return rows[0];
+    ***REMOVED***
+  ***REMOVED***
+
+  getCompanies(ownerId) ***REMOVED***
+    return this.knex("company")
+      .select()
+      .where("owner", ownerId);
   ***REMOVED***
 
   async findOrCreateTag(name, ***REMOVED*** trx = null ***REMOVED*** = ***REMOVED******REMOVED***) ***REMOVED***
@@ -155,10 +253,11 @@ class Db ***REMOVED***
     fromJobId,
     limit,
     closed = false,
-    approved,
+    approvalStatus,
     withinDays,
     tagIds = [],
-    publicOnly = false
+    publicOnly = false,
+    ownerId
   ***REMOVED*** = ***REMOVED******REMOVED***) ***REMOVED***
     let query = this.knex("job")
       .select(
@@ -180,8 +279,11 @@ class Db ***REMOVED***
     if (typeof fromJobId === "number") ***REMOVED***
       query = query.andWhere("job.id", "<=", fromJobId);
     ***REMOVED***
-    if (typeof approved === "boolean") ***REMOVED***
-      query = query.andWhere("job.approved", approved);
+    if (ownerId) ***REMOVED***
+      query = query.andWhere("job.owner", ownerId);
+    ***REMOVED***
+    if (approvalStatus) ***REMOVED***
+      query = query.andWhere("job.approval_status", approvalStatus);
     ***REMOVED***
     if (typeof withinDays === "number") ***REMOVED***
       query = query.andWhere(
@@ -229,7 +331,7 @@ class Db ***REMOVED***
       )
       .first(
         this.knex.raw(
-          `coalesce(json_agg(json_build_object('id', extra_tags.id, 'name', extra_tags.name, 'isPrimary', extra_tags.is_primary)) filter (where extra_tags.id IS NOT NULL), '[]') as tags`
+          `coalesce(json_agg(json_build_object('id', extra_tags.id, 'name', extra_tags.name, 'isPrimary', job_tags.is_primary)) filter (where extra_tags.id IS NOT NULL), '[]') as tags`
         )
       )
       .leftJoin("company", "job.company_id", "company.id")
@@ -238,6 +340,20 @@ class Db ***REMOVED***
         this.knex.raw("tag extra_tags on job_tags.tag_id = extra_tags.id")
       )
       .groupBy("job.id", "company.id");
+  ***REMOVED***
+
+  async jobCount(***REMOVED*** id, owner ***REMOVED***) ***REMOVED***
+    const result = await this.knex("job")
+      .count("id")
+      .where(***REMOVED***
+        ...(id && ***REMOVED***
+          id
+        ***REMOVED***),
+        ...(owner && ***REMOVED***
+          owner
+        ***REMOVED***)
+      ***REMOVED***);
+    return parseInt(result[0].count);
   ***REMOVED***
 
   async getJobBySlug(slug, where) ***REMOVED***
@@ -268,6 +384,15 @@ class Db ***REMOVED***
     return null;
   ***REMOVED***
 
+  getCompany(companyId, ownerId) ***REMOVED***
+    return this.knex("company")
+      .first()
+      .where(***REMOVED***
+        id: companyId,
+        owner: ownerId
+      ***REMOVED***);
+  ***REMOVED***
+
   async getUserByEmail(email) ***REMOVED***
     const row = await this.knex("users")
       .first()
@@ -275,6 +400,34 @@ class Db ***REMOVED***
     if (!!row) ***REMOVED***
       return User.fromDb(row);
     ***REMOVED***
+  ***REMOVED***
+
+  async createUser(userData) ***REMOVED***
+    const hashedPassword = await bcrypt.hash(userData.password, 15);
+    if (!userData) ***REMOVED***
+      throw new Error("Invalid user data supplied");
+    ***REMOVED***
+    const rows = await this.knex("users")
+      .insert(***REMOVED***
+        first_name: userData.firstName,
+        last_name: userData.lastName,
+        email: userData.email,
+        password: hashedPassword,
+        role: userData.role
+      ***REMOVED***)
+      .returning("*");
+    if (rows.length !== 1) ***REMOVED***
+      throw new Error("Problem occurred creating user");
+    ***REMOVED***
+    return User.fromDb(rows[0]);
+  ***REMOVED***
+
+  async confirmUser(userId) ***REMOVED***
+    await this.knex("users")
+      .where("id", userId)
+      .update(***REMOVED***
+        confirmed: true
+      ***REMOVED***);
   ***REMOVED***
 
   async getUserById(id) ***REMOVED***
@@ -305,13 +458,30 @@ class Db ***REMOVED***
     return this.knex("job")
       .where("id", id)
       .update(***REMOVED***
-        approved: true
+        approval_status: "Approved"
+      ***REMOVED***);
+  ***REMOVED***
+
+  declineJob(id) ***REMOVED***
+    return this.knex("job")
+      .where("id", id)
+      .update(***REMOVED***
+        approval_status: "Declined"
       ***REMOVED***);
   ***REMOVED***
 
   deleteJob(id) ***REMOVED***
     return this.knex("job")
       .where("id", id)
+      .del();
+  ***REMOVED***
+
+  deleteCompany(id, ownerId) ***REMOVED***
+    return this.knex("company")
+      .where(***REMOVED***
+        id,
+        owner: ownerId
+      ***REMOVED***)
       .del();
   ***REMOVED***
 
@@ -346,6 +516,28 @@ class Db ***REMOVED***
   deleteJobSocialPost(jobId) ***REMOVED***
     return this.knex("job_social_post")
       .where("job_id", jobId)
+      .del();
+  ***REMOVED***
+
+  createUserConfirmation(userId, confirmationKey) ***REMOVED***
+    return this.knex("user_confirmation").insert(***REMOVED***
+      user_id: userId,
+      confirmation_key: confirmationKey
+    ***REMOVED***);
+  ***REMOVED***
+
+  async getUserConfirmation(confirmationKey) ***REMOVED***
+    const row = await this.knex("user_confirmation")
+      .first()
+      .where("confirmation_key", confirmationKey);
+    if (row) ***REMOVED***
+      return ***REMOVED*** userId: row.user_id, confirmationKey: row.confirmation_key ***REMOVED***;
+    ***REMOVED***
+  ***REMOVED***
+
+  deleteUserConfirmation(userId) ***REMOVED***
+    return this.knex("user_confirmation")
+      .where("user_id", userId)
       .del();
   ***REMOVED***
 

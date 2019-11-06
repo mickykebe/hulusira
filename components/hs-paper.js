@@ -10,10 +10,11 @@ const useStyles = makeStyles(theme => (***REMOVED***
   ***REMOVED***
 ***REMOVED***));
 
-export default function HSPaper(props) ***REMOVED***
+export default function HSPaper(***REMOVED*** className = "", ...props ***REMOVED***) ***REMOVED***
   const classes = useStyles();
   return (
     <Paper
+      className=***REMOVED***className***REMOVED***
       classes=***REMOVED******REMOVED***
         root: classes.root,
         elevation1: classes.elevation1
