@@ -63,7 +63,7 @@ export default function DashboardJobs({ user, jobs }) {
 
   return (
     <DashboardLayout user={user} selectedItem="jobs">
-      <Container maxWidth="md">
+      <Container maxWidth="lg">
         <Box display="flex" py={2}>
           <Box flex="1" />
           <Button
