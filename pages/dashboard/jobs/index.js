@@ -107,8 +107,8 @@ export default function DashboardJobs({ user, jobs }) {
                         variant="head"
                         classes={{ head: classes.tableHead }}>
                         <Link
-                          href="/jobs/[slug]"
-                          as={`/jobs/${job.slug}`}
+                          href="/dashboard/jobs/[slug]"
+                          as={`/dashboard/jobs/${job.slug}`}
                           passHref>
                           <MuiLink color="inherit" variant="subtitle1">
                             {job.position}

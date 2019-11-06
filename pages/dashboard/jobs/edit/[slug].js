@@ -66,5 +66,9 @@ EditJob.getInitialProps = async function(ctx) {
     api.getPrimaryTags(ctx)
   ]);
 
+  if (jobData.job.owner !== user.id) {
+    redirect(ctx, "/dashboard/jobs");
+  }
+
   return { jobData, companies, primaryTags };
 };
