@@ -30,7 +30,7 @@ export default function JobDetailsFormElement({
     <HSCard title="Job Details">
       <TextField
         name="position"
-        label="Position"
+        label="Position*"
         variant="outlined"
         fullWidth
         margin="normal"
@@ -58,7 +58,7 @@ export default function JobDetailsFormElement({
       </TextField>
       <TextField
         name="location"
-        label="Location"
+        label="Location (optional)"
         variant="outlined"
         fullWidth
         margin="normal"
@@ -111,7 +111,7 @@ export default function JobDetailsFormElement({
       />
       <TextField
         name="salary"
-        label="Salary"
+        label="Salary (optional)"
         variant="outlined"
         margin="normal"
         fullWidth
@@ -127,7 +127,7 @@ export default function JobDetailsFormElement({
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <DatePicker
           format="yyyy-MM-dd"
-          label="Application Deadline"
+          label="Application Deadline (optional)"
           inputVariant="outlined"
           value={values.deadline}
           onChange={date => setFieldValue("deadline", date)}
@@ -144,19 +144,19 @@ export default function JobDetailsFormElement({
       />
       <MDEditor
         id="requirements"
-        label="Job Requirements"
+        label="Job Requirements (optional)"
         value={values.requirements}
         onChange={handleMdeChange("requirements")}
       />
       <MDEditor
         id="responsibilities"
-        label="Job Responsibilities"
+        label="Job Responsibilities (optional)"
         value={values.responsibilities}
         onChange={handleMdeChange("responsibilities")}
       />
       <MDEditor
         id="how_to_apply"
-        label="How to Apply"
+        label="How to Apply (optional)"
         value={values.howToApply}
         onChange={handleMdeChange("howToApply")}
       />
@@ -164,7 +164,7 @@ export default function JobDetailsFormElement({
         <Box flex="1" flexBasis={["100%", "0"]}>
           <TextField
             name="applyUrl"
-            label="Apply URL*"
+            label="Apply URL (optional)"
             variant="outlined"
             margin="normal"
             helperText="The url can be a link to your telegram account, facebook URL or to a site where the job is posted."
@@ -184,7 +184,7 @@ export default function JobDetailsFormElement({
         <Box flex="1" flexBasis={["100%", "0"]}>
           <TextField
             name="applyEmail"
-            label="Apply Email*"
+            label="Apply Email (optional)"
             variant="outlined"
             margin="normal"
             helperText="Your email address"
