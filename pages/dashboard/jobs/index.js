@@ -107,8 +107,8 @@ export default function DashboardJobs(***REMOVED*** user, jobs ***REMOVED***) **
                         variant="head"
                         classes=***REMOVED******REMOVED*** head: classes.tableHead ***REMOVED******REMOVED***>
                         <Link
-                          href="/jobs/[slug]"
-                          as=***REMOVED***`/jobs/$***REMOVED***job.slug***REMOVED***`***REMOVED***
+                          href="/dashboard/jobs/[slug]"
+                          as=***REMOVED***`/dashboard/jobs/$***REMOVED***job.slug***REMOVED***`***REMOVED***
                           passHref>
                           <MuiLink color="inherit" variant="subtitle1">
                             ***REMOVED***job.position***REMOVED***

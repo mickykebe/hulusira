@@ -66,5 +66,9 @@ EditJob.getInitialProps = async function(ctx) ***REMOVED***
     api.getPrimaryTags(ctx)
   ]);
 
+  if (jobData.job.owner !== user.id) ***REMOVED***
+    redirect(ctx, "/dashboard/jobs");
+  ***REMOVED***
+
   return ***REMOVED*** jobData, companies, primaryTags ***REMOVED***;
 ***REMOVED***;

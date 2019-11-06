@@ -4,45 +4,14 @@ import Router, ***REMOVED*** useRouter ***REMOVED*** from "next/router";
 import nextCookie from "next-cookies";
 import api from "../../api";
 import Layout from "../../components/layout";
-import JobContent from "../../components/job-content";
-import ***REMOVED*** Toolbar, Button, Box, Container ***REMOVED*** from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
-import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
-import Banner from "../../components/banner";
-import HSSnackbar from "../../components/hs-snackbar";
-import JobCloseDialog from "../../components/job-close-dialog";
-
-const useStyles = makeStyles(theme => (***REMOVED***
-  toolbar: ***REMOVED***
-    padding: 0
-  ***REMOVED***,
-  closeIcon: ***REMOVED***
-    fontSize: "1.125rem",
-    marginRight: theme.spacing(0.5)
-  ***REMOVED***
-***REMOVED***));
-
-function jobCloseReducer(state, action) ***REMOVED***
-  switch (action.type) ***REMOVED***
-    case "CLOSING_JOB":
-      return ***REMOVED*** ...state, isClosingJob: true, errorClosingJob: false ***REMOVED***;
-    case "CLOSED_JOB":
-      return ***REMOVED*** ...state, isClosingJob: false, errorClosingJob: false ***REMOVED***;
-    case "ERROR_CLOSING_JOB":
-      return ***REMOVED*** ...state, isClosingJob: false, errorClosingJob: true ***REMOVED***;
-    case "CLEAR_ERROR":
-      return ***REMOVED*** ...state, errorClosingJob: false ***REMOVED***;
-    default:
-      throw new Error("Unidentified action type");
-  ***REMOVED***
-***REMOVED***
+import JobContentManage from "../../components/job-content-manage";
+import jobCloseReducer from "../../reducers/close-job";
 
 function Job(***REMOVED*** user, jobData, adminToken ***REMOVED***) ***REMOVED***
   const [***REMOVED*** isClosingJob, errorClosingJob ***REMOVED***, dispatch] = useReducer(
     jobCloseReducer,
     ***REMOVED*** isClosingJob: false, errorClosingJob: false ***REMOVED***
   );
-  const classes = useStyles();
   const [isValidToken, setIsValidToken] = useState(false);
   const [jobDialogOpen, setJobDialogOpen] = useState(false);
   useEffect(() => ***REMOVED***
@@ -51,7 +20,7 @@ function Job(***REMOVED*** user, jobData, adminToken ***REMOVED***) ***REMOVED**
         await api.verifyJobToken(id, adminToken);
         setIsValidToken(true);
       ***REMOVED*** catch (err) ***REMOVED***
-        setIsValidToken(true);
+        setIsValidToken(false);
       ***REMOVED***
     ***REMOVED***;
     const ***REMOVED*** job ***REMOVED*** = jobData;
@@ -103,45 +72,15 @@ function Job(***REMOVED*** user, jobData, adminToken ***REMOVED***) ***REMOVED**
         />
         <meta property="twitter:url" content=***REMOVED***url***REMOVED*** />
       </Head>
-      <Container>
-        ***REMOVED***jobData.job.closed && (
-          <Banner message="This job is closed and thus no longer publicly accessible." />
-        )***REMOVED***
-        ***REMOVED***!jobData.job.closed && jobData.job.approvalStatus === "Pending" && (
-          <Banner message="This job is pending. It will be live once it gets admin approval." />
-        )***REMOVED***
-        ***REMOVED***!jobData.job.closed && jobData.job.approvalStatus === "Declined" && (
-          <Banner
-            variant="error"
-            message="Administrator has declined to approve this post."
-          />
-        )***REMOVED***
-        ***REMOVED***!!isValidToken && !jobData.job.closed && (
-          <Toolbar className=***REMOVED***classes.toolbar***REMOVED***>
-            <Box flex=***REMOVED***1***REMOVED*** />
-            <Button
-              variant="contained"
-              color="secondary"
-              size="small"
-              disabled=***REMOVED***isClosingJob***REMOVED***
-              onClick=***REMOVED***() => setJobDialogOpen(true)***REMOVED***>
-              <CloseIcon className=***REMOVED***classes.closeIcon***REMOVED*** /> Close Job
-            </Button>
-          </Toolbar>
-        )***REMOVED***
-      </Container>
-      <JobContent jobData=***REMOVED***jobData***REMOVED*** />
-      <JobCloseDialog
-        open=***REMOVED***jobDialogOpen***REMOVED***
-        onClose=***REMOVED***() => setJobDialogOpen(false)***REMOVED***
-        onConfirmation=***REMOVED***handleCloseJob***REMOVED***
-      />
-      <HSSnackbar
-        open=***REMOVED***errorClosingJob***REMOVED***
-        variant="error"
-        message="Problem occurred closing job."
-        autoHideDuration=***REMOVED***3000***REMOVED***
-        onClose=***REMOVED***() => dispatch(***REMOVED*** type: "CLEAR_ERROR" ***REMOVED***)***REMOVED***
+      <JobContentManage
+        isJobOwner=***REMOVED***isValidToken***REMOVED***
+        jobData=***REMOVED***jobData***REMOVED***
+        onJobClose=***REMOVED***handleCloseJob***REMOVED***
+        isClosingJob=***REMOVED***isClosingJob***REMOVED***
+        errorClosingJob=***REMOVED***errorClosingJob***REMOVED***
+        clearCloseError=***REMOVED***() => dispatch(***REMOVED*** type: "CLEAR_ERROR" ***REMOVED***)***REMOVED***
+        closeDialogOpen=***REMOVED***jobDialogOpen***REMOVED***
+        setCloseDialogOpen=***REMOVED***setJobDialogOpen***REMOVED***
       />
     </Layout>
   );
@@ -151,11 +90,8 @@ Job.getInitialProps = async ctx => ***REMOVED***
   const ***REMOVED*** slug ***REMOVED*** = ctx.query;
   const cookies = nextCookie(ctx);
   const adminToken = cookies[slug];
-  const [primaryTags, jobData] = await Promise.all([
-    api.getPrimaryTags(ctx),
-    api.getJob(ctx, slug, adminToken)
-  ]);
-  return ***REMOVED*** jobData, primaryTags, adminToken ***REMOVED***;
+  const jobData = await api.getJob(ctx, slug, adminToken);
+  return ***REMOVED*** jobData, adminToken ***REMOVED***;
 ***REMOVED***;
 
 export default Job;
