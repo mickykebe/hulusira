@@ -105,7 +105,7 @@ export default function Layout({
           <Box flex="1" />
           {!user && (
             <MuiLink className={classes.navLink} href="/login">
-              Login
+              Login/Register
             </MuiLink>
           )}
           {!!user && (
