@@ -63,7 +63,7 @@ export default function DashboardJobs(***REMOVED*** user, jobs ***REMOVED***) **
 
   return (
     <DashboardLayout user=***REMOVED***user***REMOVED*** selectedItem="jobs">
-      <Container maxWidth="md">
+      <Container maxWidth="lg">
         <Box display="flex" py=***REMOVED***2***REMOVED***>
           <Box flex="1" />
           <Button
