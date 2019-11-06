@@ -230,7 +230,8 @@ class Db ***REMOVED***
   getCompanies(ownerId) ***REMOVED***
     return this.knex("company")
       .select()
-      .where("owner", ownerId);
+      .where("owner", ownerId)
+      .orderBy("name", "asc");
   ***REMOVED***
 
   async findOrCreateTag(name, ***REMOVED*** trx = null ***REMOVED*** = ***REMOVED******REMOVED***) ***REMOVED***
