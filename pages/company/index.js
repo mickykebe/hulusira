@@ -112,8 +112,7 @@ function Companies(***REMOVED*** user, companies ***REMOVED***) ***REMOVED***
         <DialogTitle>Delete this company?</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Deleting this company will dissociate it from all jobs created under
-            it.
+            Deleting this company will remove all jobs posted under it.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
