@@ -58,7 +58,7 @@ export default function CompanyForm(***REMOVED***
           <form className=***REMOVED***classes.form***REMOVED*** onSubmit=***REMOVED***handleSubmit***REMOVED***>
             <HSCard title="Company">
               <TextField
-                label="Company Name"
+                label="Company Name*"
                 variant="outlined"
                 margin="normal"
                 fullWidth

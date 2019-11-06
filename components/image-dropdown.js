@@ -39,7 +39,7 @@ export default function ImageDropdown(***REMOVED*** preview = "", files, onFiles
         </div>
         <div>
           <Typography align="center" variant="h6">
-            Company Logo
+            Company Logo (optional)
           </Typography>
           <Typography align="center" variant="body1">
             Drag 'n' drop or click to upload company logo
