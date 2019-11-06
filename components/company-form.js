@@ -58,7 +58,7 @@ export default function CompanyForm({
           <form className={classes.form} onSubmit={handleSubmit}>
             <HSCard title="Company">
               <TextField
-                label="Company Name"
+                label="Company Name*"
                 variant="outlined"
                 margin="normal"
                 fullWidth
