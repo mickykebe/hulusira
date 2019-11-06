@@ -105,7 +105,7 @@ export default function Layout(***REMOVED***
           <Box flex="1" />
           ***REMOVED***!user && (
             <MuiLink className=***REMOVED***classes.navLink***REMOVED*** href="/login">
-              Login
+              Login/Register
             </MuiLink>
           )***REMOVED***
           ***REMOVED***!!user && (
