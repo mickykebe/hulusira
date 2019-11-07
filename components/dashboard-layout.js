@@ -95,7 +95,7 @@ export default function DashboardLayout({ user, children, selectedItem }) {
               <ListItem
                 selected={selectedItem === "company"}
                 button
-                onClick={() => Router.push("/company")}>
+                onClick={() => Router.push("/dashboard/companies")}>
                 <ListItemIcon>
                   <BusinessIcon />
                 </ListItemIcon>

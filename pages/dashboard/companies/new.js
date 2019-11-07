@@ -1,9 +1,9 @@
-import DashboardLayout from "../../components/dashboard-layout";
-import redirect from "../../utils/redirect";
+import DashboardLayout from "../../../components/dashboard-layout";
+import redirect from "../../../utils/redirect";
 import Router from "next/router";
 import { Container } from "@material-ui/core";
-import api from "../../api";
-import CompanyForm from "../../components/company-form";
+import api from "../../../api";
+import CompanyForm from "../../../components/company-form";
 
 export default function NewCompany({ user }) {
   const handleSubmit = async function(values, files) {
@@ -15,7 +15,7 @@ export default function NewCompany({ user }) {
       ...values,
       logo
     });
-    Router.push("/company");
+    Router.push("/dashboard/companies");
   };
   return (
     <DashboardLayout user={user}>

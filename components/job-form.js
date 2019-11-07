@@ -153,7 +153,7 @@ export default function JobForm({
                     color="primary"
                     variant="contained"
                     startIcon={<BusinessIcon />}
-                    onClick={() => Router.push("/company/new")}>
+                    onClick={() => Router.push("/dashboard/companies/new")}>
                     Add Company
                   </Button>
                 </Box>
