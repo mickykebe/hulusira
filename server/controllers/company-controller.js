@@ -30,12 +30,16 @@ exports.companies = async (req, res) => ***REMOVED***
 
 exports.getCompany = async (req, res) => ***REMOVED***
   const ***REMOVED*** companyId ***REMOVED*** = req.params;
-  const ownerId = req.user.id;
-  const company = await db.getCompany(companyId, ownerId);
+  let company = await db.getCompany(companyId);
   if (!company) ***REMOVED***
     throw new Error("Company not found!");
   ***REMOVED***
-  res.status(200).send(company);
+  if (req.user && req.user.id === company.owner) ***REMOVED***
+    res.status(200).send(company);
+    return;
+  ***REMOVED***
+  const ***REMOVED*** owner, ...companyData ***REMOVED*** = company;
+  res.status(200).send(companyData);
 ***REMOVED***;
 
 exports.createCompany = async (req, res) => ***REMOVED***
@@ -50,7 +54,11 @@ exports.editCompany = async (req, res) => ***REMOVED***
   const ***REMOVED*** companyId ***REMOVED*** = req.params;
   const data = req.body;
   const ownerId = req.user.id;
-  const company = await db.updateCompany(companyId, ownerId, data);
+  let company = await db.getCompany(companyId, ownerId);
+  if (!company) ***REMOVED***
+    throw new Error("Company not found");
+  ***REMOVED***
+  company = await db.updateCompany(companyId, ownerId, data);
   if (!company) ***REMOVED***
     throw new Error("Failed to update company");
   ***REMOVED***

@@ -94,6 +94,11 @@ class Api ***REMOVED***
     return data;
   ***REMOVED***
 
+  async getCompanyJobs(companyId, ctx) ***REMOVED***
+    const ***REMOVED*** data ***REMOVED*** = await this.request(ctx).get(`/jobs/company/$***REMOVED***companyId***REMOVED***`);
+    return data;
+  ***REMOVED***
+
   async login(data) ***REMOVED***
     const ***REMOVED*** data: user ***REMOVED*** = await this.request().post(`/login`, data);
     return user;

@@ -1,4 +1,12 @@
-import ***REMOVED*** Box, Typography, Container, Grid, Button ***REMOVED*** from "@material-ui/core";
+import Link from "next/link";
+import ***REMOVED***
+  Box,
+  Typography,
+  Container,
+  Grid,
+  Button,
+  Link as MuiLink
+***REMOVED*** from "@material-ui/core";
 import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
 import CompanyLogo from "./company-logo";
 import HSPaper from "./hs-paper";
@@ -92,9 +100,14 @@ export default function JobContent(***REMOVED*** jobData ***REMOVED***) ***REMOV
               <Typography variant="body1" component="span">
                 at&nbsp;
               </Typography>
-              <Typography variant="subtitle2" component="span" gutterBottom>
-                ***REMOVED***company.name***REMOVED***
-              </Typography>
+              <Link
+                href="/companies/[id]"
+                as=***REMOVED***`/companies/$***REMOVED***company.id***REMOVED***`***REMOVED***
+                passHref>
+                <MuiLink variant="subtitle2" color="inherit" gutterBottom>
+                  ***REMOVED***company.name***REMOVED***
+                </MuiLink>
+              </Link>
             </React.Fragment>
           )***REMOVED***
         </Box>

@@ -74,7 +74,6 @@ export default function Layout(***REMOVED***
       <MenuItem
         classes=***REMOVED******REMOVED*** root: classes.menuItem ***REMOVED******REMOVED***
         onClick=***REMOVED***() => ***REMOVED***
-          console.log("dashboard menu click");
           Router.push("/dashboard/jobs");
         ***REMOVED******REMOVED***>
         <DashboardIcon className=***REMOVED***classes.menuIcon***REMOVED*** />

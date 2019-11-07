@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import Router from "next/router";
 import formatDistance from "date-fns/formatDistance";
 import clsx from "clsx";
 import ***REMOVED*** Box, Typography, Chip, Link as MuiLink ***REMOVED*** from "@material-ui/core";
@@ -27,11 +28,6 @@ const useStyles = makeStyles(theme => (***REMOVED***
       zIndex: 1110
     ***REMOVED***)
   ***REMOVED***),
-  /* logoWrapper: ***REMOVED***
-    "@media (max-width: 400px)": ***REMOVED***
-      display: "none"
-    ***REMOVED***
-  ***REMOVED***, */
   logoSmall: ***REMOVED***
     width: 48,
     height: 48
@@ -77,7 +73,14 @@ export default function JobItem(***REMOVED***
   return (
     <Box className=***REMOVED***clsx(classes.root, className)***REMOVED***>
       <Box className=***REMOVED***classes.logoWrapper***REMOVED*** pr=***REMOVED***[2, 3]***REMOVED***>
-        ***REMOVED***!!company && <CompanyLogo company=***REMOVED***company***REMOVED*** />***REMOVED***
+        ***REMOVED***!!company && (
+          <CompanyLogo
+            company=***REMOVED***company***REMOVED***
+            onClick=***REMOVED***
+              !preview ? () => Router.push(`/companies/$***REMOVED***company.id***REMOVED***`) : null
+            ***REMOVED***
+          />
+        )***REMOVED***
       </Box>
       <Box display="flex" alignItems="center" flexWrap="wrap" flex=***REMOVED***1***REMOVED***>
         <Box mb=***REMOVED***1***REMOVED*** flex=***REMOVED***1***REMOVED*** flexBasis=***REMOVED***300***REMOVED***>
@@ -98,9 +101,20 @@ export default function JobItem(***REMOVED***
               <Typography variant="body1" component="span">
                 at&nbsp;
               </Typography>
-              <Typography variant="subtitle2" component="span" gutterBottom>
-                ***REMOVED***company.name || "Company"***REMOVED***
-              </Typography>
+              ***REMOVED***preview ? (
+                <Typography variant="subtitle2" component="span" gutterBottom>
+                  ***REMOVED***company.name || "Company"***REMOVED***
+                </Typography>
+              ) : (
+                <Link
+                  href="/companies/[id]"
+                  as=***REMOVED***`/companies/$***REMOVED***company.id***REMOVED***`***REMOVED***
+                  passHref>
+                  <MuiLink variant="subtitle2" color="inherit" gutterBottom>
+                    ***REMOVED***company.name***REMOVED***
+                  </MuiLink>
+                </Link>
+              )***REMOVED***
             </React.Fragment>
           )***REMOVED***
           ***REMOVED***(!preview || !!job.jobType) && (

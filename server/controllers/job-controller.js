@@ -175,6 +175,27 @@ exports.getJobs = async (req, res) => ***REMOVED***
   res.status(200).send(data);
 ***REMOVED***;
 
+exports.companyJobs = async function(req, res) ***REMOVED***
+  const ***REMOVED*** id ***REMOVED*** = req.params;
+  const companyCount = await db.companyCount(id);
+  if (companyCount !== 1) ***REMOVED***
+    res.sendStatus(404);
+    return;
+  ***REMOVED***
+
+  try ***REMOVED***
+    const jobs = await db.getJobs(***REMOVED***
+      approvalStatus: "Approved",
+      withinDays: 30,
+      publicOnly: true,
+      companyId: id
+    ***REMOVED***);
+    res.status(200).send(jobs);
+  ***REMOVED*** catch (err) ***REMOVED***
+    console.error(err);
+  ***REMOVED***
+***REMOVED***;
+
 exports.myJobs = async (req, res) => ***REMOVED***
   const ownerId = req.user.id;
   if (!ownerId) ***REMOVED***

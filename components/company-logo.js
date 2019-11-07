@@ -21,6 +21,7 @@ const useStyles = makeStyles(***REMOVED***
     position: "relative",
     backgroundColor: `#fafbfc`,
     border: `1px solid #eee`,
+    cursor: props.isLink ? "pointer" : "auto",
     ...logoSizes[props.size]
   ***REMOVED***),
   logo: ***REMOVED***
@@ -38,6 +39,7 @@ const useStyles = makeStyles(***REMOVED***
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    cursor: props.isLink ? "pointer" : "auto",
     ...logoSizes[props.size]
   ***REMOVED***)
 ***REMOVED***);
@@ -50,12 +52,13 @@ function abbrev(name) ***REMOVED***
 export default function CompanyLogo(***REMOVED***
   company,
   abbrevFallback = true,
-  size = "medium"
+  size = "medium",
+  onClick
 ***REMOVED***) ***REMOVED***
-  const classes = useStyles(***REMOVED*** size ***REMOVED***);
+  const classes = useStyles(***REMOVED*** size, isLink: !!onClick ***REMOVED***);
   if (company.logo) ***REMOVED***
     return (
-      <Box className=***REMOVED***classes.logoContainer***REMOVED***>
+      <Box className=***REMOVED***classes.logoContainer***REMOVED*** onClick=***REMOVED***onClick***REMOVED***>
         <img
           className=***REMOVED***classes.logo***REMOVED***
           src=***REMOVED***company.logo***REMOVED***
@@ -71,7 +74,8 @@ export default function CompanyLogo(***REMOVED***
         variant=***REMOVED***size === "small" ? "h6" : "h5"***REMOVED***
         color="textSecondary"
         align="center"
-        className=***REMOVED***classes.abbrev***REMOVED***>
+        className=***REMOVED***classes.abbrev***REMOVED***
+        onClick=***REMOVED***onClick***REMOVED***>
         ***REMOVED***abbrev(company.name)***REMOVED***
       </Typography>
     );
