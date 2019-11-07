@@ -15,15 +15,15 @@ import ***REMOVED***
 import AddIcon from "@material-ui/icons/Add";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
-import DashboardLayout from "../../components/dashboard-layout";
+import DashboardLayout from "../../../components/dashboard-layout";
 import Router from "next/router";
-import api from "../../api";
-import CompanyLogo from "../../components/company-logo";
-import HSPaper from "../../components/hs-paper";
+import api from "../../../api";
+import CompanyLogo from "../../../components/company-logo";
+import HSPaper from "../../../components/hs-paper";
 import ***REMOVED*** useReducer, useState ***REMOVED*** from "react";
-import HSSnackBar from "../../components/hs-snackbar";
-import redirect from "../../utils/redirect";
-import EmptyList from "../../components/empty-list";
+import HSSnackBar from "../../../components/hs-snackbar";
+import redirect from "../../../utils/redirect";
+import EmptyList from "../../../components/empty-list";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   companyItem: ***REMOVED***
@@ -58,7 +58,7 @@ function Companies(***REMOVED*** user, companies ***REMOVED***) ***REMOVED***
     dispatch(***REMOVED*** type: "DELETING_COMPANY" ***REMOVED***);
     try ***REMOVED***
       await api.deleteCompany(companyIdPendingDelete);
-      Router.push("/company");
+      Router.push("/dashboard/companies");
       dispatch(***REMOVED*** type: "DELETED_COMPANY" ***REMOVED***);
     ***REMOVED*** catch (err) ***REMOVED***
       dispatch(***REMOVED*** type: "ERROR_DELETING_COMPANY" ***REMOVED***);
@@ -74,7 +74,7 @@ function Companies(***REMOVED*** user, companies ***REMOVED***) ***REMOVED***
             size="small"
             color="primary"
             startIcon=***REMOVED***<AddIcon />***REMOVED***
-            onClick=***REMOVED***() => Router.push("/company/new")***REMOVED***>
+            onClick=***REMOVED***() => Router.push("/dashboard/companies/new")***REMOVED***>
             Add Company
           </Button>
         </Box>
@@ -92,7 +92,9 @@ function Companies(***REMOVED*** user, companies ***REMOVED***) ***REMOVED***
               <IconButton
                 color="secondary"
                 className=***REMOVED***classes.actionButton***REMOVED***
-                onClick=***REMOVED***() => Router.push(`/company/$***REMOVED***company.id***REMOVED***`)***REMOVED***>
+                onClick=***REMOVED***() =>
+                  Router.push(`/dashboard/companies/$***REMOVED***company.id***REMOVED***`)
+                ***REMOVED***>
                 <EditIcon />
               </IconButton>
               <IconButton

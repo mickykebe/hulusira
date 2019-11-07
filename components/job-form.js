@@ -153,7 +153,7 @@ export default function JobForm(***REMOVED***
                     color="primary"
                     variant="contained"
                     startIcon=***REMOVED***<BusinessIcon />***REMOVED***
-                    onClick=***REMOVED***() => Router.push("/company/new")***REMOVED***>
+                    onClick=***REMOVED***() => Router.push("/dashboard/companies/new")***REMOVED***>
                     Add Company
                   </Button>
                 </Box>

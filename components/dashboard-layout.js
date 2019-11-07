@@ -95,7 +95,7 @@ export default function DashboardLayout(***REMOVED*** user, children, selectedIt
               <ListItem
                 selected=***REMOVED***selectedItem === "company"***REMOVED***
                 button
-                onClick=***REMOVED***() => Router.push("/company")***REMOVED***>
+                onClick=***REMOVED***() => Router.push("/dashboard/companies")***REMOVED***>
                 <ListItemIcon>
                   <BusinessIcon />
                 </ListItemIcon>
