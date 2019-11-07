@@ -31,12 +31,15 @@ export default function JobContentManage({
     <Fragment>
       <Container>
         {jobData.job.closed && (
-          <Banner message="This job is closed and thus no longer publicly accessible." />
+          <Banner
+            variant="error"
+            message="This job has been closed by its owner."
+          />
         )}
         {!jobData.job.closed && jobData.job.approvalStatus === "Pending" && (
           <Banner message="This job is pending. It will be live once it gets admin approval." />
         )}
-        {!jobData.job.closed && jobData.job.approvalStatus === "Declined" && (
+        {jobData.job.approvalStatus === "Declined" && (
           <Banner
             variant="error"
             message="Administrator has declined to approve this post."
