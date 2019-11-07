@@ -1,4 +1,12 @@
-import { Box, Typography, Container, Grid, Button } from "@material-ui/core";
+import Link from "next/link";
+import {
+  Box,
+  Typography,
+  Container,
+  Grid,
+  Button,
+  Link as MuiLink
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import CompanyLogo from "./company-logo";
 import HSPaper from "./hs-paper";
@@ -92,9 +100,14 @@ export default function JobContent({ jobData }) {
               <Typography variant="body1" component="span">
                 at&nbsp;
               </Typography>
-              <Typography variant="subtitle2" component="span" gutterBottom>
-                {company.name}
-              </Typography>
+              <Link
+                href="/companies/[id]"
+                as={`/companies/${company.id}`}
+                passHref>
+                <MuiLink variant="subtitle2" color="inherit" gutterBottom>
+                  {company.name}
+                </MuiLink>
+              </Link>
             </React.Fragment>
           )}
         </Box>

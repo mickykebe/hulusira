@@ -80,6 +80,7 @@ router.get(
   permit("admin"),
   catchErrors(jobController.pendingJobs)
 );
+router.get("/jobs/company/:id", catchErrors(jobController.companyJobs));
 router.put(
   "/approve-job",
   permit("admin"),
@@ -108,11 +109,7 @@ router.get(
   permitAuthenticated(),
   catchErrors(companyController.companies)
 );
-router.get(
-  "/company/:companyId",
-  permitAuthenticated(),
-  catchErrors(companyController.getCompany)
-);
+router.get("/company/:companyId", catchErrors(companyController.getCompany));
 
 router.put(
   "/company/:companyId",

@@ -74,7 +74,6 @@ export default function Layout({
       <MenuItem
         classes={{ root: classes.menuItem }}
         onClick={() => {
-          console.log("dashboard menu click");
           Router.push("/dashboard/jobs");
         }}>
         <DashboardIcon className={classes.menuIcon} />

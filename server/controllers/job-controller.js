@@ -175,6 +175,27 @@ exports.getJobs = async (req, res) => {
   res.status(200).send(data);
 };
 
+exports.companyJobs = async function(req, res) {
+  const { id } = req.params;
+  const companyCount = await db.companyCount(id);
+  if (companyCount !== 1) {
+    res.sendStatus(404);
+    return;
+  }
+
+  try {
+    const jobs = await db.getJobs({
+      approvalStatus: "Approved",
+      withinDays: 30,
+      publicOnly: true,
+      companyId: id
+    });
+    res.status(200).send(jobs);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 exports.myJobs = async (req, res) => {
   const ownerId = req.user.id;
   if (!ownerId) {

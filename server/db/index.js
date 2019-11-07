@@ -258,7 +258,8 @@ class Db {
     withinDays,
     tagIds = [],
     publicOnly = false,
-    ownerId
+    ownerId,
+    companyId
   } = {}) {
     let query = this.knex("job")
       .select(
@@ -282,6 +283,9 @@ class Db {
     }
     if (ownerId) {
       query = query.andWhere("job.owner", ownerId);
+    }
+    if (companyId) {
+      query = query.andWhere("job.company_id", companyId);
     }
     if (approvalStatus) {
       query = query.andWhere("job.approval_status", approvalStatus);
@@ -357,6 +361,13 @@ class Db {
     return parseInt(result[0].count);
   }
 
+  async companyCount(id) {
+    const result = await this.knex("company")
+      .count("id")
+      .where("id", id);
+    return parseInt(result[0].count);
+  }
+
   async getJobBySlug(slug, where) {
     const query = this.jobQuery().where("job.slug", slug);
     if (where) {
@@ -390,7 +401,9 @@ class Db {
       .first()
       .where({
         id: companyId,
-        owner: ownerId
+        ...(ownerId && {
+          owner: ownerId
+        })
       });
   }
 

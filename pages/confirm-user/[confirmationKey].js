@@ -6,7 +6,6 @@ import Banner from "../../components/banner";
 import Layout from "../../components/layout";
 
 export default function ConfirmUser() {
-  console.log("hello there");
   const router = useRouter();
   const { confirmationKey } = router.query;
   const [confirmationStatus, setConfirmationStatus] = useState("confirming");

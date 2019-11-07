@@ -30,12 +30,16 @@ exports.companies = async (req, res) => {
 
 exports.getCompany = async (req, res) => {
   const { companyId } = req.params;
-  const ownerId = req.user.id;
-  const company = await db.getCompany(companyId, ownerId);
+  let company = await db.getCompany(companyId);
   if (!company) {
     throw new Error("Company not found!");
   }
-  res.status(200).send(company);
+  if (req.user && req.user.id === company.owner) {
+    res.status(200).send(company);
+    return;
+  }
+  const { owner, ...companyData } = company;
+  res.status(200).send(companyData);
 };
 
 exports.createCompany = async (req, res) => {
@@ -50,7 +54,11 @@ exports.editCompany = async (req, res) => {
   const { companyId } = req.params;
   const data = req.body;
   const ownerId = req.user.id;
-  const company = await db.updateCompany(companyId, ownerId, data);
+  let company = await db.getCompany(companyId, ownerId);
+  if (!company) {
+    throw new Error("Company not found");
+  }
+  company = await db.updateCompany(companyId, ownerId, data);
   if (!company) {
     throw new Error("Failed to update company");
   }

@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import Router from "next/router";
 import formatDistance from "date-fns/formatDistance";
 import clsx from "clsx";
 import { Box, Typography, Chip, Link as MuiLink } from "@material-ui/core";
@@ -27,11 +28,6 @@ const useStyles = makeStyles(theme => ({
       zIndex: 1110
     })
   }),
-  /* logoWrapper: {
-    "@media (max-width: 400px)": {
-      display: "none"
-    }
-  }, */
   logoSmall: {
     width: 48,
     height: 48
@@ -77,7 +73,14 @@ export default function JobItem({
   return (
     <Box className={clsx(classes.root, className)}>
       <Box className={classes.logoWrapper} pr={[2, 3]}>
-        {!!company && <CompanyLogo company={company} />}
+        {!!company && (
+          <CompanyLogo
+            company={company}
+            onClick={
+              !preview ? () => Router.push(`/companies/${company.id}`) : null
+            }
+          />
+        )}
       </Box>
       <Box display="flex" alignItems="center" flexWrap="wrap" flex={1}>
         <Box mb={1} flex={1} flexBasis={300}>
@@ -98,9 +101,20 @@ export default function JobItem({
               <Typography variant="body1" component="span">
                 at&nbsp;
               </Typography>
-              <Typography variant="subtitle2" component="span" gutterBottom>
-                {company.name || "Company"}
-              </Typography>
+              {preview ? (
+                <Typography variant="subtitle2" component="span" gutterBottom>
+                  {company.name || "Company"}
+                </Typography>
+              ) : (
+                <Link
+                  href="/companies/[id]"
+                  as={`/companies/${company.id}`}
+                  passHref>
+                  <MuiLink variant="subtitle2" color="inherit" gutterBottom>
+                    {company.name}
+                  </MuiLink>
+                </Link>
+              )}
             </React.Fragment>
           )}
           {(!preview || !!job.jobType) && (
