@@ -218,10 +218,7 @@ exports.getJob = async (req, res) => ***REMOVED***
     ***REMOVED***
   ***REMOVED***
 
-  if (
-    (jobData.job.closed || jobData.job.approvalStatus !== "Approved") &&
-    !hasAdminPermission
-  ) ***REMOVED***
+  if (jobData.job.approvalStatus !== "Approved" && !hasAdminPermission) ***REMOVED***
     res.sendStatus(404);
     return;
   ***REMOVED***
