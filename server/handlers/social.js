@@ -101,6 +101,7 @@ const postCloseJobToFacebook = async function(fbPostId, jobData) ***REMOVED***
 ***REMOVED***;
 
 const postCloseJobToTelegram = async function(messageId, jobData) ***REMOVED***
+  console.log(***REMOVED*** telegramMessageId: messageId ***REMOVED***);
   if (!messageId) ***REMOVED***
     return;
   ***REMOVED***
@@ -108,6 +109,9 @@ const postCloseJobToTelegram = async function(messageId, jobData) ***REMOVED***
   const closedMessage = `--------- 🔒 JOB CLOSED --------- \n\n\n$***REMOVED***createJobMessage(
     jobData
   )***REMOVED***`;
+
+  console.log("closing telegram job");
+  console.log(closedMessage);
 
   return axios
     .post(`$***REMOVED***TELEGRAM_API_BASE_URL***REMOVED***/editMessageText`, ***REMOVED***
