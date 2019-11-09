@@ -112,7 +112,7 @@ const postCloseJobToTelegram = async function(messageId, jobData) ***REMOVED***
   return axios
     .post(`$***REMOVED***TELEGRAM_API_BASE_URL***REMOVED***/editMessageText`, ***REMOVED***
       chat_id: `@$***REMOVED***process.env.TELEGRAM_CHANNEL_USERNAME***REMOVED***`,
-      messageId,
+      message_id: messageId,
       text: closedMessage
     ***REMOVED***)
     .catch(logAxiosErrors);
