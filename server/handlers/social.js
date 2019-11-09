@@ -101,7 +101,6 @@ const postCloseJobToFacebook = async function(fbPostId, jobData) {
 };
 
 const postCloseJobToTelegram = async function(messageId, jobData) {
-  console.log({ telegramMessageId: messageId });
   if (!messageId) {
     return;
   }
@@ -109,9 +108,6 @@ const postCloseJobToTelegram = async function(messageId, jobData) {
   const closedMessage = `--------- 🔒 JOB CLOSED --------- \n\n\n${createJobMessage(
     jobData
   )}`;
-
-  console.log("closing telegram job");
-  console.log(closedMessage);
 
   return axios
     .post(`${TELEGRAM_API_BASE_URL}/editMessageText`, {
