@@ -3,7 +3,7 @@ const db = require("../db");
 const ***REMOVED*** logAxiosErrors ***REMOVED*** = require("../utils");
 const format = require("date-fns/format");
 
-const TELEGRAM_SEND_MESSAGE_URL = `https://api.telegram.org/bot$***REMOVED***process.env.TELEGRAM_BOT_TOKEN***REMOVED***/sendMessage`;
+const TELEGRAM_API_BASE_URL = `https://api.telegram.org/bot$***REMOVED***process.env.TELEGRAM_BOT_TOKEN***REMOVED***`;
 
 const createJobMessage = (***REMOVED*** job, company ***REMOVED***) => ***REMOVED***
   return `💼 $***REMOVED***job.position***REMOVED***
@@ -41,7 +41,7 @@ const sendPostToFacebook = async function(message, jobUrl) ***REMOVED***
 const sendPostToTelegram = async function(message, jobUrl) ***REMOVED***
   try ***REMOVED***
     const ***REMOVED*** data: response ***REMOVED*** = await axios
-      .post(TELEGRAM_SEND_MESSAGE_URL, ***REMOVED***
+      .post(`$***REMOVED***TELEGRAM_API_BASE_URL***REMOVED***/sendMessage`, ***REMOVED***
         chat_id: `@$***REMOVED***process.env.TELEGRAM_CHANNEL_USERNAME***REMOVED***`,
         text: message,
         reply_markup: ***REMOVED***
@@ -100,17 +100,30 @@ const postCloseJobToFacebook = async function(fbPostId, jobData) ***REMOVED***
     .catch(logAxiosErrors);
 ***REMOVED***;
 
-const postCloseJobToTelegram = async function(messageId) ***REMOVED***
+const postCloseJobToTelegram = async function(messageId, jobData) ***REMOVED***
   if (!messageId) ***REMOVED***
     return;
   ***REMOVED***
+
+  const closedMessage = `--------- 🔒 JOB CLOSED --------- \n\n\n$***REMOVED***createJobMessage(
+    jobData
+  )***REMOVED***`;
+
   return axios
+    .post(`$***REMOVED***TELEGRAM_API_BASE_URL***REMOVED***/editMessageText`, ***REMOVED***
+      chat_id: `@$***REMOVED***process.env.TELEGRAM_CHANNEL_USERNAME***REMOVED***`,
+      messageId,
+      text: closedMessage
+    ***REMOVED***)
+    .catch(logAxiosErrors);
+
+  /* return axios
     .post(TELEGRAM_SEND_MESSAGE_URL, ***REMOVED***
       chat_id: `@$***REMOVED***process.env.TELEGRAM_CHANNEL_USERNAME***REMOVED***`,
       text: `🔒 Job Closed`,
       reply_to_message_id: messageId
     ***REMOVED***)
-    .catch(logAxiosErrors);
+    .catch(logAxiosErrors); */
 ***REMOVED***;
 
 exports.postJobCloseToSocialMedia = async function(jobData) ***REMOVED***
