@@ -3,7 +3,7 @@ const db = require("../db");
 const { logAxiosErrors } = require("../utils");
 const format = require("date-fns/format");
 
-const TELEGRAM_SEND_MESSAGE_URL = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`;
+const TELEGRAM_API_BASE_URL = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}`;
 
 const createJobMessage = ({ job, company }) => {
   return `💼 ${job.position}
@@ -41,7 +41,7 @@ const sendPostToFacebook = async function(message, jobUrl) {
 const sendPostToTelegram = async function(message, jobUrl) {
   try {
     const { data: response } = await axios
-      .post(TELEGRAM_SEND_MESSAGE_URL, {
+      .post(`${TELEGRAM_API_BASE_URL}/sendMessage`, {
         chat_id: `@${process.env.TELEGRAM_CHANNEL_USERNAME}`,
         text: message,
         reply_markup: {
@@ -100,17 +100,30 @@ const postCloseJobToFacebook = async function(fbPostId, jobData) {
     .catch(logAxiosErrors);
 };
 
-const postCloseJobToTelegram = async function(messageId) {
+const postCloseJobToTelegram = async function(messageId, jobData) {
   if (!messageId) {
     return;
   }
+
+  const closedMessage = `--------- 🔒 JOB CLOSED --------- \n\n\n${createJobMessage(
+    jobData
+  )}`;
+
   return axios
+    .post(`${TELEGRAM_API_BASE_URL}/editMessageText`, {
+      chat_id: `@${process.env.TELEGRAM_CHANNEL_USERNAME}`,
+      messageId,
+      text: closedMessage
+    })
+    .catch(logAxiosErrors);
+
+  /* return axios
     .post(TELEGRAM_SEND_MESSAGE_URL, {
       chat_id: `@${process.env.TELEGRAM_CHANNEL_USERNAME}`,
       text: `🔒 Job Closed`,
       reply_to_message_id: messageId
     })
-    .catch(logAxiosErrors);
+    .catch(logAxiosErrors); */
 };
 
 exports.postJobCloseToSocialMedia = async function(jobData) {
