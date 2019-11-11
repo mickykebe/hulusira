@@ -6,6 +6,7 @@ import api from "../../api";
 import Layout from "../../components/layout";
 import JobContentManage from "../../components/job-content-manage";
 import jobCloseReducer from "../../reducers/close-job";
+import HeaderAd from "../../components/header-ad";
 
 function Job({ user, jobData, adminToken }) {
   const [{ isClosingJob, errorClosingJob }, dispatch] = useReducer(
@@ -72,6 +73,7 @@ function Job({ user, jobData, adminToken }) {
         />
         <meta property="twitter:url" content={url} />
       </Head>
+      <HeaderAd />
       <JobContentManage
         isJobOwner={isValidToken}
         jobData={jobData}
@@ -81,6 +83,7 @@ function Job({ user, jobData, adminToken }) {
         clearCloseError={() => dispatch({ type: "CLEAR_ERROR" })}
         closeDialogOpen={jobDialogOpen}
         setCloseDialogOpen={setJobDialogOpen}
+        withAds={true}
       />
     </Layout>
   );

@@ -5,6 +5,7 @@ import { Container, Grid, Typography, makeStyles } from "@material-ui/core";
 import HSPaper from "../../components/hs-paper";
 import CompanyLogo from "../../components/company-logo";
 import JobItem from "../../components/job-item";
+import HeaderAd from "../../components/header-ad";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -33,6 +34,7 @@ export default function CompanyJobs({ user, company, jobs }) {
   return (
     <Layout user={user}>
       <Container className={classes.root} maxWidth="lg">
+        <HeaderAd />
         <Grid container spacing={2}>
           <Grid item xs={12} sm={3}>
             <HSPaper className={classes.companyCard}>

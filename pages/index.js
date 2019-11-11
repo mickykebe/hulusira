@@ -18,7 +18,8 @@ import Layout from "../components/layout";
 import JobItem from "../components/job-item";
 import useIsInview from "../hooks/use-is-inview";
 import TagFilter from "../components/tag-filter";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, Fragment } from "react";
+import HeaderAd from "../components/header-ad";
 
 const useStyles = makeStyles(theme => ({
   jobItem: {
@@ -146,13 +147,13 @@ function Index({ user, jobPage, activeTags, primaryTags }) {
       user={user}
       toolbarChildren={
         user ? null : (
-          <React.Fragment>
+          <Fragment>
             <Link href="/new" passHref>
               <Button variant="contained" color="primary">
                 Post a Job
               </Button>
             </Link>
-          </React.Fragment>
+          </Fragment>
         )
       }>
       <Head>
@@ -168,6 +169,7 @@ function Index({ user, jobPage, activeTags, primaryTags }) {
         <meta name="twitter:url" content={pageUrl} />
       </Head>
       <Container maxWidth="md">
+        <HeaderAd />
         {(!activeTags || activeTags.length === 0) && (
           <TextField
             value=""
@@ -197,20 +199,40 @@ function Index({ user, jobPage, activeTags, primaryTags }) {
             ))}
           </TextField>
         )}
-        <React.Fragment>
+        <Fragment>
           {activeTags.length > 0 && (
             <TagFilter tags={activeTags} onTagRemove={removeTagFromFilter} />
           )}
-          {jobs.map(({ job, company }) => {
+          {jobs.map(({ job, company }, index) => {
             return (
-              <JobItem
-                key={job.id}
-                className={classes.jobItem}
-                job={job}
-                tags={job.tags}
-                company={company}
-                onTagClick={handleTagClick}
-              />
+              <Fragment key={job.id}>
+                {process.env.NODE_ENV === "production" && index % 3 === 0 && (
+                  <Fragment>
+                    <script
+                      async
+                      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                    <ins
+                      class="adsbygoogle"
+                      style="display:block"
+                      data-ad-format="fluid"
+                      data-ad-layout-key="-ha-6+1u-6q+8y"
+                      data-ad-client="ca-pub-1430919979045648"
+                      data-ad-slot="8888209775"></ins>
+                    <script
+                      dangerouslySetInnerHTML={{
+                        __html:
+                          "(adsbygoogle = window.adsbygoogle || []).push({});"
+                      }}></script>
+                  </Fragment>
+                )}
+                <JobItem
+                  className={classes.jobItem}
+                  job={job}
+                  tags={job.tags}
+                  company={company}
+                  onTagClick={handleTagClick}
+                />
+              </Fragment>
             );
           })}
           <div ref={sentinelRef} style={{ height: "1px" }} />
@@ -223,7 +245,7 @@ function Index({ user, jobPage, activeTags, primaryTags }) {
               😬 <br /> Nothing Found
             </Typography>
           )}
-        </React.Fragment>
+        </Fragment>
         {isLoading && (
           <CircularProgress
             classes={{ root: classes.jobsLoadingSpinner }}

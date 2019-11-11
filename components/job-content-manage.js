@@ -24,7 +24,8 @@ export default function JobContentManage({
   onJobClose,
   closeDialogOpen,
   setCloseDialogOpen,
-  isJobOwner
+  isJobOwner,
+  withAds = false
 }) {
   const classes = useStyles();
   return (
@@ -59,7 +60,7 @@ export default function JobContentManage({
           </Toolbar>
         )}
       </Container>
-      <JobContent jobData={jobData} />
+      <JobContent withAds={withAds} jobData={jobData} />
       <JobCloseDialog
         open={closeDialogOpen}
         onClose={() => setCloseDialogOpen(false)}

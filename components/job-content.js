@@ -76,7 +76,7 @@ function ApplyButton({ job }) {
   );
 }
 
-export default function JobContent({ jobData }) {
+export default function JobContent({ jobData, withAds = false }) {
   const classes = useStyles();
   const { job, company } = jobData;
   const hasApplyButton = !!job.applyUrl || !!job.applyEmail;
@@ -137,6 +137,24 @@ export default function JobContent({ jobData }) {
           <HSPaper className={classes.jobMain}>
             <Typography variant="h5">Description</Typography>
             <Markdown>{job.description}</Markdown>
+            {process.env.NODE_ENV === "production" && withAds && (
+              <Fragment>
+                <script
+                  async
+                  src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                <ins
+                  class="adsbygoogle"
+                  style="display:block; text-align:center;"
+                  data-ad-layout="in-article"
+                  data-ad-format="fluid"
+                  data-ad-client="ca-pub-1430919979045648"
+                  data-ad-slot="7719911413"></ins>
+                <script
+                  dangerouslySetInnerHTML={{
+                    __html: "(adsbygoogle = window.adsbygoogle || []).push({});"
+                  }}></script>
+              </Fragment>
+            )}
             {job.responsibilities && (
               <React.Fragment>
                 <Typography variant="h5">Responsibilities</Typography>
