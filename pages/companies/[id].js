@@ -5,6 +5,7 @@ import ***REMOVED*** Container, Grid, Typography, makeStyles ***REMOVED*** from 
 import HSPaper from "../../components/hs-paper";
 import CompanyLogo from "../../components/company-logo";
 import JobItem from "../../components/job-item";
+import HeaderAd from "../../components/header-ad";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   root: ***REMOVED***
@@ -33,6 +34,7 @@ export default function CompanyJobs(***REMOVED*** user, company, jobs ***REMOVED
   return (
     <Layout user=***REMOVED***user***REMOVED***>
       <Container className=***REMOVED***classes.root***REMOVED*** maxWidth="lg">
+        <HeaderAd />
         <Grid container spacing=***REMOVED***2***REMOVED***>
           <Grid item xs=***REMOVED***12***REMOVED*** sm=***REMOVED***3***REMOVED***>
             <HSPaper className=***REMOVED***classes.companyCard***REMOVED***>

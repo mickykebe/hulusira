@@ -24,7 +24,8 @@ export default function JobContentManage(***REMOVED***
   onJobClose,
   closeDialogOpen,
   setCloseDialogOpen,
-  isJobOwner
+  isJobOwner,
+  withAds = false
 ***REMOVED***) ***REMOVED***
   const classes = useStyles();
   return (
@@ -59,7 +60,7 @@ export default function JobContentManage(***REMOVED***
           </Toolbar>
         )***REMOVED***
       </Container>
-      <JobContent jobData=***REMOVED***jobData***REMOVED*** />
+      <JobContent withAds=***REMOVED***withAds***REMOVED*** jobData=***REMOVED***jobData***REMOVED*** />
       <JobCloseDialog
         open=***REMOVED***closeDialogOpen***REMOVED***
         onClose=***REMOVED***() => setCloseDialogOpen(false)***REMOVED***

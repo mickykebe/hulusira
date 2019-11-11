@@ -18,7 +18,8 @@ import Layout from "../components/layout";
 import JobItem from "../components/job-item";
 import useIsInview from "../hooks/use-is-inview";
 import TagFilter from "../components/tag-filter";
-import ***REMOVED*** useEffect, useRef, useState, useCallback ***REMOVED*** from "react";
+import ***REMOVED*** useEffect, useRef, Fragment ***REMOVED*** from "react";
+import HeaderAd from "../components/header-ad";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   jobItem: ***REMOVED***
@@ -146,13 +147,13 @@ function Index(***REMOVED*** user, jobPage, activeTags, primaryTags ***REMOVED**
       user=***REMOVED***user***REMOVED***
       toolbarChildren=***REMOVED***
         user ? null : (
-          <React.Fragment>
+          <Fragment>
             <Link href="/new" passHref>
               <Button variant="contained" color="primary">
                 Post a Job
               </Button>
             </Link>
-          </React.Fragment>
+          </Fragment>
         )
       ***REMOVED***>
       <Head>
@@ -168,6 +169,7 @@ function Index(***REMOVED*** user, jobPage, activeTags, primaryTags ***REMOVED**
         <meta name="twitter:url" content=***REMOVED***pageUrl***REMOVED*** />
       </Head>
       <Container maxWidth="md">
+        <HeaderAd />
         ***REMOVED***(!activeTags || activeTags.length === 0) && (
           <TextField
             value=""
@@ -197,20 +199,40 @@ function Index(***REMOVED*** user, jobPage, activeTags, primaryTags ***REMOVED**
             ))***REMOVED***
           </TextField>
         )***REMOVED***
-        <React.Fragment>
+        <Fragment>
           ***REMOVED***activeTags.length > 0 && (
             <TagFilter tags=***REMOVED***activeTags***REMOVED*** onTagRemove=***REMOVED***removeTagFromFilter***REMOVED*** />
           )***REMOVED***
-          ***REMOVED***jobs.map((***REMOVED*** job, company ***REMOVED***) => ***REMOVED***
+          ***REMOVED***jobs.map((***REMOVED*** job, company ***REMOVED***, index) => ***REMOVED***
             return (
-              <JobItem
-                key=***REMOVED***job.id***REMOVED***
-                className=***REMOVED***classes.jobItem***REMOVED***
-                job=***REMOVED***job***REMOVED***
-                tags=***REMOVED***job.tags***REMOVED***
-                company=***REMOVED***company***REMOVED***
-                onTagClick=***REMOVED***handleTagClick***REMOVED***
-              />
+              <Fragment key=***REMOVED***job.id***REMOVED***>
+                ***REMOVED***process.env.NODE_ENV === "production" && index % 3 === 0 && (
+                  <Fragment>
+                    <script
+                      async
+                      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                    <ins
+                      class="adsbygoogle"
+                      style="display:block"
+                      data-ad-format="fluid"
+                      data-ad-layout-key="-ha-6+1u-6q+8y"
+                      data-ad-client="ca-pub-1430919979045648"
+                      data-ad-slot="8888209775"></ins>
+                    <script
+                      dangerouslySetInnerHTML=***REMOVED******REMOVED***
+                        __html:
+                          "(adsbygoogle = window.adsbygoogle || []).push(***REMOVED******REMOVED***);"
+                      ***REMOVED******REMOVED***></script>
+                  </Fragment>
+                )***REMOVED***
+                <JobItem
+                  className=***REMOVED***classes.jobItem***REMOVED***
+                  job=***REMOVED***job***REMOVED***
+                  tags=***REMOVED***job.tags***REMOVED***
+                  company=***REMOVED***company***REMOVED***
+                  onTagClick=***REMOVED***handleTagClick***REMOVED***
+                />
+              </Fragment>
             );
           ***REMOVED***)***REMOVED***
           <div ref=***REMOVED***sentinelRef***REMOVED*** style=***REMOVED******REMOVED*** height: "1px" ***REMOVED******REMOVED*** />
@@ -223,7 +245,7 @@ function Index(***REMOVED*** user, jobPage, activeTags, primaryTags ***REMOVED**
               😬 <br /> Nothing Found
             </Typography>
           )***REMOVED***
-        </React.Fragment>
+        </Fragment>
         ***REMOVED***isLoading && (
           <CircularProgress
             classes=***REMOVED******REMOVED*** root: classes.jobsLoadingSpinner ***REMOVED******REMOVED***

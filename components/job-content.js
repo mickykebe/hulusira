@@ -76,7 +76,7 @@ function ApplyButton(***REMOVED*** job ***REMOVED***) ***REMOVED***
   );
 ***REMOVED***
 
-export default function JobContent(***REMOVED*** jobData ***REMOVED***) ***REMOVED***
+export default function JobContent(***REMOVED*** jobData, withAds = false ***REMOVED***) ***REMOVED***
   const classes = useStyles();
   const ***REMOVED*** job, company ***REMOVED*** = jobData;
   const hasApplyButton = !!job.applyUrl || !!job.applyEmail;
@@ -137,6 +137,24 @@ export default function JobContent(***REMOVED*** jobData ***REMOVED***) ***REMOV
           <HSPaper className=***REMOVED***classes.jobMain***REMOVED***>
             <Typography variant="h5">Description</Typography>
             <Markdown>***REMOVED***job.description***REMOVED***</Markdown>
+            ***REMOVED***process.env.NODE_ENV === "production" && withAds && (
+              <Fragment>
+                <script
+                  async
+                  src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                <ins
+                  class="adsbygoogle"
+                  style="display:block; text-align:center;"
+                  data-ad-layout="in-article"
+                  data-ad-format="fluid"
+                  data-ad-client="ca-pub-1430919979045648"
+                  data-ad-slot="7719911413"></ins>
+                <script
+                  dangerouslySetInnerHTML=***REMOVED******REMOVED***
+                    __html: "(adsbygoogle = window.adsbygoogle || []).push(***REMOVED******REMOVED***);"
+                  ***REMOVED******REMOVED***></script>
+              </Fragment>
+            )***REMOVED***
             ***REMOVED***job.responsibilities && (
               <React.Fragment>
                 <Typography variant="h5">Responsibilities</Typography>
