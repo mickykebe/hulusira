@@ -23,14 +23,15 @@ import HeaderAd from "../components/header-ad";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   jobItem: ***REMOVED***
-    marginBottom: theme.spacing(2)
+    marginBottom: theme.spacing(2),
+    marginTop: theme.spacing(2)
   ***REMOVED***,
   jobsLoadingSpinner: ***REMOVED***
     display: "block",
     margin: "0 auto"
   ***REMOVED***,
   categorySelect: ***REMOVED***
-    marginBottom: theme.spacing(2),
+    marginTop: theme.spacing(2),
     background: theme.palette.common.white
   ***REMOVED***,
   categoryItem: ***REMOVED***
