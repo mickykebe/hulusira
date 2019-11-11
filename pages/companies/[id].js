@@ -40,9 +40,7 @@ export default function CompanyJobs(***REMOVED*** user, company, jobs ***REMOVED
   return (
     <Layout user=***REMOVED***user***REMOVED***>
       <Container className=***REMOVED***classes.root***REMOVED*** maxWidth="lg">
-        <Box mb=***REMOVED***2***REMOVED*** display="flex" justifyContent="center">
-          <HeaderAd />
-        </Box>
+        <HeaderAd />
         <Grid container spacing=***REMOVED***2***REMOVED***>
           <Grid item xs=***REMOVED***12***REMOVED*** sm=***REMOVED***3***REMOVED***>
             <HSPaper className=***REMOVED***classes.companyCard***REMOVED***>

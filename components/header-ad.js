@@ -1,9 +1,9 @@
-import ***REMOVED*** Fragment ***REMOVED*** from "react";
+import ***REMOVED*** Box ***REMOVED*** from "@material-ui/core";
 
-export default function HeaderAd() ***REMOVED***
+export default function HeaderAd(***REMOVED*** className = "" ***REMOVED***) ***REMOVED***
   if (process.env.NODE_ENV === "production") ***REMOVED***
     return (
-      <Fragment>
+      <Box className=***REMOVED***className***REMOVED*** mb=***REMOVED***2***REMOVED***>
         <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
@@ -18,7 +18,7 @@ export default function HeaderAd() ***REMOVED***
           dangerouslySetInnerHTML=***REMOVED******REMOVED***
             __html: "(adsbygoogle = window.adsbygoogle || []).push(***REMOVED******REMOVED***);"
           ***REMOVED******REMOVED***></script>
-      </Fragment>
+      </Box>
     );
   ***REMOVED***
   return null;

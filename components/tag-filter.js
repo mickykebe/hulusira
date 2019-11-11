@@ -4,7 +4,6 @@ import HSPaper from "./hs-paper";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   root: ***REMOVED***
-    marginTop: theme.spacing(2),
     marginBottom: theme.spacing(2),
     padding: theme.spacing(2),
     boxShadow: `0px 3px 3px rgba(200, 200, 200, 0.4)`

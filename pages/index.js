@@ -22,6 +22,9 @@ import ***REMOVED*** useEffect, useRef, Fragment ***REMOVED*** from "react";
 import HeaderAd from "../components/header-ad";
 
 const useStyles = makeStyles(theme => (***REMOVED***
+  root: ***REMOVED***
+    paddingTop: theme.spacing(2)
+  ***REMOVED***,
   jobItem: ***REMOVED***
     marginBottom: theme.spacing(2)
   ***REMOVED***,
@@ -168,7 +171,7 @@ function Index(***REMOVED*** user, jobPage, activeTags, primaryTags ***REMOVED**
         <meta name="twitter:image:src" content=***REMOVED***metaImage***REMOVED*** />
         <meta name="twitter:url" content=***REMOVED***pageUrl***REMOVED*** />
       </Head>
-      <Container maxWidth="md">
+      <Container className=***REMOVED***classes.root***REMOVED*** maxWidth="md">
         <HeaderAd />
         ***REMOVED***(!activeTags || activeTags.length === 0) && (
           <TextField

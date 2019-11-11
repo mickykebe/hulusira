@@ -35,11 +35,7 @@ export default function JobContentManage(***REMOVED***
   return (
     <Fragment>
       <Container className=***REMOVED***classes.header***REMOVED***>
-        ***REMOVED***withAds && (
-          <Box>
-            <HeaderAd />
-          </Box>
-        )***REMOVED***
+        ***REMOVED***withAds && <HeaderAd />***REMOVED***
         ***REMOVED***jobData.job.closed && (
           <Banner
             variant="error"
