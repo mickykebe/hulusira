@@ -73,7 +73,6 @@ function Job(***REMOVED*** user, jobData, adminToken ***REMOVED***) ***REMOVED**
         />
         <meta property="twitter:url" content=***REMOVED***url***REMOVED*** />
       </Head>
-      <HeaderAd />
       <JobContentManage
         isJobOwner=***REMOVED***isValidToken***REMOVED***
         jobData=***REMOVED***jobData***REMOVED***
