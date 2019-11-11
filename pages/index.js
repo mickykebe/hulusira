@@ -212,8 +212,8 @@ function Index({ user, jobPage, activeTags, primaryTags }) {
                       async
                       src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
                     <ins
-                      class="adsbygoogle"
-                      style="display:block"
+                      className="adsbygoogle"
+                      style={{ display: "block" }}
                       data-ad-format="fluid"
                       data-ad-layout-key="-ha-6+1u-6q+8y"
                       data-ad-client="ca-pub-1430919979045648"
