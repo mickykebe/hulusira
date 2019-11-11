@@ -8,8 +8,8 @@ export default function HeaderAd() ***REMOVED***
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
         <ins
-          class="adsbygoogle"
-          style="display:block"
+          className="adsbygoogle"
+          style=***REMOVED******REMOVED*** display: "block" ***REMOVED******REMOVED***
           data-ad-client="ca-pub-1430919979045648"
           data-ad-slot="7862886800"
           data-ad-format="auto"
