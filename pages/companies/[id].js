@@ -1,7 +1,13 @@
 import api from "../../api";
 import Layout from "../../components/layout";
 import Router from "next/router";
-import { Container, Grid, Typography, makeStyles } from "@material-ui/core";
+import {
+  Container,
+  Grid,
+  Typography,
+  makeStyles,
+  Box
+} from "@material-ui/core";
 import HSPaper from "../../components/hs-paper";
 import CompanyLogo from "../../components/company-logo";
 import JobItem from "../../components/job-item";
