@@ -12,6 +12,7 @@ import CompanyLogo from "./company-logo";
 import HSPaper from "./hs-paper";
 import Markdown from "./markdown";
 import format from "date-fns/format";
+import { Fragment } from "react";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -96,7 +97,7 @@ export default function JobContent({ jobData, withAds = false }) {
         <Box ml={1}>
           <Typography variant="h4">{job.position}</Typography>
           {company && company.name && (
-            <React.Fragment>
+            <Fragment>
               <Typography variant="body1" component="span">
                 at&nbsp;
               </Typography>
@@ -108,7 +109,7 @@ export default function JobContent({ jobData, withAds = false }) {
                   {company.name}
                 </MuiLink>
               </Link>
-            </React.Fragment>
+            </Fragment>
           )}
         </Box>
       </Box>
@@ -156,16 +157,16 @@ export default function JobContent({ jobData, withAds = false }) {
               </Fragment>
             )}
             {job.responsibilities && (
-              <React.Fragment>
+              <Fragment>
                 <Typography variant="h5">Responsibilities</Typography>
                 <Markdown>{job.responsibilities}</Markdown>
-              </React.Fragment>
+              </Fragment>
             )}
             {job.requirements && (
-              <React.Fragment>
+              <Fragment>
                 <Typography variant="h5">Requirements</Typography>
                 <Markdown>{job.requirements}</Markdown>
-              </React.Fragment>
+              </Fragment>
             )}
           </HSPaper>
         </Grid>
