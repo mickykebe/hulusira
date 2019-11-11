@@ -23,14 +23,15 @@ import HeaderAd from "../components/header-ad";
 
 const useStyles = makeStyles(theme => ({
   jobItem: {
-    marginBottom: theme.spacing(2)
+    marginBottom: theme.spacing(2),
+    marginTop: theme.spacing(2)
   },
   jobsLoadingSpinner: {
     display: "block",
     margin: "0 auto"
   },
   categorySelect: {
-    marginBottom: theme.spacing(2),
+    marginTop: theme.spacing(2),
     background: theme.palette.common.white
   },
   categoryItem: {
