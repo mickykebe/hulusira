@@ -35,11 +35,7 @@ export default function JobContentManage({
   return (
     <Fragment>
       <Container className={classes.header}>
-        {withAds && (
-          <Box>
-            <HeaderAd />
-          </Box>
-        )}
+        {withAds && <HeaderAd />}
         {jobData.job.closed && (
           <Banner
             variant="error"

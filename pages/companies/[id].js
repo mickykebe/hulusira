@@ -40,9 +40,7 @@ export default function CompanyJobs({ user, company, jobs }) {
   return (
     <Layout user={user}>
       <Container className={classes.root} maxWidth="lg">
-        <Box mb={2} display="flex" justifyContent="center">
-          <HeaderAd />
-        </Box>
+        <HeaderAd />
         <Grid container spacing={2}>
           <Grid item xs={12} sm={3}>
             <HSPaper className={classes.companyCard}>

@@ -73,7 +73,6 @@ function Job({ user, jobData, adminToken }) {
         />
         <meta property="twitter:url" content={url} />
       </Head>
-      <HeaderAd />
       <JobContentManage
         isJobOwner={isValidToken}
         jobData={jobData}
