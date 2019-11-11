@@ -1,7 +1,13 @@
 import api from "../../api";
 import Layout from "../../components/layout";
 import Router from "next/router";
-import ***REMOVED*** Container, Grid, Typography, makeStyles ***REMOVED*** from "@material-ui/core";
+import ***REMOVED***
+  Container,
+  Grid,
+  Typography,
+  makeStyles,
+  Box
+***REMOVED*** from "@material-ui/core";
 import HSPaper from "../../components/hs-paper";
 import CompanyLogo from "../../components/company-logo";
 import JobItem from "../../components/job-item";
@@ -34,7 +40,9 @@ export default function CompanyJobs(***REMOVED*** user, company, jobs ***REMOVED
   return (
     <Layout user=***REMOVED***user***REMOVED***>
       <Container className=***REMOVED***classes.root***REMOVED*** maxWidth="lg">
-        <HeaderAd />
+        <Box mb=***REMOVED***2***REMOVED*** display="flex" justifyContent="center">
+          <HeaderAd />
+        </Box>
         <Grid container spacing=***REMOVED***2***REMOVED***>
           <Grid item xs=***REMOVED***12***REMOVED*** sm=***REMOVED***3***REMOVED***>
             <HSPaper className=***REMOVED***classes.companyCard***REMOVED***>

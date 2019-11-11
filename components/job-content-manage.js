@@ -5,8 +5,12 @@ import Banner from "./banner";
 import JobContent from "./job-content";
 import JobCloseDialog from "./job-close-dialog";
 import HSSnackBar from "./hs-snackbar";
+import HeaderAd from "./header-ad";
 
 const useStyles = makeStyles(theme => (***REMOVED***
+  header: ***REMOVED***
+    paddingTop: theme.spacing(2)
+  ***REMOVED***,
   toolbar: ***REMOVED***
     padding: 0
   ***REMOVED***,
@@ -30,7 +34,12 @@ export default function JobContentManage(***REMOVED***
   const classes = useStyles();
   return (
     <Fragment>
-      <Container>
+      <Container className=***REMOVED***classes.header***REMOVED***>
+        ***REMOVED***withAds && (
+          <Box>
+            <HeaderAd />
+          </Box>
+        )***REMOVED***
         ***REMOVED***jobData.job.closed && (
           <Banner
             variant="error"

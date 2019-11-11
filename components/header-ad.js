@@ -12,7 +12,7 @@ export default function HeaderAd() ***REMOVED***
           style=***REMOVED******REMOVED*** display: "block" ***REMOVED******REMOVED***
           data-ad-client="ca-pub-1430919979045648"
           data-ad-slot="7862886800"
-          data-ad-format="auto"
+          data-ad-format="horizontal"
           data-full-width-responsive="true"></ins>
         <script
           dangerouslySetInnerHTML=***REMOVED******REMOVED***
