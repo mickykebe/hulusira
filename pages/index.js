@@ -212,7 +212,7 @@ function Index({ user, jobPage, activeTags, primaryTags }) {
             return (
               <Fragment key={job.id}>
                 {process.env.NODE_ENV === "production" &&
-                  index % 3 === 0 &&
+                  index % 4 === 0 &&
                   index > 0 && <FeedAd />}
                 <JobItem
                   className={classes.jobItem}
