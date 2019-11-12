@@ -17,6 +17,9 @@ const useStyles = makeStyles(theme => ({
   root: {
     paddingTop: theme.spacing(2)
   },
+  headerAd: {
+    marginBottom: theme.spacing(2)
+  },
   companyCard: {
     display: "flex",
     flexDirection: "column",
@@ -40,7 +43,7 @@ export default function CompanyJobs({ user, company, jobs }) {
   return (
     <Layout user={user}>
       <Container className={classes.root} maxWidth="lg">
-        <HeaderAd />
+        <HeaderAd className={classes.headerAd} />
         <Grid container spacing={2}>
           <Grid item xs={12} sm={3}>
             <HSPaper className={classes.companyCard}>
