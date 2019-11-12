@@ -12,7 +12,7 @@ export default function GoogleAd(***REMOVED***
 ***REMOVED***) ***REMOVED***
   useEffect(() => ***REMOVED***
     if (process.env.NODE_ENV === "production") ***REMOVED***
-      (adsbygoogle = window.adsbygoogle || []).push(***REMOVED******REMOVED***);
+      (window.adsbygoogle = window.adsbygoogle || []).push(***REMOVED******REMOVED***);
     ***REMOVED***
   ***REMOVED***, []);
   if (process.env.NODE_ENV === "production") ***REMOVED***
