@@ -212,7 +212,7 @@ function Index(***REMOVED*** user, jobPage, activeTags, primaryTags ***REMOVED**
             return (
               <Fragment key=***REMOVED***job.id***REMOVED***>
                 ***REMOVED***process.env.NODE_ENV === "production" &&
-                  index % 3 === 0 &&
+                  index % 4 === 0 &&
                   index > 0 && <FeedAd />***REMOVED***
                 <JobItem
                   className=***REMOVED***classes.jobItem***REMOVED***
