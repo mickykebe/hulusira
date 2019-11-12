@@ -12,7 +12,7 @@ export default function GoogleAd({
 }) {
   useEffect(() => {
     if (process.env.NODE_ENV === "production") {
-      (adsbygoogle = window.adsbygoogle || []).push({});
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
     }
   }, []);
   if (process.env.NODE_ENV === "production") {
