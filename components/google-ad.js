@@ -1,4 +1,5 @@
 import ***REMOVED*** useEffect ***REMOVED*** from "react";
+import ***REMOVED*** Box ***REMOVED*** from "@material-ui/core";
 
 export default function GoogleAd(***REMOVED***
   className = "",
