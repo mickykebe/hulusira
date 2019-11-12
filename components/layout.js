@@ -45,7 +45,13 @@ const useStyles = makeStyles(theme => (***REMOVED***
   accountButton: ***REMOVED***
     color: theme.palette.text.secondary
   ***REMOVED***,
-  toolbar: theme.mixins.toolbar
+  toolbar: theme.mixins.toolbar,
+  contentContainer: ***REMOVED***
+    height: 'calc(100vh - 64px)',
+    [theme.breakpoints.down('xs')]: ***REMOVED***
+      height: 'calc(100vh - 56px)',
+    ***REMOVED***
+  ***REMOVED***
 ***REMOVED***));
 
 export default function Layout(***REMOVED***
@@ -121,7 +127,7 @@ export default function Layout(***REMOVED***
         ***REMOVED***renderMenu***REMOVED***
       </AppBar>
       <div className=***REMOVED***classes.toolbar***REMOVED*** />
-      <Box height="100%">***REMOVED***children***REMOVED***</Box>
+      <Box className=***REMOVED***classes.contentContainer***REMOVED***>***REMOVED***children***REMOVED***</Box>
     </Box>
   );
 ***REMOVED***
