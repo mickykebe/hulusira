@@ -13,6 +13,7 @@ import HSPaper from "./hs-paper";
 import Markdown from "./markdown";
 import format from "date-fns/format";
 import ***REMOVED*** Fragment ***REMOVED*** from "react";
+import InArticleAd from "./in-article-ad";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   root: ***REMOVED***
@@ -139,22 +140,7 @@ export default function JobContent(***REMOVED*** jobData, withAds = false ***REM
             <Typography variant="h5">Description</Typography>
             <Markdown>***REMOVED***job.description***REMOVED***</Markdown>
             ***REMOVED***process.env.NODE_ENV === "production" && withAds && (
-              <Fragment>
-                <script
-                  async
-                  src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-                <ins
-                  className="adsbygoogle"
-                  style=***REMOVED******REMOVED*** display: "block", textAlign: "center" ***REMOVED******REMOVED***
-                  data-ad-layout="in-article"
-                  data-ad-format="fluid"
-                  data-ad-client="ca-pub-1430919979045648"
-                  data-ad-slot="7719911413"></ins>
-                <script
-                  dangerouslySetInnerHTML=***REMOVED******REMOVED***
-                    __html: "(adsbygoogle = window.adsbygoogle || []).push(***REMOVED******REMOVED***);"
-                  ***REMOVED******REMOVED***></script>
-              </Fragment>
+              <InArticleAd />
             )***REMOVED***
             ***REMOVED***job.responsibilities && (
               <Fragment>
