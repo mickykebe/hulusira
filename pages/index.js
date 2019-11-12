@@ -20,6 +20,7 @@ import useIsInview from "../hooks/use-is-inview";
 import TagFilter from "../components/tag-filter";
 import ***REMOVED*** useEffect, useRef, Fragment ***REMOVED*** from "react";
 import HeaderAd from "../components/header-ad";
+import FeedAd from "../components/feed-ad";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   root: ***REMOVED***
@@ -211,26 +212,8 @@ function Index(***REMOVED*** user, jobPage, activeTags, primaryTags ***REMOVED**
             return (
               <Fragment key=***REMOVED***job.id***REMOVED***>
                 ***REMOVED***process.env.NODE_ENV === "production" &&
-                  index % 4 === 0 &&
-                  index > 0 && (
-                    <Fragment>
-                      <script
-                        async
-                        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-                      <ins
-                        className="adsbygoogle"
-                        style=***REMOVED******REMOVED*** display: "block" ***REMOVED******REMOVED***
-                        data-ad-format="fluid"
-                        data-ad-layout-key="-ha-6+1u-6q+8y"
-                        data-ad-client="ca-pub-1430919979045648"
-                        data-ad-slot="8888209775"></ins>
-                      <script
-                        dangerouslySetInnerHTML=***REMOVED******REMOVED***
-                          __html:
-                            "(adsbygoogle = window.adsbygoogle || []).push(***REMOVED******REMOVED***);"
-                        ***REMOVED******REMOVED***></script>
-                    </Fragment>
-                  )***REMOVED***
+                  index % 3 === 0 &&
+                  index > 0 && <FeedAd />***REMOVED***
                 <JobItem
                   className=***REMOVED***classes.jobItem***REMOVED***
                   job=***REMOVED***job***REMOVED***
