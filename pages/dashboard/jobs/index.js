@@ -50,6 +50,7 @@ export default function DashboardJobs({ user, jobs }) {
   );
   const [jobPendingClose, setJobPendingClose] = useState(null);
   const handleCloseJob = async jobId => {
+    setJobPendingClose(null);
     dispatch({ type: "CLOSING_JOB" });
     try {
       await api.closeJob(jobId);
@@ -58,7 +59,6 @@ export default function DashboardJobs({ user, jobs }) {
     } catch (err) {
       dispatch({ type: "ERROR_CLOSING_JOB" });
     }
-    setJobPendingClose(null);
   };
 
   return (

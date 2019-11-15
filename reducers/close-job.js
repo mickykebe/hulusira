@@ -3,7 +3,7 @@ export default function jobCloseReducer(state, action) {
     case "CLOSING_JOB":
       return { ...state, isClosingJob: true, errorClosingJob: false };
     case "CLOSED_JOB":
-      return { ...state, isClosingJob: false, errorClosingJob: false };
+      return { ...state, errorClosingJob: false };
     case "ERROR_CLOSING_JOB":
       return { ...state, isClosingJob: false, errorClosingJob: true };
     case "CLEAR_ERROR":
