@@ -68,14 +68,16 @@ const sendPostToTelegram = async function(message, jobUrl) {
 exports.postJobToSocialMedia = async function(jobData) {
   const messageBody = createJobMessage(jobData);
   const jobUrl = `${process.env.ROOT_URL}/jobs/${jobData.job.slug}`;
+  const jobTelegramUrl = `${jobUrl}?utm_source=HuluSira%20Telegram%20Channel&utm_medium=telegram&utm_campaign=${jobData.job.slug}`;
+  const jobFacebookUrl = `${jobUrl}?utm_source=HuluSira%20Facebook%20Page&utm_medium=facebook&utm_campaign=${jobData.job.slug}`;
   const telegramMessage = messageBody;
   const facebookMessage = `ክፍት የስራ ቦታ ማስታወቅያ
   
 ${messageBody}`;
   const [telegramMessageId, facebookPostId] = await Promise.all(
     [
-      sendPostToTelegram(telegramMessage, jobUrl),
-      sendPostToFacebook(facebookMessage, jobUrl)
+      sendPostToTelegram(telegramMessage, jobTelegramUrl),
+      sendPostToFacebook(facebookMessage, jobFacebookUrl)
     ].map(p => p.catch(() => undefined))
   );
   await db.createJobSocialPost(jobData.job.id, {
