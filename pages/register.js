@@ -8,6 +8,7 @@ import * as Yup from "yup";
 import ***REMOVED*** useState ***REMOVED*** from "react";
 import api from "../api";
 import redirect from "../utils/redirect";
+import PageProgress from "../components/page-progress";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   registerButton: ***REMOVED***
@@ -41,8 +42,9 @@ export default function Register() ***REMOVED***
       setShowConfirmation(true);
     ***REMOVED*** catch (err) ***REMOVED***
       setRegisterError(true);
+    ***REMOVED*** finally ***REMOVED***
+      actions.setSubmitting(false);
     ***REMOVED***
-    actions.setSubmitting(false);
   ***REMOVED***;
   if (showConfirmation) ***REMOVED***
     return (
@@ -138,6 +140,7 @@ export default function Register() ***REMOVED***
                 disabled=***REMOVED***isSubmitting***REMOVED***>
                 Register
               </Fab>
+              ***REMOVED***isSubmitting && <PageProgress />***REMOVED***
             </form>
           );
         ***REMOVED******REMOVED***
