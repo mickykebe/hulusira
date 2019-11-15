@@ -50,6 +50,7 @@ export default function DashboardJobs(***REMOVED*** user, jobs ***REMOVED***) **
   );
   const [jobPendingClose, setJobPendingClose] = useState(null);
   const handleCloseJob = async jobId => ***REMOVED***
+    setJobPendingClose(null);
     dispatch(***REMOVED*** type: "CLOSING_JOB" ***REMOVED***);
     try ***REMOVED***
       await api.closeJob(jobId);
@@ -58,7 +59,6 @@ export default function DashboardJobs(***REMOVED*** user, jobs ***REMOVED***) **
     ***REMOVED*** catch (err) ***REMOVED***
       dispatch(***REMOVED*** type: "ERROR_CLOSING_JOB" ***REMOVED***);
     ***REMOVED***
-    setJobPendingClose(null);
   ***REMOVED***;
 
   return (

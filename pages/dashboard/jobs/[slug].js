@@ -13,6 +13,7 @@ export default function DashboardJob(***REMOVED*** user, jobData ***REMOVED***) 
   );
   const [closeDialogOpen, setCloseDialogOpen] = useState(false);
   const handleCloseJob = async () => ***REMOVED***
+    setCloseDialogOpen(false);
     dispatch(***REMOVED*** type: "CLOSING_JOB" ***REMOVED***);
     try ***REMOVED***
       await api.closeJob(jobData.job.id);
@@ -21,7 +22,6 @@ export default function DashboardJob(***REMOVED*** user, jobData ***REMOVED***) 
     ***REMOVED*** catch (err) ***REMOVED***
       dispatch(***REMOVED*** type: "ERROR_CLOSING_JOB" ***REMOVED***);
     ***REMOVED***
-    setCloseDialogOpen(false);
   ***REMOVED***;
   return (
     <DashboardLayout user=***REMOVED***user***REMOVED***>
