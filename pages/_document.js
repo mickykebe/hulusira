@@ -2,12 +2,20 @@ import React, { Fragment } from "react";
 import Document, { Head, Main, NextScript } from "next/document";
 import { ServerStyleSheets } from "@material-ui/styles";
 import theme from "../components/theme";
+import { GA_TRACKING_ID } from '../lib/gtag';
 
 class MyDocument extends Document {
   render() {
     return (
       <html lang="en">
         <Head>
+          <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}></script>
+          <script dangerouslySetInnerHTML={{ __html: `window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', '${GA_TRACKING_ID}');`}}>
+          </script>
           <meta charSet="utf-8" />
           <meta
             name="viewport"
@@ -41,10 +49,6 @@ class MyDocument extends Document {
         <body>
           <Main />
           <NextScript />
-
-          <script src="https://www.gstatic.com/firebasejs/7.0.0/firebase-app.js"></script>
-
-          <script src="https://www.gstatic.com/firebasejs/7.0.0/firebase-analytics.js"></script>
         </body>
       </html>
     );

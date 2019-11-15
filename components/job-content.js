@@ -14,6 +14,7 @@ import Markdown from "./markdown";
 import format from "date-fns/format";
 import { Fragment } from "react";
 import InArticleAd from "./in-article-ad";
+import * as gtag from '../lib/gtag';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -72,7 +73,10 @@ function ApplyButton({ job }) {
       color="primary"
       href={job.applyUrl || `mailto:${job.applyEmail}`}
       target="_blank"
-      fullWidth>
+      fullWidth
+      onClick={() => {
+        gtag.event({ action: "Click Apply Now", category: "Job", label: job.slug });
+      }}>
       Apply Now
     </Button>
   );
