@@ -8,6 +8,7 @@ import * as Yup from "yup";
 import { useState } from "react";
 import api from "../api";
 import redirect from "../utils/redirect";
+import PageProgress from "../components/page-progress";
 
 const useStyles = makeStyles(theme => ({
   registerButton: {
@@ -41,8 +42,9 @@ export default function Register() {
       setShowConfirmation(true);
     } catch (err) {
       setRegisterError(true);
+    } finally {
+      actions.setSubmitting(false);
     }
-    actions.setSubmitting(false);
   };
   if (showConfirmation) {
     return (
@@ -138,6 +140,7 @@ export default function Register() {
                 disabled={isSubmitting}>
                 Register
               </Fab>
+              {isSubmitting && <PageProgress />}
             </form>
           );
         }}

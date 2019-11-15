@@ -9,6 +9,7 @@ import api from "../api";
 import HSSnackbar from "../components/hs-snackbar";
 import redirect from "../utils/redirect";
 import AuthLayout from "../components/auth-layout";
+import PageProgress from "../components/page-progress";
 
 const useStyles = makeStyles(theme => ({
   signinButton: {
@@ -37,8 +38,8 @@ function Login() {
       Router.push("/dashboard/jobs");
     } catch (err) {
       setErrorLogin(true);
+      actions.setSubmitting(false);
     }
-    actions.setSubmitting(false);
   };
   return (
     <AuthLayout>
@@ -98,6 +99,7 @@ function Login() {
                 </Link>{" "}
                 for an account
               </Box>
+              {isSubmitting && <PageProgress />}
             </form>
           );
         }}
