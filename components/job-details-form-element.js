@@ -69,22 +69,22 @@ export default function JobDetailsFormElement({
         helperText={touched.location && errors.location}
       />
       <TextField
-        name="primaryTagId"
+        name="primaryTag"
         select
-        value={values.primaryTagId}
+        value={values.primaryTag}
         label="Primary Tag"
         margin="normal"
         variant="outlined"
         fullWidth
         onChange={handleChange}
-        error={!!(touched.primaryTagId && errors.primaryTagId)}
+        error={!!(touched.primaryTag && errors.primaryTag)}
         helperText={
-          !!(touched.primaryTagId && errors.primaryTagId)
-            ? errors.primaryTagId
+          !!(touched.primaryTag && errors.primaryTag)
+            ? errors.primaryTag
             : "Choosing a tag here boosts your job's visibility."
         }>
         {primaryTags.map(tag => (
-          <MenuItem key={tag.id} value={tag.id}>
+          <MenuItem key={tag.name} value={tag.name}>
             {tag.name}
           </MenuItem>
         ))}

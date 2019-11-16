@@ -132,21 +132,21 @@ function Index({ user, jobPage, activeTags, primaryTags }) {
       fetchMoreJobs();
     }
   }, [isIntersecting]);
-  const handleTagClick = tagId => {
-    const tagIndex = activeTags.findIndex(tag => tag.id === tagId);
+  const handleTagClick = tagName => {
+    const tagIndex = activeTags.findIndex(tag => tag.name === tagName);
     if (tagIndex !== -1) {
       return;
     }
-    const tagIds = activeTags.map(tag => tag.id);
-    const tags = `${tagId}${tagIds.length > 0 ? `,${tagIds.join(",")}` : ""}`;
+    const tagNames = activeTags.map(tag => tag.name);
+    const tags = `${tagName}${tagNames.length > 0 ? `,${tagNames.join(",")}` : ""}`;
     Router.push(`/?tags=${tags}`);
   };
 
-  const removeTagFromFilter = tagId => {
-    const tagIds = activeTags
-      .filter(tag => tag.id !== tagId)
-      .map(tag => tag.id);
-    Router.push(`/${tagIds.length ? `?tags=${tagIds.join(",")}` : ""}`);
+  const removeTagFromFilter = tagName => {
+    const tagNames = activeTags
+      .filter(tag => tag.name !== tagName)
+      .map(tag => tag.name);
+    Router.push(`/${tagNames.length ? `?tags=${tagNames.join(",")}` : ""}`);
   };
 
   const metaImage = `${process.env.ROOT_URL}/static/hulusira.png`;
@@ -185,8 +185,8 @@ function Index({ user, jobPage, activeTags, primaryTags }) {
             className={classes.categorySelect}
             label="Select"
             onChange={ev => {
-              const tagId = ev.target.value;
-              handleTagClick(tagId);
+              const tagName = ev.target.value;
+              handleTagClick(tagName);
             }}
             SelectProps={{
               MenuProps: {
@@ -200,8 +200,8 @@ function Index({ user, jobPage, activeTags, primaryTags }) {
             {primaryTags.map(tag => (
               <MenuItem
                 className={classes.categoryItem}
-                key={tag.id}
-                value={tag.id}>
+                key={tag.name}
+                value={tag.name}>
                 {tag.name}
               </MenuItem>
             ))}

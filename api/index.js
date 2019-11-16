@@ -150,8 +150,8 @@ class Api {
     return data;
   }
 
-  async getTags(tagIds = "", ctx) {
-    const { data } = await this.request(ctx).get(`/tags?ids=${tagIds}`);
+  async getTags(tagNames = "", ctx) {
+    const { data } = await this.request(ctx).get(`/tags?names=${tagNames}`);
     return data;
   }
 }

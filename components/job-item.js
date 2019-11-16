@@ -154,7 +154,7 @@ export default function JobItem({
                 label={tagName}
                 variant="outlined"
                 size="small"
-                onClick={!!onTagClick ? () => onTagClick(tag.id) : null}
+                onClick={!!onTagClick ? () => onTagClick(tag.name) : null}
               />
             );
           })}

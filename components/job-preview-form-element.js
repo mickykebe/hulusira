@@ -17,7 +17,7 @@ export default function JobPreviewFormElement({
       }}
       tags={[
         ...primaryTags
-          .filter(tag => tag.id === values.primaryTagId)
+          .filter(tag => tag.name === values.primaryTag)
           .map(tag => tag.name),
         ...cleanTags(values.tags)
       ]}

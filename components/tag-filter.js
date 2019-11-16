@@ -27,7 +27,7 @@ export default function TagFilter({ tags, onTagRemove }) {
           label={tag.name}
           variant="outlined"
           className={classes.tagChip}
-          onDelete={() => onTagRemove(tag.id)}></Chip>
+          onDelete={() => onTagRemove(tag.name)}></Chip>
       ))}
     </HSPaper>
   );

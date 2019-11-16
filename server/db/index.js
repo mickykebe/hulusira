@@ -61,10 +61,10 @@ class Db {
     assert(!!jobData);
     let primaryTag;
 
-    if (jobData.primaryTagId) {
+    if (jobData.primaryTag) {
       const primaryTagRow = await this.knex("tag")
         .first()
-        .where("id", jobData.primaryTagId);
+        .where("name", jobData.primaryTag);
       if (!primaryTagRow || primaryTagRow.is_primary === false) {
         throw new Error("Primary tag value set to invalid tag");
       }
@@ -112,11 +112,11 @@ class Db {
         primaryTag ? [primaryTag, ...tags] : tags
       );
 
-      if (jobData.primaryTagId) {
-        await this.createJobTag(job.id, jobData.primaryTagId, true, { trx });
+      if (jobData.primaryTag) {
+        await this.createJobTag(job.id, jobData.primaryTag, true, { trx });
       }
       await Promise.all(
-        tags.map(tag => this.createJobTag(job.id, tag.id, false, { trx }))
+        tags.map(tag => this.createJobTag(job.id, tag.name, false, { trx }))
       );
 
       return job;
@@ -128,10 +128,10 @@ class Db {
   async updateJob(jobId, jobData) {
     let primaryTag;
 
-    if (jobData.primaryTagId) {
+    if (jobData.primaryTag) {
       const primaryTagRow = await this.knex("tag")
         .first()
-        .where("id", jobData.primaryTagId);
+        .where("name", jobData.primaryTag);
       if (!primaryTagRow || primaryTagRow.is_primary === false) {
         throw new Error("Primary tag value set to invalid tag");
       }
@@ -176,12 +176,12 @@ class Db {
         primaryTag ? [primaryTag, ...tags] : tags
       );
 
-      if (jobData.primaryTagId) {
-        await this.createJobTag(job.id, jobData.primaryTagId, true, { trx });
+      if (jobData.primaryTag) {
+        await this.createJobTag(job.id, jobData.primaryTag, true, { trx });
       }
 
       await Promise.all(
-        tags.map(tag => this.createJobTag(job.id, tag.id, false, { trx }))
+        tags.map(tag => this.createJobTag(job.id, tag.name, false, { trx }))
       );
 
       return job;
@@ -190,10 +190,10 @@ class Db {
     return job;
   }
 
-  async createJobTag(jobId, tagId, isPrimary = false, { trx = null } = {}) {
+  async createJobTag(jobId, tagName, isPrimary = false, { trx = null } = {}) {
     return (trx || this.knex)("job_tags").insert({
       job_id: jobId,
-      tag_id: tagId,
+      tag_name: tagName,
       is_primary: isPrimary
     });
   }
@@ -256,7 +256,7 @@ class Db {
     closed = false,
     approvalStatus,
     withinDays,
-    tagIds = [],
+    tagNames = [],
     publicOnly = false,
     ownerId,
     companyId
@@ -268,12 +268,12 @@ class Db {
       )
       .select(
         this.knex.raw(
-          `coalesce(json_agg(json_build_object('id', tag.id, 'name', tag.name, 'isPrimary', tag.is_primary)) filter (where tag.id IS NOT NULL), '[]') as tags`
+          `coalesce(json_agg(json_build_object('name', tag.name, 'isPrimary', job_tags.is_primary)) filter (where tag.name IS NOT NULL), '[]') as tags`
         )
       )
       .leftJoin("company", "job.company_id", "company.id")
       .leftJoin("job_tags", "job_tags.job_id", "job.id")
-      .leftJoin("tag", "job_tags.tag_id", "tag.id")
+      .leftJoin("tag", "job_tags.tag_name", "tag.name")
       .where("job.closed", closed)
       .groupBy("job.id", "company.id")
       .orderBy("job.id", "desc");
@@ -300,14 +300,14 @@ class Db {
     if (typeof limit === "number") {
       query = query.limit(limit);
     }
-    tagIds.forEach(tagId => {
+    tagNames.forEach(tagName => {
       const subQuery = this.knex("job_tags")
         .select("job_id")
         .whereIn(
-          "tag_id",
+          "tag_name",
           this.knex("tag")
-            .select("id")
-            .whereIn("id", [tagId])
+            .select("name")
+            .whereIn("name", [tagName])
         );
       query = query.where("job.id", "in", subQuery);
     });
@@ -336,13 +336,13 @@ class Db {
       )
       .first(
         this.knex.raw(
-          `coalesce(json_agg(json_build_object('id', extra_tags.id, 'name', extra_tags.name, 'isPrimary', job_tags.is_primary)) filter (where extra_tags.id IS NOT NULL), '[]') as tags`
+          `coalesce(json_agg(json_build_object('name', extra_tags.name, 'isPrimary', job_tags.is_primary)) filter (where extra_tags.name IS NOT NULL), '[]') as tags`
         )
       )
       .leftJoin("company", "job.company_id", "company.id")
       .leftJoin("job_tags", "job_tags.job_id", "job.id")
       .leftJoin(
-        this.knex.raw("tag extra_tags on job_tags.tag_id = extra_tags.id")
+        this.knex.raw("tag extra_tags on job_tags.tag_name = extra_tags.name")
       )
       .groupBy("job.id", "company.id");
   }
@@ -453,10 +453,10 @@ class Db {
     }
   }
 
-  async getTags(tagIds = []) {
+  async getTags(tagNames = []) {
     const rows = await this.knex("tag")
       .select()
-      .whereIn("id", tagIds);
+      .whereIn("name", tagNames);
     return rows.map(Tag.fromDb);
   }
 

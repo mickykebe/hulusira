@@ -37,12 +37,12 @@ const useStyles = makeStyles(theme => ({
 export default function DashboardNewJob({ user, companies, primaryTags }) {
   const handleSubmit = async function(values) {
     const tags = cleanTags(values.tags);
-    const primaryTagId =
-      values.primaryTagId !== "" ? values.primaryTagId : null;
+    const primaryTag =
+      values.primaryTag !== "" ? values.primaryTag : null;
     await api.createJob({
       ...values,
       tags,
-      primaryTagId
+      primaryTag
     });
     Router.push("/dashboard/jobs");
   };

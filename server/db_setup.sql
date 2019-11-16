@@ -20,8 +20,7 @@ CREATE TABLE company (
 );
 
 CREATE TABLE tag (
-  id SERIAL PRIMARY KEY,
-  name TEXT NOT NULL UNIQUE,
+  name TEXT PRIMARY KEY,
   is_primary BOOLEAN NOT NULL DEFAULT FALSE
 );
 
@@ -51,7 +50,7 @@ CREATE TABLE job (
 CREATE TABLE job_tags (
   id SERIAL PRIMARY KEY,
   job_id INTEGER NOT NULL REFERENCES job(id) ON DELETE CASCADE,
-  tag_id INTEGER NOT NULL REFERENCES tag(id),
+  tag_name TEXT NOT NULL REFERENCES tag(name),
   is_primary BOOLEAN DEFAULT FALSE,
   UNIQUE (job_id, tag_id)
 );
