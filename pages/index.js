@@ -26,6 +26,9 @@ const useStyles = makeStyles(theme => ({
   root: {
     paddingTop: theme.spacing(2)
   },
+  headerAd: {
+    marginBottom: theme.spacing(1),
+  },
   jobItem: {
     marginBottom: theme.spacing(2),
     marginTop: theme.spacing(2)
@@ -174,7 +177,7 @@ function Index({ user, jobPage, activeTags, primaryTags }) {
         <meta name="twitter:url" content={pageUrl} />
       </Head>
       <Container className={classes.root} maxWidth="md">
-        <HeaderAd />
+        <HeaderAd className={classes.headerAd} />
         {(!activeTags || activeTags.length === 0) && (
           <TextField
             value=""
