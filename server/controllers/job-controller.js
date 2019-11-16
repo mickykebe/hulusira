@@ -7,7 +7,7 @@ const validationSchema = Yup.object().shape(
   ***REMOVED***
     position: Yup.string().required("Required"),
     jobType: Yup.string().required("Required"),
-    primaryTagId: Yup.number()
+    primaryTag: Yup.string()
       .nullable()
       .test(
         "primaryTag-required",
@@ -24,8 +24,8 @@ const validationSchema = Yup.object().shape(
       "tags-required",
       "Please enter at least one tag here or choose a tag in the Primary Tag input above.",
       function(value) ***REMOVED***
-        const ***REMOVED*** primaryTagId ***REMOVED*** = this.parent;
-        if (primaryTagId === null || primaryTagId === undefined) ***REMOVED***
+        const ***REMOVED*** primaryTag ***REMOVED*** = this.parent;
+        if (primaryTag === null || primaryTag === undefined) ***REMOVED***
           return value && value.length > 0;
         ***REMOVED***
         return true;
@@ -155,13 +155,13 @@ exports.getJobs = async (req, res) => ***REMOVED***
       ? parseInt(utils.base64decode(encodedCursor))
       : null;
   const count = parseInt(countStr);
-  const tagIds = utils.tagIdsfromQueryParam(tags);
+  const tagNames = utils.tagNamesFromQueryParam(tags);
   const jobs = await db.getJobs(***REMOVED***
     fromJobId,
     limit: count + 1,
     approvalStatus: "Approved",
     withinDays: 30,
-    tagIds,
+    tagNames,
     publicOnly: true
   ***REMOVED***);
   if (jobs.length < count + 1) ***REMOVED***

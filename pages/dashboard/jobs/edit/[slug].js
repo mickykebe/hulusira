@@ -12,19 +12,19 @@ export default function EditJob(***REMOVED*** user, jobData, companies, primaryT
   const primaryTag = tags.find(tag => tag.isPrimary === true);
   const initialValues = ***REMOVED***
     ...jobData.job,
-    primaryTagId: primaryTag ? primaryTag.id : "",
+    primaryTag: primaryTag ? primaryTag.name : "",
     tags: tags.filter(tag => !tag.isPrimary).map(tag => tag.name),
     hasCompany: !!jobData.job.companyId
   ***REMOVED***;
   const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
   const handleSubmit = async function(values) ***REMOVED***
     const tags = cleanTags(values.tags);
-    const primaryTagId =
-      values.primaryTagId !== "" ? values.primaryTagId : null;
+    const primaryTag =
+      values.primaryTag !== "" ? values.primaryTag : null;
     await api.updateJob(jobData.job.id, ***REMOVED***
       ...values,
       tags,
-      primaryTagId
+      primaryTag
     ***REMOVED***);
     setShowSuccessSnackbar(true);
   ***REMOVED***;

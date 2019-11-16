@@ -69,22 +69,22 @@ export default function JobDetailsFormElement(***REMOVED***
         helperText=***REMOVED***touched.location && errors.location***REMOVED***
       />
       <TextField
-        name="primaryTagId"
+        name="primaryTag"
         select
-        value=***REMOVED***values.primaryTagId***REMOVED***
+        value=***REMOVED***values.primaryTag***REMOVED***
         label="Primary Tag"
         margin="normal"
         variant="outlined"
         fullWidth
         onChange=***REMOVED***handleChange***REMOVED***
-        error=***REMOVED***!!(touched.primaryTagId && errors.primaryTagId)***REMOVED***
+        error=***REMOVED***!!(touched.primaryTag && errors.primaryTag)***REMOVED***
         helperText=***REMOVED***
-          !!(touched.primaryTagId && errors.primaryTagId)
-            ? errors.primaryTagId
+          !!(touched.primaryTag && errors.primaryTag)
+            ? errors.primaryTag
             : "Choosing a tag here boosts your job's visibility."
         ***REMOVED***>
         ***REMOVED***primaryTags.map(tag => (
-          <MenuItem key=***REMOVED***tag.id***REMOVED*** value=***REMOVED***tag.id***REMOVED***>
+          <MenuItem key=***REMOVED***tag.name***REMOVED*** value=***REMOVED***tag.name***REMOVED***>
             ***REMOVED***tag.name***REMOVED***
           </MenuItem>
         ))***REMOVED***

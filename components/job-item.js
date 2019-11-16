@@ -154,7 +154,7 @@ export default function JobItem(***REMOVED***
                 label=***REMOVED***tagName***REMOVED***
                 variant="outlined"
                 size="small"
-                onClick=***REMOVED***!!onTagClick ? () => onTagClick(tag.id) : null***REMOVED***
+                onClick=***REMOVED***!!onTagClick ? () => onTagClick(tag.name) : null***REMOVED***
               />
             );
           ***REMOVED***)***REMOVED***

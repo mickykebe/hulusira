@@ -53,7 +53,7 @@ export default function JobForm(***REMOVED***
     jobType: "",
     hasCompany: true,
     location: "Addis Ababa",
-    primaryTagId: "",
+    primaryTag: "",
     tags: [],
     salary: "",
     description: "",

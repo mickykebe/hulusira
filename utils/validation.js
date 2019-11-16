@@ -5,7 +5,7 @@ export const jobValidationSchema = Yup.object().shape(
   ***REMOVED***
     position: Yup.string().required("Required"),
     jobType: Yup.string().required("Required"),
-    primaryTagId: Yup.number()
+    primaryTag: Yup.string()
       .nullable()
       .test(
         "primaryTag-required",
@@ -22,8 +22,8 @@ export const jobValidationSchema = Yup.object().shape(
       "tags-required",
       "Please enter at least one tag here or choose a tag in the Primary Tag input above.",
       function(value) ***REMOVED***
-        const ***REMOVED*** primaryTagId ***REMOVED*** = this.parent;
-        if (primaryTagId === null || primaryTagId === undefined) ***REMOVED***
+        const ***REMOVED*** primaryTag ***REMOVED*** = this.parent;
+        if (primaryTag === null || primaryTag === undefined) ***REMOVED***
           return value && cleanTags(value).length > 0;
         ***REMOVED***
         return true;

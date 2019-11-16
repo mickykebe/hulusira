@@ -132,21 +132,21 @@ function Index(***REMOVED*** user, jobPage, activeTags, primaryTags ***REMOVED**
       fetchMoreJobs();
     ***REMOVED***
   ***REMOVED***, [isIntersecting]);
-  const handleTagClick = tagId => ***REMOVED***
-    const tagIndex = activeTags.findIndex(tag => tag.id === tagId);
+  const handleTagClick = tagName => ***REMOVED***
+    const tagIndex = activeTags.findIndex(tag => tag.name === tagName);
     if (tagIndex !== -1) ***REMOVED***
       return;
     ***REMOVED***
-    const tagIds = activeTags.map(tag => tag.id);
-    const tags = `$***REMOVED***tagId***REMOVED***$***REMOVED***tagIds.length > 0 ? `,$***REMOVED***tagIds.join(",")***REMOVED***` : ""***REMOVED***`;
+    const tagNames = activeTags.map(tag => tag.name);
+    const tags = `$***REMOVED***tagName***REMOVED***$***REMOVED***tagNames.length > 0 ? `,$***REMOVED***tagNames.join(",")***REMOVED***` : ""***REMOVED***`;
     Router.push(`/?tags=$***REMOVED***tags***REMOVED***`);
   ***REMOVED***;
 
-  const removeTagFromFilter = tagId => ***REMOVED***
-    const tagIds = activeTags
-      .filter(tag => tag.id !== tagId)
-      .map(tag => tag.id);
-    Router.push(`/$***REMOVED***tagIds.length ? `?tags=$***REMOVED***tagIds.join(",")***REMOVED***` : ""***REMOVED***`);
+  const removeTagFromFilter = tagName => ***REMOVED***
+    const tagNames = activeTags
+      .filter(tag => tag.name !== tagName)
+      .map(tag => tag.name);
+    Router.push(`/$***REMOVED***tagNames.length ? `?tags=$***REMOVED***tagNames.join(",")***REMOVED***` : ""***REMOVED***`);
   ***REMOVED***;
 
   const metaImage = `$***REMOVED***process.env.ROOT_URL***REMOVED***/static/hulusira.png`;
@@ -185,8 +185,8 @@ function Index(***REMOVED*** user, jobPage, activeTags, primaryTags ***REMOVED**
             className=***REMOVED***classes.categorySelect***REMOVED***
             label="Select"
             onChange=***REMOVED***ev => ***REMOVED***
-              const tagId = ev.target.value;
-              handleTagClick(tagId);
+              const tagName = ev.target.value;
+              handleTagClick(tagName);
             ***REMOVED******REMOVED***
             SelectProps=***REMOVED******REMOVED***
               MenuProps: ***REMOVED***
@@ -200,8 +200,8 @@ function Index(***REMOVED*** user, jobPage, activeTags, primaryTags ***REMOVED**
             ***REMOVED***primaryTags.map(tag => (
               <MenuItem
                 className=***REMOVED***classes.categoryItem***REMOVED***
-                key=***REMOVED***tag.id***REMOVED***
-                value=***REMOVED***tag.id***REMOVED***>
+                key=***REMOVED***tag.name***REMOVED***
+                value=***REMOVED***tag.name***REMOVED***>
                 ***REMOVED***tag.name***REMOVED***
               </MenuItem>
             ))***REMOVED***

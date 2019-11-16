@@ -150,8 +150,8 @@ class Api ***REMOVED***
     return data;
   ***REMOVED***
 
-  async getTags(tagIds = "", ctx) ***REMOVED***
-    const ***REMOVED*** data ***REMOVED*** = await this.request(ctx).get(`/tags?ids=$***REMOVED***tagIds***REMOVED***`);
+  async getTags(tagNames = "", ctx) ***REMOVED***
+    const ***REMOVED*** data ***REMOVED*** = await this.request(ctx).get(`/tags?names=$***REMOVED***tagNames***REMOVED***`);
     return data;
   ***REMOVED***
 ***REMOVED***

@@ -71,12 +71,12 @@ function New(***REMOVED*** primaryTags, user ***REMOVED***) ***REMOVED***
         companyLogo = await api.uploadImage(files[0]);
       ***REMOVED***
       const tags = cleanTags(values.tags);
-      const primaryTagId =
-        values.primaryTagId !== "" ? values.primaryTagId : null;
+      const primaryTag =
+        values.primaryTag !== "" ? values.primaryTag : null;
       const jobData = await api.createJob(***REMOVED***
         ...values,
         tags,
-        primaryTagId,
+        primaryTag,
         companyLogo
       ***REMOVED***);
       Cookies.set(jobData.job.slug, jobData.job.adminToken);
@@ -116,7 +116,7 @@ function New(***REMOVED*** primaryTags, user ***REMOVED***) ***REMOVED***
             companyName: "",
             hasCompany: true,
             location: "Addis Ababa",
-            primaryTagId: "",
+            primaryTag: "",
             tags: [],
             salary: "",
             description: "",
