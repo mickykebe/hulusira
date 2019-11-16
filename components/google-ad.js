@@ -17,7 +17,7 @@ export default function GoogleAd(***REMOVED***
   ***REMOVED***, []);
   if (process.env.NODE_ENV === "production") ***REMOVED***
     return (
-      <Box className=***REMOVED***className***REMOVED***>
+      <Box minWidth=***REMOVED***250***REMOVED*** className=***REMOVED***className***REMOVED***>
         <ins
           className="adsbygoogle"
           style=***REMOVED******REMOVED*** display: "block", ...style ***REMOVED******REMOVED***
