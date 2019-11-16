@@ -3,6 +3,7 @@ import ***REMOVED*** MuiPickersUtilsProvider, DatePicker ***REMOVED*** from "@ma
 import DateFnsUtils from "@date-io/date-fns";
 import MDEditor from "./md-editor";
 import HSCard from "./hs-card";
+import addDays from "date-fns/addDays";
 
 const jobTypes = [
   "Full-time",
@@ -129,9 +130,11 @@ export default function JobDetailsFormElement(***REMOVED***
           format="yyyy-MM-dd"
           label="Application Deadline (optional)"
           inputVariant="outlined"
+          disablePast
           value=***REMOVED***values.deadline***REMOVED***
           onChange=***REMOVED***date => setFieldValue("deadline", date)***REMOVED***
           TextFieldComponent=***REMOVED***DatePickerTextField***REMOVED***
+          maxDate=***REMOVED***addDays(new Date(), 30)***REMOVED***
         />
       </MuiPickersUtilsProvider>
       <MDEditor
