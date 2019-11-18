@@ -159,7 +159,6 @@ exports.postJobCloseToSocialMedia = async function(jobData) ***REMOVED***
   ***REMOVED***
   const ***REMOVED*** telegramMessages, telegramMessageId, facebookPostId ***REMOVED*** = messageIds;
 
-  console.log(***REMOVED*** telegramMessages, telegramMessageId, facebookPostId ***REMOVED***);
   if (!!telegramMessages) ***REMOVED***
     try ***REMOVED***
       await Promise.all(
@@ -177,8 +176,6 @@ exports.postJobCloseToSocialMedia = async function(jobData) ***REMOVED***
       );
     ***REMOVED***
   ***REMOVED***
-
-  console.log(***REMOVED*** channelUserName: process.env.TELEGRAM_CHANNEL_USERNAME ***REMOVED***);
 
   if (!!telegramMessageId) ***REMOVED***
     try ***REMOVED***
