@@ -499,15 +499,15 @@ class Db ***REMOVED***
       .del();
   ***REMOVED***
 
-  createJobSocialPost(jobId, ***REMOVED*** telegramMessageId, facebookPostId ***REMOVED***) ***REMOVED***
+  createJobSocialPost(jobId, ***REMOVED*** telegramMessages, facebookPostId ***REMOVED***) ***REMOVED***
     const data = ***REMOVED***
       job_id: jobId
     ***REMOVED***;
     if (!telegramMessageId && !facebookPostId) ***REMOVED***
       return;
     ***REMOVED***
-    if (telegramMessageId) ***REMOVED***
-      data.telegram_message_id = telegramMessageId;
+    if (telegramMessages) ***REMOVED***
+      data.telegram_messages = telegramMessages;
     ***REMOVED***
     if (facebookPostId) ***REMOVED***
       data.facebook_post_id = facebookPostId;
@@ -522,6 +522,7 @@ class Db ***REMOVED***
     if (!!row) ***REMOVED***
       return ***REMOVED***
         telegramMessageId: row.telegram_message_id,
+        telegramMessages: row.telegram_messages,
         facebookPostId: row.facebook_post_id
       ***REMOVED***;
     ***REMOVED***

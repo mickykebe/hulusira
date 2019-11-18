@@ -68,24 +68,48 @@ const sendPostToTelegram = async function(channelUsername, message, jobUrl) ***R
 exports.postJobToSocialMedia = async function(jobData) ***REMOVED***
   const messageBody = createJobMessage(jobData);
   const jobUrl = `$***REMOVED***process.env.ROOT_URL***REMOVED***/jobs/$***REMOVED***jobData.job.slug***REMOVED***`;
-  const jobTelegramUrl = `$***REMOVED***jobUrl***REMOVED***?utm_source=HuluSira%20Telegram%20Channel&utm_medium=telegram&utm_campaign=$***REMOVED***jobData.job.slug***REMOVED***`;
   const jobFacebookUrl = `$***REMOVED***jobUrl***REMOVED***?utm_source=HuluSira%20Facebook%20Page&utm_medium=facebook&utm_campaign=$***REMOVED***jobData.job.slug***REMOVED***`;
   const telegramMessage = messageBody;
   const facebookMessage = `ክፍት የስራ ቦታ ማስታወቅያ
   
 $***REMOVED***messageBody***REMOVED***`;
-  const [telegramMessageId, facebookPostId] = await Promise.all(
-    [
-      sendPostToTelegram(
-        process.env.TELEGRAM_CHANNEL_USERNAME,
-        telegramMessage,
-        jobTelegramUrl
-      ),
-      sendPostToFacebook(facebookMessage, jobFacebookUrl)
-    ].map(p => p.catch(() => undefined))
-  );
+
+  let telegramMessages = null;
+  const telegramChannelUsernames = (
+    process.env.TELEGRAM_CHANNEL_USERNAMES || ""
+  )
+    .split(" ")
+    .filter(userName => !!userName);
+  if (telegramChannelUsernames.length > 0) ***REMOVED***
+    let messageIds = await Promise.all(
+      telegramChannelUsernames
+        .map(channelUserName => ***REMOVED***
+          const jobTelegramUrl = `$***REMOVED***jobUrl***REMOVED***?utm_source=$***REMOVED***encodeURIComponent(
+            `$***REMOVED***channelUserName***REMOVED*** Telegram Channel`
+          )***REMOVED***&utm_medium=telegram&utm_campaign=$***REMOVED***jobData.job.slug***REMOVED***`;
+          return sendPostToTelegram(
+            channelUserName,
+            telegramMessage,
+            jobTelegramUrl
+          );
+        ***REMOVED***)
+        .map(p => p.catch(() => null))
+    );
+    const messages = messageIds
+      .map((messageId, index) => (***REMOVED***
+        channelUserName: telegramChannelUsernames[index],
+        messageId
+      ***REMOVED***))
+      .filter(message => message.messageId !== null);
+    telegramMessages = JSON.stringify(messages);
+  ***REMOVED***
+
+  const facebookPostId = await sendPostToFacebook(
+    facebookMessage,
+    jobFacebookUrl
+  ).catch(() => null);
   await db.createJobSocialPost(jobData.job.id, ***REMOVED***
-    telegramMessageId,
+    telegramMessages,
     facebookPostId
   ***REMOVED***);
 ***REMOVED***;
@@ -106,7 +130,11 @@ const postCloseJobToFacebook = async function(fbPostId, jobData) ***REMOVED***
     .catch(logAxiosErrors);
 ***REMOVED***;
 
-const postCloseJobToTelegram = async function(messageId, jobData) ***REMOVED***
+const postCloseJobToTelegram = async function(
+  channelUserName,
+  messageId,
+  jobData
+) ***REMOVED***
   if (!messageId) ***REMOVED***
     return;
   ***REMOVED***
@@ -117,7 +145,7 @@ const postCloseJobToTelegram = async function(messageId, jobData) ***REMOVED***
 
   return axios
     .post(`$***REMOVED***TELEGRAM_API_BASE_URL***REMOVED***/editMessageText`, ***REMOVED***
-      chat_id: `@$***REMOVED***process.env.TELEGRAM_CHANNEL_USERNAME***REMOVED***`,
+      chat_id: `@$***REMOVED***channelUserName***REMOVED***`,
       message_id: messageId,
       text: closedMessage
     ***REMOVED***)
@@ -129,14 +157,44 @@ exports.postJobCloseToSocialMedia = async function(jobData) ***REMOVED***
   if (!messageIds) ***REMOVED***
     return;
   ***REMOVED***
-  const ***REMOVED*** telegramMessageId, facebookPostId ***REMOVED*** = messageIds;
+  const ***REMOVED*** telegramMessages, telegramMessageId, facebookPostId ***REMOVED*** = messageIds;
+
+  if (!!telegramMessages) ***REMOVED***
+    try ***REMOVED***
+      await Promise.all(
+        telegramMessages.map(message => ***REMOVED***
+          return postCloseJobToTelegram(
+            message.channelUserName,
+            message.messageId,
+            jobData
+          );
+        ***REMOVED***)
+      );
+    ***REMOVED*** catch (err) ***REMOVED***
+      console.log(
+        "Problem occurred trying to post job closure to telegram channels"
+      );
+    ***REMOVED***
+  ***REMOVED***
+
+  if (!!telegramMessageId) ***REMOVED***
+    try ***REMOVED***
+      await postCloseJobToTelegram(
+        process.env.TELEGRAM_CHANNEL_USERNAME,
+        telegramMessageId,
+        jobData
+      );
+    ***REMOVED*** catch (err) ***REMOVED***
+      console.log(
+        "Problem occurred trying to post job closure to telegram channel"
+      );
+    ***REMOVED***
+  ***REMOVED***
+
   try ***REMOVED***
-    await Promise.all([
-      postCloseJobToTelegram(telegramMessageId, jobData),
-      postCloseJobToFacebook(facebookPostId, jobData)
-    ]);
+    await postCloseJobToFacebook(facebookPostId, jobData);
   ***REMOVED*** catch (err) ***REMOVED***
-    console.log(`Problem occurred trying to post job closure to social media`);
+    console.log("Problem occurred trying to post job closure to facebook");
   ***REMOVED***
 ***REMOVED***;
 
