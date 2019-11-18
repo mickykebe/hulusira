@@ -503,7 +503,7 @@ class Db ***REMOVED***
     const data = ***REMOVED***
       job_id: jobId
     ***REMOVED***;
-    if (!telegramMessageId && !facebookPostId) ***REMOVED***
+    if (!telegramMessages && !facebookPostId) ***REMOVED***
       return;
     ***REMOVED***
     if (telegramMessages) ***REMOVED***
