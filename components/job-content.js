@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Router from 'next/router';
 import {
   Box,
   Typography,
@@ -96,6 +97,7 @@ export default function JobContent({ jobData, withAds = false }) {
               company={company}
               abbrevFallback={false}
               size="large"
+              onClick={() => Router.push(`/companies/${company.id}`)}
             />
           </Box>
         )}
