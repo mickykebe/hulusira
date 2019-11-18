@@ -159,7 +159,6 @@ exports.postJobCloseToSocialMedia = async function(jobData) {
   }
   const { telegramMessages, telegramMessageId, facebookPostId } = messageIds;
 
-  console.log({ telegramMessages, telegramMessageId, facebookPostId });
   if (!!telegramMessages) {
     try {
       await Promise.all(
@@ -177,8 +176,6 @@ exports.postJobCloseToSocialMedia = async function(jobData) {
       );
     }
   }
-
-  console.log({ channelUserName: process.env.TELEGRAM_CHANNEL_USERNAME });
 
   if (!!telegramMessageId) {
     try {
