@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Router from 'next/router';
 import ***REMOVED***
   Box,
   Typography,
@@ -96,6 +97,7 @@ export default function JobContent(***REMOVED*** jobData, withAds = false ***REM
               company=***REMOVED***company***REMOVED***
               abbrevFallback=***REMOVED***false***REMOVED***
               size="large"
+              onClick=***REMOVED***() => Router.push(`/companies/$***REMOVED***company.id***REMOVED***`)***REMOVED***
             />
           </Box>
         )***REMOVED***

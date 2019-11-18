@@ -38,11 +38,11 @@ const sendPostToFacebook = async function(message, jobUrl) ***REMOVED***
   ***REMOVED***
 ***REMOVED***;
 
-const sendPostToTelegram = async function(message, jobUrl) ***REMOVED***
+const sendPostToTelegram = async function(channelUsername, message, jobUrl) ***REMOVED***
   try ***REMOVED***
     const ***REMOVED*** data: response ***REMOVED*** = await axios
       .post(`$***REMOVED***TELEGRAM_API_BASE_URL***REMOVED***/sendMessage`, ***REMOVED***
-        chat_id: `@$***REMOVED***process.env.TELEGRAM_CHANNEL_USERNAME***REMOVED***`,
+        chat_id: `@$***REMOVED***channelUsername***REMOVED***`,
         text: message,
         reply_markup: ***REMOVED***
           inline_keyboard: [
@@ -76,7 +76,11 @@ exports.postJobToSocialMedia = async function(jobData) ***REMOVED***
 $***REMOVED***messageBody***REMOVED***`;
   const [telegramMessageId, facebookPostId] = await Promise.all(
     [
-      sendPostToTelegram(telegramMessage, jobTelegramUrl),
+      sendPostToTelegram(
+        process.env.TELEGRAM_CHANNEL_USERNAME,
+        telegramMessage,
+        jobTelegramUrl
+      ),
       sendPostToFacebook(facebookMessage, jobFacebookUrl)
     ].map(p => p.catch(() => undefined))
   );
