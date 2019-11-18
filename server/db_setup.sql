@@ -58,6 +58,7 @@ CREATE TABLE job_tags (
 CREATE TABLE job_social_post (
   job_id INTEGER PRIMARY KEY REFERENCES job(id) ON DELETE CASCADE,
   telegram_message_id INTEGER,
+  telegram_messages jsonb,
   facebook_post_id TEXT
 );
 

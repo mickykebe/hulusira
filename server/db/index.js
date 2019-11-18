@@ -499,15 +499,15 @@ class Db {
       .del();
   }
 
-  createJobSocialPost(jobId, { telegramMessageId, facebookPostId }) {
+  createJobSocialPost(jobId, { telegramMessages, facebookPostId }) {
     const data = {
       job_id: jobId
     };
     if (!telegramMessageId && !facebookPostId) {
       return;
     }
-    if (telegramMessageId) {
-      data.telegram_message_id = telegramMessageId;
+    if (telegramMessages) {
+      data.telegram_messages = telegramMessages;
     }
     if (facebookPostId) {
       data.facebook_post_id = facebookPostId;
@@ -522,6 +522,7 @@ class Db {
     if (!!row) {
       return {
         telegramMessageId: row.telegram_message_id,
+        telegramMessages: row.telegram_messages,
         facebookPostId: row.facebook_post_id
       };
     }

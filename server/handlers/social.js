@@ -68,24 +68,48 @@ const sendPostToTelegram = async function(channelUsername, message, jobUrl) {
 exports.postJobToSocialMedia = async function(jobData) {
   const messageBody = createJobMessage(jobData);
   const jobUrl = `${process.env.ROOT_URL}/jobs/${jobData.job.slug}`;
-  const jobTelegramUrl = `${jobUrl}?utm_source=HuluSira%20Telegram%20Channel&utm_medium=telegram&utm_campaign=${jobData.job.slug}`;
   const jobFacebookUrl = `${jobUrl}?utm_source=HuluSira%20Facebook%20Page&utm_medium=facebook&utm_campaign=${jobData.job.slug}`;
   const telegramMessage = messageBody;
   const facebookMessage = `ክፍት የስራ ቦታ ማስታወቅያ
   
 ${messageBody}`;
-  const [telegramMessageId, facebookPostId] = await Promise.all(
-    [
-      sendPostToTelegram(
-        process.env.TELEGRAM_CHANNEL_USERNAME,
-        telegramMessage,
-        jobTelegramUrl
-      ),
-      sendPostToFacebook(facebookMessage, jobFacebookUrl)
-    ].map(p => p.catch(() => undefined))
-  );
+
+  let telegramMessages = null;
+  const telegramChannelUsernames = (
+    process.env.TELEGRAM_CHANNEL_USERNAMES || ""
+  )
+    .split(" ")
+    .filter(userName => !!userName);
+  if (telegramChannelUsernames.length > 0) {
+    let messageIds = await Promise.all(
+      telegramChannelUsernames
+        .map(channelUserName => {
+          const jobTelegramUrl = `${jobUrl}?utm_source=${encodeURIComponent(
+            `${channelUserName} Telegram Channel`
+          )}&utm_medium=telegram&utm_campaign=${jobData.job.slug}`;
+          return sendPostToTelegram(
+            channelUserName,
+            telegramMessage,
+            jobTelegramUrl
+          );
+        })
+        .map(p => p.catch(() => null))
+    );
+    const messages = messageIds
+      .map((messageId, index) => ({
+        channelUserName: telegramChannelUsernames[index],
+        messageId
+      }))
+      .filter(message => message.messageId !== null);
+    telegramMessages = JSON.stringify(messages);
+  }
+
+  const facebookPostId = await sendPostToFacebook(
+    facebookMessage,
+    jobFacebookUrl
+  ).catch(() => null);
   await db.createJobSocialPost(jobData.job.id, {
-    telegramMessageId,
+    telegramMessages,
     facebookPostId
   });
 };
@@ -106,7 +130,11 @@ const postCloseJobToFacebook = async function(fbPostId, jobData) {
     .catch(logAxiosErrors);
 };
 
-const postCloseJobToTelegram = async function(messageId, jobData) {
+const postCloseJobToTelegram = async function(
+  channelUserName,
+  messageId,
+  jobData
+) {
   if (!messageId) {
     return;
   }
@@ -117,7 +145,7 @@ const postCloseJobToTelegram = async function(messageId, jobData) {
 
   return axios
     .post(`${TELEGRAM_API_BASE_URL}/editMessageText`, {
-      chat_id: `@${process.env.TELEGRAM_CHANNEL_USERNAME}`,
+      chat_id: `@${channelUserName}`,
       message_id: messageId,
       text: closedMessage
     })
@@ -129,14 +157,44 @@ exports.postJobCloseToSocialMedia = async function(jobData) {
   if (!messageIds) {
     return;
   }
-  const { telegramMessageId, facebookPostId } = messageIds;
+  const { telegramMessages, telegramMessageId, facebookPostId } = messageIds;
+
+  if (!!telegramMessages) {
+    try {
+      await Promise.all(
+        telegramMessages.map(message => {
+          return postCloseJobToTelegram(
+            message.channelUserName,
+            message.messageId,
+            jobData
+          );
+        })
+      );
+    } catch (err) {
+      console.log(
+        "Problem occurred trying to post job closure to telegram channels"
+      );
+    }
+  }
+
+  if (!!telegramMessageId) {
+    try {
+      await postCloseJobToTelegram(
+        process.env.TELEGRAM_CHANNEL_USERNAME,
+        telegramMessageId,
+        jobData
+      );
+    } catch (err) {
+      console.log(
+        "Problem occurred trying to post job closure to telegram channel"
+      );
+    }
+  }
+
   try {
-    await Promise.all([
-      postCloseJobToTelegram(telegramMessageId, jobData),
-      postCloseJobToFacebook(facebookPostId, jobData)
-    ]);
+    await postCloseJobToFacebook(facebookPostId, jobData);
   } catch (err) {
-    console.log(`Problem occurred trying to post job closure to social media`);
+    console.log("Problem occurred trying to post job closure to facebook");
   }
 };
 
