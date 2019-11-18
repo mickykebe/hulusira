@@ -5,7 +5,10 @@ exports.base64decode = value => Buffer.from(value, "base64").toString("utf-8");
 exports.isProduction = process.env.NODE_ENV === "production";
 
 exports.tagNamesFromQueryParam = tags => ***REMOVED***
-  return tags.split(",").filter(tagName => tagName !== "");
+  return tags
+    .split(",")
+    .filter(tagName => !!tagName)
+    .map(name => name.toUpperCase().trim());
 ***REMOVED***;
 
 exports.logAxiosErrors = error => ***REMOVED***

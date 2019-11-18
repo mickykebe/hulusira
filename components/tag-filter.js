@@ -17,17 +17,17 @@ const useStyles = makeStyles(theme => (***REMOVED***
   ***REMOVED***
 ***REMOVED***));
 
-export default function TagFilter(***REMOVED*** tags, onTagRemove ***REMOVED***) ***REMOVED***
+export default function TagFilter(***REMOVED*** tagNames, onTagRemove ***REMOVED***) ***REMOVED***
   const classes = useStyles();
   return (
     <HSPaper className=***REMOVED***classes.root***REMOVED***>
-      ***REMOVED***tags.map(tag => (
+      ***REMOVED***tagNames.map(name => (
         <Chip
-          key=***REMOVED***tag.name***REMOVED***
-          label=***REMOVED***tag.name***REMOVED***
+          key=***REMOVED***name***REMOVED***
+          label=***REMOVED***name***REMOVED***
           variant="outlined"
           className=***REMOVED***classes.tagChip***REMOVED***
-          onDelete=***REMOVED***() => onTagRemove(tag.name)***REMOVED***></Chip>
+          onDelete=***REMOVED***() => onTagRemove(name)***REMOVED***></Chip>
       ))***REMOVED***
     </HSPaper>
   );

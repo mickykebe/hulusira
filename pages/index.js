@@ -84,7 +84,7 @@ const jobsReducer = (state, action) => ***REMOVED***
   ***REMOVED***
 ***REMOVED***;
 
-function Index(***REMOVED*** user, jobPage, activeTags, primaryTags ***REMOVED***) ***REMOVED***
+function Index(***REMOVED*** user, jobPage, activeTagNames, primaryTags ***REMOVED***) ***REMOVED***
   const [***REMOVED*** jobs, nextCursor, isLoading, isError ***REMOVED***, dispatch] = React.useReducer(
     jobsReducer,
     ***REMOVED***
@@ -133,19 +133,17 @@ function Index(***REMOVED*** user, jobPage, activeTags, primaryTags ***REMOVED**
     ***REMOVED***
   ***REMOVED***, [isIntersecting]);
   const handleTagClick = tagName => ***REMOVED***
-    const tagIndex = activeTags.findIndex(tag => tag.name === tagName);
+    const tagIndex = activeTagNames.findIndex(activeTagName => activeTagName === tagName);
     if (tagIndex !== -1) ***REMOVED***
       return;
     ***REMOVED***
-    const tagNames = activeTags.map(tag => tag.name);
-    const tags = `$***REMOVED***tagName***REMOVED***$***REMOVED***tagNames.length > 0 ? `,$***REMOVED***tagNames.join(",")***REMOVED***` : ""***REMOVED***`;
+    const tags = `$***REMOVED***tagName***REMOVED***$***REMOVED***activeTagNames.length > 0 ? `,$***REMOVED***activeTagNames.join(",")***REMOVED***` : ""***REMOVED***`;
     Router.push(`/?tags=$***REMOVED***tags***REMOVED***`);
   ***REMOVED***;
 
   const removeTagFromFilter = tagName => ***REMOVED***
-    const tagNames = activeTags
-      .filter(tag => tag.name !== tagName)
-      .map(tag => tag.name);
+    const tagNames = activeTagNames
+      .filter(activeTagName => activeTagName !== tagName);
     Router.push(`/$***REMOVED***tagNames.length ? `?tags=$***REMOVED***tagNames.join(",")***REMOVED***` : ""***REMOVED***`);
   ***REMOVED***;
 
@@ -178,7 +176,7 @@ function Index(***REMOVED*** user, jobPage, activeTags, primaryTags ***REMOVED**
       </Head>
       <Container className=***REMOVED***classes.root***REMOVED*** maxWidth="md">
         <HeaderAd className=***REMOVED***classes.headerAd***REMOVED*** />
-        ***REMOVED***(!activeTags || activeTags.length === 0) && (
+        ***REMOVED***(!activeTagNames || activeTagNames.length === 0) && (
           <TextField
             value=""
             select
@@ -208,8 +206,8 @@ function Index(***REMOVED*** user, jobPage, activeTags, primaryTags ***REMOVED**
           </TextField>
         )***REMOVED***
         <Fragment>
-          ***REMOVED***activeTags.length > 0 && (
-            <TagFilter tags=***REMOVED***activeTags***REMOVED*** onTagRemove=***REMOVED***removeTagFromFilter***REMOVED*** />
+          ***REMOVED***activeTagNames.length > 0 && (
+            <TagFilter tagNames=***REMOVED***activeTagNames***REMOVED*** onTagRemove=***REMOVED***removeTagFromFilter***REMOVED*** />
           )***REMOVED***
           ***REMOVED***jobs.map((***REMOVED*** job, company ***REMOVED***, index) => ***REMOVED***
             return (
@@ -266,15 +264,13 @@ function Index(***REMOVED*** user, jobPage, activeTags, primaryTags ***REMOVED**
 
 Index.getInitialProps = async ctx => ***REMOVED***
   const ***REMOVED*** tags = "" ***REMOVED*** = ctx.query;
+  let activeTagNames = tags.split(",").filter(name => !!name).map(name => name.toUpperCase().trim());
   const [jobPage, primaryTags] = await Promise.all([
-    api.getJobs(***REMOVED*** ctx, tags ***REMOVED***),
+    api.getJobs(***REMOVED*** ctx, tags: activeTagNames.join(",") ***REMOVED***),
     api.getPrimaryTags(ctx)
   ]);
-  let activeTags = [];
-  if (!!tags) ***REMOVED***
-    activeTags = await api.getTags(tags, ctx);
-  ***REMOVED***
-  return ***REMOVED*** jobPage, activeTags, primaryTags ***REMOVED***;
+  
+  return ***REMOVED*** jobPage, activeTagNames, primaryTags ***REMOVED***;
 ***REMOVED***;
 
 export default Index;

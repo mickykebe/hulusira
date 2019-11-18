@@ -237,7 +237,7 @@ class Db ***REMOVED***
   async findOrCreateTag(name, ***REMOVED*** trx = null ***REMOVED*** = ***REMOVED******REMOVED***) ***REMOVED***
     const res = await (trx || this.knex).raw(
       "with new_row as (insert into tag(name) select :name where not exists (select * from tag where name = :name) returning *) select * from new_row union select * from tag where name = :name",
-      ***REMOVED*** name ***REMOVED***
+      ***REMOVED*** name: name.toUpperCase().trim() ***REMOVED***
     );
     return Tag.fromDb(res.rows[0]);
   ***REMOVED***
