@@ -84,7 +84,7 @@ const jobsReducer = (state, action) => {
   }
 };
 
-function Index({ user, jobPage, activeTags, primaryTags }) {
+function Index({ user, jobPage, activeTagNames, primaryTags }) {
   const [{ jobs, nextCursor, isLoading, isError }, dispatch] = React.useReducer(
     jobsReducer,
     {
@@ -133,19 +133,17 @@ function Index({ user, jobPage, activeTags, primaryTags }) {
     }
   }, [isIntersecting]);
   const handleTagClick = tagName => {
-    const tagIndex = activeTags.findIndex(tag => tag.name === tagName);
+    const tagIndex = activeTagNames.findIndex(activeTagName => activeTagName === tagName);
     if (tagIndex !== -1) {
       return;
     }
-    const tagNames = activeTags.map(tag => tag.name);
-    const tags = `${tagName}${tagNames.length > 0 ? `,${tagNames.join(",")}` : ""}`;
+    const tags = `${tagName}${activeTagNames.length > 0 ? `,${activeTagNames.join(",")}` : ""}`;
     Router.push(`/?tags=${tags}`);
   };
 
   const removeTagFromFilter = tagName => {
-    const tagNames = activeTags
-      .filter(tag => tag.name !== tagName)
-      .map(tag => tag.name);
+    const tagNames = activeTagNames
+      .filter(activeTagName => activeTagName !== tagName);
     Router.push(`/${tagNames.length ? `?tags=${tagNames.join(",")}` : ""}`);
   };
 
@@ -178,7 +176,7 @@ function Index({ user, jobPage, activeTags, primaryTags }) {
       </Head>
       <Container className={classes.root} maxWidth="md">
         <HeaderAd className={classes.headerAd} />
-        {(!activeTags || activeTags.length === 0) && (
+        {(!activeTagNames || activeTagNames.length === 0) && (
           <TextField
             value=""
             select
@@ -208,8 +206,8 @@ function Index({ user, jobPage, activeTags, primaryTags }) {
           </TextField>
         )}
         <Fragment>
-          {activeTags.length > 0 && (
-            <TagFilter tags={activeTags} onTagRemove={removeTagFromFilter} />
+          {activeTagNames.length > 0 && (
+            <TagFilter tagNames={activeTagNames} onTagRemove={removeTagFromFilter} />
           )}
           {jobs.map(({ job, company }, index) => {
             return (
@@ -266,15 +264,13 @@ function Index({ user, jobPage, activeTags, primaryTags }) {
 
 Index.getInitialProps = async ctx => {
   const { tags = "" } = ctx.query;
+  let activeTagNames = tags.split(",").filter(name => !!name).map(name => name.toUpperCase().trim());
   const [jobPage, primaryTags] = await Promise.all([
-    api.getJobs({ ctx, tags }),
+    api.getJobs({ ctx, tags: activeTagNames.join(",") }),
     api.getPrimaryTags(ctx)
   ]);
-  let activeTags = [];
-  if (!!tags) {
-    activeTags = await api.getTags(tags, ctx);
-  }
-  return { jobPage, activeTags, primaryTags };
+  
+  return { jobPage, activeTagNames, primaryTags };
 };
 
 export default Index;
