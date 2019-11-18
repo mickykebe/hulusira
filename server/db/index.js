@@ -503,7 +503,7 @@ class Db {
     const data = {
       job_id: jobId
     };
-    if (!telegramMessageId && !facebookPostId) {
+    if (!telegramMessages && !facebookPostId) {
       return;
     }
     if (telegramMessages) {
