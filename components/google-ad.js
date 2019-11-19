@@ -20,7 +20,7 @@ export default function GoogleAd(***REMOVED***
       <Box minWidth=***REMOVED***250***REMOVED*** className=***REMOVED***className***REMOVED***>
         <ins
           className="adsbygoogle"
-          style=***REMOVED******REMOVED*** display: "block", ...style ***REMOVED******REMOVED***
+          style=***REMOVED******REMOVED*** display: "block", minWidth: 250, ...style ***REMOVED******REMOVED***
           data-ad-layout=***REMOVED***dataAdLayout***REMOVED***
           data-ad-format=***REMOVED***dataAdFormat***REMOVED***
           data-ad-layout-key=***REMOVED***dataAdLayoutKey***REMOVED***
