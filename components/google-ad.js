@@ -20,7 +20,7 @@ export default function GoogleAd({
       <Box minWidth={250} className={className}>
         <ins
           className="adsbygoogle"
-          style={{ display: "block", ...style }}
+          style={{ display: "block", minWidth: 250, ...style }}
           data-ad-layout={dataAdLayout}
           data-ad-format={dataAdFormat}
           data-ad-layout-key={dataAdLayoutKey}
