@@ -27,8 +27,6 @@ class Db {
       "how_to_apply",
       "apply_url",
       "apply_email",
-      "approved",
-      "closed",
       "created",
       "slug",
       "admin_token",
@@ -253,8 +251,7 @@ class Db {
   async getJobs({
     fromJobId,
     limit,
-    closed = false,
-    approvalStatus,
+    approvalStatus = [],
     withinDays,
     tagNames = [],
     publicOnly = false,
@@ -274,7 +271,6 @@ class Db {
       .leftJoin("company", "job.company_id", "company.id")
       .leftJoin("job_tags", "job_tags.job_id", "job.id")
       .leftJoin("tag", "job_tags.tag_name", "tag.name")
-      .where("job.closed", closed)
       .groupBy("job.id", "company.id")
       .orderBy("job.id", "desc");
 
@@ -288,7 +284,16 @@ class Db {
       query = query.andWhere("job.company_id", companyId);
     }
     if (approvalStatus) {
-      query = query.andWhere("job.approval_status", approvalStatus);
+      let approvalStatusIn = [];
+      if (typeof approvalStatus === "string") {
+        approvalStatusIn = [approvalStatus];
+      } else {
+        approvalStatusIn = approvalStatus;
+      }
+
+      if (approvalStatusIn.length > 0) {
+        query = query.whereIn("job.approval_status", approvalStatusIn);
+      }
     }
     if (typeof withinDays === "number") {
       query = query.andWhere(
@@ -464,7 +469,7 @@ class Db {
     return this.knex("job")
       .where("id", id)
       .update({
-        closed: true
+        approval_status: "Closed"
       });
   }
 
@@ -472,7 +477,7 @@ class Db {
     return this.knex("job")
       .where("id", id)
       .update({
-        approval_status: "Approved"
+        approval_status: "Active"
       });
   }
 
