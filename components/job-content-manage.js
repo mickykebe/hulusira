@@ -32,26 +32,29 @@ export default function JobContentManage({
   withAds = false
 }) {
   const classes = useStyles();
+  const { approvalStatus } = jobData.job;
   return (
     <Fragment>
       <Container className={classes.header}>
         {withAds && <HeaderAd />}
-        {jobData.job.closed && (
-          <Banner
+        {
+          approvalStatus === "Closed" && (
+            <Banner
             variant="error"
             message="This job has been closed by its owner."
           />
-        )}
-        {!jobData.job.closed && jobData.job.approvalStatus === "Pending" && (
+          )
+        }
+        {approvalStatus === "Pending" && (
           <Banner message="This job is pending. It will be live once it gets admin approval." />
         )}
-        {jobData.job.approvalStatus === "Declined" && (
+        {approvalStatus === "Declined" && (
           <Banner
             variant="error"
             message="Administrator has declined to approve this post."
           />
         )}
-        {isJobOwner && !jobData.job.closed && (
+        {isJobOwner && approvalStatus === "Active" && (
           <Toolbar className={classes.toolbar}>
             <Box flex={1} />
             <Button

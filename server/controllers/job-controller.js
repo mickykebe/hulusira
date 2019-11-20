@@ -109,7 +109,7 @@ exports.createJob = async (req, res) => {
     jobData.owner = req.user.id;
   }
   if (isAdminUser) {
-    jobData.approvalStatus = "Approved";
+    jobData.approvalStatus = "Active";
   }
   let resData;
   if (hasCompany) {
@@ -159,7 +159,7 @@ exports.getJobs = async (req, res) => {
   const jobs = await db.getJobs({
     fromJobId,
     limit: count + 1,
-    approvalStatus: "Approved",
+    approvalStatus: "Active",
     withinDays: 30,
     tagNames,
     publicOnly: true
@@ -185,7 +185,7 @@ exports.companyJobs = async function(req, res) {
 
   try {
     const jobs = await db.getJobs({
-      approvalStatus: "Approved",
+      approvalStatus: "Active",
       withinDays: 30,
       publicOnly: true,
       companyId: id
@@ -201,7 +201,11 @@ exports.myJobs = async (req, res) => {
   if (!ownerId) {
     throw new Error("Not logged in");
   }
-  const jobs = await db.getJobs({ ownerId, withinDays: 30 });
+  const jobs = await db.getJobs({
+    approvalStatus: ["Active", "Pending", "Declined"],
+    ownerId,
+    withinDays: 30
+  });
   res.status(200).send(jobs);
 };
 
@@ -239,7 +243,11 @@ exports.getJob = async (req, res) => {
     }
   }
 
-  if (jobData.job.approvalStatus !== "Approved" && !hasAdminPermission) {
+  const { approvalStatus } = jobData.job;
+  if (
+    (approvalStatus === "Declined" || approvalStatus === "Pending") &&
+    !hasAdminPermission
+  ) {
     res.sendStatus(404);
     return;
   }

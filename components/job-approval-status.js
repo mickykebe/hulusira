@@ -2,7 +2,7 @@ import { Typography, makeStyles } from "@material-ui/core";
 
 const colors = {
   Pending: "#fb8c00",
-  Approved: "#43a047",
+  Active: "#43a047",
   Declined: "red"
 };
 
