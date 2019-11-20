@@ -131,6 +131,9 @@ exports.createJob = async (req, res) => ***REMOVED***
       ***REMOVED***
       resData = await db.createJobAndCompany(***REMOVED*** company, job: jobData ***REMOVED***);
     ***REMOVED***
+  ***REMOVED*** else ***REMOVED***
+    const job = await db.createJob(jobData);
+    resData = ***REMOVED*** job, company: null ***REMOVED***;
   ***REMOVED***
   if (isAdminUser) ***REMOVED***
     socialHandler.postJobToSocialMedia(resData);
