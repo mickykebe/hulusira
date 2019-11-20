@@ -16,7 +16,6 @@ class Job ***REMOVED***
     applyEmail,
     created,
     approvalStatus,
-    closed,
     slug,
     adminToken,
     deadline,
@@ -38,7 +37,6 @@ class Job ***REMOVED***
     this.applyEmail = applyEmail;
     this.created = created;
     this.approvalStatus = approvalStatus;
-    this.closed = closed;
     this.slug = slug;
     this.adminToken = adminToken;
     this.deadline = deadline;
@@ -68,7 +66,6 @@ class Job ***REMOVED***
       dbJob.job_apply_email,
       dbJob.job_created,
       dbJob.job_approval_status,
-      dbJob.job_closed,
       dbJob.job_slug,
       dbJob.job_admin_token,
       dbJob.job_deadline,

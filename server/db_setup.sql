@@ -38,13 +38,12 @@ CREATE TABLE job (
   apply_url TEXT,
   apply_email TEXT,
   approved BOOLEAN NOT NULL DEFAULT FALSE,
-  closed BOOLEAN NOT NULL DEFAULT FALSE,
   deadline Date,
   created TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   slug TEXT,
   admin_token uuid DEFAULT uuid_generate_v4(),
   owner INTEGER REFERENCES users(id) ON DELETE SET NULL,
-  approval_status TEXT NOT NULL CONSTRAINT approval_values CHECK (approval_status IN ('Pending', 'Approved', 'Declined')) DEFAULT 'Pending',
+  approval_status TEXT NOT NULL CONSTRAINT approval_values CHECK (approval_status IN ('Pending', 'Active', 'Declined', 'Closed')) DEFAULT 'Pending',
 );
 
 CREATE TABLE job_tags (
