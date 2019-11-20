@@ -2,7 +2,7 @@ import ***REMOVED*** Typography, makeStyles ***REMOVED*** from "@material-ui/cor
 
 const colors = ***REMOVED***
   Pending: "#fb8c00",
-  Approved: "#43a047",
+  Active: "#43a047",
   Declined: "red"
 ***REMOVED***;
 

@@ -32,26 +32,29 @@ export default function JobContentManage(***REMOVED***
   withAds = false
 ***REMOVED***) ***REMOVED***
   const classes = useStyles();
+  const ***REMOVED*** approvalStatus ***REMOVED*** = jobData.job;
   return (
     <Fragment>
       <Container className=***REMOVED***classes.header***REMOVED***>
         ***REMOVED***withAds && <HeaderAd />***REMOVED***
-        ***REMOVED***jobData.job.closed && (
-          <Banner
+        ***REMOVED***
+          approvalStatus === "Closed" && (
+            <Banner
             variant="error"
             message="This job has been closed by its owner."
           />
-        )***REMOVED***
-        ***REMOVED***!jobData.job.closed && jobData.job.approvalStatus === "Pending" && (
+          )
+        ***REMOVED***
+        ***REMOVED***approvalStatus === "Pending" && (
           <Banner message="This job is pending. It will be live once it gets admin approval." />
         )***REMOVED***
-        ***REMOVED***jobData.job.approvalStatus === "Declined" && (
+        ***REMOVED***approvalStatus === "Declined" && (
           <Banner
             variant="error"
             message="Administrator has declined to approve this post."
           />
         )***REMOVED***
-        ***REMOVED***isJobOwner && !jobData.job.closed && (
+        ***REMOVED***isJobOwner && approvalStatus === "Active" && (
           <Toolbar className=***REMOVED***classes.toolbar***REMOVED***>
             <Box flex=***REMOVED***1***REMOVED*** />
             <Button

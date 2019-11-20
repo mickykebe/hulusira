@@ -139,12 +139,16 @@ export default function DashboardJobs(***REMOVED*** user, jobs ***REMOVED***) **
                         />
                       </TableCell>
                       <TableCell>
-                        ***REMOVED***isAfter(new Date(), expirationDate)
+                        ***REMOVED***
+                          job.approvalStatus === "Declined" ? "---" : (
+                            isAfter(new Date(), expirationDate)
                           ? "Expired"
                           : formatDistance(
                               addDays(new Date(job.created), 30),
                               new Date()
-                            )***REMOVED***
+                            )
+                          )
+                        ***REMOVED***
                       </TableCell>
                       <TableCell align="left">
                         <Tooltip title="Edit Job">

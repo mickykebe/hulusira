@@ -109,7 +109,7 @@ exports.createJob = async (req, res) => ***REMOVED***
     jobData.owner = req.user.id;
   ***REMOVED***
   if (isAdminUser) ***REMOVED***
-    jobData.approvalStatus = "Approved";
+    jobData.approvalStatus = "Active";
   ***REMOVED***
   let resData;
   if (hasCompany) ***REMOVED***
@@ -159,7 +159,7 @@ exports.getJobs = async (req, res) => ***REMOVED***
   const jobs = await db.getJobs(***REMOVED***
     fromJobId,
     limit: count + 1,
-    approvalStatus: "Approved",
+    approvalStatus: "Active",
     withinDays: 30,
     tagNames,
     publicOnly: true
@@ -185,7 +185,7 @@ exports.companyJobs = async function(req, res) ***REMOVED***
 
   try ***REMOVED***
     const jobs = await db.getJobs(***REMOVED***
-      approvalStatus: "Approved",
+      approvalStatus: "Active",
       withinDays: 30,
       publicOnly: true,
       companyId: id
@@ -201,7 +201,11 @@ exports.myJobs = async (req, res) => ***REMOVED***
   if (!ownerId) ***REMOVED***
     throw new Error("Not logged in");
   ***REMOVED***
-  const jobs = await db.getJobs(***REMOVED*** ownerId, withinDays: 30 ***REMOVED***);
+  const jobs = await db.getJobs(***REMOVED***
+    approvalStatus: ["Active", "Pending", "Declined"],
+    ownerId,
+    withinDays: 30
+  ***REMOVED***);
   res.status(200).send(jobs);
 ***REMOVED***;
 
@@ -239,7 +243,11 @@ exports.getJob = async (req, res) => ***REMOVED***
     ***REMOVED***
   ***REMOVED***
 
-  if (jobData.job.approvalStatus !== "Approved" && !hasAdminPermission) ***REMOVED***
+  const ***REMOVED*** approvalStatus ***REMOVED*** = jobData.job;
+  if (
+    (approvalStatus === "Declined" || approvalStatus === "Pending") &&
+    !hasAdminPermission
+  ) ***REMOVED***
     res.sendStatus(404);
     return;
   ***REMOVED***
