@@ -131,6 +131,9 @@ exports.createJob = async (req, res) => {
       }
       resData = await db.createJobAndCompany({ company, job: jobData });
     }
+  } else {
+    const job = await db.createJob(jobData);
+    resData = { job, company: null };
   }
   if (isAdminUser) {
     socialHandler.postJobToSocialMedia(resData);
