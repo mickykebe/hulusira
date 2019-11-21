@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Router, { useRouter } from "next/router";
 import Head from "next/head";
 import Cookies from "js-cookie";
@@ -6,7 +6,6 @@ import { Box, Container, TextField, Fab, Collapse } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import SaveIcon from "@material-ui/icons/Save";
 import { Formik } from "formik";
-import * as Yup from "yup";
 import api from "../api";
 import Layout from "../components/layout";
 import HSCard from "../components/hs-card";
@@ -59,7 +58,8 @@ const pageDescription =
 function New({ primaryTags, user }) {
   const classes = useStyles();
   const [files, setFiles] = React.useState([]);
-  const [showErrorSubmitting, setShowErrorSubmitting] = React.useState(false);
+  const [successfullySubmitted, setSuccessfullySubmitted] = useState(false);
+  const [showErrorSubmitting, setShowErrorSubmitting] = useState(false);
   React.useEffect(() => {
     files.forEach(file => URL.revokeObjectURL(file.preview));
   }, [files]);
@@ -80,6 +80,7 @@ function New({ primaryTags, user }) {
         companyLogo
       });
       Cookies.set(jobData.job.slug, jobData.job.adminToken);
+      setSuccessfullySubmitted(true);
       Router.push(`/jobs/${jobData.job.slug}`);
     } catch (err) {
       console.error(err);
@@ -189,7 +190,7 @@ function New({ primaryTags, user }) {
                   variant="extended"
                   color="primary"
                   className={classes.postButton}
-                  disabled={isSubmitting}>
+                  disabled={isSubmitting || successfullySubmitted}>
                   <SaveIcon className={classes.saveButtonIcon} />
                   Post your job
                 </Fab>
