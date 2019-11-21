@@ -72,7 +72,10 @@ exports.postJobToSocialMedia = async function(jobData) ***REMOVED***
   const telegramMessage = messageBody;
   const facebookMessage = `ክፍት የስራ ቦታ ማስታወቅያ
   
-$***REMOVED***messageBody***REMOVED***`;
+$***REMOVED***messageBody***REMOVED***
+$***REMOVED***jobUrl***REMOVED***
+
+💬 ትኩስ ስራዎች እንደወጡ እንዲደርስዎ ቴሌግራም ቻናላችንን ተቀላቀ፡ https://t.me/joinchat/AAAAAFZnrdEWsYxQugEU3A`;
 
   let telegramMessages = null;
   const telegramChannelUsernames = (
