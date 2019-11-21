@@ -4,8 +4,11 @@ import api from "../../../api";
 import DashboardLayout from "../../../components/dashboard-layout";
 import ***REMOVED*** Container ***REMOVED*** from "@material-ui/core";
 import CompanyForm from "../../../components/company-form";
+import ***REMOVED*** useState ***REMOVED*** from "react";
+import HSSnackBar from "../../../components/hs-snackbar";
 
 export default function EditCompany(***REMOVED*** user, company ***REMOVED***) ***REMOVED***
+  const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
   const handleSubmit = async function(values, files) ***REMOVED***
     let logo = values.logo;
     if (files.length > 0) ***REMOVED***
@@ -15,12 +18,21 @@ export default function EditCompany(***REMOVED*** user, company ***REMOVED***) *
       ...values,
       logo
     ***REMOVED***);
-    Router.push("/dashboard/companies");
+    setShowSuccessSnackbar(true);
   ***REMOVED***;
   return (
     <DashboardLayout user=***REMOVED***user***REMOVED***>
       <Container maxWidth="md">
         <CompanyForm initialValues=***REMOVED***company***REMOVED*** onSubmit=***REMOVED***handleSubmit***REMOVED*** />
+        <HSSnackBar
+          open=***REMOVED***showSuccessSnackbar***REMOVED***
+          variant="success"
+          autoHideDuration=***REMOVED***3000***REMOVED***
+          message="Company successfully updated"
+          onClose=***REMOVED***() => ***REMOVED***
+            setShowSuccessSnackbar(false);
+          ***REMOVED******REMOVED***
+        />
       </Container>
     </DashboardLayout>
   );
