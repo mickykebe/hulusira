@@ -162,7 +162,7 @@ exports.getJobs = async (req, res) => {
   const jobs = await db.getJobs({
     fromJobId,
     limit: count + 1,
-    approvalStatus: "Active",
+    approvalStatus: ["Active", "Closed"],
     withinDays: 30,
     tagNames,
     publicOnly: true
@@ -188,7 +188,7 @@ exports.companyJobs = async function(req, res) {
 
   try {
     const jobs = await db.getJobs({
-      approvalStatus: "Active",
+      approvalStatus: ["Active", "Closed"],
       withinDays: 30,
       publicOnly: true,
       companyId: id

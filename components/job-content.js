@@ -87,7 +87,7 @@ export default function JobContent({ jobData, withAds = false }) {
   const classes = useStyles();
   const { job, company } = jobData;
   const hasApplyButton = !!job.applyUrl || !!job.applyEmail;
-  const hasApplySection = !!job.howToApply || hasApplyButton;
+  const hasApplySection = job.approvalStatus !== "Closed" && (!!job.howToApply || hasApplyButton);
   return (
     <Container className={classes.root} maxWidth="lg">
       <Box display="flex" alignItems="center" pb={2}>

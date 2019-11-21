@@ -44,6 +44,9 @@ const theme = createMuiTheme({
     subtitle2: {
       fontWeight: 800
     },
+    caption: {
+      fontWeight: 800
+    },
     button: {
       fontWeight: 800
     },

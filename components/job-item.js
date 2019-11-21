@@ -1,6 +1,7 @@
-import React from "react";
+import React, { Fragment } from "react";
 import Link from "next/link";
 import Router from "next/router";
+import isAfter from "date-fns/isAfter";
 import formatDistance from "date-fns/formatDistance";
 import clsx from "clsx";
 import { Box, Typography, Chip, Link as MuiLink } from "@material-ui/core";
@@ -52,13 +53,38 @@ const useStyles = makeStyles(theme => ({
   extrasText: {
     display: "inline-flex",
     alignItems: "center",
-    marginRight: theme.spacing(1)
+    marginRight: theme.spacing(1),
+  },
+  expiredTag: {
+    padding: `0 ${theme.spacing(0.5)}px`,
+    border: '1px solid rgb(229, 57, 53)',
+    color: 'rgb(229, 57, 53)',
+  },
+  closedTag: {
+    padding: `0 ${theme.spacing(0.5)}px`,
+    backgroundColor: 'rgb(229, 57, 53)',
+    color: 'white',
   },
   extrasIcon: {
     fontSize: "1rem",
     marginRight: theme.spacing(0.5)
   }
 }));
+
+function ExpirationTag({ deadline }) {
+  const expired = isAfter(new Date(), deadline);
+  const classes = useStyles();
+  return expired ? (<Typography className={clsx(classes.extrasText, classes.expiredTag)} variant="caption">
+    Expired
+  </Typography>) : null;
+}
+
+function ClosedTag() {
+  const classes = useStyles();
+  return (<Typography className={clsx(classes.extrasText, classes.closedTag)} variant="caption">
+    Closed
+  </Typography>);
+}
 
 export default function JobItem({
   company,
@@ -87,12 +113,13 @@ export default function JobItem({
           {preview ? (
             <Typography variant="h6">{job.position || "Position"}</Typography>
           ) : (
-            <Link href="/jobs/[slug]" as={`/jobs/${job.slug}`} passHref>
+            
+              <Link href="/jobs/[slug]" as={`/jobs/${job.slug}`} passHref>
               <MuiLink
                 classes={{ root: classes.position }}
                 variant="h6"
                 color="inherit">
-                {job.position}
+                  {job.position}
               </MuiLink>
             </Link>
           )}
@@ -118,7 +145,7 @@ export default function JobItem({
             </React.Fragment>
           )}
           {(!preview || !!job.jobType) && (
-            <Box display="flex" alignItems="center" pt="1rem">
+            <Box display="flex" alignItems="center" pt="1rem" pb="0.5rem">
               {!!job.jobType && (
                 <Typography
                   className={classes.extrasText}
@@ -141,6 +168,16 @@ export default function JobItem({
                   )}
                 </Typography>
               )}
+              {
+                !preview && job.approvalStatus !== "Closed" && job.deadline && (
+                  <ExpirationTag deadline={new Date(job.deadline)} />
+                )
+              }
+              {
+                !preview && job.approvalStatus === "Closed" && (
+                  <ClosedTag />
+                )
+              }
             </Box>
           )}
         </Box>
