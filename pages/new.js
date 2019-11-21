@@ -1,4 +1,4 @@
-import React from "react";
+import React, ***REMOVED*** useState ***REMOVED*** from "react";
 import Router, ***REMOVED*** useRouter ***REMOVED*** from "next/router";
 import Head from "next/head";
 import Cookies from "js-cookie";
@@ -6,7 +6,6 @@ import ***REMOVED*** Box, Container, TextField, Fab, Collapse ***REMOVED*** from
 import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
 import SaveIcon from "@material-ui/icons/Save";
 import ***REMOVED*** Formik ***REMOVED*** from "formik";
-import * as Yup from "yup";
 import api from "../api";
 import Layout from "../components/layout";
 import HSCard from "../components/hs-card";
@@ -59,7 +58,8 @@ const pageDescription =
 function New(***REMOVED*** primaryTags, user ***REMOVED***) ***REMOVED***
   const classes = useStyles();
   const [files, setFiles] = React.useState([]);
-  const [showErrorSubmitting, setShowErrorSubmitting] = React.useState(false);
+  const [successfullySubmitted, setSuccessfullySubmitted] = useState(false);
+  const [showErrorSubmitting, setShowErrorSubmitting] = useState(false);
   React.useEffect(() => ***REMOVED***
     files.forEach(file => URL.revokeObjectURL(file.preview));
   ***REMOVED***, [files]);
@@ -80,6 +80,7 @@ function New(***REMOVED*** primaryTags, user ***REMOVED***) ***REMOVED***
         companyLogo
       ***REMOVED***);
       Cookies.set(jobData.job.slug, jobData.job.adminToken);
+      setSuccessfullySubmitted(true);
       Router.push(`/jobs/$***REMOVED***jobData.job.slug***REMOVED***`);
     ***REMOVED*** catch (err) ***REMOVED***
       console.error(err);
@@ -189,7 +190,7 @@ function New(***REMOVED*** primaryTags, user ***REMOVED***) ***REMOVED***
                   variant="extended"
                   color="primary"
                   className=***REMOVED***classes.postButton***REMOVED***
-                  disabled=***REMOVED***isSubmitting***REMOVED***>
+                  disabled=***REMOVED***isSubmitting || successfullySubmitted***REMOVED***>
                   <SaveIcon className=***REMOVED***classes.saveButtonIcon***REMOVED*** />
                   Post your job
                 </Fab>
