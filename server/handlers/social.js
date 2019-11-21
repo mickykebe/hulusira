@@ -75,7 +75,7 @@ exports.postJobToSocialMedia = async function(jobData) ***REMOVED***
 $***REMOVED***messageBody***REMOVED***
 $***REMOVED***jobUrl***REMOVED***
 
-💬 ትኩስ ስራዎች እንደወጡ እንዲደርስዎ ቴሌግራም ቻናላችንን ተቀላቀ፡ https://t.me/joinchat/AAAAAFZnrdEWsYxQugEU3A`;
+💬 ትኩስ ስራዎች እንደወጡ እንዲደርስዎ ቴሌግራም ቻናላችንን ተቀላቀሉ፡ https://t.me/joinchat/AAAAAFZnrdEWsYxQugEU3A`;
 
   let telegramMessages = null;
   const telegramChannelUsernames = (
