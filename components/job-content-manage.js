@@ -56,7 +56,7 @@ export default function JobContentManage(***REMOVED***
             message="Administrator has declined to approve this post."
           />
         )***REMOVED***
-        ***REMOVED***expired && (approvalStatus !== "Declined" || approvalStatus !== "Closed") && (
+        ***REMOVED***expired && !(approvalStatus === "Declined" || approvalStatus === "Closed") && (
           <Banner
             variant="warning"
             message="The application deadline for this job has passed"
