@@ -73,7 +73,7 @@ exports.postJobToSocialMedia = async function(jobData) ***REMOVED***
   const facebookMessage = `ክፍት የስራ ቦታ ማስታወቅያ
   
 $***REMOVED***messageBody***REMOVED***
-$***REMOVED***jobUrl***REMOVED***
+$***REMOVED***jobFacebookUrl***REMOVED***
 
 💬 ትኩስ ስራዎች እንደወጡ እንዲደርስዎ ቴሌግራም ቻናላችንን ተቀላቀሉ፡ https://t.me/joinchat/AAAAAFZnrdEWsYxQugEU3A`;
 
