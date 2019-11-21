@@ -5,6 +5,7 @@ import api from "../../../api";
 import Router from "next/router";
 import ***REMOVED*** cleanTags ***REMOVED*** from "../../../utils";
 import JobForm from "../../../components/job-form";
+import ***REMOVED*** useState ***REMOVED*** from "react";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   root: ***REMOVED***
@@ -35,6 +36,7 @@ const useStyles = makeStyles(theme => (***REMOVED***
 ***REMOVED***));
 
 export default function DashboardNewJob(***REMOVED*** user, companies, primaryTags ***REMOVED***) ***REMOVED***
+  const [disableSaveButton, setDisableSaveButton] = useState(false);
   const handleSubmit = async function(values) ***REMOVED***
     const tags = cleanTags(values.tags);
     const primaryTag =
@@ -44,6 +46,7 @@ export default function DashboardNewJob(***REMOVED*** user, companies, primaryTa
       tags,
       primaryTag
     ***REMOVED***);
+    setDisableSaveButton(true);
     Router.push("/dashboard/jobs");
   ***REMOVED***;
   const classes = useStyles();
@@ -54,6 +57,7 @@ export default function DashboardNewJob(***REMOVED*** user, companies, primaryTa
           companies=***REMOVED***companies***REMOVED***
           primaryTags=***REMOVED***primaryTags***REMOVED***
           onSubmit=***REMOVED***handleSubmit***REMOVED***
+          disableSaveButton=***REMOVED***disableSaveButton***REMOVED***
         />
       </Container>
     </DashboardLayout>

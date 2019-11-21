@@ -36,7 +36,6 @@ export default function EditJob(***REMOVED*** user, jobData, companies, primaryT
           companies=***REMOVED***companies***REMOVED***
           primaryTags=***REMOVED***primaryTags***REMOVED***
           onSubmit=***REMOVED***handleSubmit***REMOVED***
-          reactivateAfterSubmit=***REMOVED***true***REMOVED***
         />
         <HSSnackBar
           open=***REMOVED***showSuccessSnackbar***REMOVED***
