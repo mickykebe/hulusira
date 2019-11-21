@@ -24,7 +24,8 @@ const validationSchema = Yup.object().shape({
 
 export default function CompanyForm({
   initialValues = { name: "", email: "", logo: "" },
-  onSubmit
+  onSubmit,
+  disableSaveButton = false
 }) {
   const classes = useStyles();
   const [files, setFiles] = useState([]);
@@ -38,8 +39,8 @@ export default function CompanyForm({
     } catch (err) {
       console.error(err);
       setShowErrorSubmitting(true);
-      actions.setSubmitting(false);
     }
+    actions.setSubmitting(false);
   };
   return (
     <Formik
@@ -92,7 +93,7 @@ export default function CompanyForm({
                   className={classes.saveBtn}
                   color="primary"
                   variant="contained"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || disableSaveButton}
                   startIcon={<SaveIcon />}>
                   Save
                 </Button>

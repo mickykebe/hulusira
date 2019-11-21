@@ -1,4 +1,5 @@
 import React from "react";
+import NProgress from 'nprogress';
 import App, { Container } from "next/app";
 import Head from "next/head";
 import Router from 'next/router';
@@ -10,7 +11,15 @@ import GlobalCss from "../components/global-css";
 import * as gtag from '../lib/gtag';
 import "easymde/dist/easymde.min.css";
 
-Router.events.on('routeChangeComplete', url => gtag.pageview(url));
+NProgress.configure({ showSpinner: false });
+
+Router.events.on('routeChangeStart', () => 
+  NProgress.start())
+Router.events.on('routeChangeComplete', url => {
+  NProgress.done();
+  gtag.pageview(url);
+});
+Router.events.on('routeChangeError', () => NProgress.done())
 
 class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {
@@ -43,6 +52,7 @@ class MyApp extends App {
       <Container>
         <Head>
           <title>HuluSira</title>
+          <link rel="stylesheet" type="text/css" href="/nprogress.css" />
         </Head>
         <ThemeProvider theme={theme}>
           <CssBaseline />

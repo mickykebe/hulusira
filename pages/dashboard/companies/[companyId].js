@@ -4,8 +4,11 @@ import api from "../../../api";
 import DashboardLayout from "../../../components/dashboard-layout";
 import { Container } from "@material-ui/core";
 import CompanyForm from "../../../components/company-form";
+import { useState } from "react";
+import HSSnackBar from "../../../components/hs-snackbar";
 
 export default function EditCompany({ user, company }) {
+  const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
   const handleSubmit = async function(values, files) {
     let logo = values.logo;
     if (files.length > 0) {
@@ -15,12 +18,21 @@ export default function EditCompany({ user, company }) {
       ...values,
       logo
     });
-    Router.push("/dashboard/companies");
+    setShowSuccessSnackbar(true);
   };
   return (
     <DashboardLayout user={user}>
       <Container maxWidth="md">
         <CompanyForm initialValues={company} onSubmit={handleSubmit} />
+        <HSSnackBar
+          open={showSuccessSnackbar}
+          variant="success"
+          autoHideDuration={3000}
+          message="Company successfully updated"
+          onClose={() => {
+            setShowSuccessSnackbar(false);
+          }}
+        />
       </Container>
     </DashboardLayout>
   );
