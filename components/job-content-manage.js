@@ -1,6 +1,7 @@
 import ***REMOVED*** Container, Toolbar, Box, Button, makeStyles ***REMOVED*** from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import ***REMOVED*** Fragment, useState ***REMOVED*** from "react";
+import isAfter from "date-fns/isAfter";
 import Banner from "./banner";
 import JobContent from "./job-content";
 import JobCloseDialog from "./job-close-dialog";
@@ -32,7 +33,8 @@ export default function JobContentManage(***REMOVED***
   withAds = false
 ***REMOVED***) ***REMOVED***
   const classes = useStyles();
-  const ***REMOVED*** approvalStatus ***REMOVED*** = jobData.job;
+  const ***REMOVED*** approvalStatus, deadline ***REMOVED*** = jobData.job;
+  const expired = deadline ? isAfter(new Date(), new Date(deadline)) : false;
   return (
     <Fragment>
       <Container className=***REMOVED***classes.header***REMOVED***>
@@ -52,6 +54,12 @@ export default function JobContentManage(***REMOVED***
           <Banner
             variant="error"
             message="Administrator has declined to approve this post."
+          />
+        )***REMOVED***
+        ***REMOVED***expired && (approvalStatus !== "Declined" || approvalStatus !== "Closed") && (
+          <Banner
+            variant="warning"
+            message="The application deadline for this job has passed"
           />
         )***REMOVED***
         ***REMOVED***isJobOwner && approvalStatus === "Active" && (

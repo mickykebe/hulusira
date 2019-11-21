@@ -87,7 +87,7 @@ export default function JobContent(***REMOVED*** jobData, withAds = false ***REM
   const classes = useStyles();
   const ***REMOVED*** job, company ***REMOVED*** = jobData;
   const hasApplyButton = !!job.applyUrl || !!job.applyEmail;
-  const hasApplySection = !!job.howToApply || hasApplyButton;
+  const hasApplySection = job.approvalStatus !== "Closed" && (!!job.howToApply || hasApplyButton);
   return (
     <Container className=***REMOVED***classes.root***REMOVED*** maxWidth="lg">
       <Box display="flex" alignItems="center" pb=***REMOVED***2***REMOVED***>

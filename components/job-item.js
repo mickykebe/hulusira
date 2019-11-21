@@ -1,6 +1,7 @@
-import React from "react";
+import React, ***REMOVED*** Fragment ***REMOVED*** from "react";
 import Link from "next/link";
 import Router from "next/router";
+import isAfter from "date-fns/isAfter";
 import formatDistance from "date-fns/formatDistance";
 import clsx from "clsx";
 import ***REMOVED*** Box, Typography, Chip, Link as MuiLink ***REMOVED*** from "@material-ui/core";
@@ -52,13 +53,38 @@ const useStyles = makeStyles(theme => (***REMOVED***
   extrasText: ***REMOVED***
     display: "inline-flex",
     alignItems: "center",
-    marginRight: theme.spacing(1)
+    marginRight: theme.spacing(1),
+  ***REMOVED***,
+  expiredTag: ***REMOVED***
+    padding: `0 $***REMOVED***theme.spacing(0.5)***REMOVED***px`,
+    border: '1px solid rgb(229, 57, 53)',
+    color: 'rgb(229, 57, 53)',
+  ***REMOVED***,
+  closedTag: ***REMOVED***
+    padding: `0 $***REMOVED***theme.spacing(0.5)***REMOVED***px`,
+    backgroundColor: 'rgb(229, 57, 53)',
+    color: 'white',
   ***REMOVED***,
   extrasIcon: ***REMOVED***
     fontSize: "1rem",
     marginRight: theme.spacing(0.5)
   ***REMOVED***
 ***REMOVED***));
+
+function ExpirationTag(***REMOVED*** deadline ***REMOVED***) ***REMOVED***
+  const expired = isAfter(new Date(), deadline);
+  const classes = useStyles();
+  return expired ? (<Typography className=***REMOVED***clsx(classes.extrasText, classes.expiredTag)***REMOVED*** variant="caption">
+    Expired
+  </Typography>) : null;
+***REMOVED***
+
+function ClosedTag() ***REMOVED***
+  const classes = useStyles();
+  return (<Typography className=***REMOVED***clsx(classes.extrasText, classes.closedTag)***REMOVED*** variant="caption">
+    Closed
+  </Typography>);
+***REMOVED***
 
 export default function JobItem(***REMOVED***
   company,
@@ -87,12 +113,13 @@ export default function JobItem(***REMOVED***
           ***REMOVED***preview ? (
             <Typography variant="h6">***REMOVED***job.position || "Position"***REMOVED***</Typography>
           ) : (
-            <Link href="/jobs/[slug]" as=***REMOVED***`/jobs/$***REMOVED***job.slug***REMOVED***`***REMOVED*** passHref>
+            
+              <Link href="/jobs/[slug]" as=***REMOVED***`/jobs/$***REMOVED***job.slug***REMOVED***`***REMOVED*** passHref>
               <MuiLink
                 classes=***REMOVED******REMOVED*** root: classes.position ***REMOVED******REMOVED***
                 variant="h6"
                 color="inherit">
-                ***REMOVED***job.position***REMOVED***
+                  ***REMOVED***job.position***REMOVED***
               </MuiLink>
             </Link>
           )***REMOVED***
@@ -118,7 +145,7 @@ export default function JobItem(***REMOVED***
             </React.Fragment>
           )***REMOVED***
           ***REMOVED***(!preview || !!job.jobType) && (
-            <Box display="flex" alignItems="center" pt="1rem">
+            <Box display="flex" alignItems="center" pt="1rem" pb="0.5rem">
               ***REMOVED***!!job.jobType && (
                 <Typography
                   className=***REMOVED***classes.extrasText***REMOVED***
@@ -141,6 +168,16 @@ export default function JobItem(***REMOVED***
                   )***REMOVED***
                 </Typography>
               )***REMOVED***
+              ***REMOVED***
+                !preview && job.approvalStatus !== "Closed" && job.deadline && (
+                  <ExpirationTag deadline=***REMOVED***new Date(job.deadline)***REMOVED*** />
+                )
+              ***REMOVED***
+              ***REMOVED***
+                !preview && job.approvalStatus === "Closed" && (
+                  <ClosedTag />
+                )
+              ***REMOVED***
             </Box>
           )***REMOVED***
         </Box>

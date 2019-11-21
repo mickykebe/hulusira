@@ -18,8 +18,7 @@ import AddIcon from "@material-ui/icons/Add";
 import CloseIcon from "@material-ui/icons/Close";
 import EditIcon from "@material-ui/icons/Edit";
 import addDays from "date-fns/addDays";
-import formatDistance from "date-fns/formatDistance";
-import isAfter from "date-fns/isAfter";
+import format from 'date-fns/format';
 import redirect from "../../../utils/redirect";
 import HSPaper from "../../../components/hs-paper";
 import CompanyLogo from "../../../components/company-logo";
@@ -91,7 +90,7 @@ export default function DashboardJobs(***REMOVED*** user, jobs ***REMOVED***) **
                     Status
                   </TableCell>
                   <TableCell classes=***REMOVED******REMOVED*** head: classes.tableHead ***REMOVED******REMOVED***>
-                    Expires in
+                    Deadline
                   </TableCell>
                   <TableCell classes=***REMOVED******REMOVED*** head: classes.tableHead ***REMOVED******REMOVED***>
                     Actions
@@ -100,7 +99,7 @@ export default function DashboardJobs(***REMOVED*** user, jobs ***REMOVED***) **
               </TableHead>
               <TableBody>
                 ***REMOVED***jobs.map((***REMOVED*** job, company ***REMOVED***) => ***REMOVED***
-                  const expirationDate = addDays(new Date(job.created), 30);
+                  //const expirationDate = addDays(new Date(job.created), 30);
                   return (
                     <TableRow key=***REMOVED***job.id***REMOVED***>
                       <TableCell
@@ -138,7 +137,10 @@ export default function DashboardJobs(***REMOVED*** user, jobs ***REMOVED***) **
                           approvalStatus=***REMOVED***job.approvalStatus***REMOVED***
                         />
                       </TableCell>
-                      <TableCell>
+                      <TableCell align="left">
+                        ***REMOVED***job.deadline ? format(new Date(job.deadline), "MMM dd, yyyy") : "--"***REMOVED***
+                      </TableCell>
+                      ***REMOVED***/* <TableCell>
                         ***REMOVED***
                           job.approvalStatus === "Declined" ? "---" : (
                             isAfter(new Date(), expirationDate)
@@ -149,7 +151,7 @@ export default function DashboardJobs(***REMOVED*** user, jobs ***REMOVED***) **
                             )
                           )
                         ***REMOVED***
-                      </TableCell>
+                      </TableCell> */***REMOVED***
                       <TableCell align="left">
                         <Tooltip title="Edit Job">
                           <IconButton

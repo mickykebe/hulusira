@@ -162,7 +162,7 @@ exports.getJobs = async (req, res) => ***REMOVED***
   const jobs = await db.getJobs(***REMOVED***
     fromJobId,
     limit: count + 1,
-    approvalStatus: "Active",
+    approvalStatus: ["Active", "Closed"],
     withinDays: 30,
     tagNames,
     publicOnly: true
@@ -188,7 +188,7 @@ exports.companyJobs = async function(req, res) ***REMOVED***
 
   try ***REMOVED***
     const jobs = await db.getJobs(***REMOVED***
-      approvalStatus: "Active",
+      approvalStatus: ["Active", "Closed"],
       withinDays: 30,
       publicOnly: true,
       companyId: id
