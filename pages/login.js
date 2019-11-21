@@ -29,17 +29,19 @@ const validationSchema = Yup.object().shape({
 });
 
 function Login() {
+  const [loginSuccess, setLoginSuccess] = useState(false);
   const [errorLogin, setErrorLogin] = useState(false);
   const classes = useStyles();
   const handleSubmit = async function(values, actions) {
     setErrorLogin(false);
     try {
       await api.login(values);
+      setLoginSuccess(true);
       Router.push("/dashboard/jobs");
     } catch (err) {
       setErrorLogin(true);
-      actions.setSubmitting(false);
     }
+    actions.setSubmitting(false);
   };
   return (
     <AuthLayout>
@@ -88,7 +90,7 @@ function Login() {
                 type="submit"
                 variant="extended"
                 color="primary"
-                disabled={isSubmitting}>
+                disabled={isSubmitting || loginSuccess}>
                 Sign In
               </Fab>
               <Box textAlign="right" pt={2} fontSize="1rem">

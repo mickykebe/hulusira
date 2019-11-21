@@ -65,24 +65,22 @@ export default function JobForm({
     deadline: null,
     companyId: null
   },
-  reactivateAfterSubmit = false,
   companies,
   primaryTags,
-  onSubmit
+  onSubmit,
+  disableSaveButton = false
 }) {
   const classes = useStyles();
   const [showErrorSubmitting, setShowErrorSubmitting] = useState(false);
   const handleSubmit = async function(values, actions) {
     try {
       await onSubmit(values);
-      if (reactivateAfterSubmit) {
-        actions.setSubmitting(false);
-      }
     } catch (err) {
       console.error(err);
       setShowErrorSubmitting(true);
       actions.setSubmitting(false);
     }
+    actions.setSubmitting(false);
   };
   return (
     <Formik
@@ -172,7 +170,7 @@ export default function JobForm({
               variant="extended"
               color="primary"
               className={classes.postButton}
-              disabled={isSubmitting}>
+              disabled={isSubmitting || disableSaveButton}>
               <SaveIcon className={classes.saveButtonIcon} />
               Save
             </Fab>

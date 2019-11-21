@@ -5,6 +5,7 @@ import api from "../../../api";
 import Router from "next/router";
 import { cleanTags } from "../../../utils";
 import JobForm from "../../../components/job-form";
+import { useState } from "react";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -35,6 +36,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function DashboardNewJob({ user, companies, primaryTags }) {
+  const [disableSaveButton, setDisableSaveButton] = useState(false);
   const handleSubmit = async function(values) {
     const tags = cleanTags(values.tags);
     const primaryTag =
@@ -44,6 +46,7 @@ export default function DashboardNewJob({ user, companies, primaryTags }) {
       tags,
       primaryTag
     });
+    setDisableSaveButton(true);
     Router.push("/dashboard/jobs");
   };
   const classes = useStyles();
@@ -54,6 +57,7 @@ export default function DashboardNewJob({ user, companies, primaryTags }) {
           companies={companies}
           primaryTags={primaryTags}
           onSubmit={handleSubmit}
+          disableSaveButton={disableSaveButton}
         />
       </Container>
     </DashboardLayout>

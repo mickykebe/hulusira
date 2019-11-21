@@ -36,7 +36,6 @@ export default function EditJob({ user, jobData, companies, primaryTags }) {
           companies={companies}
           primaryTags={primaryTags}
           onSubmit={handleSubmit}
-          reactivateAfterSubmit={true}
         />
         <HSSnackBar
           open={showSuccessSnackbar}
