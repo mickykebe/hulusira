@@ -2,6 +2,7 @@ import { Container, Toolbar, Box, Button, makeStyles } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { Fragment, useState } from "react";
 import isAfter from "date-fns/isAfter";
+import endOfDay from 'date-fns/endOfDay';
 import Banner from "./banner";
 import JobContent from "./job-content";
 import JobCloseDialog from "./job-close-dialog";
@@ -34,7 +35,7 @@ export default function JobContentManage({
 }) {
   const classes = useStyles();
   const { approvalStatus, deadline } = jobData.job;
-  const expired = deadline ? isAfter(new Date(), new Date(deadline)) : false;
+  const expired = deadline ? isAfter(new Date(), endOfDay(new Date(deadline))) : false;
   return (
     <Fragment>
       <Container className={classes.header}>

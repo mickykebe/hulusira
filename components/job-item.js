@@ -3,6 +3,7 @@ import Link from "next/link";
 import Router from "next/router";
 import isAfter from "date-fns/isAfter";
 import formatDistance from "date-fns/formatDistance";
+import endOfDay from 'date-fns/endOfDay';
 import clsx from "clsx";
 import { Box, Typography, Chip, Link as MuiLink } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
@@ -72,7 +73,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function ExpirationTag({ deadline }) {
-  const expired = isAfter(new Date(), deadline);
+  const expired = isAfter(new Date(), endOfDay(deadline));
   const classes = useStyles();
   return expired ? (<Typography className={clsx(classes.extrasText, classes.expiredTag)} variant="caption">
     Expired
