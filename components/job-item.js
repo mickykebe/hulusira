@@ -8,6 +8,7 @@ import clsx from "clsx";
 import { Box, Typography, Chip, Link as MuiLink } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import DescriptionIcon from "@material-ui/icons/Description";
+import VisibilityIcon from '@material-ui/icons/Visibility';
 import ScheduleIcon from "@material-ui/icons/Schedule";
 import CompanyLogo from "../components/company-logo";
 
@@ -54,7 +55,7 @@ const useStyles = makeStyles(theme => ({
   extrasText: {
     display: "inline-flex",
     alignItems: "center",
-    marginRight: theme.spacing(1),
+    marginRight: theme.spacing(2),
   },
   expiredTag: {
     padding: `0 ${theme.spacing(0.5)}px`,
@@ -110,7 +111,7 @@ export default function JobItem({
         )}
       </Box>
       <Box display="flex" alignItems="center" flexWrap="wrap" flex={1}>
-        <Box mb={1} flex={1} flexBasis={300}>
+        <Box mb={1} flex={1} flexBasis={350}>
           {preview ? (
             <Typography variant="h6">{job.position || "Position"}</Typography>
           ) : (
@@ -169,6 +170,15 @@ export default function JobItem({
                   )}
                 </Typography>
               )}
+              {
+                <Typography
+                className={classes.extrasText}
+                color="textSecondary"
+                variant="body2">
+                <VisibilityIcon className={classes.extrasIcon} />
+                {job.views ? job.views : 0} {`View${job.views === 1 ? '' : 's'}`}
+              </Typography>
+              }
               {
                 !preview && job.approvalStatus !== "Closed" && job.deadline && (
                   <ExpirationTag deadline={new Date(job.deadline)} />

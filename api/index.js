@@ -136,6 +136,10 @@ class Api {
     return data;
   }
 
+  async openPage(jobSlug) {
+    return this.request().post(`/jobs/${jobSlug}/page-open`);
+  }
+
   async verifyJobToken(id, adminToken) {
     const { data } = await this.request().post(`/jobs/${id}/verify-token`, {
       adminToken

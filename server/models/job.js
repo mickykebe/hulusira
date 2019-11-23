@@ -19,7 +19,8 @@ class Job {
     slug,
     adminToken,
     deadline,
-    owner
+    owner,
+    views
   ) {
     this.id = id;
     this.position = position;
@@ -41,6 +42,7 @@ class Job {
     this.adminToken = adminToken;
     this.deadline = deadline;
     this.owner = owner;
+    this.views = views;
   }
 
   publicData() {
@@ -69,7 +71,8 @@ class Job {
       dbJob.job_slug,
       dbJob.job_admin_token,
       dbJob.job_deadline,
-      dbJob.job_owner
+      dbJob.job_owner,
+      dbJob.job_views
     );
   }
 }

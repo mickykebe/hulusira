@@ -32,7 +32,8 @@ class Db {
       "admin_token",
       "deadline",
       "owner",
-      "approval_status"
+      "approval_status",
+      "views"
     ];
     this.companyColumns = ["id", "name", "email", "logo", "verified"];
   }
@@ -364,6 +365,12 @@ class Db {
         })
       });
     return parseInt(result[0].count);
+  }
+
+  incrementJobView({ slug }) {
+    return this.knex("job")
+      .where("slug", slug)
+      .increment("views", 1);
   }
 
   async companyCount(id) {
