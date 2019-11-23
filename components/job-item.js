@@ -55,7 +55,8 @@ const useStyles = makeStyles(theme => (***REMOVED***
   extrasText: ***REMOVED***
     display: "inline-flex",
     alignItems: "center",
-    marginRight: theme.spacing(2),
+    marginRight: theme.spacing(1),
+    paddingBottom: theme.spacing(.5),
   ***REMOVED***,
   expiredTag: ***REMOVED***
     padding: `0 $***REMOVED***theme.spacing(0.5)***REMOVED***px`,
@@ -111,7 +112,7 @@ export default function JobItem(***REMOVED***
         )***REMOVED***
       </Box>
       <Box display="flex" alignItems="center" flexWrap="wrap" flex=***REMOVED***1***REMOVED***>
-        <Box mb=***REMOVED***1***REMOVED*** flex=***REMOVED***1***REMOVED*** flexBasis=***REMOVED***350***REMOVED***>
+        <Box mb=***REMOVED***1***REMOVED*** flex=***REMOVED***1***REMOVED*** flexBasis=***REMOVED***250***REMOVED***>
           ***REMOVED***preview ? (
             <Typography variant="h6">***REMOVED***job.position || "Position"***REMOVED***</Typography>
           ) : (
@@ -147,7 +148,7 @@ export default function JobItem(***REMOVED***
             </React.Fragment>
           )***REMOVED***
           ***REMOVED***(!preview || !!job.jobType) && (
-            <Box display="flex" alignItems="center" pt="1rem" pb="0.5rem">
+            <Box display="flex" alignItems="center" pt="1rem" pb="0.5rem" flexWrap="wrap">
               ***REMOVED***!!job.jobType && (
                 <Typography
                   className=***REMOVED***classes.extrasText***REMOVED***
