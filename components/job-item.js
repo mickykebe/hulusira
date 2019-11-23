@@ -7,9 +7,6 @@ import endOfDay from 'date-fns/endOfDay';
 import clsx from "clsx";
 import { Box, Typography, Chip, Link as MuiLink } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-import DescriptionIcon from "@material-ui/icons/Description";
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import ScheduleIcon from "@material-ui/icons/Schedule";
 import CompanyLogo from "../components/company-logo";
 
 const useStyles = makeStyles(theme => ({
@@ -68,10 +65,6 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: 'rgb(229, 57, 53)',
     color: 'white',
   },
-  extrasIcon: {
-    fontSize: "1rem",
-    marginRight: theme.spacing(0.5)
-  }
 }));
 
 function ExpirationTag({ deadline }) {
@@ -154,8 +147,7 @@ export default function JobItem({
                   className={classes.extrasText}
                   color="textSecondary"
                   variant="body2">
-                  <DescriptionIcon className={classes.extrasIcon} />{" "}
-                  {job.jobType}
+                  📌 {job.jobType}
                 </Typography>
               )}
               {!preview && (
@@ -163,7 +155,7 @@ export default function JobItem({
                   className={classes.extrasText}
                   color="textSecondary"
                   variant="body2">
-                  <ScheduleIcon className={classes.extrasIcon} />
+                  ⏱️ 
                   {formatDistance(
                     job.created ? new Date(job.created) : new Date(),
                     new Date(),
@@ -172,13 +164,12 @@ export default function JobItem({
                 </Typography>
               )}
               {
-                <Typography
+                !preview && (<Typography
                 className={classes.extrasText}
                 color="textSecondary"
                 variant="body2">
-                <VisibilityIcon className={classes.extrasIcon} />
-                {job.views ? job.views : 0} {`View${job.views === 1 ? '' : 's'}`}
-              </Typography>
+                👀 {job.views ? job.views : 0} {`View${job.views === 1 ? '' : 's'}`}
+              </Typography>)
               }
               {
                 !preview && job.approvalStatus !== "Closed" && job.deadline && (
