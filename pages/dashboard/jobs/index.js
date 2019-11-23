@@ -49,13 +49,13 @@ export default function DashboardJobs(***REMOVED*** user, jobs ***REMOVED***) **
   );
   const [jobPendingClose, setJobPendingClose] = useState(null);
   const handleCloseJob = async jobId => ***REMOVED***
-    setJobPendingClose(null);
     dispatch(***REMOVED*** type: "CLOSING_JOB" ***REMOVED***);
     try ***REMOVED***
       await api.closeJob(jobId);
       Router.replace("/dashboard/jobs");
       dispatch(***REMOVED*** type: "CLOSED_JOB" ***REMOVED***);
     ***REMOVED*** catch (err) ***REMOVED***
+      console.log(err);
       dispatch(***REMOVED*** type: "ERROR_CLOSING_JOB" ***REMOVED***);
     ***REMOVED***
   ***REMOVED***;
@@ -99,7 +99,6 @@ export default function DashboardJobs(***REMOVED*** user, jobs ***REMOVED***) **
               </TableHead>
               <TableBody>
                 ***REMOVED***jobs.map((***REMOVED*** job, company ***REMOVED***) => ***REMOVED***
-                  //const expirationDate = addDays(new Date(job.created), 30);
                   return (
                     <TableRow key=***REMOVED***job.id***REMOVED***>
                       <TableCell
@@ -140,18 +139,6 @@ export default function DashboardJobs(***REMOVED*** user, jobs ***REMOVED***) **
                       <TableCell align="left">
                         ***REMOVED***job.deadline ? format(new Date(job.deadline), "MMM dd, yyyy") : "--"***REMOVED***
                       </TableCell>
-                      ***REMOVED***/* <TableCell>
-                        ***REMOVED***
-                          job.approvalStatus === "Declined" ? "---" : (
-                            isAfter(new Date(), expirationDate)
-                          ? "Expired"
-                          : formatDistance(
-                              addDays(new Date(job.created), 30),
-                              new Date()
-                            )
-                          )
-                        ***REMOVED***
-                      </TableCell> */***REMOVED***
                       <TableCell align="left">
                         <Tooltip title="Edit Job">
                           <IconButton
@@ -164,7 +151,7 @@ export default function DashboardJobs(***REMOVED*** user, jobs ***REMOVED***) **
                         </Tooltip>
                         <Tooltip title="Close Job">
                           <IconButton
-                            disabled=***REMOVED***isClosingJob***REMOVED***
+                            disabled=***REMOVED***jobPendingClose === job.id && isClosingJob***REMOVED***
                             color="secondary"
                             onClick=***REMOVED***() => setJobPendingClose(job.id)***REMOVED***>
                             <CloseIcon />
@@ -177,7 +164,7 @@ export default function DashboardJobs(***REMOVED*** user, jobs ***REMOVED***) **
               </TableBody>
             </Table>
             <JobCloseDialog
-              open=***REMOVED***!!jobPendingClose***REMOVED***
+              open=***REMOVED***!!jobPendingClose && !isClosingJob***REMOVED***
               onClose=***REMOVED***() => setJobPendingClose(null)***REMOVED***
               onConfirmation=***REMOVED***() => handleCloseJob(jobPendingClose)***REMOVED***
             />
