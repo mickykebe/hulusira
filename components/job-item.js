@@ -7,9 +7,6 @@ import endOfDay from 'date-fns/endOfDay';
 import clsx from "clsx";
 import ***REMOVED*** Box, Typography, Chip, Link as MuiLink ***REMOVED*** from "@material-ui/core";
 import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
-import DescriptionIcon from "@material-ui/icons/Description";
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import ScheduleIcon from "@material-ui/icons/Schedule";
 import CompanyLogo from "../components/company-logo";
 
 const useStyles = makeStyles(theme => (***REMOVED***
@@ -68,10 +65,6 @@ const useStyles = makeStyles(theme => (***REMOVED***
     backgroundColor: 'rgb(229, 57, 53)',
     color: 'white',
   ***REMOVED***,
-  extrasIcon: ***REMOVED***
-    fontSize: "1rem",
-    marginRight: theme.spacing(0.5)
-  ***REMOVED***
 ***REMOVED***));
 
 function ExpirationTag(***REMOVED*** deadline ***REMOVED***) ***REMOVED***
@@ -154,8 +147,7 @@ export default function JobItem(***REMOVED***
                   className=***REMOVED***classes.extrasText***REMOVED***
                   color="textSecondary"
                   variant="body2">
-                  <DescriptionIcon className=***REMOVED***classes.extrasIcon***REMOVED*** />***REMOVED***" "***REMOVED***
-                  ***REMOVED***job.jobType***REMOVED***
+                  📌 ***REMOVED***job.jobType***REMOVED***
                 </Typography>
               )***REMOVED***
               ***REMOVED***!preview && (
@@ -163,7 +155,7 @@ export default function JobItem(***REMOVED***
                   className=***REMOVED***classes.extrasText***REMOVED***
                   color="textSecondary"
                   variant="body2">
-                  <ScheduleIcon className=***REMOVED***classes.extrasIcon***REMOVED*** />
+                  ⏱️ 
                   ***REMOVED***formatDistance(
                     job.created ? new Date(job.created) : new Date(),
                     new Date(),
@@ -172,13 +164,12 @@ export default function JobItem(***REMOVED***
                 </Typography>
               )***REMOVED***
               ***REMOVED***
-                <Typography
+                !preview && (<Typography
                 className=***REMOVED***classes.extrasText***REMOVED***
                 color="textSecondary"
                 variant="body2">
-                <VisibilityIcon className=***REMOVED***classes.extrasIcon***REMOVED*** />
-                ***REMOVED***job.views ? job.views : 0***REMOVED*** ***REMOVED***`View$***REMOVED***job.views === 1 ? '' : 's'***REMOVED***`***REMOVED***
-              </Typography>
+                👀 ***REMOVED***job.views ? job.views : 0***REMOVED*** ***REMOVED***`View$***REMOVED***job.views === 1 ? '' : 's'***REMOVED***`***REMOVED***
+              </Typography>)
               ***REMOVED***
               ***REMOVED***
                 !preview && job.approvalStatus !== "Closed" && job.deadline && (
