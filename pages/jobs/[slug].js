@@ -40,6 +40,9 @@ function Job(***REMOVED*** user, jobData, adminToken ***REMOVED***) ***REMOVED**
     ***REMOVED***
     setJobDialogOpen(false);
   ***REMOVED***;
+  useEffect(() => ***REMOVED***
+    api.openPage(jobData.job.slug);
+  ***REMOVED***, []);
   const metaTitle = `$***REMOVED***jobData.job.position***REMOVED***$***REMOVED***
     jobData.company ? ` at $***REMOVED***jobData.company.name***REMOVED***` : ""
   ***REMOVED***`;

@@ -136,6 +136,10 @@ class Api ***REMOVED***
     return data;
   ***REMOVED***
 
+  async openPage(jobSlug) ***REMOVED***
+    return this.request().post(`/jobs/$***REMOVED***jobSlug***REMOVED***/page-open`);
+  ***REMOVED***
+
   async verifyJobToken(id, adminToken) ***REMOVED***
     const ***REMOVED*** data ***REMOVED*** = await this.request().post(`/jobs/$***REMOVED***id***REMOVED***/verify-token`, ***REMOVED***
       adminToken

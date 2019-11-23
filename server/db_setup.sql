@@ -44,6 +44,7 @@ CREATE TABLE job (
   admin_token uuid DEFAULT uuid_generate_v4(),
   owner INTEGER REFERENCES users(id) ON DELETE SET NULL,
   approval_status TEXT NOT NULL CONSTRAINT approval_values CHECK (approval_status IN ('Pending', 'Active', 'Declined', 'Closed')) DEFAULT 'Pending',
+  views INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE TABLE job_tags (

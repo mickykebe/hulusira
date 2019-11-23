@@ -32,7 +32,8 @@ class Db ***REMOVED***
       "admin_token",
       "deadline",
       "owner",
-      "approval_status"
+      "approval_status",
+      "views"
     ];
     this.companyColumns = ["id", "name", "email", "logo", "verified"];
   ***REMOVED***
@@ -364,6 +365,12 @@ class Db ***REMOVED***
         ***REMOVED***)
       ***REMOVED***);
     return parseInt(result[0].count);
+  ***REMOVED***
+
+  incrementJobView(***REMOVED*** slug ***REMOVED***) ***REMOVED***
+    return this.knex("job")
+      .where("slug", slug)
+      .increment("views", 1);
   ***REMOVED***
 
   async companyCount(id) ***REMOVED***

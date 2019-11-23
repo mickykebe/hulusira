@@ -73,6 +73,7 @@ router.patch(
   catchErrors(jobController.closeJob)
 );
 router.get("/jobs/:slug", catchErrors(jobController.getJob));
+router.post("/jobs/:slug/page-open", catchErrors(jobController.openPage));
 router.get("/jobs", catchErrors(jobController.getJobs));
 router.get("/myjobs", permitAuthenticated(), catchErrors(jobController.myJobs));
 router.get(

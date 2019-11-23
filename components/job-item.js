@@ -8,6 +8,7 @@ import clsx from "clsx";
 import ***REMOVED*** Box, Typography, Chip, Link as MuiLink ***REMOVED*** from "@material-ui/core";
 import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
 import DescriptionIcon from "@material-ui/icons/Description";
+import VisibilityIcon from '@material-ui/icons/Visibility';
 import ScheduleIcon from "@material-ui/icons/Schedule";
 import CompanyLogo from "../components/company-logo";
 
@@ -54,7 +55,7 @@ const useStyles = makeStyles(theme => (***REMOVED***
   extrasText: ***REMOVED***
     display: "inline-flex",
     alignItems: "center",
-    marginRight: theme.spacing(1),
+    marginRight: theme.spacing(2),
   ***REMOVED***,
   expiredTag: ***REMOVED***
     padding: `0 $***REMOVED***theme.spacing(0.5)***REMOVED***px`,
@@ -110,7 +111,7 @@ export default function JobItem(***REMOVED***
         )***REMOVED***
       </Box>
       <Box display="flex" alignItems="center" flexWrap="wrap" flex=***REMOVED***1***REMOVED***>
-        <Box mb=***REMOVED***1***REMOVED*** flex=***REMOVED***1***REMOVED*** flexBasis=***REMOVED***300***REMOVED***>
+        <Box mb=***REMOVED***1***REMOVED*** flex=***REMOVED***1***REMOVED*** flexBasis=***REMOVED***350***REMOVED***>
           ***REMOVED***preview ? (
             <Typography variant="h6">***REMOVED***job.position || "Position"***REMOVED***</Typography>
           ) : (
@@ -169,6 +170,15 @@ export default function JobItem(***REMOVED***
                   )***REMOVED***
                 </Typography>
               )***REMOVED***
+              ***REMOVED***
+                <Typography
+                className=***REMOVED***classes.extrasText***REMOVED***
+                color="textSecondary"
+                variant="body2">
+                <VisibilityIcon className=***REMOVED***classes.extrasIcon***REMOVED*** />
+                ***REMOVED***job.views ? job.views : 0***REMOVED*** ***REMOVED***`View$***REMOVED***job.views === 1 ? '' : 's'***REMOVED***`***REMOVED***
+              </Typography>
+              ***REMOVED***
               ***REMOVED***
                 !preview && job.approvalStatus !== "Closed" && job.deadline && (
                   <ExpirationTag deadline=***REMOVED***new Date(job.deadline)***REMOVED*** />

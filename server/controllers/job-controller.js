@@ -257,6 +257,12 @@ exports.getJob = async (req, res) => ***REMOVED***
   res.status(200).send(jobData);
 ***REMOVED***;
 
+exports.openPage = async (req, res) => ***REMOVED***
+  const ***REMOVED*** slug ***REMOVED*** = req.params;
+  await db.incrementJobView(***REMOVED*** slug ***REMOVED***);
+  res.sendStatus(200);
+***REMOVED***
+
 exports.closeJob = async (req, res) => ***REMOVED***
   const ***REMOVED*** id ***REMOVED*** = req.params;
   const affectedRows = await db.closeJob(id);
