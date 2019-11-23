@@ -49,13 +49,13 @@ export default function DashboardJobs({ user, jobs }) {
   );
   const [jobPendingClose, setJobPendingClose] = useState(null);
   const handleCloseJob = async jobId => {
-    setJobPendingClose(null);
     dispatch({ type: "CLOSING_JOB" });
     try {
       await api.closeJob(jobId);
       Router.replace("/dashboard/jobs");
       dispatch({ type: "CLOSED_JOB" });
     } catch (err) {
+      console.log(err);
       dispatch({ type: "ERROR_CLOSING_JOB" });
     }
   };
@@ -99,7 +99,6 @@ export default function DashboardJobs({ user, jobs }) {
               </TableHead>
               <TableBody>
                 {jobs.map(({ job, company }) => {
-                  //const expirationDate = addDays(new Date(job.created), 30);
                   return (
                     <TableRow key={job.id}>
                       <TableCell
@@ -140,18 +139,6 @@ export default function DashboardJobs({ user, jobs }) {
                       <TableCell align="left">
                         {job.deadline ? format(new Date(job.deadline), "MMM dd, yyyy") : "--"}
                       </TableCell>
-                      {/* <TableCell>
-                        {
-                          job.approvalStatus === "Declined" ? "---" : (
-                            isAfter(new Date(), expirationDate)
-                          ? "Expired"
-                          : formatDistance(
-                              addDays(new Date(job.created), 30),
-                              new Date()
-                            )
-                          )
-                        }
-                      </TableCell> */}
                       <TableCell align="left">
                         <Tooltip title="Edit Job">
                           <IconButton
@@ -164,7 +151,7 @@ export default function DashboardJobs({ user, jobs }) {
                         </Tooltip>
                         <Tooltip title="Close Job">
                           <IconButton
-                            disabled={isClosingJob}
+                            disabled={jobPendingClose === job.id && isClosingJob}
                             color="secondary"
                             onClick={() => setJobPendingClose(job.id)}>
                             <CloseIcon />
@@ -177,7 +164,7 @@ export default function DashboardJobs({ user, jobs }) {
               </TableBody>
             </Table>
             <JobCloseDialog
-              open={!!jobPendingClose}
+              open={!!jobPendingClose && !isClosingJob}
               onClose={() => setJobPendingClose(null)}
               onConfirmation={() => handleCloseJob(jobPendingClose)}
             />
