@@ -112,7 +112,7 @@ export default function JobItem({
         )}
       </Box>
       <Box display="flex" alignItems="center" flexWrap="wrap" flex={1}>
-        <Box mb={1} flex={1} flexBasis={250}>
+        <Box mb={1} flex={1} flexBasis={310}>
           {preview ? (
             <Typography variant="h6">{job.position || "Position"}</Typography>
           ) : (
