@@ -112,7 +112,7 @@ export default function JobItem(***REMOVED***
         )***REMOVED***
       </Box>
       <Box display="flex" alignItems="center" flexWrap="wrap" flex=***REMOVED***1***REMOVED***>
-        <Box mb=***REMOVED***1***REMOVED*** flex=***REMOVED***1***REMOVED*** flexBasis=***REMOVED***250***REMOVED***>
+        <Box mb=***REMOVED***1***REMOVED*** flex=***REMOVED***1***REMOVED*** flexBasis=***REMOVED***310***REMOVED***>
           ***REMOVED***preview ? (
             <Typography variant="h6">***REMOVED***job.position || "Position"***REMOVED***</Typography>
           ) : (
