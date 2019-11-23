@@ -134,7 +134,6 @@ export default function JobDetailsFormElement(***REMOVED***
           value=***REMOVED***values.deadline***REMOVED***
           onChange=***REMOVED***date => setFieldValue("deadline", date)***REMOVED***
           TextFieldComponent=***REMOVED***DatePickerTextField***REMOVED***
-          maxDate=***REMOVED***addDays(new Date(), 30)***REMOVED***
         />
       </MuiPickersUtilsProvider>
       <MDEditor
