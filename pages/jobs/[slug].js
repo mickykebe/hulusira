@@ -5,16 +5,9 @@ import nextCookie from "next-cookies";
 import api from "../../api";
 import Layout from "../../components/layout";
 import JobContentManage from "../../components/job-content-manage";
-import jobCloseReducer from "../../reducers/close-job";
-import HeaderAd from "../../components/header-ad";
 
 function Job(***REMOVED*** user, jobData, adminToken ***REMOVED***) ***REMOVED***
-  const [***REMOVED*** isClosingJob, errorClosingJob ***REMOVED***, dispatch] = useReducer(
-    jobCloseReducer,
-    ***REMOVED*** isClosingJob: false, errorClosingJob: false ***REMOVED***
-  );
   const [isValidToken, setIsValidToken] = useState(false);
-  const [jobDialogOpen, setJobDialogOpen] = useState(false);
   useEffect(() => ***REMOVED***
     const verifyToken = async (id, adminToken) => ***REMOVED***
       try ***REMOVED***
@@ -28,21 +21,14 @@ function Job(***REMOVED*** user, jobData, adminToken ***REMOVED***) ***REMOVED**
     if (adminToken) ***REMOVED***
       verifyToken(job.id, adminToken);
     ***REMOVED***
-  ***REMOVED***, [jobData, setIsValidToken]);
-  const handleCloseJob = async () => ***REMOVED***
-    dispatch(***REMOVED*** type: "CLOSING_JOB" ***REMOVED***);
-    try ***REMOVED***
-      await api.closeJob(jobData.job.id, adminToken);
-      Router.push("/");
-      dispatch(***REMOVED*** type: "CLOSED_JOB" ***REMOVED***);
-    ***REMOVED*** catch (err) ***REMOVED***
-      dispatch(***REMOVED*** type: "ERROR_CLOSING_JOB" ***REMOVED***);
-    ***REMOVED***
-    setJobDialogOpen(false);
+  ***REMOVED***, [jobData, setIsValidToken, adminToken]);
+  const closeJob = async () => ***REMOVED***
+    await api.closeJob(jobData.job.id, adminToken);
+    Router.push("/");
   ***REMOVED***;
   useEffect(() => ***REMOVED***
     api.openPage(jobData.job.slug);
-  ***REMOVED***, []);
+  ***REMOVED***, [jobData.job.slug]);
   const metaTitle = `$***REMOVED***jobData.job.position***REMOVED***$***REMOVED***
     jobData.company ? ` at $***REMOVED***jobData.company.name***REMOVED***` : ""
   ***REMOVED***`;
@@ -79,12 +65,7 @@ function Job(***REMOVED*** user, jobData, adminToken ***REMOVED***) ***REMOVED**
       <JobContentManage
         isJobOwner=***REMOVED***isValidToken***REMOVED***
         jobData=***REMOVED***jobData***REMOVED***
-        onJobClose=***REMOVED***handleCloseJob***REMOVED***
-        isClosingJob=***REMOVED***isClosingJob***REMOVED***
-        errorClosingJob=***REMOVED***errorClosingJob***REMOVED***
-        clearCloseError=***REMOVED***() => dispatch(***REMOVED*** type: "CLEAR_ERROR" ***REMOVED***)***REMOVED***
-        closeDialogOpen=***REMOVED***jobDialogOpen***REMOVED***
-        setCloseDialogOpen=***REMOVED***setJobDialogOpen***REMOVED***
+        onJobClose=***REMOVED***closeJob***REMOVED***
         withAds=***REMOVED***true***REMOVED***
       />
     </Layout>

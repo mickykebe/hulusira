@@ -2,38 +2,19 @@ import api from "../../../api";
 import DashboardLayout from "../../../components/dashboard-layout";
 import JobContentManage from "../../../components/job-content-manage";
 import redirect from "../../../utils/redirect";
-import jobCloseReducer from "../../../reducers/close-job";
-import ***REMOVED*** useState, useReducer ***REMOVED*** from "react";
 import Router from "next/router";
 
 export default function DashboardJob(***REMOVED*** user, jobData ***REMOVED***) ***REMOVED***
-  const [***REMOVED*** isClosingJob, errorClosingJob ***REMOVED***, dispatch] = useReducer(
-    jobCloseReducer,
-    ***REMOVED*** isClosingJob: false, errorClosingJob: false ***REMOVED***
-  );
-  const [closeDialogOpen, setCloseDialogOpen] = useState(false);
-  const handleCloseJob = async () => ***REMOVED***
-    setCloseDialogOpen(false);
-    dispatch(***REMOVED*** type: "CLOSING_JOB" ***REMOVED***);
-    try ***REMOVED***
-      await api.closeJob(jobData.job.id);
-      Router.push("/dashboard/jobs");
-      dispatch(***REMOVED*** type: "CLOSED_JOB" ***REMOVED***);
-    ***REMOVED*** catch (err) ***REMOVED***
-      dispatch(***REMOVED*** type: "ERROR_CLOSING_JOB" ***REMOVED***);
-    ***REMOVED***
+  const closeJob = async () => ***REMOVED***
+    await api.closeJob(jobData.job.id);
+    Router.push("/dashboard/jobs");
   ***REMOVED***;
   return (
     <DashboardLayout user=***REMOVED***user***REMOVED***>
       <JobContentManage
         isJobOwner=***REMOVED***true***REMOVED***
         jobData=***REMOVED***jobData***REMOVED***
-        onJobClose=***REMOVED***handleCloseJob***REMOVED***
-        isClosingJob=***REMOVED***isClosingJob***REMOVED***
-        errorClosingJob=***REMOVED***errorClosingJob***REMOVED***
-        clearCloseError=***REMOVED***() => dispatch(***REMOVED*** type: "CLEAR_ERROR" ***REMOVED***)***REMOVED***
-        closeDialogOpen=***REMOVED***closeDialogOpen***REMOVED***
-        setCloseDialogOpen=***REMOVED***setCloseDialogOpen***REMOVED***
+        onJobClose=***REMOVED***closeJob***REMOVED***
       />
     </DashboardLayout>
   );

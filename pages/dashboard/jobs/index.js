@@ -9,57 +9,23 @@ import ***REMOVED***
   TableRow,
   TableCell,
   TableBody,
-  IconButton,
-  makeStyles,
-  Link as MuiLink,
-  Tooltip
+  makeStyles
 ***REMOVED*** from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-import CloseIcon from "@material-ui/icons/Close";
-import EditIcon from "@material-ui/icons/Edit";
-import addDays from "date-fns/addDays";
-import format from 'date-fns/format';
 import redirect from "../../../utils/redirect";
 import HSPaper from "../../../components/hs-paper";
-import CompanyLogo from "../../../components/company-logo";
-import Link from "next/link";
 import api from "../../../api";
 import EmptyList from "../../../components/empty-list";
-import JobApprovalStatus from "../../../components/job-approval-status";
-import ***REMOVED*** useReducer, useState ***REMOVED*** from "react";
-import jobCloseReducer from "../../../reducers/close-job";
-import JobCloseDialog from "../../../components/job-close-dialog";
-import HSSnackBar from "../../../components/hs-snackbar";
+import JobTableRow from "../../../components/job-table-row";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   tableHead: ***REMOVED***
     fontWeight: 800
-  ***REMOVED***,
-  noJobsImage: ***REMOVED***
-    width: "20rem",
-    height: "20rem"
   ***REMOVED***
 ***REMOVED***));
 
 export default function DashboardJobs(***REMOVED*** user, jobs ***REMOVED***) ***REMOVED***
   const classes = useStyles();
-  const [***REMOVED*** isClosingJob, errorClosingJob ***REMOVED***, dispatch] = useReducer(
-    jobCloseReducer,
-    ***REMOVED*** isClosingJob: false, errorClosingJob: false ***REMOVED***
-  );
-  const [jobPendingClose, setJobPendingClose] = useState(null);
-  const handleCloseJob = async jobId => ***REMOVED***
-    dispatch(***REMOVED*** type: "CLOSING_JOB" ***REMOVED***);
-    try ***REMOVED***
-      await api.closeJob(jobId);
-      Router.replace("/dashboard/jobs");
-      dispatch(***REMOVED*** type: "CLOSED_JOB" ***REMOVED***);
-    ***REMOVED*** catch (err) ***REMOVED***
-      console.log(err);
-      dispatch(***REMOVED*** type: "ERROR_CLOSING_JOB" ***REMOVED***);
-    ***REMOVED***
-  ***REMOVED***;
-
   return (
     <DashboardLayout user=***REMOVED***user***REMOVED*** selectedItem="jobs">
       <Container maxWidth="lg">
@@ -70,7 +36,8 @@ export default function DashboardJobs(***REMOVED*** user, jobs ***REMOVED***) **
             color="primary"
             size="small"
             startIcon=***REMOVED***<AddIcon />***REMOVED***
-            onClick=***REMOVED***() => Router.push("/dashboard/jobs/new")***REMOVED***>
+            onClick=***REMOVED***() => Router.push("/dashboard/jobs/new")***REMOVED***
+          >
             Post Job
           </Button>
         </Box>
@@ -98,83 +65,11 @@ export default function DashboardJobs(***REMOVED*** user, jobs ***REMOVED***) **
                 </TableRow>
               </TableHead>
               <TableBody>
-                ***REMOVED***jobs.map((***REMOVED*** job, company ***REMOVED***) => ***REMOVED***
-                  return (
-                    <TableRow key=***REMOVED***job.id***REMOVED***>
-                      <TableCell
-                        variant="head"
-                        classes=***REMOVED******REMOVED*** head: classes.tableHead ***REMOVED******REMOVED***>
-                        <Link
-                          href="/dashboard/jobs/[slug]"
-                          as=***REMOVED***`/dashboard/jobs/$***REMOVED***job.slug***REMOVED***`***REMOVED***
-                          passHref>
-                          <MuiLink color="inherit" variant="subtitle1">
-                            ***REMOVED***job.position***REMOVED***
-                          </MuiLink>
-                        </Link>
-                      </TableCell>
-                      <TableCell>
-                        ***REMOVED***company ? (
-                          <Box display="flex" alignItems="center">
-                            ***REMOVED***company.logo && (
-                              <Box pr=***REMOVED***1***REMOVED***>
-                                <CompanyLogo
-                                  company=***REMOVED***company***REMOVED***
-                                  abbrevFallback=***REMOVED***false***REMOVED***
-                                  size="small"
-                                />
-                              </Box>
-                            )***REMOVED***
-                            ***REMOVED***company.name***REMOVED***
-                          </Box>
-                        ) : (
-                          "None"
-                        )***REMOVED***
-                      </TableCell>
-                      <TableCell>
-                        <JobApprovalStatus
-                          approvalStatus=***REMOVED***job.approvalStatus***REMOVED***
-                        />
-                      </TableCell>
-                      <TableCell align="left">
-                        ***REMOVED***job.deadline ? format(new Date(job.deadline), "MMM dd, yyyy") : "--"***REMOVED***
-                      </TableCell>
-                      <TableCell align="left">
-                        <Tooltip title="Edit Job">
-                          <IconButton
-                            color="secondary"
-                            onClick=***REMOVED***() =>
-                              Router.push(`/dashboard/jobs/edit/$***REMOVED***job.slug***REMOVED***`)
-                            ***REMOVED***>
-                            <EditIcon />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Close Job">
-                          <IconButton
-                            disabled=***REMOVED***jobPendingClose === job.id && isClosingJob***REMOVED***
-                            color="secondary"
-                            onClick=***REMOVED***() => setJobPendingClose(job.id)***REMOVED***>
-                            <CloseIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </TableCell>
-                    </TableRow>
-                  );
+                ***REMOVED***jobs.map(jobData => ***REMOVED***
+                  return <JobTableRow key=***REMOVED***jobData.job.id***REMOVED*** jobData=***REMOVED***jobData***REMOVED*** />;
                 ***REMOVED***)***REMOVED***
               </TableBody>
             </Table>
-            <JobCloseDialog
-              open=***REMOVED***!!jobPendingClose && !isClosingJob***REMOVED***
-              onClose=***REMOVED***() => setJobPendingClose(null)***REMOVED***
-              onConfirmation=***REMOVED***() => handleCloseJob(jobPendingClose)***REMOVED***
-            />
-            <HSSnackBar
-              open=***REMOVED***errorClosingJob***REMOVED***
-              variant="error"
-              message="Problem occurred closing job."
-              autoHideDuration=***REMOVED***3000***REMOVED***
-              onClose=***REMOVED***() => dispatch(***REMOVED*** type: "CLEAR_ERROR" ***REMOVED***)***REMOVED***
-            />
           </HSPaper>
         )***REMOVED***
       </Container>

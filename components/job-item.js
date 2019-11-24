@@ -155,7 +155,7 @@ export default function JobItem(***REMOVED***
                   className=***REMOVED***classes.extrasText***REMOVED***
                   color="textSecondary"
                   variant="body2">
-                  ⏱️ 
+                  ⏱️***REMOVED***" "***REMOVED***
                   ***REMOVED***formatDistance(
                     job.created ? new Date(job.created) : new Date(),
                     new Date(),
