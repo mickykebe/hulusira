@@ -69,49 +69,58 @@ export default function JobDetailsFormElement(***REMOVED***
         error=***REMOVED***!!(touched.location && errors.location)***REMOVED***
         helperText=***REMOVED***touched.location && errors.location***REMOVED***
       />
-      <TextField
-        name="primaryTag"
-        select
-        value=***REMOVED***values.primaryTag***REMOVED***
-        label="Primary Tag"
-        margin="normal"
-        variant="outlined"
-        fullWidth
-        onChange=***REMOVED***handleChange***REMOVED***
-        error=***REMOVED***!!(touched.primaryTag && errors.primaryTag)***REMOVED***
-        helperText=***REMOVED***
-          !!(touched.primaryTag && errors.primaryTag)
-            ? errors.primaryTag
-            : "Choosing a tag here boosts your job's visibility."
-        ***REMOVED***
-      >
-        ***REMOVED***primaryTags.map(tag => (
-          <MenuItem key=***REMOVED***tag.name***REMOVED*** value=***REMOVED***tag.name***REMOVED***>
-            ***REMOVED***tag.name***REMOVED***
-          </MenuItem>
-        ))***REMOVED***
-      </TextField>
-      <TextField
-        name="tags"
-        label="Extra Tags"
-        variant="outlined"
-        margin="normal"
-        fullWidth
-        placeholder="Marketing, Software developer, Modeling, etc."
-        value=***REMOVED***values.tags.join(",")***REMOVED***
-        onChange=***REMOVED***ev => ***REMOVED***
-          setFieldValue(
-            "tags",
-            ev.target.value.split(",").map(tag => tag.toUpperCase())
-          );
-        ***REMOVED******REMOVED***
-        error=***REMOVED***!!(touched.tags && errors.tags)***REMOVED***
-        helperText=***REMOVED***
-          !!(touched.tags && errors.tags)
-            ? errors.tags
-            : "List tags separated by comma(,)."
-        ***REMOVED***
-      />
+      <Box display="flex" flexWrap="wrap">
+        <Box flex="1" flexBasis=***REMOVED***["100%", 0]***REMOVED***>
+          <TextField
+            name="primaryTag"
+            select
+            value=***REMOVED***values.primaryTag***REMOVED***
+            label="Primary Tag"
+            margin="normal"
+            variant="outlined"
+            fullWidth
+            onChange=***REMOVED***handleChange***REMOVED***
+            error=***REMOVED***!!(touched.primaryTag && errors.primaryTag)***REMOVED***
+            helperText=***REMOVED***
+              !!(touched.primaryTag && errors.primaryTag)
+                ? errors.primaryTag
+                : "Choosing a tag here boosts your job's visibility."
+            ***REMOVED***
+          >
+            ***REMOVED***primaryTags.map(tag => (
+              <MenuItem key=***REMOVED***tag.name***REMOVED*** value=***REMOVED***tag.name***REMOVED***>
+                ***REMOVED***tag.name***REMOVED***
+              </MenuItem>
+            ))***REMOVED***
+          </TextField>
+        </Box>
+        <Box textAlign="center" px=***REMOVED***2***REMOVED*** my="auto" flexBasis=***REMOVED***["100%", "0"]***REMOVED***>
+          <Typography variant="subtitle2">AND/OR</Typography>
+        </Box>
+        <Box flex="1" flexBasis=***REMOVED***["100%", "0"]***REMOVED***>
+          <TextField
+            name="tags"
+            label="Extra Tags"
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            placeholder="Marketing, Software developer, Modeling, etc."
+            value=***REMOVED***values.tags.join(",")***REMOVED***
+            onChange=***REMOVED***ev => ***REMOVED***
+              setFieldValue(
+                "tags",
+                ev.target.value.split(",").map(tag => tag.toUpperCase())
+              );
+            ***REMOVED******REMOVED***
+            error=***REMOVED***!!(touched.tags && errors.tags)***REMOVED***
+            helperText=***REMOVED***
+              !!(touched.tags && errors.tags)
+                ? errors.tags
+                : "List tags separated by comma(,)."
+            ***REMOVED***
+          />
+        </Box>
+      </Box>
       <TextField
         name="salary"
         label="Salary (optional)"
