@@ -69,49 +69,58 @@ export default function JobDetailsFormElement({
         error={!!(touched.location && errors.location)}
         helperText={touched.location && errors.location}
       />
-      <TextField
-        name="primaryTag"
-        select
-        value={values.primaryTag}
-        label="Primary Tag"
-        margin="normal"
-        variant="outlined"
-        fullWidth
-        onChange={handleChange}
-        error={!!(touched.primaryTag && errors.primaryTag)}
-        helperText={
-          !!(touched.primaryTag && errors.primaryTag)
-            ? errors.primaryTag
-            : "Choosing a tag here boosts your job's visibility."
-        }
-      >
-        {primaryTags.map(tag => (
-          <MenuItem key={tag.name} value={tag.name}>
-            {tag.name}
-          </MenuItem>
-        ))}
-      </TextField>
-      <TextField
-        name="tags"
-        label="Extra Tags"
-        variant="outlined"
-        margin="normal"
-        fullWidth
-        placeholder="Marketing, Software developer, Modeling, etc."
-        value={values.tags.join(",")}
-        onChange={ev => {
-          setFieldValue(
-            "tags",
-            ev.target.value.split(",").map(tag => tag.toUpperCase())
-          );
-        }}
-        error={!!(touched.tags && errors.tags)}
-        helperText={
-          !!(touched.tags && errors.tags)
-            ? errors.tags
-            : "List tags separated by comma(,)."
-        }
-      />
+      <Box display="flex" flexWrap="wrap">
+        <Box flex="1" flexBasis={["100%", 0]}>
+          <TextField
+            name="primaryTag"
+            select
+            value={values.primaryTag}
+            label="Primary Tag"
+            margin="normal"
+            variant="outlined"
+            fullWidth
+            onChange={handleChange}
+            error={!!(touched.primaryTag && errors.primaryTag)}
+            helperText={
+              !!(touched.primaryTag && errors.primaryTag)
+                ? errors.primaryTag
+                : "Choosing a tag here boosts your job's visibility."
+            }
+          >
+            {primaryTags.map(tag => (
+              <MenuItem key={tag.name} value={tag.name}>
+                {tag.name}
+              </MenuItem>
+            ))}
+          </TextField>
+        </Box>
+        <Box textAlign="center" px={2} my="auto" flexBasis={["100%", "0"]}>
+          <Typography variant="subtitle2">AND/OR</Typography>
+        </Box>
+        <Box flex="1" flexBasis={["100%", "0"]}>
+          <TextField
+            name="tags"
+            label="Extra Tags"
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            placeholder="Marketing, Software developer, Modeling, etc."
+            value={values.tags.join(",")}
+            onChange={ev => {
+              setFieldValue(
+                "tags",
+                ev.target.value.split(",").map(tag => tag.toUpperCase())
+              );
+            }}
+            error={!!(touched.tags && errors.tags)}
+            helperText={
+              !!(touched.tags && errors.tags)
+                ? errors.tags
+                : "List tags separated by comma(,)."
+            }
+          />
+        </Box>
+      </Box>
       <TextField
         name="salary"
         label="Salary (optional)"
