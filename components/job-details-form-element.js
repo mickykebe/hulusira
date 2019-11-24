@@ -50,7 +50,8 @@ export default function JobDetailsFormElement(***REMOVED***
         fullWidth
         onChange=***REMOVED***handleChange***REMOVED***
         error=***REMOVED***!!(touched.jobType && errors.jobType)***REMOVED***
-        helperText=***REMOVED***touched.jobType && errors.jobType***REMOVED***>
+        helperText=***REMOVED***touched.jobType && errors.jobType***REMOVED***
+      >
         ***REMOVED***jobTypes.map(jobType => (
           <MenuItem key=***REMOVED***jobType***REMOVED*** value=***REMOVED***jobType***REMOVED***>
             ***REMOVED***jobType***REMOVED***
@@ -82,7 +83,8 @@ export default function JobDetailsFormElement(***REMOVED***
           !!(touched.primaryTag && errors.primaryTag)
             ? errors.primaryTag
             : "Choosing a tag here boosts your job's visibility."
-        ***REMOVED***>
+        ***REMOVED***
+      >
         ***REMOVED***primaryTags.map(tag => (
           <MenuItem key=***REMOVED***tag.name***REMOVED*** value=***REMOVED***tag.name***REMOVED***>
             ***REMOVED***tag.name***REMOVED***
@@ -177,7 +179,9 @@ export default function JobDetailsFormElement(***REMOVED***
               handleChange(ev);
             ***REMOVED******REMOVED***
             error=***REMOVED***!!(touched.applyUrl && errors.applyUrl)***REMOVED***
-            helperText=***REMOVED***touched.applyUrl && errors.applyUrl***REMOVED***
+            helperText=***REMOVED***
+              (touched.applyUrl && errors.applyUrl) || "Used for 'Apply' button"
+            ***REMOVED***
           />
         </Box>
         <Box textAlign="center" px=***REMOVED***2***REMOVED*** my="auto" flexBasis=***REMOVED***["100%", "0"]***REMOVED***>
@@ -189,7 +193,6 @@ export default function JobDetailsFormElement(***REMOVED***
             label="Apply Email (optional)"
             variant="outlined"
             margin="normal"
-            helperText="Your email address"
             fullWidth
             type="email"
             value=***REMOVED***values.applyEmail***REMOVED***
@@ -198,7 +201,10 @@ export default function JobDetailsFormElement(***REMOVED***
               handleChange(ev);
             ***REMOVED******REMOVED***
             error=***REMOVED***!!(touched.applyEmail && errors.applyEmail)***REMOVED***
-            helperText=***REMOVED***touched.applyEmail && errors.applyEmail***REMOVED***
+            helperText=***REMOVED***
+              (touched.applyEmail && errors.applyEmail) ||
+              "Used for 'apply' button"
+            ***REMOVED***
           />
         </Box>
       </Box>
