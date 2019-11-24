@@ -5,16 +5,9 @@ import nextCookie from "next-cookies";
 import api from "../../api";
 import Layout from "../../components/layout";
 import JobContentManage from "../../components/job-content-manage";
-import jobCloseReducer from "../../reducers/close-job";
-import HeaderAd from "../../components/header-ad";
 
 function Job({ user, jobData, adminToken }) {
-  const [{ isClosingJob, errorClosingJob }, dispatch] = useReducer(
-    jobCloseReducer,
-    { isClosingJob: false, errorClosingJob: false }
-  );
   const [isValidToken, setIsValidToken] = useState(false);
-  const [jobDialogOpen, setJobDialogOpen] = useState(false);
   useEffect(() => {
     const verifyToken = async (id, adminToken) => {
       try {
@@ -28,21 +21,14 @@ function Job({ user, jobData, adminToken }) {
     if (adminToken) {
       verifyToken(job.id, adminToken);
     }
-  }, [jobData, setIsValidToken]);
-  const handleCloseJob = async () => {
-    dispatch({ type: "CLOSING_JOB" });
-    try {
-      await api.closeJob(jobData.job.id, adminToken);
-      Router.push("/");
-      dispatch({ type: "CLOSED_JOB" });
-    } catch (err) {
-      dispatch({ type: "ERROR_CLOSING_JOB" });
-    }
-    setJobDialogOpen(false);
+  }, [jobData, setIsValidToken, adminToken]);
+  const closeJob = async () => {
+    await api.closeJob(jobData.job.id, adminToken);
+    Router.push("/");
   };
   useEffect(() => {
     api.openPage(jobData.job.slug);
-  }, []);
+  }, [jobData.job.slug]);
   const metaTitle = `${jobData.job.position}${
     jobData.company ? ` at ${jobData.company.name}` : ""
   }`;
@@ -79,12 +65,7 @@ function Job({ user, jobData, adminToken }) {
       <JobContentManage
         isJobOwner={isValidToken}
         jobData={jobData}
-        onJobClose={handleCloseJob}
-        isClosingJob={isClosingJob}
-        errorClosingJob={errorClosingJob}
-        clearCloseError={() => dispatch({ type: "CLEAR_ERROR" })}
-        closeDialogOpen={jobDialogOpen}
-        setCloseDialogOpen={setJobDialogOpen}
+        onJobClose={closeJob}
         withAds={true}
       />
     </Layout>

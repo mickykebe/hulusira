@@ -9,57 +9,23 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  IconButton,
-  makeStyles,
-  Link as MuiLink,
-  Tooltip
+  makeStyles
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-import CloseIcon from "@material-ui/icons/Close";
-import EditIcon from "@material-ui/icons/Edit";
-import addDays from "date-fns/addDays";
-import format from 'date-fns/format';
 import redirect from "../../../utils/redirect";
 import HSPaper from "../../../components/hs-paper";
-import CompanyLogo from "../../../components/company-logo";
-import Link from "next/link";
 import api from "../../../api";
 import EmptyList from "../../../components/empty-list";
-import JobApprovalStatus from "../../../components/job-approval-status";
-import { useReducer, useState } from "react";
-import jobCloseReducer from "../../../reducers/close-job";
-import JobCloseDialog from "../../../components/job-close-dialog";
-import HSSnackBar from "../../../components/hs-snackbar";
+import JobTableRow from "../../../components/job-table-row";
 
 const useStyles = makeStyles(theme => ({
   tableHead: {
     fontWeight: 800
-  },
-  noJobsImage: {
-    width: "20rem",
-    height: "20rem"
   }
 }));
 
 export default function DashboardJobs({ user, jobs }) {
   const classes = useStyles();
-  const [{ isClosingJob, errorClosingJob }, dispatch] = useReducer(
-    jobCloseReducer,
-    { isClosingJob: false, errorClosingJob: false }
-  );
-  const [jobPendingClose, setJobPendingClose] = useState(null);
-  const handleCloseJob = async jobId => {
-    dispatch({ type: "CLOSING_JOB" });
-    try {
-      await api.closeJob(jobId);
-      Router.replace("/dashboard/jobs");
-      dispatch({ type: "CLOSED_JOB" });
-    } catch (err) {
-      console.log(err);
-      dispatch({ type: "ERROR_CLOSING_JOB" });
-    }
-  };
-
   return (
     <DashboardLayout user={user} selectedItem="jobs">
       <Container maxWidth="lg">
@@ -70,7 +36,8 @@ export default function DashboardJobs({ user, jobs }) {
             color="primary"
             size="small"
             startIcon={<AddIcon />}
-            onClick={() => Router.push("/dashboard/jobs/new")}>
+            onClick={() => Router.push("/dashboard/jobs/new")}
+          >
             Post Job
           </Button>
         </Box>
@@ -98,83 +65,11 @@ export default function DashboardJobs({ user, jobs }) {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {jobs.map(({ job, company }) => {
-                  return (
-                    <TableRow key={job.id}>
-                      <TableCell
-                        variant="head"
-                        classes={{ head: classes.tableHead }}>
-                        <Link
-                          href="/dashboard/jobs/[slug]"
-                          as={`/dashboard/jobs/${job.slug}`}
-                          passHref>
-                          <MuiLink color="inherit" variant="subtitle1">
-                            {job.position}
-                          </MuiLink>
-                        </Link>
-                      </TableCell>
-                      <TableCell>
-                        {company ? (
-                          <Box display="flex" alignItems="center">
-                            {company.logo && (
-                              <Box pr={1}>
-                                <CompanyLogo
-                                  company={company}
-                                  abbrevFallback={false}
-                                  size="small"
-                                />
-                              </Box>
-                            )}
-                            {company.name}
-                          </Box>
-                        ) : (
-                          "None"
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        <JobApprovalStatus
-                          approvalStatus={job.approvalStatus}
-                        />
-                      </TableCell>
-                      <TableCell align="left">
-                        {job.deadline ? format(new Date(job.deadline), "MMM dd, yyyy") : "--"}
-                      </TableCell>
-                      <TableCell align="left">
-                        <Tooltip title="Edit Job">
-                          <IconButton
-                            color="secondary"
-                            onClick={() =>
-                              Router.push(`/dashboard/jobs/edit/${job.slug}`)
-                            }>
-                            <EditIcon />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Close Job">
-                          <IconButton
-                            disabled={jobPendingClose === job.id && isClosingJob}
-                            color="secondary"
-                            onClick={() => setJobPendingClose(job.id)}>
-                            <CloseIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </TableCell>
-                    </TableRow>
-                  );
+                {jobs.map(jobData => {
+                  return <JobTableRow key={jobData.job.id} jobData={jobData} />;
                 })}
               </TableBody>
             </Table>
-            <JobCloseDialog
-              open={!!jobPendingClose && !isClosingJob}
-              onClose={() => setJobPendingClose(null)}
-              onConfirmation={() => handleCloseJob(jobPendingClose)}
-            />
-            <HSSnackBar
-              open={errorClosingJob}
-              variant="error"
-              message="Problem occurred closing job."
-              autoHideDuration={3000}
-              onClose={() => dispatch({ type: "CLEAR_ERROR" })}
-            />
           </HSPaper>
         )}
       </Container>

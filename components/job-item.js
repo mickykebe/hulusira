@@ -155,7 +155,7 @@ export default function JobItem({
                   className={classes.extrasText}
                   color="textSecondary"
                   variant="body2">
-                  ⏱️ 
+                  ⏱️{" "}
                   {formatDistance(
                     job.created ? new Date(job.created) : new Date(),
                     new Date(),

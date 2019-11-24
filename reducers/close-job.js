@@ -1,13 +1,13 @@
 export default function jobCloseReducer(state, action) {
   switch (action.type) {
     case "CLOSING_JOB":
-      return { ...state, isClosingJob: true, errorClosingJob: false };
+      return { ...state, closeStatus: "closing" };
     case "CLOSED_JOB":
-      return { ...state, errorClosingJob: false };
+      return { ...state, closeStatus: "closed" };
     case "ERROR_CLOSING_JOB":
-      return { ...state, isClosingJob: false, errorClosingJob: true };
+      return { ...state, closeStatus: "errorClosing" };
     case "CLEAR_ERROR":
-      return { ...state, errorClosingJob: false };
+      return { ...state, closeStatus: null };
     default:
       throw new Error("Unidentified action type");
   }

@@ -1,13 +1,15 @@
 import { Container, Toolbar, Box, Button, makeStyles } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import { Fragment, useState } from "react";
+import { Fragment, useState, useReducer } from "react";
 import isAfter from "date-fns/isAfter";
-import endOfDay from 'date-fns/endOfDay';
+import endOfDay from "date-fns/endOfDay";
 import Banner from "./banner";
 import JobContent from "./job-content";
 import JobCloseDialog from "./job-close-dialog";
 import HSSnackBar from "./hs-snackbar";
 import HeaderAd from "./header-ad";
+import jobCloseReducer from "../reducers/close-job";
+import useCloseJob from "../hooks/use-close-job";
 
 const useStyles = makeStyles(theme => ({
   header: {
@@ -24,30 +26,31 @@ const useStyles = makeStyles(theme => ({
 
 export default function JobContentManage({
   jobData,
-  isClosingJob,
-  errorClosingJob,
-  clearCloseError,
   onJobClose,
-  closeDialogOpen,
-  setCloseDialogOpen,
   isJobOwner,
   withAds = false
 }) {
   const classes = useStyles();
   const { approvalStatus, deadline } = jobData.job;
-  const expired = deadline ? isAfter(new Date(), endOfDay(new Date(deadline))) : false;
+  const expired = deadline
+    ? isAfter(new Date(), endOfDay(new Date(deadline)))
+    : false;
+  const [
+    { closeStatus, closeDialogOpen },
+    setCloseDialogOpen,
+    clearError,
+    handleCloseJob
+  ] = useCloseJob(onJobClose);
   return (
     <Fragment>
       <Container className={classes.header}>
         {withAds && <HeaderAd />}
-        {
-          approvalStatus === "Closed" && (
-            <Banner
+        {approvalStatus === "Closed" && (
+          <Banner
             variant="error"
             message="This job has been closed by its owner."
           />
-          )
-        }
+        )}
         {approvalStatus === "Pending" && (
           <Banner message="This job is pending. It will be live once it gets admin approval." />
         )}
@@ -57,12 +60,13 @@ export default function JobContentManage({
             message="Administrator has declined to approve this post."
           />
         )}
-        {expired && !(approvalStatus === "Declined" || approvalStatus === "Closed") && (
-          <Banner
-            variant="warning"
-            message="The application deadline for this job has passed"
-          />
-        )}
+        {expired &&
+          !(approvalStatus === "Declined" || approvalStatus === "Closed") && (
+            <Banner
+              variant="warning"
+              message="The application deadline for this job has passed"
+            />
+          )}
         {isJobOwner && approvalStatus === "Active" && (
           <Toolbar className={classes.toolbar}>
             <Box flex={1} />
@@ -70,8 +74,9 @@ export default function JobContentManage({
               variant="contained"
               color="secondary"
               size="small"
-              disabled={isClosingJob}
-              onClick={() => setCloseDialogOpen(true)}>
+              disabled={closeStatus === "closing" || closeStatus === "closed"}
+              onClick={() => setCloseDialogOpen(true)}
+            >
               <CloseIcon className={classes.closeIcon} /> Close Job
             </Button>
           </Toolbar>
@@ -81,14 +86,14 @@ export default function JobContentManage({
       <JobCloseDialog
         open={closeDialogOpen}
         onClose={() => setCloseDialogOpen(false)}
-        onConfirmation={onJobClose}
+        onConfirmation={handleCloseJob}
       />
       <HSSnackBar
-        open={errorClosingJob}
+        open={closeStatus === "errorClosing"}
         variant="error"
         message="Problem occurred closing job."
         autoHideDuration={3000}
-        onClose={clearCloseError}
+        onClose={clearError}
       />
     </Fragment>
   );

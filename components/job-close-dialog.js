@@ -13,7 +13,7 @@ export default function JobCloseDialog({ open, onClose, onConfirmation }) {
       <DialogTitle>Close this job?</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          Closing a job renders it publicly inaccessible from the site.
+          There will be no more job applications to this job.
         </DialogContentText>
       </DialogContent>
       <DialogActions>
