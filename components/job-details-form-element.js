@@ -50,7 +50,8 @@ export default function JobDetailsFormElement({
         fullWidth
         onChange={handleChange}
         error={!!(touched.jobType && errors.jobType)}
-        helperText={touched.jobType && errors.jobType}>
+        helperText={touched.jobType && errors.jobType}
+      >
         {jobTypes.map(jobType => (
           <MenuItem key={jobType} value={jobType}>
             {jobType}
@@ -82,7 +83,8 @@ export default function JobDetailsFormElement({
           !!(touched.primaryTag && errors.primaryTag)
             ? errors.primaryTag
             : "Choosing a tag here boosts your job's visibility."
-        }>
+        }
+      >
         {primaryTags.map(tag => (
           <MenuItem key={tag.name} value={tag.name}>
             {tag.name}
@@ -177,7 +179,9 @@ export default function JobDetailsFormElement({
               handleChange(ev);
             }}
             error={!!(touched.applyUrl && errors.applyUrl)}
-            helperText={touched.applyUrl && errors.applyUrl}
+            helperText={
+              (touched.applyUrl && errors.applyUrl) || "Used for 'Apply' button"
+            }
           />
         </Box>
         <Box textAlign="center" px={2} my="auto" flexBasis={["100%", "0"]}>
@@ -189,7 +193,6 @@ export default function JobDetailsFormElement({
             label="Apply Email (optional)"
             variant="outlined"
             margin="normal"
-            helperText="Your email address"
             fullWidth
             type="email"
             value={values.applyEmail}
@@ -198,7 +201,10 @@ export default function JobDetailsFormElement({
               handleChange(ev);
             }}
             error={!!(touched.applyEmail && errors.applyEmail)}
-            helperText={touched.applyEmail && errors.applyEmail}
+            helperText={
+              (touched.applyEmail && errors.applyEmail) ||
+              "Used for 'apply' button"
+            }
           />
         </Box>
       </Box>
