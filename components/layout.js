@@ -47,12 +47,22 @@ const useStyles = makeStyles(theme => (***REMOVED***
   ***REMOVED***,
   toolbar: theme.mixins.toolbar,
   contentContainer: ***REMOVED***
-    height: 'calc(100vh - 64px)',
-    [theme.breakpoints.down('xs')]: ***REMOVED***
-      height: 'calc(100vh - 56px)',
+    height: "calc(100vh - 64px)",
+    [theme.breakpoints.down("xs")]: ***REMOVED***
+      height: "calc(100vh - 56px)"
     ***REMOVED***
   ***REMOVED***
 ***REMOVED***));
+
+function getDisplayName(user) ***REMOVED***
+  if (user.firstName) ***REMOVED***
+    return `$***REMOVED***user.firstName***REMOVED*** $***REMOVED***user.lastName ? user.lastName : ""***REMOVED***`;
+  ***REMOVED***
+  if (user.telegramUserName) ***REMOVED***
+    return `@$***REMOVED***user.telegramUserName***REMOVED***`;
+  ***REMOVED***
+  return "";
+***REMOVED***
 
 export default function Layout(***REMOVED***
   user = null,
@@ -76,12 +86,14 @@ export default function Layout(***REMOVED***
       keepMounted
       transformOrigin=***REMOVED******REMOVED*** vertical: "top", horizontal: "right" ***REMOVED******REMOVED***
       open=***REMOVED***isMenuOpen***REMOVED***
-      onClose=***REMOVED***handleMenuClose***REMOVED***>
+      onClose=***REMOVED***handleMenuClose***REMOVED***
+    >
       <MenuItem
         classes=***REMOVED******REMOVED*** root: classes.menuItem ***REMOVED******REMOVED***
         onClick=***REMOVED***() => ***REMOVED***
           Router.push("/dashboard/jobs");
-        ***REMOVED******REMOVED***>
+        ***REMOVED******REMOVED***
+      >
         <DashboardIcon className=***REMOVED***classes.menuIcon***REMOVED*** />
         <span>Dashboard</span>
       </MenuItem>
@@ -91,7 +103,8 @@ export default function Layout(***REMOVED***
           await api.logout();
           handleMenuClose();
           Router.push("/");
-        ***REMOVED******REMOVED***>
+        ***REMOVED******REMOVED***
+      >
         <ExitToAppIcon className=***REMOVED***classes.menuIcon***REMOVED*** />
         <span>Sign out</span>
       </MenuItem>
@@ -118,8 +131,9 @@ export default function Layout(***REMOVED***
               className=***REMOVED***classes.accountButton***REMOVED***
               startIcon=***REMOVED***<AccountCircleIcon />***REMOVED***
               endIcon=***REMOVED***<ArrowDropDownIcon />***REMOVED***
-              onClick=***REMOVED***handleProfileMenuOpen***REMOVED***>
-              ***REMOVED***`$***REMOVED***user.firstName***REMOVED*** $***REMOVED***user.lastName***REMOVED***`***REMOVED***
+              onClick=***REMOVED***handleProfileMenuOpen***REMOVED***
+            >
+              ***REMOVED***getDisplayName(user)***REMOVED***
             </Button>
           )***REMOVED***
           ***REMOVED***toolbarChildren***REMOVED***
