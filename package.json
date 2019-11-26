@@ -49,6 +49,7 @@
     "react-dom": "^16.8.6",
     "react-dropzone": "^10.1.7",
     "react-simplemde-editor": "^4.1.0",
+    "react-telegram-login": "^1.0.4",
     "slug": "^1.1.0",
     "uuid": "^3.3.3",
     "yup": "^0.27.0"

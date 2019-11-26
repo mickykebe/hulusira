@@ -7539,6 +7539,13 @@ react-simplemde-editor@^4.1.0:
     "@types/codemirror" "^0.0.76"
     easymde "^2.7.1-202.0"
 
+react-telegram-login@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/react-telegram-login/-/react-telegram-login-1.0.4.tgz#3c4f55126f4f7dc67df92a1e42c92cc204f4f1a7"
+  integrity sha512-pmOUPP04igJVT83pf89NStXltckIXXO8S3j5XzTgJBO4GFWIszXMVj8Hppvo7pfqpCNvHVR+JzFG21Kj+ksdxQ==
+  dependencies:
+    react "^16.8.6"
+
 react-transition-group@^4.0.0:
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-4.2.1.tgz#61fc9e36568bff9a1fe4e60fae323c8a6dbc0680"

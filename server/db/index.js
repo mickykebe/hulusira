@@ -71,9 +71,11 @@ class Db {
     }
 
     const job = await this.knex.transaction(async trx => {
-      const tags = (await Promise.all(
-        jobData.tags.map(tagName => this.findOrCreateTag(tagName, { trx }))
-      )).map(tag => ({ ...tag, isPrimary: false }));
+      const tags = (
+        await Promise.all(
+          jobData.tags.map(tagName => this.findOrCreateTag(tagName, { trx }))
+        )
+      ).map(tag => ({ ...tag, isPrimary: false }));
 
       let rows = await trx("job")
         .insert({
@@ -144,9 +146,11 @@ class Db {
         })
         .del();
 
-      const tags = (await Promise.all(
-        jobData.tags.map(tagName => this.findOrCreateTag(tagName, { trx }))
-      )).map(tag => ({ ...tag, isPrimary: false }));
+      const tags = (
+        await Promise.all(
+          jobData.tags.map(tagName => this.findOrCreateTag(tagName, { trx }))
+        )
+      ).map(tag => ({ ...tag, isPrimary: false }));
 
       let rows = await trx("job")
         .where("id", jobId)
@@ -234,7 +238,9 @@ class Db {
   }
 
   async findOrCreateTag(name, { trx = null } = {}) {
-    const res = await (trx || this.knex).raw(
+    const res = await (
+      trx || this.knex
+    ).raw(
       "with new_row as (insert into tag(name) select :name where not exists (select * from tag where name = :name) returning *) select * from new_row union select * from tag where name = :name",
       { name: name.toUpperCase().trim() }
     );
@@ -444,6 +450,31 @@ class Db {
       .returning("*");
     if (rows.length !== 1) {
       throw new Error("Problem occurred creating user");
+    }
+    return User.fromDb(rows[0]);
+  }
+
+  async findOrCreateTelegramUser(userData) {
+    const row = await this.knex("users")
+      .first()
+      .where({
+        telegram_id: userData.id
+      });
+    if (!!row) {
+      return User.fromDb(row);
+    }
+    const rows = await this.knex("users")
+      .insert({
+        first_name: userData.first_name,
+        last_name: userData.last_name,
+        telegram_id: userData.id,
+        telegram_user_name: userData.username,
+        confirmed: true,
+        role: userData.role
+      })
+      .returning("*");
+    if (rows.length !== 1) {
+      throw new Error("Problem occurred creating telegram user");
     }
     return User.fromDb(rows[0]);
   }

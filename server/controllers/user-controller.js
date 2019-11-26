@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs");
 const { v4 } = require("uuid");
+const crypto = require("crypto");
 const db = require("../db");
 const { sendEmail } = require("../utils/send-email");
 
@@ -21,6 +22,34 @@ exports.login = async (req, res) => {
       res.status(200).send(user.publicData());
       return;
     }
+  }
+  res.sendStatus(401);
+};
+
+exports.telegramLogin = async (req, res) => {
+  const { hash, ...userData } = req.body;
+  const dataCheckStr = Object.keys(userData)
+    .sort()
+    .map(key => `${key}=${userData[key]}`)
+    .join("\n");
+  console.log({ dataCheckStr });
+  const secretKey = crypto
+    .createHash("sha256")
+    .update(process.env.TELEGRAM_BOT_TOKEN)
+    .digest();
+  const computedHash = crypto
+    .createHmac("sha256", secretKey)
+    .update(dataCheckStr)
+    .digest("hex");
+
+  if (hash === computedHash && new Date() / 1000 - userData.auth_date < 86400) {
+    const user = await db.findOrCreateTelegramUser({
+      role: "user",
+      ...userData
+    });
+    req.session.userId = user.id;
+    res.status(200).send(user.publicData());
+    return;
   }
   res.sendStatus(401);
 };

@@ -104,6 +104,11 @@ class Api {
     return user;
   }
 
+  async telegramLogin(data) {
+    const { data: user } = await this.request().post(`/telegram-login`, data);
+    return user;
+  }
+
   register(data) {
     return this.request().post("/register", data);
   }
