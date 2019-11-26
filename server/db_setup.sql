@@ -4,10 +4,14 @@ CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   first_name TEXT NOT NULL,
   last_name TEXT NOT NULL,
-  email TEXT NOT NULL UNIQUE,
-  password TEXT NOT NULL,
+  email TEXT UNIQUE,
+  telegram_id INTEGER UNIQUE,
+  telegram_user_name TEXT UNIQUE,
+  password TEXT,
   confirmed BOOLEAN NOT NULL DEFAULT FALSE,
-  role TEXT NOT NULL CONSTRAINT role_values CHECK (role IN ('user', 'admin'))
+  role TEXT NOT NULL CONSTRAINT role_values CHECK (role IN ('user', 'admin')),
+  CONSTRAINT require_user CHECK (email IS NOT NULL OR telegram_id IS NOT NULL),
+  CONSTRAINT require_password CHECK ((email IS NOT NULL AND password IS NOT NULL) OR (email IS NULL))
 );
 
 CREATE TABLE company (

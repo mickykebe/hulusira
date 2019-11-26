@@ -104,6 +104,11 @@ class Api ***REMOVED***
     return user;
   ***REMOVED***
 
+  async telegramLogin(data) ***REMOVED***
+    const ***REMOVED*** data: user ***REMOVED*** = await this.request().post(`/telegram-login`, data);
+    return user;
+  ***REMOVED***
+
   register(data) ***REMOVED***
     return this.request().post("/register", data);
   ***REMOVED***

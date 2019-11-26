@@ -1,10 +1,18 @@
 import ***REMOVED*** useState ***REMOVED*** from "react";
 import Link from "next/link";
 import Router from "next/router";
+import Head from "next/head";
 import ***REMOVED*** Formik ***REMOVED*** from "formik";
 import * as Yup from "yup";
 import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
-import ***REMOVED*** Box, TextField, Fab, Link as MuiLink ***REMOVED*** from "@material-ui/core";
+import ***REMOVED***
+  Box,
+  TextField,
+  Fab,
+  Link as MuiLink,
+  Typography
+***REMOVED*** from "@material-ui/core";
+import TelegramLoginButton from "react-telegram-login";
 import api from "../api";
 import HSSnackbar from "../components/hs-snackbar";
 import redirect from "../utils/redirect";
@@ -12,6 +20,12 @@ import AuthLayout from "../components/auth-layout";
 import PageProgress from "../components/page-progress";
 
 const useStyles = makeStyles(theme => (***REMOVED***
+  telegramBtnContainer: ***REMOVED***
+    display: "flex",
+    justifyContent: "center",
+    paddingBottom: theme.spacing(2),
+    paddingTop: theme.spacing(2)
+  ***REMOVED***,
   signinButton: ***REMOVED***
     width: "100% !important",
     marginTop: theme.spacing(1)
@@ -43,15 +57,34 @@ function Login() ***REMOVED***
     ***REMOVED***
     actions.setSubmitting(false);
   ***REMOVED***;
+  const handleTelegramLogin = async function(user) ***REMOVED***
+    console.log(user);
+    try ***REMOVED***
+      await api.telegramLogin(user);
+      Router.push("/dashboard/jobs");
+    ***REMOVED*** catch (err) ***REMOVED***
+      console.error(err);
+      setErrorLogin(true);
+    ***REMOVED***
+  ***REMOVED***;
   return (
     <AuthLayout>
+      <TelegramLoginButton
+        className=***REMOVED***classes.telegramBtnContainer***REMOVED***
+        dataOnauth=***REMOVED***handleTelegramLogin***REMOVED***
+        botName="HuluSiraBot"
+      />
+      <Typography variant="subtitle1" align="center">
+        OR
+      </Typography>
       <Formik
         validationSchema=***REMOVED***validationSchema***REMOVED***
         initialValues=***REMOVED******REMOVED***
           email: "",
           password: ""
         ***REMOVED******REMOVED***
-        onSubmit=***REMOVED***handleSubmit***REMOVED***>
+        onSubmit=***REMOVED***handleSubmit***REMOVED***
+      >
         ***REMOVED***(***REMOVED***
           values,
           isSubmitting,
@@ -90,7 +123,8 @@ function Login() ***REMOVED***
                 type="submit"
                 variant="extended"
                 color="primary"
-                disabled=***REMOVED***isSubmitting || loginSuccess***REMOVED***>
+                disabled=***REMOVED***isSubmitting || loginSuccess***REMOVED***
+              >
                 Sign In
               </Fab>
               <Box textAlign="right" pt=***REMOVED***2***REMOVED*** fontSize="1rem">

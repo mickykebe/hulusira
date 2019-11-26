@@ -71,9 +71,11 @@ class Db ***REMOVED***
     ***REMOVED***
 
     const job = await this.knex.transaction(async trx => ***REMOVED***
-      const tags = (await Promise.all(
-        jobData.tags.map(tagName => this.findOrCreateTag(tagName, ***REMOVED*** trx ***REMOVED***))
-      )).map(tag => (***REMOVED*** ...tag, isPrimary: false ***REMOVED***));
+      const tags = (
+        await Promise.all(
+          jobData.tags.map(tagName => this.findOrCreateTag(tagName, ***REMOVED*** trx ***REMOVED***))
+        )
+      ).map(tag => (***REMOVED*** ...tag, isPrimary: false ***REMOVED***));
 
       let rows = await trx("job")
         .insert(***REMOVED***
@@ -144,9 +146,11 @@ class Db ***REMOVED***
         ***REMOVED***)
         .del();
 
-      const tags = (await Promise.all(
-        jobData.tags.map(tagName => this.findOrCreateTag(tagName, ***REMOVED*** trx ***REMOVED***))
-      )).map(tag => (***REMOVED*** ...tag, isPrimary: false ***REMOVED***));
+      const tags = (
+        await Promise.all(
+          jobData.tags.map(tagName => this.findOrCreateTag(tagName, ***REMOVED*** trx ***REMOVED***))
+        )
+      ).map(tag => (***REMOVED*** ...tag, isPrimary: false ***REMOVED***));
 
       let rows = await trx("job")
         .where("id", jobId)
@@ -234,7 +238,9 @@ class Db ***REMOVED***
   ***REMOVED***
 
   async findOrCreateTag(name, ***REMOVED*** trx = null ***REMOVED*** = ***REMOVED******REMOVED***) ***REMOVED***
-    const res = await (trx || this.knex).raw(
+    const res = await (
+      trx || this.knex
+    ).raw(
       "with new_row as (insert into tag(name) select :name where not exists (select * from tag where name = :name) returning *) select * from new_row union select * from tag where name = :name",
       ***REMOVED*** name: name.toUpperCase().trim() ***REMOVED***
     );
@@ -444,6 +450,31 @@ class Db ***REMOVED***
       .returning("*");
     if (rows.length !== 1) ***REMOVED***
       throw new Error("Problem occurred creating user");
+    ***REMOVED***
+    return User.fromDb(rows[0]);
+  ***REMOVED***
+
+  async findOrCreateTelegramUser(userData) ***REMOVED***
+    const row = await this.knex("users")
+      .first()
+      .where(***REMOVED***
+        telegram_id: userData.id
+      ***REMOVED***);
+    if (!!row) ***REMOVED***
+      return User.fromDb(row);
+    ***REMOVED***
+    const rows = await this.knex("users")
+      .insert(***REMOVED***
+        first_name: userData.first_name,
+        last_name: userData.last_name,
+        telegram_id: userData.id,
+        telegram_user_name: userData.username,
+        confirmed: true,
+        role: userData.role
+      ***REMOVED***)
+      .returning("*");
+    if (rows.length !== 1) ***REMOVED***
+      throw new Error("Problem occurred creating telegram user");
     ***REMOVED***
     return User.fromDb(rows[0]);
   ***REMOVED***

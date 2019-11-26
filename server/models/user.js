@@ -1,5 +1,15 @@
 class User ***REMOVED***
-  constructor(id, firstName, lastName, email, password, confirmed, role) ***REMOVED***
+  constructor(
+    id,
+    firstName,
+    lastName,
+    email,
+    password,
+    confirmed,
+    role,
+    telegramId,
+    telegramUserName
+  ) ***REMOVED***
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
@@ -7,6 +17,7 @@ class User ***REMOVED***
     this.password = password;
     this.confirmed = confirmed;
     this.role = role;
+    this.telegramUserName = telegramUserName;
   ***REMOVED***
 
   static fromDb(dbUser) ***REMOVED***
@@ -17,7 +28,9 @@ class User ***REMOVED***
       dbUser.email,
       dbUser.password,
       dbUser.confirmed,
-      dbUser.role
+      dbUser.role,
+      dbUser.telegram_id,
+      dbUser.telegram_user_name
     );
     return user;
   ***REMOVED***

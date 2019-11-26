@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs");
 const ***REMOVED*** v4 ***REMOVED*** = require("uuid");
+const crypto = require("crypto");
 const db = require("../db");
 const ***REMOVED*** sendEmail ***REMOVED*** = require("../utils/send-email");
 
@@ -21,6 +22,34 @@ exports.login = async (req, res) => ***REMOVED***
       res.status(200).send(user.publicData());
       return;
     ***REMOVED***
+  ***REMOVED***
+  res.sendStatus(401);
+***REMOVED***;
+
+exports.telegramLogin = async (req, res) => ***REMOVED***
+  const ***REMOVED*** hash, ...userData ***REMOVED*** = req.body;
+  const dataCheckStr = Object.keys(userData)
+    .sort()
+    .map(key => `$***REMOVED***key***REMOVED***=$***REMOVED***userData[key]***REMOVED***`)
+    .join("\n");
+  console.log(***REMOVED*** dataCheckStr ***REMOVED***);
+  const secretKey = crypto
+    .createHash("sha256")
+    .update(process.env.TELEGRAM_BOT_TOKEN)
+    .digest();
+  const computedHash = crypto
+    .createHmac("sha256", secretKey)
+    .update(dataCheckStr)
+    .digest("hex");
+
+  if (hash === computedHash && new Date() / 1000 - userData.auth_date < 86400) ***REMOVED***
+    const user = await db.findOrCreateTelegramUser(***REMOVED***
+      role: "user",
+      ...userData
+    ***REMOVED***);
+    req.session.userId = user.id;
+    res.status(200).send(user.publicData());
+    return;
   ***REMOVED***
   res.sendStatus(401);
 ***REMOVED***;
