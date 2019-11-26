@@ -47,12 +47,22 @@ const useStyles = makeStyles(theme => ({
   },
   toolbar: theme.mixins.toolbar,
   contentContainer: {
-    height: 'calc(100vh - 64px)',
-    [theme.breakpoints.down('xs')]: {
-      height: 'calc(100vh - 56px)',
+    height: "calc(100vh - 64px)",
+    [theme.breakpoints.down("xs")]: {
+      height: "calc(100vh - 56px)"
     }
   }
 }));
+
+function getDisplayName(user) {
+  if (user.firstName) {
+    return `${user.firstName} ${user.lastName ? user.lastName : ""}`;
+  }
+  if (user.telegramUserName) {
+    return `@${user.telegramUserName}`;
+  }
+  return "";
+}
 
 export default function Layout({
   user = null,
@@ -76,12 +86,14 @@ export default function Layout({
       keepMounted
       transformOrigin={{ vertical: "top", horizontal: "right" }}
       open={isMenuOpen}
-      onClose={handleMenuClose}>
+      onClose={handleMenuClose}
+    >
       <MenuItem
         classes={{ root: classes.menuItem }}
         onClick={() => {
           Router.push("/dashboard/jobs");
-        }}>
+        }}
+      >
         <DashboardIcon className={classes.menuIcon} />
         <span>Dashboard</span>
       </MenuItem>
@@ -91,7 +103,8 @@ export default function Layout({
           await api.logout();
           handleMenuClose();
           Router.push("/");
-        }}>
+        }}
+      >
         <ExitToAppIcon className={classes.menuIcon} />
         <span>Sign out</span>
       </MenuItem>
@@ -118,8 +131,9 @@ export default function Layout({
               className={classes.accountButton}
               startIcon={<AccountCircleIcon />}
               endIcon={<ArrowDropDownIcon />}
-              onClick={handleProfileMenuOpen}>
-              {`${user.firstName} ${user.lastName}`}
+              onClick={handleProfileMenuOpen}
+            >
+              {getDisplayName(user)}
             </Button>
           )}
           {toolbarChildren}
