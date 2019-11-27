@@ -58,7 +58,6 @@ function Login() ***REMOVED***
     actions.setSubmitting(false);
   ***REMOVED***;
   const handleTelegramLogin = async function(user) ***REMOVED***
-    console.log(user);
     try ***REMOVED***
       await api.telegramLogin(user);
       Router.push("/dashboard/jobs");
@@ -72,7 +71,7 @@ function Login() ***REMOVED***
       <TelegramLoginButton
         className=***REMOVED***classes.telegramBtnContainer***REMOVED***
         dataOnauth=***REMOVED***handleTelegramLogin***REMOVED***
-        botName="HuluSiraBot"
+        botName=***REMOVED***process.env.TELEGRAM_BOT_NAME***REMOVED***
       />
       <Typography variant="subtitle1" align="center">
         OR
