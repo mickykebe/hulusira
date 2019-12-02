@@ -48,6 +48,7 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-dropzone": "^10.1.7",
+    "react-query": "^0.3.19",
     "react-simplemde-editor": "^4.1.0",
     "react-telegram-login": "^1.0.4",
     "slug": "^1.1.0",

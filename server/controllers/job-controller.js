@@ -150,7 +150,7 @@ exports.getJobs = async (req, res) => {
   let data;
   const {
     cursor: encodedCursor,
-    count: countStr = "30",
+    count: countStr = "50",
     tags = ""
   } = req.query;
   const fromJobId =
@@ -261,7 +261,7 @@ exports.openPage = async (req, res) => {
   const { slug } = req.params;
   await db.incrementJobView({ slug });
   res.sendStatus(200);
-}
+};
 
 exports.closeJob = async (req, res) => {
   const { id } = req.params;

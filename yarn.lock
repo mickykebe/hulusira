@@ -1268,6 +1268,13 @@
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.1.tgz#f1a11e7babb0c3cad68100be381d1e064c68f1f6"
   integrity sha512-CFzn9idOEpHrgdw8JsoTkaDDyRWk1jrzIV8djzcgpq0y9tG4B4lFT+Nxh52DVpDXV+n4+NPNv7M1Dj5uMp6XFg==
 
+"@types/react-query@^0.3.0":
+  version "0.3.4"
+  resolved "https://registry.yarnpkg.com/@types/react-query/-/react-query-0.3.4.tgz#6a225b8f90e162deedaa434011c99d730d069046"
+  integrity sha512-lYBiEkfp+q/gSZ8XMm4YsnGvhMqBZSIUJxIQK9vMmAOCpjw7HbRDeMPC6WV0FuIhbXhTlamD3EepMOzujeChfg==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-transition-group@^4.2.0":
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/@types/react-transition-group/-/react-transition-group-4.2.3.tgz#4924133f7268694058e415bf7aea2d4c21131470"
@@ -7530,6 +7537,13 @@ react-is@^16.8.6:
   version "16.11.0"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.11.0.tgz#b85dfecd48ad1ce469ff558a882ca8e8313928fa"
   integrity sha512-gbBVYR2p8mnriqAwWx9LbuUrShnAuSCNnuPGyc7GJrMVQtPDAh8iLpv7FRuMPFb56KkaVZIYSz1PrjI9q0QPCw==
+
+react-query@^0.3.19:
+  version "0.3.19"
+  resolved "https://registry.yarnpkg.com/react-query/-/react-query-0.3.19.tgz#3effb5012c8c401aecb4b4a8a1c616850280ac20"
+  integrity sha512-wLjVW5/2kP3owIQ+5TOAN45iQzAh9D5XpfTF399dGvhY4TE8euNXusoJJSJBebAf2Aow3lCr3irk4kqwRZ1JwQ==
+  dependencies:
+    "@types/react-query" "^0.3.0"
 
 react-simplemde-editor@^4.1.0:
   version "4.1.0"
