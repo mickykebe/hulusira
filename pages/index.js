@@ -57,17 +57,25 @@ const pageDescription =
 function Index(***REMOVED*** user, jobPage: initialJobPage, activeTagNames, primaryTags ***REMOVED***) ***REMOVED***
   const tags = activeTagNames.join(",");
 
-  const ***REMOVED*** data: pages, isFetchingMore, fetchMore, canFetchMore ***REMOVED*** = useQuery(
+  //console.log(***REMOVED*** initialJobPage ***REMOVED***);
+  const ***REMOVED***
+    data: pages,
+    isFetchingMore,
+    isLoading,
+    fetchMore,
+    canFetchMore
+  ***REMOVED*** = useQuery(
     `tags-$***REMOVED***tags***REMOVED***`,
     (***REMOVED*** cursor ***REMOVED*** = ***REMOVED******REMOVED***) => api.getJobs(***REMOVED*** cursor: cursor || "", tags ***REMOVED***),
     ***REMOVED***
       paginated: true,
       getCanFetchMore: lastPage => ***REMOVED***
         return lastPage.nextCursor;
-      ***REMOVED***,
-      initialData: [initialJobPage]
+      ***REMOVED***
+      //initialData: [initialJobPage]
     ***REMOVED***
   );
+  //console.log(***REMOVED*** pages, count: pages[0].jobs.length ***REMOVED***);
 
   const loadMore = async () => ***REMOVED***
     try ***REMOVED***
@@ -172,7 +180,7 @@ function Index(***REMOVED*** user, jobPage: initialJobPage, activeTagNames, prim
             />
           )***REMOVED***
           ***REMOVED***pages &&
-            pages.map(page => ***REMOVED***
+            pages.map((page, i) => ***REMOVED***
               return page.jobs.map((***REMOVED*** job, company ***REMOVED***, index) => ***REMOVED***
                 return (
                   <Fragment key=***REMOVED***job.id***REMOVED***>
@@ -201,12 +209,13 @@ function Index(***REMOVED*** user, jobPage: initialJobPage, activeTagNames, prim
             </Typography>
           )***REMOVED***
         </Fragment>
-        ***REMOVED***isFetchingMore && (
-          <CircularProgress
-            classes=***REMOVED******REMOVED*** root: classes.jobsLoadingSpinner ***REMOVED******REMOVED***
-            color="primary"
-          />
-        )***REMOVED***
+        ***REMOVED***isFetchingMore ||
+          (isLoading && (
+            <CircularProgress
+              classes=***REMOVED******REMOVED*** root: classes.jobsLoadingSpinner ***REMOVED******REMOVED***
+              color="primary"
+            />
+          ))***REMOVED***
       </Container>
     </Layout>
   );
@@ -222,6 +231,7 @@ Index.getInitialProps = async ctx => ***REMOVED***
     api.getJobs(***REMOVED*** ctx, tags: activeTagNames.join(",") ***REMOVED***),
     api.getPrimaryTags(ctx)
   ]);
+  console.log(***REMOVED*** jobPage, jobCount: jobPage.jobs.length ***REMOVED***);
 
   return ***REMOVED*** jobPage, activeTagNames, primaryTags ***REMOVED***;
 ***REMOVED***;
