@@ -1,21 +1,27 @@
 import React, { Fragment } from "react";
-import Document, { Head, Main, NextScript } from "next/document";
+import Document, { Html, Head, Main, NextScript } from "next/document";
 import { ServerStyleSheets } from "@material-ui/styles";
 import theme from "../components/theme";
-import { GA_TRACKING_ID } from '../lib/gtag';
+import { GA_TRACKING_ID } from "../lib/gtag";
 
 class MyDocument extends Document {
   render() {
     return (
-      <html lang="en">
+      <Html lang="en">
         <Head>
-          <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}></script>
-          <script dangerouslySetInnerHTML={{ __html: `window.dataLayer = window.dataLayer || [];
+          <script
+            async
+            src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
+          ></script>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
 
-            gtag('config', '${GA_TRACKING_ID}');`}}>
-          </script>
+            gtag('config', '${GA_TRACKING_ID}');`
+            }}
+          ></script>
           <meta charSet="utf-8" />
           <meta
             name="viewport"
@@ -38,19 +44,21 @@ class MyDocument extends Document {
           <meta name="twitter:creator" content="@HuluSira" />
           <script
             crossOrigin="anonymous"
-            src="https://polyfill.io/v3/polyfill.min.js?features=IntersectionObserver"></script>
+            src="https://polyfill.io/v3/polyfill.min.js?features=IntersectionObserver"
+          ></script>
           {process.env.NODE_ENV === "production" && (
             <script
               data-ad-client="ca-pub-1430919979045648"
               async
-              src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+              src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+            ></script>
           )}
         </Head>
         <body>
           <Main />
           <NextScript />
         </body>
-      </html>
+      </Html>
     );
   }
 }

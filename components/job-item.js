@@ -3,7 +3,7 @@ import Link from "next/link";
 import Router from "next/router";
 import isAfter from "date-fns/isAfter";
 import formatDistance from "date-fns/formatDistance";
-import endOfDay from 'date-fns/endOfDay';
+import endOfDay from "date-fns/endOfDay";
 import clsx from "clsx";
 import { Box, Typography, Chip, Link as MuiLink } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
@@ -53,33 +53,43 @@ const useStyles = makeStyles(theme => ({
     display: "inline-flex",
     alignItems: "center",
     marginRight: theme.spacing(1),
-    paddingBottom: theme.spacing(.5),
+    paddingBottom: theme.spacing(0.5)
   },
   expiredTag: {
     padding: `0 ${theme.spacing(0.5)}px`,
-    border: '1px solid rgb(229, 57, 53)',
-    color: 'rgb(229, 57, 53)',
+    border: "1px solid rgb(229, 57, 53)",
+    color: "rgb(229, 57, 53)"
   },
   closedTag: {
     padding: `0 ${theme.spacing(0.5)}px`,
-    backgroundColor: 'rgb(229, 57, 53)',
-    color: 'white',
-  },
+    backgroundColor: "rgb(229, 57, 53)",
+    color: "white"
+  }
 }));
 
 function ExpirationTag({ deadline }) {
   const expired = isAfter(new Date(), endOfDay(deadline));
   const classes = useStyles();
-  return expired ? (<Typography className={clsx(classes.extrasText, classes.expiredTag)} variant="caption">
-    Expired
-  </Typography>) : null;
+  return expired ? (
+    <Typography
+      className={clsx(classes.extrasText, classes.expiredTag)}
+      variant="caption"
+    >
+      Expired
+    </Typography>
+  ) : null;
 }
 
 function ClosedTag() {
   const classes = useStyles();
-  return (<Typography className={clsx(classes.extrasText, classes.closedTag)} variant="caption">
-    Closed
-  </Typography>);
+  return (
+    <Typography
+      className={clsx(classes.extrasText, classes.closedTag)}
+      variant="caption"
+    >
+      Closed
+    </Typography>
+  );
 }
 
 export default function JobItem({
@@ -109,13 +119,13 @@ export default function JobItem({
           {preview ? (
             <Typography variant="h6">{job.position || "Position"}</Typography>
           ) : (
-            
-              <Link href="/jobs/[slug]" as={`/jobs/${job.slug}`} passHref>
+            <Link href="/jobs/[slug]" as={`/jobs/${job.slug}`} passHref>
               <MuiLink
                 classes={{ root: classes.position }}
                 variant="h6"
-                color="inherit">
-                  {job.position}
+                color="inherit"
+              >
+                {job.position}
               </MuiLink>
             </Link>
           )}
@@ -132,7 +142,8 @@ export default function JobItem({
                 <Link
                   href="/companies/[id]"
                   as={`/companies/${company.id}`}
-                  passHref>
+                  passHref
+                >
                   <MuiLink variant="subtitle2" color="inherit" gutterBottom>
                     {company.name}
                   </MuiLink>
@@ -141,12 +152,19 @@ export default function JobItem({
             </React.Fragment>
           )}
           {(!preview || !!job.jobType) && (
-            <Box display="flex" alignItems="center" pt="1rem" pb="0.5rem" flexWrap="wrap">
+            <Box
+              display="flex"
+              alignItems="center"
+              pt="1rem"
+              pb="0.5rem"
+              flexWrap="wrap"
+            >
               {!!job.jobType && (
                 <Typography
                   className={classes.extrasText}
                   color="textSecondary"
-                  variant="body2">
+                  variant="body2"
+                >
                   📌 {job.jobType}
                 </Typography>
               )}
@@ -154,7 +172,8 @@ export default function JobItem({
                 <Typography
                   className={classes.extrasText}
                   color="textSecondary"
-                  variant="body2">
+                  variant="body2"
+                >
                   ⏱️{" "}
                   {formatDistance(
                     job.created ? new Date(job.created) : new Date(),
@@ -163,24 +182,20 @@ export default function JobItem({
                   )}
                 </Typography>
               )}
-              {
-                !preview && (<Typography
-                className={classes.extrasText}
-                color="textSecondary"
-                variant="body2">
-                👀 {job.views ? job.views : 0} {`View${job.views === 1 ? '' : 's'}`}
-              </Typography>)
-              }
-              {
-                !preview && job.approvalStatus !== "Closed" && job.deadline && (
-                  <ExpirationTag deadline={new Date(job.deadline)} />
-                )
-              }
-              {
-                !preview && job.approvalStatus === "Closed" && (
-                  <ClosedTag />
-                )
-              }
+              {!preview && (
+                <Typography
+                  className={classes.extrasText}
+                  color="textSecondary"
+                  variant="body2"
+                >
+                  👀 {job.views ? job.views : 0}{" "}
+                  {`View${job.views === 1 ? "" : "s"}`}
+                </Typography>
+              )}
+              {!preview && job.approvalStatus !== "Closed" && job.deadline && (
+                <ExpirationTag deadline={new Date(job.deadline)} />
+              )}
+              {!preview && job.approvalStatus === "Closed" && <ClosedTag />}
             </Box>
           )}
         </Box>

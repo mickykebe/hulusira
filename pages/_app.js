@@ -1,25 +1,24 @@
 import React from "react";
-import NProgress from 'nprogress';
+import NProgress from "nprogress";
 import App, { Container } from "next/app";
 import Head from "next/head";
-import Router from 'next/router';
+import Router from "next/router";
 import { ThemeProvider } from "@material-ui/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import api from "../api";
 import theme from "../components/theme";
 import GlobalCss from "../components/global-css";
-import * as gtag from '../lib/gtag';
+import * as gtag from "../lib/gtag";
 import "easymde/dist/easymde.min.css";
 
 NProgress.configure({ showSpinner: false });
 
-Router.events.on('routeChangeStart', () => 
-  NProgress.start())
-Router.events.on('routeChangeComplete', url => {
+Router.events.on("routeChangeStart", () => NProgress.start());
+Router.events.on("routeChangeComplete", url => {
   NProgress.done();
   gtag.pageview(url);
 });
-Router.events.on('routeChangeError', () => NProgress.done())
+Router.events.on("routeChangeError", () => NProgress.done());
 
 class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {
@@ -41,7 +40,7 @@ class MyApp extends App {
     // Remove the server-side injected CSS.
     const jssStyles = document.querySelector("#jss-server-side");
     if (jssStyles) {
-      jssStyles.parentNode.removeChild(jssStyles);
+      jssStyles.parentElement.removeChild(jssStyles);
     }
   }
 
