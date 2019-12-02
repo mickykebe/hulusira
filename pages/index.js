@@ -1,33 +1,31 @@
 import Link from "next/link";
-import Router, ***REMOVED*** useRouter ***REMOVED*** from "next/router";
+import Router from "next/router";
 import Head from "next/head";
 import ***REMOVED***
   makeStyles,
   Button,
-  Box,
   Container,
   CircularProgress,
   Typography,
-  Fab,
   TextField,
   MenuItem
 ***REMOVED*** from "@material-ui/core";
-import RefreshIcon from "@material-ui/icons/Refresh";
 import api from "../api";
 import Layout from "../components/layout";
 import JobItem from "../components/job-item";
 import useIsInview from "../hooks/use-is-inview";
 import TagFilter from "../components/tag-filter";
-import ***REMOVED*** useEffect, useRef, Fragment ***REMOVED*** from "react";
+import ***REMOVED*** useEffect, Fragment ***REMOVED*** from "react";
 import HeaderAd from "../components/header-ad";
 import FeedAd from "../components/feed-ad";
+import ***REMOVED*** useQuery ***REMOVED*** from "react-query";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   root: ***REMOVED***
     paddingTop: theme.spacing(2)
   ***REMOVED***,
   headerAd: ***REMOVED***
-    marginBottom: theme.spacing(1),
+    marginBottom: theme.spacing(1)
   ***REMOVED***,
   jobItem: ***REMOVED***
     marginBottom: theme.spacing(2),
@@ -56,94 +54,55 @@ const pageUrl = `$***REMOVED***process.env.ROOT_URL***REMOVED***/`;
 const pageDescription =
   "HuluSira is a job board for jobs based in Ethiopia. We aim to make the job posting and dissemination process as simple as possible. Get workers hired.";
 
-const jobsReducer = (state, action) => ***REMOVED***
-  switch (action.type) ***REMOVED***
-    case "FETCH_INIT":
-      return ***REMOVED*** ...state, isLoading: true, isError: false ***REMOVED***;
-    case "FETCH_SUCCESS":
-      return ***REMOVED***
-        ...state,
-        isLoading: false,
-        isError: false,
-        jobs: [...state.jobs, ...action.payload.jobs],
-        nextCursor: action.payload.nextCursor
-      ***REMOVED***;
-    case "FETCH_FAILURE":
-      return ***REMOVED*** ...state, isLoading: false, isError: true ***REMOVED***;
-    case "TAG_FILTER": ***REMOVED***
-      return ***REMOVED***
-        ...state,
-        isLoading: false,
-        isError: false,
-        jobs: action.payload.jobs,
-        nextCursor: action.payload.nextCursor
-      ***REMOVED***;
-    ***REMOVED***
-    default:
-      throw new Error("Invalid action type for jobsReducer");
-  ***REMOVED***
-***REMOVED***;
+function Index(***REMOVED*** user, jobPage: initialJobPage, activeTagNames, primaryTags ***REMOVED***) ***REMOVED***
+  const tags = activeTagNames.join(",");
 
-function Index(***REMOVED*** user, jobPage, activeTagNames, primaryTags ***REMOVED***) ***REMOVED***
-  const [***REMOVED*** jobs, nextCursor, isLoading, isError ***REMOVED***, dispatch] = React.useReducer(
-    jobsReducer,
+  const ***REMOVED*** data: pages, isFetchingMore, fetchMore, canFetchMore ***REMOVED*** = useQuery(
+    `tags-$***REMOVED***tags***REMOVED***`,
+    (***REMOVED*** cursor ***REMOVED*** = ***REMOVED******REMOVED***) => api.getJobs(***REMOVED*** cursor: cursor || "", tags ***REMOVED***),
     ***REMOVED***
-      jobs: jobPage.jobs,
-      nextCursor: jobPage.nextCursor,
-      isLoading: false,
-      isError: false
+      paginated: true,
+      getCanFetchMore: lastPage => ***REMOVED***
+        return lastPage.nextCursor;
+      ***REMOVED***,
+      initialData: [initialJobPage]
     ***REMOVED***
   );
-  const ticker = useRef(0);
-  useEffect(() => ***REMOVED***
-    if (ticker.current > 0) ***REMOVED***
-      dispatch(***REMOVED*** type: "TAG_FILTER", payload: jobPage ***REMOVED***);
-    ***REMOVED***
-    ticker.current++;
-  ***REMOVED***, [jobPage]);
+
+  const loadMore = async () => ***REMOVED***
+    try ***REMOVED***
+      const lastPage = pages[pages.length - 1];
+      await fetchMore(***REMOVED***
+        cursor: lastPage.nextCursor
+      ***REMOVED***);
+    ***REMOVED*** catch ***REMOVED******REMOVED***
+  ***REMOVED***;
 
   const classes = useStyles();
-  const router = useRouter();
-
-  const fetchMoreJobs = async () => ***REMOVED***
-    const tickerVal = ticker.current;
-    if (isLoading || !nextCursor) ***REMOVED***
-      return;
-    ***REMOVED***
-    dispatch(***REMOVED*** type: "FETCH_INIT" ***REMOVED***);
-    try ***REMOVED***
-      const jobPage = await api.getJobs(***REMOVED***
-        tags: router.query.tags || "",
-        cursor: nextCursor
-      ***REMOVED***);
-      if (tickerVal === ticker.current) ***REMOVED***
-        dispatch(***REMOVED*** type: "FETCH_SUCCESS", payload: jobPage ***REMOVED***);
-      ***REMOVED***
-    ***REMOVED*** catch (err) ***REMOVED***
-      if (tickerVal === ticker.current) ***REMOVED***
-        dispatch(***REMOVED*** type: "FETCH_FAILURE" ***REMOVED***);
-      ***REMOVED***
-    ***REMOVED***
-  ***REMOVED***;
 
   const [isIntersecting, sentinelRef] = useIsInview(300);
   useEffect(() => ***REMOVED***
-    if (isIntersecting) ***REMOVED***
-      fetchMoreJobs();
+    if (isIntersecting && canFetchMore && !isFetchingMore) ***REMOVED***
+      loadMore();
     ***REMOVED***
-  ***REMOVED***, [isIntersecting]);
+  ***REMOVED***, [isIntersecting, canFetchMore, isFetchingMore, loadMore]);
   const handleTagClick = tagName => ***REMOVED***
-    const tagIndex = activeTagNames.findIndex(activeTagName => activeTagName === tagName);
+    const tagIndex = activeTagNames.findIndex(
+      activeTagName => activeTagName === tagName
+    );
     if (tagIndex !== -1) ***REMOVED***
       return;
     ***REMOVED***
-    const tags = `$***REMOVED***tagName***REMOVED***$***REMOVED***activeTagNames.length > 0 ? `,$***REMOVED***activeTagNames.join(",")***REMOVED***` : ""***REMOVED***`;
+    const tags = `$***REMOVED***tagName***REMOVED***$***REMOVED***
+      activeTagNames.length > 0 ? `,$***REMOVED***activeTagNames.join(",")***REMOVED***` : ""
+    ***REMOVED***`;
     Router.push(`/?tags=$***REMOVED***tags***REMOVED***`);
   ***REMOVED***;
 
   const removeTagFromFilter = tagName => ***REMOVED***
-    const tagNames = activeTagNames
-      .filter(activeTagName => activeTagName !== tagName);
+    const tagNames = activeTagNames.filter(
+      activeTagName => activeTagName !== tagName
+    );
     Router.push(`/$***REMOVED***tagNames.length ? `?tags=$***REMOVED***tagNames.join(",")***REMOVED***` : ""***REMOVED***`);
   ***REMOVED***;
 
@@ -207,26 +166,32 @@ function Index(***REMOVED*** user, jobPage, activeTagNames, primaryTags ***REMOV
         )***REMOVED***
         <Fragment>
           ***REMOVED***activeTagNames.length > 0 && (
-            <TagFilter tagNames=***REMOVED***activeTagNames***REMOVED*** onTagRemove=***REMOVED***removeTagFromFilter***REMOVED*** />
+            <TagFilter
+              tagNames=***REMOVED***activeTagNames***REMOVED***
+              onTagRemove=***REMOVED***removeTagFromFilter***REMOVED***
+            />
           )***REMOVED***
-          ***REMOVED***jobs.map((***REMOVED*** job, company ***REMOVED***, index) => ***REMOVED***
-            return (
-              <Fragment key=***REMOVED***job.id***REMOVED***>
-                ***REMOVED***process.env.NODE_ENV === "production" &&
-                  index % 4 === 0 &&
-                  index > 0 && <FeedAd />***REMOVED***
-                <JobItem
-                  className=***REMOVED***classes.jobItem***REMOVED***
-                  job=***REMOVED***job***REMOVED***
-                  tags=***REMOVED***job.tags***REMOVED***
-                  company=***REMOVED***company***REMOVED***
-                  onTagClick=***REMOVED***handleTagClick***REMOVED***
-                />
-              </Fragment>
-            );
-          ***REMOVED***)***REMOVED***
+          ***REMOVED***pages &&
+            pages.map(page => ***REMOVED***
+              return page.jobs.map((***REMOVED*** job, company ***REMOVED***, index) => ***REMOVED***
+                return (
+                  <Fragment key=***REMOVED***job.id***REMOVED***>
+                    ***REMOVED***process.env.NODE_ENV === "production" &&
+                      index % 4 === 0 &&
+                      index > 0 && <FeedAd />***REMOVED***
+                    <JobItem
+                      className=***REMOVED***classes.jobItem***REMOVED***
+                      job=***REMOVED***job***REMOVED***
+                      tags=***REMOVED***job.tags***REMOVED***
+                      company=***REMOVED***company***REMOVED***
+                      onTagClick=***REMOVED***handleTagClick***REMOVED***
+                    />
+                  </Fragment>
+                );
+              ***REMOVED***);
+            ***REMOVED***)***REMOVED***
           <div ref=***REMOVED***sentinelRef***REMOVED*** style=***REMOVED******REMOVED*** height: "1px" ***REMOVED******REMOVED*** />
-          ***REMOVED***ticker.current > 0 && jobs.length === 0 && (
+          ***REMOVED***pages && pages.length === 1 && pages[0].jobs.length === 0 && (
             <Typography
               variant="h4"
               color="textSecondary"
@@ -236,26 +201,11 @@ function Index(***REMOVED*** user, jobPage, activeTagNames, primaryTags ***REMOV
             </Typography>
           )***REMOVED***
         </Fragment>
-        ***REMOVED***isLoading && (
+        ***REMOVED***isFetchingMore && (
           <CircularProgress
             classes=***REMOVED******REMOVED*** root: classes.jobsLoadingSpinner ***REMOVED******REMOVED***
             color="primary"
           />
-        )***REMOVED***
-        ***REMOVED***isError && (
-          <Box textAlign="center">
-            <Typography color="textSecondary" variant="h6">
-              Problem occurred fetching data.
-            </Typography>
-            <Fab
-              onClick=***REMOVED***fetchMoreJobs***REMOVED***
-              variant="extended"
-              color="primary"
-              size="medium">
-              <RefreshIcon />
-              Try Again
-            </Fab>
-          </Box>
         )***REMOVED***
       </Container>
     </Layout>
@@ -264,12 +214,15 @@ function Index(***REMOVED*** user, jobPage, activeTagNames, primaryTags ***REMOV
 
 Index.getInitialProps = async ctx => ***REMOVED***
   const ***REMOVED*** tags = "" ***REMOVED*** = ctx.query;
-  let activeTagNames = tags.split(",").filter(name => !!name).map(name => name.toUpperCase().trim());
+  let activeTagNames = tags
+    .split(",")
+    .filter(name => !!name)
+    .map(name => name.toUpperCase().trim());
   const [jobPage, primaryTags] = await Promise.all([
     api.getJobs(***REMOVED*** ctx, tags: activeTagNames.join(",") ***REMOVED***),
     api.getPrimaryTags(ctx)
   ]);
-  
+
   return ***REMOVED*** jobPage, activeTagNames, primaryTags ***REMOVED***;
 ***REMOVED***;
 
