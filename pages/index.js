@@ -57,17 +57,25 @@ const pageDescription =
 function Index({ user, jobPage: initialJobPage, activeTagNames, primaryTags }) {
   const tags = activeTagNames.join(",");
 
-  const { data: pages, isFetchingMore, fetchMore, canFetchMore } = useQuery(
+  //console.log({ initialJobPage });
+  const {
+    data: pages,
+    isFetchingMore,
+    isLoading,
+    fetchMore,
+    canFetchMore
+  } = useQuery(
     `tags-${tags}`,
     ({ cursor } = {}) => api.getJobs({ cursor: cursor || "", tags }),
     {
       paginated: true,
       getCanFetchMore: lastPage => {
         return lastPage.nextCursor;
-      },
-      initialData: [initialJobPage]
+      }
+      //initialData: [initialJobPage]
     }
   );
+  //console.log({ pages, count: pages[0].jobs.length });
 
   const loadMore = async () => {
     try {
@@ -172,7 +180,7 @@ function Index({ user, jobPage: initialJobPage, activeTagNames, primaryTags }) {
             />
           )}
           {pages &&
-            pages.map(page => {
+            pages.map((page, i) => {
               return page.jobs.map(({ job, company }, index) => {
                 return (
                   <Fragment key={job.id}>
@@ -201,12 +209,13 @@ function Index({ user, jobPage: initialJobPage, activeTagNames, primaryTags }) {
             </Typography>
           )}
         </Fragment>
-        {isFetchingMore && (
-          <CircularProgress
-            classes={{ root: classes.jobsLoadingSpinner }}
-            color="primary"
-          />
-        )}
+        {isFetchingMore ||
+          (isLoading && (
+            <CircularProgress
+              classes={{ root: classes.jobsLoadingSpinner }}
+              color="primary"
+            />
+          ))}
       </Container>
     </Layout>
   );
@@ -222,6 +231,7 @@ Index.getInitialProps = async ctx => {
     api.getJobs({ ctx, tags: activeTagNames.join(",") }),
     api.getPrimaryTags(ctx)
   ]);
+  console.log({ jobPage, jobCount: jobPage.jobs.length });
 
   return { jobPage, activeTagNames, primaryTags };
 };
