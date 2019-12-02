@@ -1,24 +1,26 @@
 import Link from "next/link";
-import Router from "next/router";
+import Router, ***REMOVED*** useRouter ***REMOVED*** from "next/router";
 import Head from "next/head";
 import ***REMOVED***
   makeStyles,
   Button,
+  Box,
   Container,
   CircularProgress,
   Typography,
+  Fab,
   TextField,
   MenuItem
 ***REMOVED*** from "@material-ui/core";
+import RefreshIcon from "@material-ui/icons/Refresh";
 import api from "../api";
 import Layout from "../components/layout";
 import JobItem from "../components/job-item";
 import useIsInview from "../hooks/use-is-inview";
 import TagFilter from "../components/tag-filter";
-import ***REMOVED*** useEffect, Fragment ***REMOVED*** from "react";
+import ***REMOVED*** useEffect, useRef, Fragment ***REMOVED*** from "react";
 import HeaderAd from "../components/header-ad";
 import FeedAd from "../components/feed-ad";
-import ***REMOVED*** useQuery ***REMOVED*** from "react-query";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   root: ***REMOVED***
@@ -54,46 +56,82 @@ const pageUrl = `$***REMOVED***process.env.ROOT_URL***REMOVED***/`;
 const pageDescription =
   "HuluSira is a job board for jobs based in Ethiopia. We aim to make the job posting and dissemination process as simple as possible. Get workers hired.";
 
-function Index(***REMOVED*** user, jobPage: initialJobPage, activeTagNames, primaryTags ***REMOVED***) ***REMOVED***
-  const tags = activeTagNames.join(",");
-
-  //console.log(***REMOVED*** initialJobPage ***REMOVED***);
-  const ***REMOVED***
-    data: pages,
-    isFetchingMore,
-    isLoading,
-    fetchMore,
-    canFetchMore
-  ***REMOVED*** = useQuery(
-    `tags-$***REMOVED***tags***REMOVED***`,
-    (***REMOVED*** cursor ***REMOVED*** = ***REMOVED******REMOVED***) => api.getJobs(***REMOVED*** cursor: cursor || "", tags ***REMOVED***),
+const jobsReducer = (state, action) => ***REMOVED***
+  switch (action.type) ***REMOVED***
+    case "FETCH_INIT":
+      return ***REMOVED*** ...state, isLoading: true, isError: false ***REMOVED***;
+    case "FETCH_SUCCESS":
+      return ***REMOVED***
+        ...state,
+        isLoading: false,
+        isError: false,
+        jobs: [...state.jobs, ...action.payload.jobs],
+        nextCursor: action.payload.nextCursor
+      ***REMOVED***;
+    case "FETCH_FAILURE":
+      return ***REMOVED*** ...state, isLoading: false, isError: true ***REMOVED***;
+    case "TAG_FILTER": ***REMOVED***
+      return ***REMOVED***
+        ...state,
+        isLoading: false,
+        isError: false,
+        jobs: action.payload.jobs,
+        nextCursor: action.payload.nextCursor
+      ***REMOVED***;
     ***REMOVED***
-      paginated: true,
-      getCanFetchMore: lastPage => ***REMOVED***
-        return lastPage.nextCursor;
-      ***REMOVED***
-      //initialData: [initialJobPage]
+    default:
+      throw new Error("Invalid action type for jobsReducer");
+  ***REMOVED***
+***REMOVED***;
+
+function Index(***REMOVED*** user, jobPage, activeTagNames, primaryTags ***REMOVED***) ***REMOVED***
+  const [***REMOVED*** jobs, nextCursor, isLoading, isError ***REMOVED***, dispatch] = React.useReducer(
+    jobsReducer,
+    ***REMOVED***
+      jobs: jobPage.jobs,
+      nextCursor: jobPage.nextCursor,
+      isLoading: false,
+      isError: false
     ***REMOVED***
   );
-  //console.log(***REMOVED*** pages, count: pages[0].jobs.length ***REMOVED***);
-
-  const loadMore = async () => ***REMOVED***
-    try ***REMOVED***
-      const lastPage = pages[pages.length - 1];
-      await fetchMore(***REMOVED***
-        cursor: lastPage.nextCursor
-      ***REMOVED***);
-    ***REMOVED*** catch ***REMOVED******REMOVED***
-  ***REMOVED***;
+  const ticker = useRef(0);
+  useEffect(() => ***REMOVED***
+    if (ticker.current > 0) ***REMOVED***
+      dispatch(***REMOVED*** type: "TAG_FILTER", payload: jobPage ***REMOVED***);
+    ***REMOVED***
+    ticker.current++;
+  ***REMOVED***, [jobPage]);
 
   const classes = useStyles();
+  const router = useRouter();
+
+  const fetchMoreJobs = async () => ***REMOVED***
+    const tickerVal = ticker.current;
+    if (isLoading || !nextCursor) ***REMOVED***
+      return;
+    ***REMOVED***
+    dispatch(***REMOVED*** type: "FETCH_INIT" ***REMOVED***);
+    try ***REMOVED***
+      const jobPage = await api.getJobs(***REMOVED***
+        tags: router.query.tags || "",
+        cursor: nextCursor
+      ***REMOVED***);
+      if (tickerVal === ticker.current) ***REMOVED***
+        dispatch(***REMOVED*** type: "FETCH_SUCCESS", payload: jobPage ***REMOVED***);
+      ***REMOVED***
+    ***REMOVED*** catch (err) ***REMOVED***
+      if (tickerVal === ticker.current) ***REMOVED***
+        dispatch(***REMOVED*** type: "FETCH_FAILURE" ***REMOVED***);
+      ***REMOVED***
+    ***REMOVED***
+  ***REMOVED***;
 
   const [isIntersecting, sentinelRef] = useIsInview(300);
   useEffect(() => ***REMOVED***
-    if (isIntersecting && canFetchMore && !isFetchingMore) ***REMOVED***
-      loadMore();
+    if (isIntersecting) ***REMOVED***
+      fetchMoreJobs();
     ***REMOVED***
-  ***REMOVED***, [isIntersecting, canFetchMore, isFetchingMore, loadMore]);
+  ***REMOVED***, [fetchMoreJobs, isIntersecting]);
   const handleTagClick = tagName => ***REMOVED***
     const tagIndex = activeTagNames.findIndex(
       activeTagName => activeTagName === tagName
@@ -128,7 +166,8 @@ function Index(***REMOVED*** user, jobPage: initialJobPage, activeTagNames, prim
             </Link>
           </Fragment>
         )
-      ***REMOVED***>
+      ***REMOVED***
+    >
       <Head>
         <title>***REMOVED***pageTitle***REMOVED***</title>
         <meta name="description" content=***REMOVED***pageDescription***REMOVED*** />
@@ -161,12 +200,14 @@ function Index(***REMOVED*** user, jobPage: initialJobPage, activeTagNames, prim
             label="Choose category"
             margin="dense"
             variant="outlined"
-            fullWidth>
+            fullWidth
+          >
             ***REMOVED***primaryTags.map(tag => (
               <MenuItem
                 className=***REMOVED***classes.categoryItem***REMOVED***
                 key=***REMOVED***tag.name***REMOVED***
-                value=***REMOVED***tag.name***REMOVED***>
+                value=***REMOVED***tag.name***REMOVED***
+              >
                 ***REMOVED***tag.name***REMOVED***
               </MenuItem>
             ))***REMOVED***
@@ -179,43 +220,56 @@ function Index(***REMOVED*** user, jobPage: initialJobPage, activeTagNames, prim
               onTagRemove=***REMOVED***removeTagFromFilter***REMOVED***
             />
           )***REMOVED***
-          ***REMOVED***pages &&
-            pages.map((page, i) => ***REMOVED***
-              return page.jobs.map((***REMOVED*** job, company ***REMOVED***, index) => ***REMOVED***
-                return (
-                  <Fragment key=***REMOVED***job.id***REMOVED***>
-                    ***REMOVED***process.env.NODE_ENV === "production" &&
-                      index % 4 === 0 &&
-                      index > 0 && <FeedAd />***REMOVED***
-                    <JobItem
-                      className=***REMOVED***classes.jobItem***REMOVED***
-                      job=***REMOVED***job***REMOVED***
-                      tags=***REMOVED***job.tags***REMOVED***
-                      company=***REMOVED***company***REMOVED***
-                      onTagClick=***REMOVED***handleTagClick***REMOVED***
-                    />
-                  </Fragment>
-                );
-              ***REMOVED***);
-            ***REMOVED***)***REMOVED***
+          ***REMOVED***jobs.map((***REMOVED*** job, company ***REMOVED***, index) => ***REMOVED***
+            return (
+              <Fragment key=***REMOVED***job.id***REMOVED***>
+                ***REMOVED***process.env.NODE_ENV === "production" &&
+                  index % 4 === 0 &&
+                  index > 0 && <FeedAd />***REMOVED***
+                <JobItem
+                  className=***REMOVED***classes.jobItem***REMOVED***
+                  job=***REMOVED***job***REMOVED***
+                  tags=***REMOVED***job.tags***REMOVED***
+                  company=***REMOVED***company***REMOVED***
+                  onTagClick=***REMOVED***handleTagClick***REMOVED***
+                />
+              </Fragment>
+            );
+          ***REMOVED***)***REMOVED***
           <div ref=***REMOVED***sentinelRef***REMOVED*** style=***REMOVED******REMOVED*** height: "1px" ***REMOVED******REMOVED*** />
-          ***REMOVED***pages && pages.length === 1 && pages[0].jobs.length === 0 && (
+          ***REMOVED***ticker.current > 0 && jobs.length === 0 && (
             <Typography
               variant="h4"
               color="textSecondary"
               align="center"
-              className=***REMOVED***classes.nothingFound***REMOVED***>
+              className=***REMOVED***classes.nothingFound***REMOVED***
+            >
               😬 <br /> Nothing Found
             </Typography>
           )***REMOVED***
         </Fragment>
-        ***REMOVED***isFetchingMore ||
-          (isLoading && (
-            <CircularProgress
-              classes=***REMOVED******REMOVED*** root: classes.jobsLoadingSpinner ***REMOVED******REMOVED***
+        ***REMOVED***isLoading && (
+          <CircularProgress
+            classes=***REMOVED******REMOVED*** root: classes.jobsLoadingSpinner ***REMOVED******REMOVED***
+            color="primary"
+          />
+        )***REMOVED***
+        ***REMOVED***isError && (
+          <Box textAlign="center">
+            <Typography color="textSecondary" variant="h6">
+              Problem occurred fetching data.
+            </Typography>
+            <Fab
+              onClick=***REMOVED***fetchMoreJobs***REMOVED***
+              variant="extended"
               color="primary"
-            />
-          ))***REMOVED***
+              size="medium"
+            >
+              <RefreshIcon />
+              Try Again
+            </Fab>
+          </Box>
+        )***REMOVED***
       </Container>
     </Layout>
   );
@@ -231,7 +285,6 @@ Index.getInitialProps = async ctx => ***REMOVED***
     api.getJobs(***REMOVED*** ctx, tags: activeTagNames.join(",") ***REMOVED***),
     api.getPrimaryTags(ctx)
   ]);
-  console.log(***REMOVED*** jobPage, jobCount: jobPage.jobs.length ***REMOVED***);
 
   return ***REMOVED*** jobPage, activeTagNames, primaryTags ***REMOVED***;
 ***REMOVED***;

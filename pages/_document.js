@@ -1,21 +1,27 @@
 import React, ***REMOVED*** Fragment ***REMOVED*** from "react";
-import Document, ***REMOVED*** Head, Main, NextScript ***REMOVED*** from "next/document";
+import Document, ***REMOVED*** Html, Head, Main, NextScript ***REMOVED*** from "next/document";
 import ***REMOVED*** ServerStyleSheets ***REMOVED*** from "@material-ui/styles";
 import theme from "../components/theme";
-import ***REMOVED*** GA_TRACKING_ID ***REMOVED*** from '../lib/gtag';
+import ***REMOVED*** GA_TRACKING_ID ***REMOVED*** from "../lib/gtag";
 
 class MyDocument extends Document ***REMOVED***
   render() ***REMOVED***
     return (
-      <html lang="en">
+      <Html lang="en">
         <Head>
-          <script async src=***REMOVED***`https://www.googletagmanager.com/gtag/js?id=$***REMOVED***GA_TRACKING_ID***REMOVED***`***REMOVED***></script>
-          <script dangerouslySetInnerHTML=***REMOVED******REMOVED*** __html: `window.dataLayer = window.dataLayer || [];
+          <script
+            async
+            src=***REMOVED***`https://www.googletagmanager.com/gtag/js?id=$***REMOVED***GA_TRACKING_ID***REMOVED***`***REMOVED***
+          ></script>
+          <script
+            dangerouslySetInnerHTML=***REMOVED******REMOVED***
+              __html: `window.dataLayer = window.dataLayer || [];
             function gtag()***REMOVED***dataLayer.push(arguments);***REMOVED***
             gtag('js', new Date());
 
-            gtag('config', '$***REMOVED***GA_TRACKING_ID***REMOVED***');`***REMOVED******REMOVED***>
-          </script>
+            gtag('config', '$***REMOVED***GA_TRACKING_ID***REMOVED***');`
+            ***REMOVED******REMOVED***
+          ></script>
           <meta charSet="utf-8" />
           <meta
             name="viewport"
@@ -38,19 +44,21 @@ class MyDocument extends Document ***REMOVED***
           <meta name="twitter:creator" content="@HuluSira" />
           <script
             crossOrigin="anonymous"
-            src="https://polyfill.io/v3/polyfill.min.js?features=IntersectionObserver"></script>
+            src="https://polyfill.io/v3/polyfill.min.js?features=IntersectionObserver"
+          ></script>
           ***REMOVED***process.env.NODE_ENV === "production" && (
             <script
               data-ad-client="ca-pub-1430919979045648"
               async
-              src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+              src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+            ></script>
           )***REMOVED***
         </Head>
         <body>
           <Main />
           <NextScript />
         </body>
-      </html>
+      </Html>
     );
   ***REMOVED***
 ***REMOVED***

@@ -3,7 +3,7 @@ import Link from "next/link";
 import Router from "next/router";
 import isAfter from "date-fns/isAfter";
 import formatDistance from "date-fns/formatDistance";
-import endOfDay from 'date-fns/endOfDay';
+import endOfDay from "date-fns/endOfDay";
 import clsx from "clsx";
 import ***REMOVED*** Box, Typography, Chip, Link as MuiLink ***REMOVED*** from "@material-ui/core";
 import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
@@ -53,33 +53,43 @@ const useStyles = makeStyles(theme => (***REMOVED***
     display: "inline-flex",
     alignItems: "center",
     marginRight: theme.spacing(1),
-    paddingBottom: theme.spacing(.5),
+    paddingBottom: theme.spacing(0.5)
   ***REMOVED***,
   expiredTag: ***REMOVED***
     padding: `0 $***REMOVED***theme.spacing(0.5)***REMOVED***px`,
-    border: '1px solid rgb(229, 57, 53)',
-    color: 'rgb(229, 57, 53)',
+    border: "1px solid rgb(229, 57, 53)",
+    color: "rgb(229, 57, 53)"
   ***REMOVED***,
   closedTag: ***REMOVED***
     padding: `0 $***REMOVED***theme.spacing(0.5)***REMOVED***px`,
-    backgroundColor: 'rgb(229, 57, 53)',
-    color: 'white',
-  ***REMOVED***,
+    backgroundColor: "rgb(229, 57, 53)",
+    color: "white"
+  ***REMOVED***
 ***REMOVED***));
 
 function ExpirationTag(***REMOVED*** deadline ***REMOVED***) ***REMOVED***
   const expired = isAfter(new Date(), endOfDay(deadline));
   const classes = useStyles();
-  return expired ? (<Typography className=***REMOVED***clsx(classes.extrasText, classes.expiredTag)***REMOVED*** variant="caption">
-    Expired
-  </Typography>) : null;
+  return expired ? (
+    <Typography
+      className=***REMOVED***clsx(classes.extrasText, classes.expiredTag)***REMOVED***
+      variant="caption"
+    >
+      Expired
+    </Typography>
+  ) : null;
 ***REMOVED***
 
 function ClosedTag() ***REMOVED***
   const classes = useStyles();
-  return (<Typography className=***REMOVED***clsx(classes.extrasText, classes.closedTag)***REMOVED*** variant="caption">
-    Closed
-  </Typography>);
+  return (
+    <Typography
+      className=***REMOVED***clsx(classes.extrasText, classes.closedTag)***REMOVED***
+      variant="caption"
+    >
+      Closed
+    </Typography>
+  );
 ***REMOVED***
 
 export default function JobItem(***REMOVED***
@@ -109,13 +119,13 @@ export default function JobItem(***REMOVED***
           ***REMOVED***preview ? (
             <Typography variant="h6">***REMOVED***job.position || "Position"***REMOVED***</Typography>
           ) : (
-            
-              <Link href="/jobs/[slug]" as=***REMOVED***`/jobs/$***REMOVED***job.slug***REMOVED***`***REMOVED*** passHref>
+            <Link href="/jobs/[slug]" as=***REMOVED***`/jobs/$***REMOVED***job.slug***REMOVED***`***REMOVED*** passHref>
               <MuiLink
                 classes=***REMOVED******REMOVED*** root: classes.position ***REMOVED******REMOVED***
                 variant="h6"
-                color="inherit">
-                  ***REMOVED***job.position***REMOVED***
+                color="inherit"
+              >
+                ***REMOVED***job.position***REMOVED***
               </MuiLink>
             </Link>
           )***REMOVED***
@@ -132,7 +142,8 @@ export default function JobItem(***REMOVED***
                 <Link
                   href="/companies/[id]"
                   as=***REMOVED***`/companies/$***REMOVED***company.id***REMOVED***`***REMOVED***
-                  passHref>
+                  passHref
+                >
                   <MuiLink variant="subtitle2" color="inherit" gutterBottom>
                     ***REMOVED***company.name***REMOVED***
                   </MuiLink>
@@ -141,12 +152,19 @@ export default function JobItem(***REMOVED***
             </React.Fragment>
           )***REMOVED***
           ***REMOVED***(!preview || !!job.jobType) && (
-            <Box display="flex" alignItems="center" pt="1rem" pb="0.5rem" flexWrap="wrap">
+            <Box
+              display="flex"
+              alignItems="center"
+              pt="1rem"
+              pb="0.5rem"
+              flexWrap="wrap"
+            >
               ***REMOVED***!!job.jobType && (
                 <Typography
                   className=***REMOVED***classes.extrasText***REMOVED***
                   color="textSecondary"
-                  variant="body2">
+                  variant="body2"
+                >
                   📌 ***REMOVED***job.jobType***REMOVED***
                 </Typography>
               )***REMOVED***
@@ -154,7 +172,8 @@ export default function JobItem(***REMOVED***
                 <Typography
                   className=***REMOVED***classes.extrasText***REMOVED***
                   color="textSecondary"
-                  variant="body2">
+                  variant="body2"
+                >
                   ⏱️***REMOVED***" "***REMOVED***
                   ***REMOVED***formatDistance(
                     job.created ? new Date(job.created) : new Date(),
@@ -163,24 +182,20 @@ export default function JobItem(***REMOVED***
                   )***REMOVED***
                 </Typography>
               )***REMOVED***
-              ***REMOVED***
-                !preview && (<Typography
-                className=***REMOVED***classes.extrasText***REMOVED***
-                color="textSecondary"
-                variant="body2">
-                👀 ***REMOVED***job.views ? job.views : 0***REMOVED*** ***REMOVED***`View$***REMOVED***job.views === 1 ? '' : 's'***REMOVED***`***REMOVED***
-              </Typography>)
-              ***REMOVED***
-              ***REMOVED***
-                !preview && job.approvalStatus !== "Closed" && job.deadline && (
-                  <ExpirationTag deadline=***REMOVED***new Date(job.deadline)***REMOVED*** />
-                )
-              ***REMOVED***
-              ***REMOVED***
-                !preview && job.approvalStatus === "Closed" && (
-                  <ClosedTag />
-                )
-              ***REMOVED***
+              ***REMOVED***!preview && (
+                <Typography
+                  className=***REMOVED***classes.extrasText***REMOVED***
+                  color="textSecondary"
+                  variant="body2"
+                >
+                  👀 ***REMOVED***job.views ? job.views : 0***REMOVED******REMOVED***" "***REMOVED***
+                  ***REMOVED***`View$***REMOVED***job.views === 1 ? "" : "s"***REMOVED***`***REMOVED***
+                </Typography>
+              )***REMOVED***
+              ***REMOVED***!preview && job.approvalStatus !== "Closed" && job.deadline && (
+                <ExpirationTag deadline=***REMOVED***new Date(job.deadline)***REMOVED*** />
+              )***REMOVED***
+              ***REMOVED***!preview && job.approvalStatus === "Closed" && <ClosedTag />***REMOVED***
             </Box>
           )***REMOVED***
         </Box>
