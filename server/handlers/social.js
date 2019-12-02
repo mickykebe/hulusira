@@ -16,7 +16,8 @@ const createJobMessage = (***REMOVED*** job, company ***REMOVED***) => ***REMOVE
       : ""
   ***REMOVED***
   
-📋 $***REMOVED***job.description***REMOVED***`;
+📋 $***REMOVED***job.description***REMOVED***
+$***REMOVED***job.tags.map(tag => `#$***REMOVED***tag.name***REMOVED***`).join(" ")***REMOVED***`;
 ***REMOVED***;
 
 const sendPostToFacebook = async function(message, jobUrl) ***REMOVED***
