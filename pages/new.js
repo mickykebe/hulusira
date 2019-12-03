@@ -207,7 +207,6 @@ function New(***REMOVED*** primaryTags, user ***REMOVED***) ***REMOVED***
                 />
                 <HSPaper className=***REMOVED***classes.recaptchaBox***REMOVED***>
                   <ReCAPTCHA
-                    ref=***REMOVED***recaptchaRef***REMOVED***
                     sitekey=***REMOVED***process.env.RECAPTCHA_KEY***REMOVED***
                     onChange=***REMOVED***value =>
                       setFieldValue("recaptchaPassed", value !== null)
