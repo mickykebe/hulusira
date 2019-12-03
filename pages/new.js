@@ -1,7 +1,9 @@
-import React, ***REMOVED*** useState ***REMOVED*** from "react";
+import React, ***REMOVED*** useState, useRef ***REMOVED*** from "react";
 import Router, ***REMOVED*** useRouter ***REMOVED*** from "next/router";
 import Head from "next/head";
 import Cookies from "js-cookie";
+import ReCAPTCHA from "react-google-recaptcha";
+import * as Yup from "yup";
 import ***REMOVED*** Box, Container, TextField, Fab, Collapse ***REMOVED*** from "@material-ui/core";
 import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
 import SaveIcon from "@material-ui/icons/Save";
@@ -9,6 +11,7 @@ import ***REMOVED*** Formik ***REMOVED*** from "formik";
 import api from "../api";
 import Layout from "../components/layout";
 import HSCard from "../components/hs-card";
+import HSPaper from "../components/hs-paper";
 import HSSnackbar from "../components/hs-snackbar";
 import PageProgress from "../components/page-progress";
 import ImageDropdown from "../components/image-dropdown";
@@ -40,6 +43,14 @@ const useStyles = makeStyles(theme => (***REMOVED***
   companyDetails: ***REMOVED***
     marginBottom: theme.spacing(3)
   ***REMOVED***,
+  jobDetailsFormElement: ***REMOVED***
+    marginBottom: theme.spacing(3)
+  ***REMOVED***,
+  recaptchaBox: ***REMOVED***
+    display: "flex",
+    justifyContent: "center",
+    padding: theme.spacing(3)
+  ***REMOVED***,
   jobPreview: ***REMOVED***
     marginTop: theme.spacing(3)
   ***REMOVED***,
@@ -54,6 +65,12 @@ const useStyles = makeStyles(theme => (***REMOVED***
 const pageTitle = "Post job on HuluSira";
 const pageDescription =
   "Access thousands of job applicants by posting on HuluSira";
+
+const validationSchema = jobValidationSchema.concat(
+  Yup.object().shape(***REMOVED***
+    recaptchaPassed: Yup.boolean().oneOf([true])
+  ***REMOVED***)
+);
 
 function New(***REMOVED*** primaryTags, user ***REMOVED***) ***REMOVED***
   const classes = useStyles();
@@ -71,8 +88,7 @@ function New(***REMOVED*** primaryTags, user ***REMOVED***) ***REMOVED***
         companyLogo = await api.uploadImage(files[0]);
       ***REMOVED***
       const tags = cleanTags(values.tags);
-      const primaryTag =
-        values.primaryTag !== "" ? values.primaryTag : null;
+      const primaryTag = values.primaryTag !== "" ? values.primaryTag : null;
       const jobData = await api.createJob(***REMOVED***
         ...values,
         tags,
@@ -110,7 +126,7 @@ function New(***REMOVED*** primaryTags, user ***REMOVED***) ***REMOVED***
           variant="warning"
         />
         <Formik
-          validationSchema=***REMOVED***jobValidationSchema***REMOVED***
+          validationSchema=***REMOVED***validationSchema***REMOVED***
           initialValues=***REMOVED******REMOVED***
             position: "",
             jobType: "",
@@ -127,9 +143,11 @@ function New(***REMOVED*** primaryTags, user ***REMOVED***) ***REMOVED***
             applyUrl: "",
             applyEmail: "",
             companyEmail: "",
-            deadline: null
+            deadline: null,
+            recaptchaPassed: false
           ***REMOVED******REMOVED***
-          onSubmit=***REMOVED***handleSubmit***REMOVED***>
+          onSubmit=***REMOVED***handleSubmit***REMOVED***
+        >
           ***REMOVED***(***REMOVED***
             values,
             isSubmitting,
@@ -149,7 +167,8 @@ function New(***REMOVED*** primaryTags, user ***REMOVED***) ***REMOVED***
                 <Collapse in=***REMOVED***values.hasCompany***REMOVED*** unmountOnExit>
                   <HSCard
                     className=***REMOVED***classes.companyDetails***REMOVED***
-                    title="Company Details">
+                    title="Company Details"
+                  >
                     <TextField
                       label="Company Name*"
                       variant="outlined"
@@ -178,6 +197,7 @@ function New(***REMOVED*** primaryTags, user ***REMOVED***) ***REMOVED***
                   </HSCard>
                 </Collapse>
                 <JobDetailsFormElement
+                  className=***REMOVED***classes.jobDetailsFormElement***REMOVED***
                   values=***REMOVED***values***REMOVED***
                   errors=***REMOVED***errors***REMOVED***
                   touched=***REMOVED***touched***REMOVED***
@@ -185,12 +205,22 @@ function New(***REMOVED*** primaryTags, user ***REMOVED***) ***REMOVED***
                   setFieldValue=***REMOVED***setFieldValue***REMOVED***
                   primaryTags=***REMOVED***primaryTags***REMOVED***
                 />
+                <HSPaper className=***REMOVED***classes.recaptchaBox***REMOVED***>
+                  <ReCAPTCHA
+                    ref=***REMOVED***recaptchaRef***REMOVED***
+                    sitekey=***REMOVED***process.env.RECAPTCHA_KEY***REMOVED***
+                    onChange=***REMOVED***value =>
+                      setFieldValue("recaptchaPassed", value !== null)
+                    ***REMOVED***
+                  />
+                </HSPaper>
                 <Fab
                   type="submit"
                   variant="extended"
                   color="primary"
                   className=***REMOVED***classes.postButton***REMOVED***
-                  disabled=***REMOVED***isSubmitting || successfullySubmitted***REMOVED***>
+                  disabled=***REMOVED***isSubmitting || successfullySubmitted***REMOVED***
+                >
                   <SaveIcon className=***REMOVED***classes.saveButtonIcon***REMOVED*** />
                   Post your job
                 </Fab>

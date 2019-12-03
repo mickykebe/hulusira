@@ -24,11 +24,12 @@ export default function JobDetailsFormElement(***REMOVED***
   touched,
   handleChange,
   primaryTags,
-  setFieldValue
+  setFieldValue,
+  className
 ***REMOVED***) ***REMOVED***
   const handleMdeChange = fieldName => value => setFieldValue(fieldName, value);
   return (
-    <HSCard title="Job Details">
+    <HSCard className=***REMOVED***className***REMOVED*** title="Job Details">
       <TextField
         name="position"
         label="Position*"
