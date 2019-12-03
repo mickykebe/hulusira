@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Router, { useRouter } from "next/router";
 import Head from "next/head";
 import Cookies from "js-cookie";
+import ReCAPTCHA from "react-google-recaptcha";
+import * as Yup from "yup";
 import { Box, Container, TextField, Fab, Collapse } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import SaveIcon from "@material-ui/icons/Save";
@@ -9,6 +11,7 @@ import { Formik } from "formik";
 import api from "../api";
 import Layout from "../components/layout";
 import HSCard from "../components/hs-card";
+import HSPaper from "../components/hs-paper";
 import HSSnackbar from "../components/hs-snackbar";
 import PageProgress from "../components/page-progress";
 import ImageDropdown from "../components/image-dropdown";
@@ -40,6 +43,14 @@ const useStyles = makeStyles(theme => ({
   companyDetails: {
     marginBottom: theme.spacing(3)
   },
+  jobDetailsFormElement: {
+    marginBottom: theme.spacing(3)
+  },
+  recaptchaBox: {
+    display: "flex",
+    justifyContent: "center",
+    padding: theme.spacing(3)
+  },
   jobPreview: {
     marginTop: theme.spacing(3)
   },
@@ -54,6 +65,12 @@ const useStyles = makeStyles(theme => ({
 const pageTitle = "Post job on HuluSira";
 const pageDescription =
   "Access thousands of job applicants by posting on HuluSira";
+
+const validationSchema = jobValidationSchema.concat(
+  Yup.object().shape({
+    recaptchaPassed: Yup.boolean().oneOf([true])
+  })
+);
 
 function New({ primaryTags, user }) {
   const classes = useStyles();
@@ -71,8 +88,7 @@ function New({ primaryTags, user }) {
         companyLogo = await api.uploadImage(files[0]);
       }
       const tags = cleanTags(values.tags);
-      const primaryTag =
-        values.primaryTag !== "" ? values.primaryTag : null;
+      const primaryTag = values.primaryTag !== "" ? values.primaryTag : null;
       const jobData = await api.createJob({
         ...values,
         tags,
@@ -110,7 +126,7 @@ function New({ primaryTags, user }) {
           variant="warning"
         />
         <Formik
-          validationSchema={jobValidationSchema}
+          validationSchema={validationSchema}
           initialValues={{
             position: "",
             jobType: "",
@@ -127,9 +143,11 @@ function New({ primaryTags, user }) {
             applyUrl: "",
             applyEmail: "",
             companyEmail: "",
-            deadline: null
+            deadline: null,
+            recaptchaPassed: false
           }}
-          onSubmit={handleSubmit}>
+          onSubmit={handleSubmit}
+        >
           {({
             values,
             isSubmitting,
@@ -149,7 +167,8 @@ function New({ primaryTags, user }) {
                 <Collapse in={values.hasCompany} unmountOnExit>
                   <HSCard
                     className={classes.companyDetails}
-                    title="Company Details">
+                    title="Company Details"
+                  >
                     <TextField
                       label="Company Name*"
                       variant="outlined"
@@ -178,6 +197,7 @@ function New({ primaryTags, user }) {
                   </HSCard>
                 </Collapse>
                 <JobDetailsFormElement
+                  className={classes.jobDetailsFormElement}
                   values={values}
                   errors={errors}
                   touched={touched}
@@ -185,12 +205,22 @@ function New({ primaryTags, user }) {
                   setFieldValue={setFieldValue}
                   primaryTags={primaryTags}
                 />
+                <HSPaper className={classes.recaptchaBox}>
+                  <ReCAPTCHA
+                    ref={recaptchaRef}
+                    sitekey={process.env.RECAPTCHA_KEY}
+                    onChange={value =>
+                      setFieldValue("recaptchaPassed", value !== null)
+                    }
+                  />
+                </HSPaper>
                 <Fab
                   type="submit"
                   variant="extended"
                   color="primary"
                   className={classes.postButton}
-                  disabled={isSubmitting || successfullySubmitted}>
+                  disabled={isSubmitting || successfullySubmitted}
+                >
                   <SaveIcon className={classes.saveButtonIcon} />
                   Post your job
                 </Fab>
