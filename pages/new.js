@@ -207,7 +207,6 @@ function New({ primaryTags, user }) {
                 />
                 <HSPaper className={classes.recaptchaBox}>
                   <ReCAPTCHA
-                    ref={recaptchaRef}
                     sitekey={process.env.RECAPTCHA_KEY}
                     onChange={value =>
                       setFieldValue("recaptchaPassed", value !== null)
