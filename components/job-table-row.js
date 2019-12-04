@@ -61,7 +61,7 @@ export default function JobTableRow(***REMOVED*** jobData ***REMOVED***) ***REMO
                   <CompanyLogo
                     company=***REMOVED***company***REMOVED***
                     abbrevFallback=***REMOVED***false***REMOVED***
-                    size="small"
+                    size="extraSmall"
                   />
                 </Box>
               )***REMOVED***

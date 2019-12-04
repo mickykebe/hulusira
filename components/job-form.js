@@ -86,7 +86,8 @@ export default function JobForm(***REMOVED***
     <Formik
       validationSchema=***REMOVED***jobValidationSchema***REMOVED***
       initialValues=***REMOVED***initialValues***REMOVED***
-      onSubmit=***REMOVED***handleSubmit***REMOVED***>
+      onSubmit=***REMOVED***handleSubmit***REMOVED***
+    >
       ***REMOVED***(***REMOVED***
         values,
         isSubmitting,
@@ -121,7 +122,8 @@ export default function JobForm(***REMOVED***
                         value=***REMOVED***values.companyId || ""***REMOVED***
                         onChange=***REMOVED***handleChange***REMOVED***
                         error=***REMOVED***!!(touched.companyId && errors.companyId)***REMOVED***
-                        helperText=***REMOVED***touched.companyId && errors.companyId***REMOVED***>
+                        helperText=***REMOVED***touched.companyId && errors.companyId***REMOVED***
+                      >
                         ***REMOVED***companies.map(company => (
                           <MenuItem key=***REMOVED***company.id***REMOVED*** value=***REMOVED***company.id***REMOVED***>
                             <Box display="flex" alignItems="center">
@@ -130,7 +132,7 @@ export default function JobForm(***REMOVED***
                                   <CompanyLogo
                                     company=***REMOVED***company***REMOVED***
                                     abbrevFallback=***REMOVED***false***REMOVED***
-                                    size="small"
+                                    size="extraSmall"
                                   />
                                 </Box>
                               )***REMOVED***
@@ -142,7 +144,8 @@ export default function JobForm(***REMOVED***
                       <Typography
                         variant="subtitle1"
                         align="center"
-                        className=***REMOVED***classes.orText***REMOVED***>
+                        className=***REMOVED***classes.orText***REMOVED***
+                      >
                         OR
                       </Typography>
                     </Fragment>
@@ -151,7 +154,8 @@ export default function JobForm(***REMOVED***
                     color="primary"
                     variant="contained"
                     startIcon=***REMOVED***<BusinessIcon />***REMOVED***
-                    onClick=***REMOVED***() => Router.push("/dashboard/companies/new")***REMOVED***>
+                    onClick=***REMOVED***() => Router.push("/dashboard/companies/new")***REMOVED***
+                  >
                     Add Company
                   </Button>
                 </Box>
@@ -170,7 +174,8 @@ export default function JobForm(***REMOVED***
               variant="extended"
               color="primary"
               className=***REMOVED***classes.postButton***REMOVED***
-              disabled=***REMOVED***isSubmitting || disableSaveButton***REMOVED***>
+              disabled=***REMOVED***isSubmitting || disableSaveButton***REMOVED***
+            >
               <SaveIcon className=***REMOVED***classes.saveButtonIcon***REMOVED*** />
               Save
             </Fab>

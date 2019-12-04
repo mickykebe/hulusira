@@ -13,12 +13,12 @@ const useStyles = makeStyles(theme => (***REMOVED***
   root: props => (***REMOVED***
     position: "relative",
     display: "flex",
-    padding: `$***REMOVED***theme.spacing(1)***REMOVED***px $***REMOVED***theme.spacing(2)***REMOVED***px`,
+    flexWrap: "wrap",
+    padding: `0.5rem 1rem`,
     border: `1px solid $***REMOVED***theme.palette.grey[200]***REMOVED***`,
     backgroundColor: theme.palette.common.white,
     alignItems: "center",
     borderRadius: 4,
-    border: `1px solid #EAEDF3`,
     boxShadow: theme.boxShadows[0],
     ...(props.preview && ***REMOVED***
       position: "sticky",
@@ -37,11 +37,15 @@ const useStyles = makeStyles(theme => (***REMOVED***
   ***REMOVED***,
   tagChip: ***REMOVED***
     border: `1px solid $***REMOVED***theme.palette.grey[700]***REMOVED***`,
-    marginRight: theme.spacing(1),
-    marginBottom: theme.spacing(1),
+    marginRight: "0.5rem",
+    marginBottom: "0.5rem",
     fontWeight: 800,
     fontSize: ".6875rem",
     color: theme.palette.grey[700]
+  ***REMOVED***,
+  tagChipLabel: ***REMOVED***
+    paddingLeft: "0.5rem",
+    paddingRight: "0.5rem"
   ***REMOVED***,
   applyButton: ***REMOVED***
     marginLeft: theme.spacing(2),
@@ -56,12 +60,12 @@ const useStyles = makeStyles(theme => (***REMOVED***
     paddingBottom: theme.spacing(0.5)
   ***REMOVED***,
   expiredTag: ***REMOVED***
-    padding: `0 $***REMOVED***theme.spacing(0.5)***REMOVED***px`,
+    padding: `0 0.25rem`,
     border: "1px solid rgb(229, 57, 53)",
     color: "rgb(229, 57, 53)"
   ***REMOVED***,
   closedTag: ***REMOVED***
-    padding: `0 $***REMOVED***theme.spacing(0.5)***REMOVED***px`,
+    padding: `0 0.25rem`,
     backgroundColor: "rgb(229, 57, 53)",
     color: "white"
   ***REMOVED***
@@ -104,18 +108,18 @@ export default function JobItem(***REMOVED***
 
   return (
     <Box className=***REMOVED***clsx(classes.root, className)***REMOVED***>
-      <Box className=***REMOVED***classes.logoWrapper***REMOVED*** pr=***REMOVED***[2, 3]***REMOVED***>
-        ***REMOVED***!!company && (
-          <CompanyLogo
-            company=***REMOVED***company***REMOVED***
-            onClick=***REMOVED***
-              !preview ? () => Router.push(`/companies/$***REMOVED***company.id***REMOVED***`) : null
-            ***REMOVED***
-          />
-        )***REMOVED***
-      </Box>
-      <Box display="flex" alignItems="center" flexWrap="wrap" flex=***REMOVED***1***REMOVED***>
-        <Box mb=***REMOVED***1***REMOVED*** flex=***REMOVED***1***REMOVED*** flexBasis=***REMOVED***310***REMOVED***>
+      <Box display="flex" alignItems="center" flex="1 0 26rem" pr=***REMOVED***2***REMOVED***>
+        <Box className=***REMOVED***classes.logoWrapper***REMOVED*** pr=***REMOVED***[2, 3]***REMOVED***>
+          ***REMOVED***!!company && (
+            <CompanyLogo
+              company=***REMOVED***company***REMOVED***
+              onClick=***REMOVED***
+                !preview ? () => Router.push(`/companies/$***REMOVED***company.id***REMOVED***`) : null
+              ***REMOVED***
+            />
+          )***REMOVED***
+        </Box>
+        <Box mb=***REMOVED***1***REMOVED*** flex=***REMOVED***1***REMOVED***>
           ***REMOVED***preview ? (
             <Typography variant="h6">***REMOVED***job.position || "Position"***REMOVED***</Typography>
           ) : (
@@ -199,21 +203,21 @@ export default function JobItem(***REMOVED***
             </Box>
           )***REMOVED***
         </Box>
-        <Box>
-          ***REMOVED***tags.map(tag => ***REMOVED***
-            let tagName = typeof tag === "object" ? tag.name : tag;
-            return (
-              <Chip
-                key=***REMOVED***tagName***REMOVED***
-                classes=***REMOVED******REMOVED*** root: classes.tagChip ***REMOVED******REMOVED***
-                label=***REMOVED***tagName***REMOVED***
-                variant="outlined"
-                size="small"
-                onClick=***REMOVED***!!onTagClick ? () => onTagClick(tag.name) : null***REMOVED***
-              />
-            );
-          ***REMOVED***)***REMOVED***
-        </Box>
+      </Box>
+      <Box display="flex" flexWrap="wrap" flex="1">
+        ***REMOVED***tags.map(tag => ***REMOVED***
+          let tagName = typeof tag === "object" ? tag.name : tag;
+          return (
+            <Chip
+              key=***REMOVED***tagName***REMOVED***
+              classes=***REMOVED******REMOVED*** root: classes.tagChip, label: classes.tagChipLabel ***REMOVED******REMOVED***
+              label=***REMOVED***tagName***REMOVED***
+              variant="outlined"
+              size="small"
+              onClick=***REMOVED***!!onTagClick ? () => onTagClick(tag.name) : null***REMOVED***
+            />
+          );
+        ***REMOVED***)***REMOVED***
       </Box>
     </Box>
   );
