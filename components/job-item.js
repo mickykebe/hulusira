@@ -13,12 +13,12 @@ const useStyles = makeStyles(theme => ({
   root: props => ({
     position: "relative",
     display: "flex",
-    padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
+    flexWrap: "wrap",
+    padding: `0.5rem 1rem`,
     border: `1px solid ${theme.palette.grey[200]}`,
     backgroundColor: theme.palette.common.white,
     alignItems: "center",
     borderRadius: 4,
-    border: `1px solid #EAEDF3`,
     boxShadow: theme.boxShadows[0],
     ...(props.preview && {
       position: "sticky",
@@ -37,11 +37,15 @@ const useStyles = makeStyles(theme => ({
   },
   tagChip: {
     border: `1px solid ${theme.palette.grey[700]}`,
-    marginRight: theme.spacing(1),
-    marginBottom: theme.spacing(1),
+    marginRight: "0.5rem",
+    marginBottom: "0.5rem",
     fontWeight: 800,
     fontSize: ".6875rem",
     color: theme.palette.grey[700]
+  },
+  tagChipLabel: {
+    paddingLeft: "0.5rem",
+    paddingRight: "0.5rem"
   },
   applyButton: {
     marginLeft: theme.spacing(2),
@@ -56,12 +60,12 @@ const useStyles = makeStyles(theme => ({
     paddingBottom: theme.spacing(0.5)
   },
   expiredTag: {
-    padding: `0 ${theme.spacing(0.5)}px`,
+    padding: `0 0.25rem`,
     border: "1px solid rgb(229, 57, 53)",
     color: "rgb(229, 57, 53)"
   },
   closedTag: {
-    padding: `0 ${theme.spacing(0.5)}px`,
+    padding: `0 0.25rem`,
     backgroundColor: "rgb(229, 57, 53)",
     color: "white"
   }
@@ -104,18 +108,18 @@ export default function JobItem({
 
   return (
     <Box className={clsx(classes.root, className)}>
-      <Box className={classes.logoWrapper} pr={[2, 3]}>
-        {!!company && (
-          <CompanyLogo
-            company={company}
-            onClick={
-              !preview ? () => Router.push(`/companies/${company.id}`) : null
-            }
-          />
-        )}
-      </Box>
-      <Box display="flex" alignItems="center" flexWrap="wrap" flex={1}>
-        <Box mb={1} flex={1} flexBasis={310}>
+      <Box display="flex" alignItems="center" flex="1 0 26rem" pr={2}>
+        <Box className={classes.logoWrapper} pr={[2, 3]}>
+          {!!company && (
+            <CompanyLogo
+              company={company}
+              onClick={
+                !preview ? () => Router.push(`/companies/${company.id}`) : null
+              }
+            />
+          )}
+        </Box>
+        <Box mb={1} flex={1}>
           {preview ? (
             <Typography variant="h6">{job.position || "Position"}</Typography>
           ) : (
@@ -199,21 +203,21 @@ export default function JobItem({
             </Box>
           )}
         </Box>
-        <Box>
-          {tags.map(tag => {
-            let tagName = typeof tag === "object" ? tag.name : tag;
-            return (
-              <Chip
-                key={tagName}
-                classes={{ root: classes.tagChip }}
-                label={tagName}
-                variant="outlined"
-                size="small"
-                onClick={!!onTagClick ? () => onTagClick(tag.name) : null}
-              />
-            );
-          })}
-        </Box>
+      </Box>
+      <Box display="flex" flexWrap="wrap" flex="1">
+        {tags.map(tag => {
+          let tagName = typeof tag === "object" ? tag.name : tag;
+          return (
+            <Chip
+              key={tagName}
+              classes={{ root: classes.tagChip, label: classes.tagChipLabel }}
+              label={tagName}
+              variant="outlined"
+              size="small"
+              onClick={!!onTagClick ? () => onTagClick(tag.name) : null}
+            />
+          );
+        })}
       </Box>
     </Box>
   );

@@ -2,17 +2,21 @@ import { Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 
 const logoSizes = {
+  extraSmall: {
+    width: "2rem",
+    height: "2rem"
+  },
   small: {
-    width: 48,
-    height: 48
+    width: "3rem",
+    height: "3rem"
   },
   medium: {
-    width: 72,
-    height: 72
+    width: "4.5rem",
+    height: "4.5rem"
   },
   large: {
-    width: 96,
-    height: 96
+    width: "6rem",
+    height: "6rem"
   }
 };
 
@@ -23,7 +27,6 @@ const useStyles = makeStyles(theme => ({
     border: `1px solid #eee`,
     cursor: props.isLink ? "pointer" : "auto",
     borderRadius: "50%",
-    padding: theme.spacing(1),
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -32,7 +35,7 @@ const useStyles = makeStyles(theme => ({
   logo: {
     maxWidth: "100%",
     maxHeight: "100%",
-    padding: theme.spacing(0.5)
+    borderRadius: "50%"
   },
   abbrev: props => ({
     display: "flex",

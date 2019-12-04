@@ -86,7 +86,8 @@ export default function JobForm({
     <Formik
       validationSchema={jobValidationSchema}
       initialValues={initialValues}
-      onSubmit={handleSubmit}>
+      onSubmit={handleSubmit}
+    >
       {({
         values,
         isSubmitting,
@@ -121,7 +122,8 @@ export default function JobForm({
                         value={values.companyId || ""}
                         onChange={handleChange}
                         error={!!(touched.companyId && errors.companyId)}
-                        helperText={touched.companyId && errors.companyId}>
+                        helperText={touched.companyId && errors.companyId}
+                      >
                         {companies.map(company => (
                           <MenuItem key={company.id} value={company.id}>
                             <Box display="flex" alignItems="center">
@@ -130,7 +132,7 @@ export default function JobForm({
                                   <CompanyLogo
                                     company={company}
                                     abbrevFallback={false}
-                                    size="small"
+                                    size="extraSmall"
                                   />
                                 </Box>
                               )}
@@ -142,7 +144,8 @@ export default function JobForm({
                       <Typography
                         variant="subtitle1"
                         align="center"
-                        className={classes.orText}>
+                        className={classes.orText}
+                      >
                         OR
                       </Typography>
                     </Fragment>
@@ -151,7 +154,8 @@ export default function JobForm({
                     color="primary"
                     variant="contained"
                     startIcon={<BusinessIcon />}
-                    onClick={() => Router.push("/dashboard/companies/new")}>
+                    onClick={() => Router.push("/dashboard/companies/new")}
+                  >
                     Add Company
                   </Button>
                 </Box>
@@ -170,7 +174,8 @@ export default function JobForm({
               variant="extended"
               color="primary"
               className={classes.postButton}
-              disabled={isSubmitting || disableSaveButton}>
+              disabled={isSubmitting || disableSaveButton}
+            >
               <SaveIcon className={classes.saveButtonIcon} />
               Save
             </Fab>

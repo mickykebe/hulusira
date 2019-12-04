@@ -61,7 +61,7 @@ export default function JobTableRow({ jobData }) {
                   <CompanyLogo
                     company={company}
                     abbrevFallback={false}
-                    size="small"
+                    size="extraSmall"
                   />
                 </Box>
               )}
