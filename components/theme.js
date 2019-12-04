@@ -9,12 +9,12 @@ const theme = createMuiTheme({
       main: "#172b4d"
     },
     background: {
-      default: "#FBFBFD"
+      default: "#FBFBFB"
     }
   },
   typography: {
     fontFamily: [
-      "Nunito",
+      "Source Sans Pro",
       "-apple-system",
       "BlinkMacSystemFont",
       '"Segoe UI"',
