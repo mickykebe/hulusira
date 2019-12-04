@@ -3,37 +3,36 @@ import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
 
 const logoSizes = ***REMOVED***
   small: ***REMOVED***
-    width: 24,
-    height: 24
-  ***REMOVED***,
-  medium: ***REMOVED***
     width: 48,
     height: 48
   ***REMOVED***,
+  medium: ***REMOVED***
+    width: 72,
+    height: 72
+  ***REMOVED***,
   large: ***REMOVED***
-    width: 64,
-    height: 64
+    width: 96,
+    height: 96
   ***REMOVED***
 ***REMOVED***;
 
-const useStyles = makeStyles(***REMOVED***
+const useStyles = makeStyles(theme => (***REMOVED***
   logoContainer: props => (***REMOVED***
     position: "relative",
-    backgroundColor: `#fafbfc`,
+    backgroundColor: theme.palette.background.default,
     border: `1px solid #eee`,
     cursor: props.isLink ? "pointer" : "auto",
+    borderRadius: "50%",
+    padding: theme.spacing(1),
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
     ...logoSizes[props.size]
   ***REMOVED***),
   logo: ***REMOVED***
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    right: 0,
-    left: 0,
-    margin: "auto",
-    display: "block",
     maxWidth: "100%",
-    maxHeight: "100%"
+    maxHeight: "100%",
+    padding: theme.spacing(0.5)
   ***REMOVED***,
   abbrev: props => (***REMOVED***
     display: "flex",
@@ -42,7 +41,7 @@ const useStyles = makeStyles(***REMOVED***
     cursor: props.isLink ? "pointer" : "auto",
     ...logoSizes[props.size]
   ***REMOVED***)
-***REMOVED***);
+***REMOVED***));
 
 function abbrev(name) ***REMOVED***
   const [word1, word2, ..._rest] = name.split(" ");
@@ -70,14 +69,17 @@ export default function CompanyLogo(***REMOVED***
   ***REMOVED***
   if (abbrevFallback) ***REMOVED***
     return (
-      <Typography
-        variant=***REMOVED***size === "small" ? "h6" : "h5"***REMOVED***
-        color="textSecondary"
-        align="center"
-        className=***REMOVED***classes.abbrev***REMOVED***
-        onClick=***REMOVED***onClick***REMOVED***>
-        ***REMOVED***abbrev(company.name)***REMOVED***
-      </Typography>
+      <Box className=***REMOVED***classes.logoContainer***REMOVED*** onClick=***REMOVED***onClick***REMOVED***>
+        <Typography
+          variant=***REMOVED***size === "small" ? "h5" : "h4"***REMOVED***
+          color="textSecondary"
+          align="center"
+          className=***REMOVED***classes.abbrev***REMOVED***
+          onClick=***REMOVED***onClick***REMOVED***
+        >
+          ***REMOVED***abbrev(company.name)***REMOVED***
+        </Typography>
+      </Box>
     );
   ***REMOVED***
   return null;
