@@ -9,7 +9,7 @@ const createJobMessage = ({ job, company }) => {
   return `💼 ${job.position}
 
 🕔 ${job.jobType}${company ? `\n\n🏢 ${company.name}` : ""}${
-    job.careerLevel ? `\n\n📍 ${careerLevelLabel(job.careerLevel)}` : ""
+    job.careerLevel ? `\n\n📈 ${careerLevelLabel(job.careerLevel)}` : ""
   }${job.location ? `\n\n📍 ${job.location}` : ""}${
     job.salary ? `\n\n💰 ${job.salary}` : ""
   }${
