@@ -2,7 +2,7 @@ export function cleanTags(tags) ***REMOVED***
   return tags.map(tag => tag.trim()).filter(tag => tag.length > 0);
 ***REMOVED***
 
-const careerLevels = [
+export const careerLevels = [
   ***REMOVED***
     id: "entry",
     label: "Entry Level (Fresh Graduate)"
