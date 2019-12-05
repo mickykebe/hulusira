@@ -5,6 +5,7 @@ export const jobValidationSchema = Yup.object().shape(
   ***REMOVED***
     position: Yup.string().required("Required"),
     jobType: Yup.string().required("Required"),
+    careerLevel: Yup.string().required("Required"),
     primaryTag: Yup.string()
       .nullable()
       .test(

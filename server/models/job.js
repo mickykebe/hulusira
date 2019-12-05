@@ -3,6 +3,7 @@ class Job ***REMOVED***
     id,
     position,
     jobType,
+    careerLevel,
     companyId,
     tags,
     location,
@@ -25,6 +26,7 @@ class Job ***REMOVED***
     this.id = id;
     this.position = position;
     this.jobType = jobType;
+    this.careerLevel = careerLevel;
     this.companyId = companyId;
     this.tags = tags;
     this.location = location;
@@ -55,6 +57,7 @@ class Job ***REMOVED***
       dbJob.job_id,
       dbJob.job_position,
       dbJob.job_job_type,
+      dbJob.job_career_level,
       dbJob.job_company_id,
       tags,
       dbJob.job_location,

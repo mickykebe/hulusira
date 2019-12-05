@@ -130,6 +130,7 @@ function New(***REMOVED*** primaryTags, user ***REMOVED***) ***REMOVED***
           initialValues=***REMOVED******REMOVED***
             position: "",
             jobType: "",
+            careerLevel: "",
             companyName: "",
             hasCompany: true,
             location: "Addis Ababa",

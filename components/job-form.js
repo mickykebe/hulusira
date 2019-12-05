@@ -51,6 +51,7 @@ export default function JobForm(***REMOVED***
   initialValues = ***REMOVED***
     position: "",
     jobType: "",
+    careerLevel: "",
     hasCompany: true,
     location: "Addis Ababa",
     primaryTag: "",

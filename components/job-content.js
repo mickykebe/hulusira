@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Router from 'next/router';
+import Router from "next/router";
 import ***REMOVED***
   Box,
   Typography,
@@ -15,7 +15,8 @@ import Markdown from "./markdown";
 import format from "date-fns/format";
 import ***REMOVED*** Fragment ***REMOVED*** from "react";
 import InArticleAd from "./in-article-ad";
-import * as gtag from '../lib/gtag';
+import * as gtag from "../lib/gtag";
+import ***REMOVED*** careerLevelLabel ***REMOVED*** from "../utils/index";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   root: ***REMOVED***
@@ -58,7 +59,7 @@ const useStyles = makeStyles(theme => (***REMOVED***
 
 function JobInfoItem(***REMOVED*** title, value, classes = ***REMOVED******REMOVED*** ***REMOVED***) ***REMOVED***
   return (
-    <Box pr=***REMOVED***3***REMOVED***>
+    <Box flex=***REMOVED***1***REMOVED*** pr=***REMOVED***3***REMOVED***>
       <Typography variant="subtitle1">***REMOVED***title***REMOVED***</Typography>
       <Typography variant="body1" className=***REMOVED***classes.value***REMOVED***>
         ***REMOVED***value***REMOVED***
@@ -76,8 +77,13 @@ function ApplyButton(***REMOVED*** job ***REMOVED***) ***REMOVED***
       target="_blank"
       fullWidth
       onClick=***REMOVED***() => ***REMOVED***
-        gtag.event(***REMOVED*** action: "Click Apply Now", category: "Job", label: job.slug ***REMOVED***);
-      ***REMOVED******REMOVED***>
+        gtag.event(***REMOVED***
+          action: "Click Apply Now",
+          category: "Job",
+          label: job.slug
+        ***REMOVED***);
+      ***REMOVED******REMOVED***
+    >
       Apply Now
     </Button>
   );
@@ -87,7 +93,8 @@ export default function JobContent(***REMOVED*** jobData, withAds = false ***REM
   const classes = useStyles();
   const ***REMOVED*** job, company ***REMOVED*** = jobData;
   const hasApplyButton = !!job.applyUrl || !!job.applyEmail;
-  const hasApplySection = job.approvalStatus !== "Closed" && (!!job.howToApply || hasApplyButton);
+  const hasApplySection =
+    job.approvalStatus !== "Closed" && (!!job.howToApply || hasApplyButton);
   return (
     <Container className=***REMOVED***classes.root***REMOVED*** maxWidth="lg">
       <Box display="flex" alignItems="center" pb=***REMOVED***2***REMOVED***>
@@ -111,7 +118,8 @@ export default function JobContent(***REMOVED*** jobData, withAds = false ***REM
               <Link
                 href="/companies/[id]"
                 as=***REMOVED***`/companies/$***REMOVED***company.id***REMOVED***`***REMOVED***
-                passHref>
+                passHref
+              >
                 <MuiLink variant="subtitle2" color="inherit" gutterBottom>
                   ***REMOVED***company.name***REMOVED***
                 </MuiLink>
@@ -125,15 +133,22 @@ export default function JobContent(***REMOVED*** jobData, withAds = false ***REM
           className=***REMOVED***classes.jobGrid***REMOVED***
           item
           sm=***REMOVED***12***REMOVED***
-          lg=***REMOVED***hasApplySection ? 9 : 12***REMOVED***>
+          lg=***REMOVED***hasApplySection ? 9 : 12***REMOVED***
+        >
           <HSPaper className=***REMOVED***classes.jobInfo***REMOVED***>
             ***REMOVED***job.location && (
-              <JobInfoItem title="Location" value=***REMOVED***job.location***REMOVED*** />
+              <JobInfoItem title="📍 Location" value=***REMOVED***job.location***REMOVED*** />
             )***REMOVED***
             ***REMOVED***job.jobType && (
-              <JobInfoItem title="Job Type" value=***REMOVED***job.jobType***REMOVED*** />
+              <JobInfoItem title="🕔 Job Type" value=***REMOVED***job.jobType***REMOVED*** />
             )***REMOVED***
-            ***REMOVED***job.salary && <JobInfoItem title="Salary" value=***REMOVED***job.salary***REMOVED*** />***REMOVED***
+            ***REMOVED***job.careerLevel && (
+              <JobInfoItem
+                title="📈 Career Level"
+                value=***REMOVED***careerLevelLabel(job.careerLevel)***REMOVED***
+              />
+            )***REMOVED***
+            ***REMOVED***job.salary && <JobInfoItem title="💰 Salary" value=***REMOVED***job.salary***REMOVED*** />***REMOVED***
             ***REMOVED***job.deadline && (
               <JobInfoItem
                 title="Deadline"
