@@ -2,7 +2,7 @@ export function cleanTags(tags) {
   return tags.map(tag => tag.trim()).filter(tag => tag.length > 0);
 }
 
-const careerLevels = [
+export const careerLevels = [
   {
     id: "entry",
     label: "Entry Level (Fresh Graduate)"
