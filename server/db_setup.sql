@@ -32,6 +32,7 @@ CREATE TABLE job (
   id SERIAL PRIMARY KEY,
   position TEXT NOT NULL,
   job_type TEXT NOT NULL CONSTRAINT check_value CHECK (job_type IN ('Full-time', 'Part-time', 'Freelance', 'Internship', 'Temporary', 'Contract')),
+  career_level TEXT NOT NULL CONSTRAINT career_level_values CHECK (career_level IN ('entry', 'junior', 'mid', 'senior', 'manager', 'executive', 'senior-executive')),
   company_id INTEGER REFERENCES company(id) ON DELETE SET NULL,
   location TEXT,
   salary TEXT,

@@ -7,6 +7,7 @@ const validationSchema = Yup.object().shape(
   {
     position: Yup.string().required("Required"),
     jobType: Yup.string().required("Required"),
+    careerLevel: Yup.string().required("Required"),
     primaryTag: Yup.string()
       .nullable()
       .test(

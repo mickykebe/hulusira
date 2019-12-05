@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Router from 'next/router';
+import Router from "next/router";
 import {
   Box,
   Typography,
@@ -15,7 +15,8 @@ import Markdown from "./markdown";
 import format from "date-fns/format";
 import { Fragment } from "react";
 import InArticleAd from "./in-article-ad";
-import * as gtag from '../lib/gtag';
+import * as gtag from "../lib/gtag";
+import { careerLevelLabel } from "../utils/index";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -58,7 +59,7 @@ const useStyles = makeStyles(theme => ({
 
 function JobInfoItem({ title, value, classes = {} }) {
   return (
-    <Box pr={3}>
+    <Box flex={1} pr={3}>
       <Typography variant="subtitle1">{title}</Typography>
       <Typography variant="body1" className={classes.value}>
         {value}
@@ -76,8 +77,13 @@ function ApplyButton({ job }) {
       target="_blank"
       fullWidth
       onClick={() => {
-        gtag.event({ action: "Click Apply Now", category: "Job", label: job.slug });
-      }}>
+        gtag.event({
+          action: "Click Apply Now",
+          category: "Job",
+          label: job.slug
+        });
+      }}
+    >
       Apply Now
     </Button>
   );
@@ -87,7 +93,8 @@ export default function JobContent({ jobData, withAds = false }) {
   const classes = useStyles();
   const { job, company } = jobData;
   const hasApplyButton = !!job.applyUrl || !!job.applyEmail;
-  const hasApplySection = job.approvalStatus !== "Closed" && (!!job.howToApply || hasApplyButton);
+  const hasApplySection =
+    job.approvalStatus !== "Closed" && (!!job.howToApply || hasApplyButton);
   return (
     <Container className={classes.root} maxWidth="lg">
       <Box display="flex" alignItems="center" pb={2}>
@@ -111,7 +118,8 @@ export default function JobContent({ jobData, withAds = false }) {
               <Link
                 href="/companies/[id]"
                 as={`/companies/${company.id}`}
-                passHref>
+                passHref
+              >
                 <MuiLink variant="subtitle2" color="inherit" gutterBottom>
                   {company.name}
                 </MuiLink>
@@ -125,15 +133,22 @@ export default function JobContent({ jobData, withAds = false }) {
           className={classes.jobGrid}
           item
           sm={12}
-          lg={hasApplySection ? 9 : 12}>
+          lg={hasApplySection ? 9 : 12}
+        >
           <HSPaper className={classes.jobInfo}>
             {job.location && (
-              <JobInfoItem title="Location" value={job.location} />
+              <JobInfoItem title="📍 Location" value={job.location} />
             )}
             {job.jobType && (
-              <JobInfoItem title="Job Type" value={job.jobType} />
+              <JobInfoItem title="🕔 Job Type" value={job.jobType} />
             )}
-            {job.salary && <JobInfoItem title="Salary" value={job.salary} />}
+            {job.careerLevel && (
+              <JobInfoItem
+                title="📈 Career Level"
+                value={careerLevelLabel(job.careerLevel)}
+              />
+            )}
+            {job.salary && <JobInfoItem title="💰 Salary" value={job.salary} />}
             {job.deadline && (
               <JobInfoItem
                 title="Deadline"

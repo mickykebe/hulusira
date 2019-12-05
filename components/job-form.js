@@ -51,6 +51,7 @@ export default function JobForm({
   initialValues = {
     position: "",
     jobType: "",
+    careerLevel: "",
     hasCompany: true,
     location: "Addis Ababa",
     primaryTag: "",

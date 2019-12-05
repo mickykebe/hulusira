@@ -18,6 +18,7 @@ class Db {
       "id",
       "position",
       "job_type",
+      "career_level",
       "company_id",
       "location",
       "salary",
@@ -81,6 +82,7 @@ class Db {
         .insert({
           position: jobData.position,
           job_type: jobData.jobType,
+          career_level: jobData.careerLevel,
           company_id: companyId,
           location: jobData.location,
           salary: jobData.salary,
@@ -157,6 +159,7 @@ class Db {
         .update({
           position: jobData.position,
           job_type: jobData.jobType,
+          career_level: jobData.careerLevel,
           company_id: jobData.companyId,
           location: jobData.location,
           salary: jobData.salary,

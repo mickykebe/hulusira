@@ -130,6 +130,7 @@ function New({ primaryTags, user }) {
           initialValues={{
             position: "",
             jobType: "",
+            careerLevel: "",
             companyName: "",
             hasCompany: true,
             location: "Addis Ababa",

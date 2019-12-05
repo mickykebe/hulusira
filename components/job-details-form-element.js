@@ -3,7 +3,7 @@ import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import MDEditor from "./md-editor";
 import HSCard from "./hs-card";
-import addDays from "date-fns/addDays";
+import { careerLevels } from "../utils";
 
 const jobTypes = [
   "Full-time",
@@ -56,6 +56,24 @@ export default function JobDetailsFormElement({
         {jobTypes.map(jobType => (
           <MenuItem key={jobType} value={jobType}>
             {jobType}
+          </MenuItem>
+        ))}
+      </TextField>
+      <TextField
+        name="careerLevel"
+        select
+        value={values.careerLevel}
+        label="Career Level*"
+        margin="normal"
+        variant="outlined"
+        fullWidth
+        onChange={handleChange}
+        error={!!(touched.careerLevel && errors.careerLevel)}
+        helperText={touched.careerLevel && errors.careerLevel}
+      >
+        {careerLevels.map(careerLevel => (
+          <MenuItem key={careerLevel.id} value={careerLevel.id}>
+            {careerLevel.label}
           </MenuItem>
         ))}
       </TextField>
