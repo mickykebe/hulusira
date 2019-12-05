@@ -9,7 +9,7 @@ const createJobMessage = (***REMOVED*** job, company ***REMOVED***) => ***REMOVE
   return `💼 $***REMOVED***job.position***REMOVED***
 
 🕔 $***REMOVED***job.jobType***REMOVED***$***REMOVED***company ? `\n\n🏢 $***REMOVED***company.name***REMOVED***` : ""***REMOVED***$***REMOVED***
-    job.careerLevel ? `\n\n📍 $***REMOVED***careerLevelLabel(job.careerLevel)***REMOVED***` : ""
+    job.careerLevel ? `\n\n📈 $***REMOVED***careerLevelLabel(job.careerLevel)***REMOVED***` : ""
   ***REMOVED***$***REMOVED***job.location ? `\n\n📍 $***REMOVED***job.location***REMOVED***` : ""***REMOVED***$***REMOVED***
     job.salary ? `\n\n💰 $***REMOVED***job.salary***REMOVED***` : ""
   ***REMOVED***$***REMOVED***
