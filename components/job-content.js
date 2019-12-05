@@ -151,7 +151,7 @@ export default function JobContent({ jobData, withAds = false }) {
             {job.salary && <JobInfoItem title="💰 Salary" value={job.salary} />}
             {job.deadline && (
               <JobInfoItem
-                title="Deadline"
+                title="⏳ Deadline"
                 value={format(new Date(job.deadline), "MMM dd, yyyy")}
                 classes={{ value: classes.jobInfoDeadline }}
               />

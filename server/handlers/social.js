@@ -14,7 +14,7 @@ const createJobMessage = ({ job, company }) => {
     job.salary ? `\n\n💰 ${job.salary}` : ""
   }${
     job.deadline
-      ? `\n\n⏲️ Deadline: ${format(new Date(job.deadline), "MMM dd, yyyy")}`
+      ? `\n\n⏳ Deadline: ${format(new Date(job.deadline), "MMM dd, yyyy")}`
       : ""
   }
   
