@@ -14,7 +14,7 @@ const createJobMessage = (***REMOVED*** job, company ***REMOVED***) => ***REMOVE
     job.salary ? `\n\n💰 $***REMOVED***job.salary***REMOVED***` : ""
   ***REMOVED***$***REMOVED***
     job.deadline
-      ? `\n\n⏲️ Deadline: $***REMOVED***format(new Date(job.deadline), "MMM dd, yyyy")***REMOVED***`
+      ? `\n\n⏳ Deadline: $***REMOVED***format(new Date(job.deadline), "MMM dd, yyyy")***REMOVED***`
       : ""
   ***REMOVED***
   

@@ -151,7 +151,7 @@ export default function JobContent(***REMOVED*** jobData, withAds = false ***REM
             ***REMOVED***job.salary && <JobInfoItem title="💰 Salary" value=***REMOVED***job.salary***REMOVED*** />***REMOVED***
             ***REMOVED***job.deadline && (
               <JobInfoItem
-                title="Deadline"
+                title="⏳ Deadline"
                 value=***REMOVED***format(new Date(job.deadline), "MMM dd, yyyy")***REMOVED***
                 classes=***REMOVED******REMOVED*** value: classes.jobInfoDeadline ***REMOVED******REMOVED***
               />
