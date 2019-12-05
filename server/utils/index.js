@@ -38,11 +38,11 @@ const careerLevels = [
   },
   {
     id: "junior",
-    label: "Junior Level (1-2 years experience)"
+    label: "Junior Level (1+ - 2 years experience)"
   },
   {
     id: "mid",
-    label: "Mid Level (2-5 years experience)"
+    label: "Mid Level (2+ - 5 years experience)"
   },
   {
     id: "senior",
