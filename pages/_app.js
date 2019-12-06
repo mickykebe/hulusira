@@ -1,6 +1,6 @@
 import React from "react";
 import NProgress from "nprogress";
-import App, { Container } from "next/app";
+import App from "next/app";
 import Head from "next/head";
 import Router from "next/router";
 import { ThemeProvider } from "@material-ui/styles";
@@ -10,6 +10,7 @@ import theme from "../components/theme";
 import GlobalCss from "../components/global-css";
 import * as gtag from "../lib/gtag";
 import "easymde/dist/easymde.min.css";
+import { Box } from "@material-ui/core";
 
 NProgress.configure({ showSpinner: false });
 
@@ -48,7 +49,7 @@ class MyApp extends App {
     const { Component, pageProps } = this.props;
 
     return (
-      <Container>
+      <Box>
         <Head>
           <title>HuluSira</title>
           <link rel="stylesheet" type="text/css" href="/nprogress.css" />
@@ -58,7 +59,7 @@ class MyApp extends App {
           <GlobalCss />
           <Component {...pageProps} />
         </ThemeProvider>
-      </Container>
+      </Box>
     );
   }
 }
