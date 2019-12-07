@@ -61,7 +61,10 @@ const useStyles = makeStyles(theme => ({
     };
   },
   jobItem: {
-    marginBottom: theme.spacing(2)
+    marginBottom: `0.5rem`
+  },
+  feedAd: {
+    marginBottom: `0.5rem`
   },
   jobsLoadingSpinner: {
     display: "block",
@@ -357,7 +360,7 @@ function Index({ user, jobPage, primaryTags }) {
                   <Fragment key={job.id}>
                     {process.env.NODE_ENV === "production" &&
                       index % 4 === 0 &&
-                      index > 0 && <FeedAd />}
+                      index > 0 && <FeedAd className={classes.feedAd} />}
                     <JobItem
                       className={classes.jobItem}
                       job={job}
