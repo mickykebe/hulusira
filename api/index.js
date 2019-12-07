@@ -58,9 +58,9 @@ class Api {
     return data;
   }
 
-  async getJobs({ ctx = {}, cursor = "", tags = "" } = {}) {
+  async getJobs({ ctx = {}, cursor = "", filterQuery } = {}) {
     const { data } = await this.request(ctx).get(
-      `/jobs?cursor=${cursor}&tags=${tags}`
+      `/jobs?cursor=${cursor}&${filterQuery}`
     );
     return data;
   }

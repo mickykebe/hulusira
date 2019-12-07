@@ -2,6 +2,15 @@ export function cleanTags(tags) {
   return tags.map(tag => tag.trim()).filter(tag => tag.length > 0);
 }
 
+export const jobTypes = [
+  "Full-time",
+  "Part-time",
+  "Contract",
+  "Freelance",
+  "Internship",
+  "Temporary"
+];
+
 export const careerLevels = [
   {
     id: "entry",

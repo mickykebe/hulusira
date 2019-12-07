@@ -152,20 +152,23 @@ exports.getJobs = async (req, res) => {
   const {
     cursor: encodedCursor,
     count: countStr = "50",
-    tags = ""
+    tags = [],
+    jobTypes = [],
+    careerLevels = []
   } = req.query;
   const fromJobId =
     typeof encodedCursor === "string" && encodedCursor !== ""
       ? parseInt(utils.base64decode(encodedCursor))
       : null;
   const count = parseInt(countStr);
-  const tagNames = utils.tagNamesFromQueryParam(tags);
   const jobs = await db.getJobs({
     fromJobId,
     limit: count + 1,
     approvalStatus: ["Active", "Closed"],
     withinDays: 30,
-    tagNames,
+    tagNames: tags,
+    jobTypes: jobTypes,
+    careerLevels: careerLevels,
     publicOnly: true
   });
   if (jobs.length < count + 1) {
