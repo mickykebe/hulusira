@@ -9,18 +9,26 @@ import ***REMOVED***
   CircularProgress,
   Typography,
   Fab,
-  TextField,
-  MenuItem
+  Grid,
+  useMediaQuery,
+  useTheme,
+  Badge,
+  ExpansionPanel,
+  ExpansionPanelSummary,
+  ExpansionPanelDetails
 ***REMOVED*** from "@material-ui/core";
+import FilterListIcon from "@material-ui/icons/FilterList";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import api from "../api";
 import Layout from "../components/layout";
 import JobItem from "../components/job-item";
 import useIsInview from "../hooks/use-is-inview";
 import TagFilter from "../components/tag-filter";
-import ***REMOVED*** useEffect, useRef, Fragment ***REMOVED*** from "react";
+import ***REMOVED*** useEffect, useRef, Fragment, useCallback, useState ***REMOVED*** from "react";
 import HeaderAd from "../components/header-ad";
 import FeedAd from "../components/feed-ad";
+import JobFilterPanels from "../components/job-filter-panels";
+import queryString from "query-string";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   root: ***REMOVED***
@@ -29,9 +37,31 @@ const useStyles = makeStyles(theme => (***REMOVED***
   headerAd: ***REMOVED***
     marginBottom: theme.spacing(1)
   ***REMOVED***,
+  filterExpansionPanel: ***REMOVED***
+    marginTop: "0.5rem",
+    boxShadow: "none",
+    backgroundColor: "inherit",
+    "&::before": ***REMOVED***
+      display: "none"
+    ***REMOVED***
+  ***REMOVED***,
+  filterPanelSummary: ***REMOVED***
+    paddingLeft: "0.5rem",
+    paddingRight: "0.5rem"
+  ***REMOVED***,
+  filterHead: (***REMOVED*** smallScreen ***REMOVED***) => ***REMOVED***
+    return ***REMOVED***
+      ...(smallScreen && ***REMOVED***
+        borderBottom: `1px solid $***REMOVED***theme.palette.grey[400]***REMOVED***`,
+        borderTop: `1px solid $***REMOVED***theme.palette.grey[400]***REMOVED***`
+      ***REMOVED***),
+      ...(!smallScreen && ***REMOVED***
+        paddingBottom: `0.5rem`
+      ***REMOVED***)
+    ***REMOVED***;
+  ***REMOVED***,
   jobItem: ***REMOVED***
-    marginBottom: theme.spacing(2),
-    marginTop: theme.spacing(2)
+    marginBottom: theme.spacing(2)
   ***REMOVED***,
   jobsLoadingSpinner: ***REMOVED***
     display: "block",
@@ -50,6 +80,20 @@ const useStyles = makeStyles(theme => (***REMOVED***
     paddingTop: theme.spacing(4)
   ***REMOVED***
 ***REMOVED***));
+
+function getFilterQuery(queryPath) ***REMOVED***
+  const queryParams = queryString.parse(queryPath, ***REMOVED***
+    arrayFormat: "bracket"
+  ***REMOVED***);
+  return queryString.stringify(
+    ***REMOVED***
+      tags: queryParams.tags,
+      jobTypes: queryParams.jobTypes,
+      careerLevels: queryParams.careerLevels
+    ***REMOVED***,
+    ***REMOVED*** arrayFormat: "bracket" ***REMOVED***
+  );
+***REMOVED***
 
 const pageTitle = "Hulusira - Jobs in Ethiopia";
 const pageUrl = `$***REMOVED***process.env.ROOT_URL***REMOVED***/`;
@@ -84,7 +128,7 @@ const jobsReducer = (state, action) => ***REMOVED***
   ***REMOVED***
 ***REMOVED***;
 
-function Index(***REMOVED*** user, jobPage, activeTagNames, primaryTags ***REMOVED***) ***REMOVED***
+function Index(***REMOVED*** user, jobPage, primaryTags ***REMOVED***) ***REMOVED***
   const [***REMOVED*** jobs, nextCursor, isLoading, isError ***REMOVED***, dispatch] = React.useReducer(
     jobsReducer,
     ***REMOVED***
@@ -102,18 +146,28 @@ function Index(***REMOVED*** user, jobPage, activeTagNames, primaryTags ***REMOV
     ticker.current++;
   ***REMOVED***, [jobPage]);
 
-  const classes = useStyles();
   const router = useRouter();
+  const parsedQS = queryString.parse(queryString.extract(router.asPath), ***REMOVED***
+    arrayFormat: "bracket"
+  ***REMOVED***);
+  const activeTagNames = parsedQS.tags || [];
+  const hasActiveFilter =
+    parsedQS.tags || parsedQS.jobTypes || parsedQS.careerLevels;
+  const theme = useTheme();
+  const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const [filterCollapsed, setFilterCollapsed] = useState(true);
+  const classes = useStyles(***REMOVED*** smallScreen ***REMOVED***);
 
-  const fetchMoreJobs = async () => ***REMOVED***
+  const fetchMoreJobs = useCallback(async () => ***REMOVED***
     const tickerVal = ticker.current;
     if (isLoading || !nextCursor) ***REMOVED***
       return;
     ***REMOVED***
     dispatch(***REMOVED*** type: "FETCH_INIT" ***REMOVED***);
     try ***REMOVED***
+      const filterQuery = getFilterQuery(location.search);
       const jobPage = await api.getJobs(***REMOVED***
-        tags: router.query.tags || "",
+        filterQuery,
         cursor: nextCursor
       ***REMOVED***);
       if (tickerVal === ticker.current) ***REMOVED***
@@ -124,7 +178,7 @@ function Index(***REMOVED*** user, jobPage, activeTagNames, primaryTags ***REMOV
         dispatch(***REMOVED*** type: "FETCH_FAILURE" ***REMOVED***);
       ***REMOVED***
     ***REMOVED***
-  ***REMOVED***;
+  ***REMOVED***, [isLoading, nextCursor]);
 
   const [isIntersecting, sentinelRef] = useIsInview(300);
   useEffect(() => ***REMOVED***
@@ -132,24 +186,52 @@ function Index(***REMOVED*** user, jobPage, activeTagNames, primaryTags ***REMOV
       fetchMoreJobs();
     ***REMOVED***
   ***REMOVED***, [fetchMoreJobs, isIntersecting]);
-  const handleTagClick = tagName => ***REMOVED***
-    const tagIndex = activeTagNames.findIndex(
-      activeTagName => activeTagName === tagName
-    );
-    if (tagIndex !== -1) ***REMOVED***
-      return;
+  const addFilter = (key, value) => ***REMOVED***
+    const parsed = queryString.parse(location.search, ***REMOVED***
+      arrayFormat: "bracket"
+    ***REMOVED***);
+    if (!parsed[key]) ***REMOVED***
+      parsed[key] = [value];
+    ***REMOVED*** else ***REMOVED***
+      if (parsed[key].indexOf(value) !== -1) ***REMOVED***
+        return;
+      ***REMOVED***
+      parsed[key].push(value);
     ***REMOVED***
-    const tags = `$***REMOVED***tagName***REMOVED***$***REMOVED***
-      activeTagNames.length > 0 ? `,$***REMOVED***activeTagNames.join(",")***REMOVED***` : ""
-    ***REMOVED***`;
-    Router.push(`/?tags=$***REMOVED***tags***REMOVED***`);
+    Router.push(
+      `/?$***REMOVED***queryString.stringify(parsed, ***REMOVED*** arrayFormat: "bracket" ***REMOVED***)***REMOVED***`
+    );
+  ***REMOVED***;
+  const addTagToFilter = tagName => ***REMOVED***
+    addFilter("tags", tagName);
   ***REMOVED***;
 
-  const removeTagFromFilter = tagName => ***REMOVED***
-    const tagNames = activeTagNames.filter(
-      activeTagName => activeTagName !== tagName
+  const removeFilter = (key, value) => ***REMOVED***
+    const parsed = queryString.parse(location.search, ***REMOVED***
+      arrayFormat: "bracket"
+    ***REMOVED***);
+    if (parsed[key] && parsed[key].length > 0) ***REMOVED***
+      parsed[key] = parsed[key].filter(val => ***REMOVED***
+        return val !== value;
+      ***REMOVED***);
+      Router.push(
+        `/?$***REMOVED***queryString.stringify(parsed, ***REMOVED*** arrayFormat: "bracket" ***REMOVED***)***REMOVED***`
+      );
+    ***REMOVED***
+  ***REMOVED***;
+  const clearFilter = key => () => ***REMOVED***
+    const parsed = queryString.parse(location.search, ***REMOVED***
+      arrayFormat: "bracket"
+    ***REMOVED***);
+    if (parsed[key] && parsed[key].length > 0) ***REMOVED***
+      parsed[key] = [];
+    ***REMOVED***
+    Router.push(
+      `/?$***REMOVED***queryString.stringify(parsed, ***REMOVED*** arrayFormat: "bracket" ***REMOVED***)***REMOVED***`
     );
-    Router.push(`/$***REMOVED***tagNames.length ? `?tags=$***REMOVED***tagNames.join(",")***REMOVED***` : ""***REMOVED***`);
+  ***REMOVED***;
+  const removeTagFromFilter = tagName => ***REMOVED***
+    removeFilter("tags", tagName);
   ***REMOVED***;
 
   const metaImage = `$***REMOVED***process.env.ROOT_URL***REMOVED***/static/hulusira.png`;
@@ -180,113 +262,161 @@ function Index(***REMOVED*** user, jobPage, activeTagNames, primaryTags ***REMOV
         <meta name="twitter:image:src" content=***REMOVED***metaImage***REMOVED*** />
         <meta name="twitter:url" content=***REMOVED***pageUrl***REMOVED*** />
       </Head>
-      <Container className=***REMOVED***classes.root***REMOVED*** maxWidth="md">
+      <Container className=***REMOVED***classes.root***REMOVED*** maxWidth="lg">
         <HeaderAd className=***REMOVED***classes.headerAd***REMOVED*** />
-        ***REMOVED***(!activeTagNames || activeTagNames.length === 0) && (
-          <TextField
-            value=""
-            select
-            className=***REMOVED***classes.categorySelect***REMOVED***
-            label="Select"
-            onChange=***REMOVED***ev => ***REMOVED***
-              const tagName = ev.target.value;
-              handleTagClick(tagName);
-            ***REMOVED******REMOVED***
-            SelectProps=***REMOVED******REMOVED***
-              MenuProps: ***REMOVED***
-                className: classes.menu
-              ***REMOVED***
-            ***REMOVED******REMOVED***
-            label="Choose category"
-            margin="dense"
-            variant="outlined"
-            fullWidth
-          >
-            ***REMOVED***primaryTags.map(tag => (
-              <MenuItem
-                className=***REMOVED***classes.categoryItem***REMOVED***
-                key=***REMOVED***tag.name***REMOVED***
-                value=***REMOVED***tag.name***REMOVED***
+        <Grid container spacing=***REMOVED***smallScreen ? 0 : 3***REMOVED***>
+          <Grid item xs=***REMOVED***12***REMOVED*** md=***REMOVED***3***REMOVED***>
+            ***REMOVED***smallScreen && (
+              <ExpansionPanel
+                classes=***REMOVED******REMOVED***
+                  root: classes.filterExpansionPanel
+                ***REMOVED******REMOVED***
+                expanded=***REMOVED***!filterCollapsed***REMOVED***
+                onChange=***REMOVED***(_ev, isExpanded) => ***REMOVED***
+                  setFilterCollapsed(!isExpanded);
+                ***REMOVED******REMOVED***
               >
-                ***REMOVED***tag.name***REMOVED***
-              </MenuItem>
-            ))***REMOVED***
-          </TextField>
-        )***REMOVED***
-        <Fragment>
-          ***REMOVED***activeTagNames.length > 0 && (
-            <TagFilter
-              tagNames=***REMOVED***activeTagNames***REMOVED***
-              onTagRemove=***REMOVED***removeTagFromFilter***REMOVED***
-            />
-          )***REMOVED***
-          ***REMOVED***jobs.map((***REMOVED*** job, company ***REMOVED***, index) => ***REMOVED***
-            return (
-              <Fragment key=***REMOVED***job.id***REMOVED***>
-                ***REMOVED***process.env.NODE_ENV === "production" &&
-                  index % 4 === 0 &&
-                  index > 0 && <FeedAd />***REMOVED***
-                <JobItem
-                  className=***REMOVED***classes.jobItem***REMOVED***
-                  job=***REMOVED***job***REMOVED***
-                  tags=***REMOVED***job.tags***REMOVED***
-                  company=***REMOVED***company***REMOVED***
-                  onTagClick=***REMOVED***handleTagClick***REMOVED***
+                <ExpansionPanelSummary
+                  classes=***REMOVED******REMOVED***
+                    root: classes.filterPanelSummary
+                  ***REMOVED******REMOVED***
+                  expandIcon=***REMOVED***
+                    hasActiveFilter ? (
+                      <Badge color="primary" variant="dot">
+                        <FilterListIcon />
+                      </Badge>
+                    ) : (
+                      <FilterListIcon />
+                    )
+                  ***REMOVED***
+                >
+                  <Typography variant="h6">Filter</Typography>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                  <JobFilterPanels
+                    tags=***REMOVED***primaryTags***REMOVED***
+                    onCheckTagFilter=***REMOVED***addTagToFilter***REMOVED***
+                    onUncheckTagFilter=***REMOVED***removeTagFromFilter***REMOVED***
+                    onClearTagFilter=***REMOVED***clearFilter("tags")***REMOVED***
+                    onCheckJobTypeFilter=***REMOVED***jobType => ***REMOVED***
+                      addFilter("jobTypes", jobType);
+                    ***REMOVED******REMOVED***
+                    onUncheckJobTypeFilter=***REMOVED***jobType => ***REMOVED***
+                      removeFilter("jobTypes", jobType);
+                    ***REMOVED******REMOVED***
+                    onClearJobTypeFilter=***REMOVED***clearFilter("jobTypes")***REMOVED***
+                    onCheckCareerLevelFilter=***REMOVED***careerLevel => ***REMOVED***
+                      addFilter("careerLevels", careerLevel);
+                    ***REMOVED******REMOVED***
+                    onUncheckCareerLevelFilter=***REMOVED***careerLevel => ***REMOVED***
+                      removeFilter("careerLevels", careerLevel);
+                    ***REMOVED******REMOVED***
+                    onClearCareerLevelFilter=***REMOVED***clearFilter("careerLevels")***REMOVED***
+                  />
+                </ExpansionPanelDetails>
+              </ExpansionPanel>
+            )***REMOVED***
+            ***REMOVED***!smallScreen && (
+              <Fragment>
+                <Box display="flex" alignItems="center" pb=***REMOVED***1***REMOVED***>
+                  <Typography variant="h6">Filter</Typography>
+                </Box>
+                <JobFilterPanels
+                  tags=***REMOVED***primaryTags***REMOVED***
+                  onCheckTagFilter=***REMOVED***addTagToFilter***REMOVED***
+                  onUncheckTagFilter=***REMOVED***removeTagFromFilter***REMOVED***
+                  onClearTagFilter=***REMOVED***clearFilter("tags")***REMOVED***
+                  onCheckJobTypeFilter=***REMOVED***jobType => ***REMOVED***
+                    addFilter("jobTypes", jobType);
+                  ***REMOVED******REMOVED***
+                  onUncheckJobTypeFilter=***REMOVED***jobType => ***REMOVED***
+                    removeFilter("jobTypes", jobType);
+                  ***REMOVED******REMOVED***
+                  onClearJobTypeFilter=***REMOVED***clearFilter("jobTypes")***REMOVED***
+                  onCheckCareerLevelFilter=***REMOVED***careerLevel => ***REMOVED***
+                    addFilter("careerLevels", careerLevel);
+                  ***REMOVED******REMOVED***
+                  onUncheckCareerLevelFilter=***REMOVED***careerLevel => ***REMOVED***
+                    removeFilter("careerLevels", careerLevel);
+                  ***REMOVED******REMOVED***
+                  onClearCareerLevelFilter=***REMOVED***clearFilter("careerLevels")***REMOVED***
                 />
               </Fragment>
-            );
-          ***REMOVED***)***REMOVED***
-          <div ref=***REMOVED***sentinelRef***REMOVED*** style=***REMOVED******REMOVED*** height: "1px" ***REMOVED******REMOVED*** />
-          ***REMOVED***ticker.current > 0 && jobs.length === 0 && (
-            <Typography
-              variant="h4"
-              color="textSecondary"
-              align="center"
-              className=***REMOVED***classes.nothingFound***REMOVED***
-            >
-              😬 <br /> Nothing Found
-            </Typography>
-          )***REMOVED***
-        </Fragment>
-        ***REMOVED***isLoading && (
-          <CircularProgress
-            classes=***REMOVED******REMOVED*** root: classes.jobsLoadingSpinner ***REMOVED******REMOVED***
-            color="primary"
-          />
-        )***REMOVED***
-        ***REMOVED***isError && (
-          <Box textAlign="center">
-            <Typography color="textSecondary" variant="h6">
-              Problem occurred fetching data.
-            </Typography>
-            <Fab
-              onClick=***REMOVED***fetchMoreJobs***REMOVED***
-              variant="extended"
-              color="primary"
-              size="medium"
-            >
-              <RefreshIcon />
-              Try Again
-            </Fab>
-          </Box>
-        )***REMOVED***
+            )***REMOVED***
+          </Grid>
+          <Grid item xs=***REMOVED***12***REMOVED*** md=***REMOVED***9***REMOVED***>
+            <Fragment>
+              ***REMOVED***activeTagNames.length > 0 && (
+                <TagFilter
+                  tagNames=***REMOVED***activeTagNames***REMOVED***
+                  onTagRemove=***REMOVED***removeTagFromFilter***REMOVED***
+                />
+              )***REMOVED***
+              ***REMOVED***jobs.map((***REMOVED*** job, company ***REMOVED***, index) => ***REMOVED***
+                return (
+                  <Fragment key=***REMOVED***job.id***REMOVED***>
+                    ***REMOVED***process.env.NODE_ENV === "production" &&
+                      index % 4 === 0 &&
+                      index > 0 && <FeedAd />***REMOVED***
+                    <JobItem
+                      className=***REMOVED***classes.jobItem***REMOVED***
+                      job=***REMOVED***job***REMOVED***
+                      tags=***REMOVED***job.tags***REMOVED***
+                      company=***REMOVED***company***REMOVED***
+                      onTagClick=***REMOVED***addTagToFilter***REMOVED***
+                    />
+                  </Fragment>
+                );
+              ***REMOVED***)***REMOVED***
+              <div ref=***REMOVED***sentinelRef***REMOVED*** style=***REMOVED******REMOVED*** height: "1px" ***REMOVED******REMOVED*** />
+              ***REMOVED***ticker.current > 0 && jobs.length === 0 && (
+                <Typography
+                  variant="h4"
+                  color="textSecondary"
+                  align="center"
+                  className=***REMOVED***classes.nothingFound***REMOVED***
+                >
+                  😬 <br /> Nothing Found
+                </Typography>
+              )***REMOVED***
+            </Fragment>
+            ***REMOVED***isLoading && (
+              <CircularProgress
+                classes=***REMOVED******REMOVED*** root: classes.jobsLoadingSpinner ***REMOVED******REMOVED***
+                color="primary"
+              />
+            )***REMOVED***
+            ***REMOVED***isError && (
+              <Box textAlign="center">
+                <Typography color="textSecondary" variant="h6">
+                  Problem occurred fetching data.
+                </Typography>
+                <Fab
+                  onClick=***REMOVED***fetchMoreJobs***REMOVED***
+                  variant="extended"
+                  color="primary"
+                  size="medium"
+                >
+                  <RefreshIcon />
+                  Try Again
+                </Fab>
+              </Box>
+            )***REMOVED***
+          </Grid>
+        </Grid>
       </Container>
     </Layout>
   );
 ***REMOVED***
 
 Index.getInitialProps = async ctx => ***REMOVED***
-  const ***REMOVED*** tags = "" ***REMOVED*** = ctx.query;
-  let activeTagNames = tags
-    .split(",")
-    .filter(name => !!name)
-    .map(name => name.toUpperCase().trim());
+  const filterQuery = getFilterQuery(queryString.extract(ctx.asPath));
   const [jobPage, primaryTags] = await Promise.all([
-    api.getJobs(***REMOVED*** ctx, tags: activeTagNames.join(",") ***REMOVED***),
+    api.getJobs(***REMOVED*** ctx, filterQuery ***REMOVED***),
     api.getPrimaryTags(ctx)
   ]);
 
-  return ***REMOVED*** jobPage, activeTagNames, primaryTags ***REMOVED***;
+  return ***REMOVED*** jobPage, primaryTags ***REMOVED***;
 ***REMOVED***;
 
 export default Index;

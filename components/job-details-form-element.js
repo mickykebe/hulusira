@@ -3,16 +3,7 @@ import ***REMOVED*** MuiPickersUtilsProvider, DatePicker ***REMOVED*** from "@ma
 import DateFnsUtils from "@date-io/date-fns";
 import MDEditor from "./md-editor";
 import HSCard from "./hs-card";
-import ***REMOVED*** careerLevels ***REMOVED*** from "../utils";
-
-const jobTypes = [
-  "Full-time",
-  "Part-time",
-  "Contract",
-  "Freelance",
-  "Internship",
-  "Temporary"
-];
+import ***REMOVED*** careerLevels, jobTypes ***REMOVED*** from "../utils";
 
 function DatePickerTextField(props) ***REMOVED***
   return <TextField margin="normal" fullWidth ***REMOVED***...props***REMOVED*** />;

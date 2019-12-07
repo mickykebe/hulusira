@@ -264,6 +264,8 @@ class Db ***REMOVED***
     approvalStatus = [],
     withinDays,
     tagNames = [],
+    jobTypes = [],
+    careerLevels = [],
     publicOnly = false,
     ownerId,
     companyId
@@ -305,6 +307,23 @@ class Db ***REMOVED***
         query = query.whereIn("job.approval_status", approvalStatusIn);
       ***REMOVED***
     ***REMOVED***
+    if (jobTypes && jobTypes.length > 0) ***REMOVED***
+      query = query.whereIn("job.job_type", jobTypes);
+    ***REMOVED***
+    if (tagNames && tagNames.length > 0) ***REMOVED***
+      const subQuery = this.knex("job_tags")
+        .select("job_id")
+        .whereIn(
+          "tag_name",
+          this.knex("tag")
+            .select("name")
+            .whereIn("name", tagNames)
+        );
+      query = query.andWhere("job.id", "in", subQuery);
+    ***REMOVED***
+    if (careerLevels && careerLevels.length > 0) ***REMOVED***
+      query = query.whereIn("job.career_level", careerLevels);
+    ***REMOVED***
     if (typeof withinDays === "number") ***REMOVED***
       query = query.andWhere(
         "job.created",
@@ -315,7 +334,7 @@ class Db ***REMOVED***
     if (typeof limit === "number") ***REMOVED***
       query = query.limit(limit);
     ***REMOVED***
-    tagNames.forEach(tagName => ***REMOVED***
+    /* tagNames.forEach(tagName => ***REMOVED***
       const subQuery = this.knex("job_tags")
         .select("job_id")
         .whereIn(
@@ -325,7 +344,7 @@ class Db ***REMOVED***
             .whereIn("name", [tagName])
         );
       query = query.where("job.id", "in", subQuery);
-    ***REMOVED***);
+    ***REMOVED***); */
     const rows = await query;
     return rows.map(row => ***REMOVED***
       let job = Job.fromDb(row, row.tags || []);

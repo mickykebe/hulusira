@@ -58,9 +58,9 @@ class Api ***REMOVED***
     return data;
   ***REMOVED***
 
-  async getJobs(***REMOVED*** ctx = ***REMOVED******REMOVED***, cursor = "", tags = "" ***REMOVED*** = ***REMOVED******REMOVED***) ***REMOVED***
+  async getJobs(***REMOVED*** ctx = ***REMOVED******REMOVED***, cursor = "", filterQuery ***REMOVED*** = ***REMOVED******REMOVED***) ***REMOVED***
     const ***REMOVED*** data ***REMOVED*** = await this.request(ctx).get(
-      `/jobs?cursor=$***REMOVED***cursor***REMOVED***&tags=$***REMOVED***tags***REMOVED***`
+      `/jobs?cursor=$***REMOVED***cursor***REMOVED***&$***REMOVED***filterQuery***REMOVED***`
     );
     return data;
   ***REMOVED***
