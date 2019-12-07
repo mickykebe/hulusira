@@ -61,7 +61,10 @@ const useStyles = makeStyles(theme => (***REMOVED***
     ***REMOVED***;
   ***REMOVED***,
   jobItem: ***REMOVED***
-    marginBottom: theme.spacing(2)
+    marginBottom: `0.5rem`
+  ***REMOVED***,
+  feedAd: ***REMOVED***
+    marginBottom: `0.5rem`
   ***REMOVED***,
   jobsLoadingSpinner: ***REMOVED***
     display: "block",
@@ -357,7 +360,7 @@ function Index(***REMOVED*** user, jobPage, primaryTags ***REMOVED***) ***REMOVE
                   <Fragment key=***REMOVED***job.id***REMOVED***>
                     ***REMOVED***process.env.NODE_ENV === "production" &&
                       index % 4 === 0 &&
-                      index > 0 && <FeedAd />***REMOVED***
+                      index > 0 && <FeedAd className=***REMOVED***classes.feedAd***REMOVED*** />***REMOVED***
                     <JobItem
                       className=***REMOVED***classes.jobItem***REMOVED***
                       job=***REMOVED***job***REMOVED***
