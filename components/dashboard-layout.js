@@ -16,7 +16,9 @@ import WorkIcon from "@material-ui/icons/Work";
 import BusinessIcon from "@material-ui/icons/Business";
 import Layout from "../components/layout";
 import ***REMOVED*** useTheme ***REMOVED*** from "@material-ui/styles";
-import ***REMOVED*** useState ***REMOVED*** from "react";
+import ***REMOVED*** useState, Fragment ***REMOVED*** from "react";
+import DrawerList from "./drawer-list";
+import AdminDashboardMenuList from "./admin-dashboard-menu-list";
 
 const drawerWidth = 240;
 
@@ -34,15 +36,17 @@ const useStyles = makeStyles(theme => (***REMOVED***
     width: drawerWidth,
     overflowY: "auto"
   ***REMOVED***,
-  drawerHeader: ***REMOVED***
-    fontWeight: 800
-  ***REMOVED***,
   main: ***REMOVED***
     overflowY: "auto"
   ***REMOVED***
 ***REMOVED***));
 
-export default function DashboardLayout(***REMOVED*** user, children, selectedItem ***REMOVED***) ***REMOVED***
+export default function DashboardLayout(***REMOVED***
+  user,
+  children,
+  selectedItem,
+  pendingJobs
+***REMOVED***) ***REMOVED***
   const classes = useStyles();
   const theme = useTheme();
   const sizeSm = useMediaQuery(theme.breakpoints.down("sm"));
@@ -55,59 +59,63 @@ export default function DashboardLayout(***REMOVED*** user, children, selectedIt
           <IconButton
             color="inherit"
             className=***REMOVED***classes.menuButton***REMOVED***
-            onClick=***REMOVED***() => setMobileDrawerOpen(!mobileDrawerOpen)***REMOVED***>
+            onClick=***REMOVED***() => setMobileDrawerOpen(!mobileDrawerOpen)***REMOVED***
+          >
             <MenuIcon />
           </IconButton>
         ) : null
-      ***REMOVED***>
+      ***REMOVED***
+    >
       <Box width="100%" height="100%" display="flex" overflow="hidden">
         <Drawer
           open=***REMOVED***sizeSm ? mobileDrawerOpen : false***REMOVED***
           onClose=***REMOVED***() => setMobileDrawerOpen(false)***REMOVED***
           className=***REMOVED***classes.drawer***REMOVED***
           classes=***REMOVED******REMOVED*** paper: classes.drawerPaper ***REMOVED******REMOVED***
-          variant=***REMOVED***sizeSm ? "temporary" : "permanent"***REMOVED***>
+          variant=***REMOVED***sizeSm ? "temporary" : "permanent"***REMOVED***
+        >
           <div className=***REMOVED***classes.drawerContent***REMOVED***>
-            <List
-              component="nav"
-              subheader=***REMOVED***
-                <ListSubheader
-                  classes=***REMOVED******REMOVED*** root: classes.drawerHeader ***REMOVED******REMOVED***
-                  component="div">
-                  Employer
-                </ListSubheader>
-              ***REMOVED***>
-              <ListItem
-                selected=***REMOVED***selectedItem === "jobs"***REMOVED***
-                button
-                onClick=***REMOVED***() => Router.push("/dashboard/jobs")***REMOVED***>
-                <ListItemIcon>
-                  <WorkIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primaryTypographyProps=***REMOVED******REMOVED***
-                    variant: "subtitle1",
-                    color: "textSecondary"
-                  ***REMOVED******REMOVED***
-                  primary="Jobs"
-                />
-              </ListItem>
-              <ListItem
-                selected=***REMOVED***selectedItem === "company"***REMOVED***
-                button
-                onClick=***REMOVED***() => Router.push("/dashboard/companies")***REMOVED***>
-                <ListItemIcon>
-                  <BusinessIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primaryTypographyProps=***REMOVED******REMOVED***
-                    variant: "subtitle1",
-                    color: "textSecondary"
-                  ***REMOVED******REMOVED***
-                  primary="Company"
-                />
-              </ListItem>
-            </List>
+            <Fragment>
+              <AdminDashboardMenuList
+                user=***REMOVED***user***REMOVED***
+                selectedItem=***REMOVED***selectedItem***REMOVED***
+                pendingJobs=***REMOVED***pendingJobs***REMOVED***
+              />
+              <DrawerList headerTitle="Employer">
+                <ListItem
+                  selected=***REMOVED***selectedItem === "jobs"***REMOVED***
+                  button
+                  onClick=***REMOVED***() => Router.push("/dashboard/jobs")***REMOVED***
+                >
+                  <ListItemIcon>
+                    <WorkIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primaryTypographyProps=***REMOVED******REMOVED***
+                      variant: "subtitle1",
+                      color: "textSecondary"
+                    ***REMOVED******REMOVED***
+                    primary="Jobs"
+                  />
+                </ListItem>
+                <ListItem
+                  selected=***REMOVED***selectedItem === "company"***REMOVED***
+                  button
+                  onClick=***REMOVED***() => Router.push("/dashboard/companies")***REMOVED***
+                >
+                  <ListItemIcon>
+                    <BusinessIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primaryTypographyProps=***REMOVED******REMOVED***
+                      variant: "subtitle1",
+                      color: "textSecondary"
+                    ***REMOVED******REMOVED***
+                    primary="Company"
+                  />
+                </ListItem>
+              </DrawerList>
+            </Fragment>
           </div>
         </Drawer>
         <Box className=***REMOVED***classes.main***REMOVED*** pt=***REMOVED***2***REMOVED*** width="100%">

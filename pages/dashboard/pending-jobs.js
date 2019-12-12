@@ -9,18 +9,18 @@ import ***REMOVED***
   Divider,
   ListItemText,
   Toolbar,
-  Button
+  Button,
+  makeStyles
 ***REMOVED*** from "@material-ui/core";
 import DoneIcon from "@material-ui/icons/Done";
 import ClearIcon from "@material-ui/icons/Clear";
-import nextCookie from "next-cookies";
-import api from "../api";
-import redirect from "../utils/redirect";
-import Layout from "../components/layout";
-import CompanyLogo from "../components/company-logo";
-import JobContent from "../components/job-content";
-import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
-import HSSnackbar from "../components/hs-snackbar";
+import redirect from "../../utils/redirect";
+import CompanyLogo from "../../components/company-logo";
+import JobContent from "../../components/job-content";
+import HSSnackbar from "../../components/hs-snackbar";
+import DashboardLayout from "../../components/dashboard-layout";
+import api from "../../api";
+import NoData from "../../components/no-data";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   jobList: props => (***REMOVED***
@@ -38,17 +38,15 @@ const useStyles = makeStyles(theme => (***REMOVED***
       flexShrink: 0
     ***REMOVED***
   ***REMOVED***),
-  jobDisplay: props => ***REMOVED***
-    return ***REMOVED***
-      marginLeft: 300,
+  jobDisplay: props => (***REMOVED***
+    marginLeft: props.jobs.length > 0 ? 300 : 0,
+    display: "flex",
+    flexDirection: "column",
+    [theme.breakpoints.down("sm")]: ***REMOVED***
       display: "flex",
-      flexDirection: "column",
-      [theme.breakpoints.down("sm")]: ***REMOVED***
-        display: "flex",
-        margin: 0
-      ***REMOVED***
-    ***REMOVED***;
-  ***REMOVED***,
+      margin: 0
+    ***REMOVED***
+  ***REMOVED***),
   actionButton: ***REMOVED***
     marginRight: theme.spacing(1)
   ***REMOVED***
@@ -77,7 +75,7 @@ const jobReducer = (state, action) => ***REMOVED***
   ***REMOVED***
 ***REMOVED***;
 
-function PendingJobs(***REMOVED*** jobs, user ***REMOVED***) ***REMOVED***
+export default function PendingJobs(***REMOVED*** user, jobs ***REMOVED***) ***REMOVED***
   const [jobUpdateState, dispatch] = useReducer(jobReducer, ***REMOVED***
     inProgress: false,
     error: false
@@ -94,7 +92,7 @@ function PendingJobs(***REMOVED*** jobs, user ***REMOVED***) ***REMOVED***
     try ***REMOVED***
       await api.approveJob(jobId);
       dispatch(***REMOVED*** type: "UPDATED_JOB" ***REMOVED***);
-      Router.replace("/pending-jobs");
+      Router.replace("/dashboard/pending-jobs");
     ***REMOVED*** catch (err) ***REMOVED***
       console.error(err);
       dispatch(***REMOVED*** type: "ERROR_UPDATING_JOB" ***REMOVED***);
@@ -105,40 +103,44 @@ function PendingJobs(***REMOVED*** jobs, user ***REMOVED***) ***REMOVED***
     try ***REMOVED***
       await api.declineJob(jobId);
       dispatch(***REMOVED*** type: "UPDATED_JOB" ***REMOVED***);
-      Router.replace("/pending-jobs");
+      Router.replace("/dashboard/pending-jobs");
     ***REMOVED*** catch (err) ***REMOVED***
       console.error(err);
       dispatch(***REMOVED*** type: "ERROR_UPDATING_JOB" ***REMOVED***);
     ***REMOVED***
   ***REMOVED***;
-  const classes = useStyles(***REMOVED*** activeJob: !!activeJobData ***REMOVED***);
+  const classes = useStyles(***REMOVED*** activeJob: !!activeJobData, jobs ***REMOVED***);
   return (
-    <Layout user=***REMOVED***user***REMOVED***>
-      <Box className=***REMOVED***classes.jobList***REMOVED***>
-        <List className=***REMOVED***classes.list***REMOVED***>
-          ***REMOVED***jobs.map((***REMOVED*** job, company ***REMOVED***, index) => (
-            <Fragment key=***REMOVED***job.id***REMOVED***>
-              <Link
-                href=***REMOVED***`/pending-jobs?jobId=$***REMOVED***job.id***REMOVED***`***REMOVED***
-                as=***REMOVED***`/pending-jobs/$***REMOVED***job.id***REMOVED***`***REMOVED***>
-                <ListItem button>
-                  ***REMOVED***!!company && (
-                    <ListItemAvatar>
-                      <CompanyLogo company=***REMOVED***company***REMOVED*** size="small" />
-                    </ListItemAvatar>
-                  )***REMOVED***
-                  <ListItemText
-                    primary=***REMOVED***job.position***REMOVED***
-                    primaryTypographyProps=***REMOVED******REMOVED*** variant: "subtitle2" ***REMOVED******REMOVED***
-                    secondary=***REMOVED***!!company ? company.name : job.jobType***REMOVED***
-                  />
-                </ListItem>
-              </Link>
-              ***REMOVED***index + 1 !== jobs.length && <Divider light />***REMOVED***
-            </Fragment>
-          ))***REMOVED***
-        </List>
-      </Box>
+    <DashboardLayout user=***REMOVED***user***REMOVED*** selectedItem="pendingJobs" pendingJobs=***REMOVED***jobs***REMOVED***>
+      ***REMOVED***jobs.length > 0 && (
+        <Box className=***REMOVED***classes.jobList***REMOVED***>
+          <List className=***REMOVED***classes.list***REMOVED***>
+            ***REMOVED***jobs.map((***REMOVED*** job, company ***REMOVED***, index) => (
+              <Fragment key=***REMOVED***job.id***REMOVED***>
+                <Link
+                  href=***REMOVED***`/dashboard/pending-jobs?jobId=$***REMOVED***job.id***REMOVED***`***REMOVED***
+                  as=***REMOVED***`/dashboard/pending-jobs/$***REMOVED***job.id***REMOVED***`***REMOVED***
+                >
+                  <ListItem button>
+                    ***REMOVED***!!company && (
+                      <ListItemAvatar>
+                        <CompanyLogo company=***REMOVED***company***REMOVED*** size="small" />
+                      </ListItemAvatar>
+                    )***REMOVED***
+                    <ListItemText
+                      primary=***REMOVED***job.position***REMOVED***
+                      primaryTypographyProps=***REMOVED******REMOVED*** variant: "subtitle2" ***REMOVED******REMOVED***
+                      secondary=***REMOVED***!!company ? company.name : job.jobType***REMOVED***
+                    />
+                  </ListItem>
+                </Link>
+                ***REMOVED***index + 1 !== jobs.length && <Divider light />***REMOVED***
+              </Fragment>
+            ))***REMOVED***
+          </List>
+        </Box>
+      )***REMOVED***
+      ***REMOVED***jobs.length === 0 && <NoData message="There are no pending jobs" />***REMOVED***
       ***REMOVED***!!activeJobData && (
         <Box className=***REMOVED***classes.jobDisplay***REMOVED***>
           <Toolbar>
@@ -148,7 +150,8 @@ function PendingJobs(***REMOVED*** jobs, user ***REMOVED***) ***REMOVED***
               variant="contained"
               className=***REMOVED***classes.actionButton***REMOVED***
               disabled=***REMOVED***jobUpdateState.inProgress***REMOVED***
-              onClick=***REMOVED***() => approveJob(activeJobId)***REMOVED***>
+              onClick=***REMOVED***() => approveJob(activeJobId)***REMOVED***
+            >
               <DoneIcon /> Approve
             </Button>
             <Button
@@ -156,7 +159,8 @@ function PendingJobs(***REMOVED*** jobs, user ***REMOVED***) ***REMOVED***
               variant="contained"
               className=***REMOVED***classes.actionButton***REMOVED***
               disabled=***REMOVED***jobUpdateState.inProgress***REMOVED***
-              onClick=***REMOVED***() => declineJob(activeJobId)***REMOVED***>
+              onClick=***REMOVED***() => declineJob(activeJobId)***REMOVED***
+            >
               <ClearIcon /> Drop
             </Button>
           </Toolbar>
@@ -170,7 +174,7 @@ function PendingJobs(***REMOVED*** jobs, user ***REMOVED***) ***REMOVED***
           />
         </Box>
       )***REMOVED***
-    </Layout>
+    </DashboardLayout>
   );
 ***REMOVED***
 
@@ -182,7 +186,7 @@ PendingJobs.getInitialProps = async function(ctx) ***REMOVED***
     return ***REMOVED******REMOVED***;
   ***REMOVED***
 
-  let jobs;
+  let jobs = [];
   try ***REMOVED***
     jobs = await api.getPendingJobs(ctx);
   ***REMOVED*** catch (err) ***REMOVED***
@@ -190,5 +194,3 @@ PendingJobs.getInitialProps = async function(ctx) ***REMOVED***
   ***REMOVED***
   return ***REMOVED*** jobs ***REMOVED***;
 ***REMOVED***;
-
-export default PendingJobs;
