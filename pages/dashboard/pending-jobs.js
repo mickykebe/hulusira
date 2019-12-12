@@ -9,18 +9,18 @@ import {
   Divider,
   ListItemText,
   Toolbar,
-  Button
+  Button,
+  makeStyles
 } from "@material-ui/core";
 import DoneIcon from "@material-ui/icons/Done";
 import ClearIcon from "@material-ui/icons/Clear";
-import nextCookie from "next-cookies";
-import api from "../api";
-import redirect from "../utils/redirect";
-import Layout from "../components/layout";
-import CompanyLogo from "../components/company-logo";
-import JobContent from "../components/job-content";
-import { makeStyles } from "@material-ui/styles";
-import HSSnackbar from "../components/hs-snackbar";
+import redirect from "../../utils/redirect";
+import CompanyLogo from "../../components/company-logo";
+import JobContent from "../../components/job-content";
+import HSSnackbar from "../../components/hs-snackbar";
+import DashboardLayout from "../../components/dashboard-layout";
+import api from "../../api";
+import NoData from "../../components/no-data";
 
 const useStyles = makeStyles(theme => ({
   jobList: props => ({
@@ -38,17 +38,15 @@ const useStyles = makeStyles(theme => ({
       flexShrink: 0
     }
   }),
-  jobDisplay: props => {
-    return {
-      marginLeft: 300,
+  jobDisplay: props => ({
+    marginLeft: props.jobs.length > 0 ? 300 : 0,
+    display: "flex",
+    flexDirection: "column",
+    [theme.breakpoints.down("sm")]: {
       display: "flex",
-      flexDirection: "column",
-      [theme.breakpoints.down("sm")]: {
-        display: "flex",
-        margin: 0
-      }
-    };
-  },
+      margin: 0
+    }
+  }),
   actionButton: {
     marginRight: theme.spacing(1)
   }
@@ -77,7 +75,7 @@ const jobReducer = (state, action) => {
   }
 };
 
-function PendingJobs({ jobs, user }) {
+export default function PendingJobs({ user, jobs }) {
   const [jobUpdateState, dispatch] = useReducer(jobReducer, {
     inProgress: false,
     error: false
@@ -94,7 +92,7 @@ function PendingJobs({ jobs, user }) {
     try {
       await api.approveJob(jobId);
       dispatch({ type: "UPDATED_JOB" });
-      Router.replace("/pending-jobs");
+      Router.replace("/dashboard/pending-jobs");
     } catch (err) {
       console.error(err);
       dispatch({ type: "ERROR_UPDATING_JOB" });
@@ -105,40 +103,44 @@ function PendingJobs({ jobs, user }) {
     try {
       await api.declineJob(jobId);
       dispatch({ type: "UPDATED_JOB" });
-      Router.replace("/pending-jobs");
+      Router.replace("/dashboard/pending-jobs");
     } catch (err) {
       console.error(err);
       dispatch({ type: "ERROR_UPDATING_JOB" });
     }
   };
-  const classes = useStyles({ activeJob: !!activeJobData });
+  const classes = useStyles({ activeJob: !!activeJobData, jobs });
   return (
-    <Layout user={user}>
-      <Box className={classes.jobList}>
-        <List className={classes.list}>
-          {jobs.map(({ job, company }, index) => (
-            <Fragment key={job.id}>
-              <Link
-                href={`/pending-jobs?jobId=${job.id}`}
-                as={`/pending-jobs/${job.id}`}>
-                <ListItem button>
-                  {!!company && (
-                    <ListItemAvatar>
-                      <CompanyLogo company={company} size="small" />
-                    </ListItemAvatar>
-                  )}
-                  <ListItemText
-                    primary={job.position}
-                    primaryTypographyProps={{ variant: "subtitle2" }}
-                    secondary={!!company ? company.name : job.jobType}
-                  />
-                </ListItem>
-              </Link>
-              {index + 1 !== jobs.length && <Divider light />}
-            </Fragment>
-          ))}
-        </List>
-      </Box>
+    <DashboardLayout user={user} selectedItem="pendingJobs" pendingJobs={jobs}>
+      {jobs.length > 0 && (
+        <Box className={classes.jobList}>
+          <List className={classes.list}>
+            {jobs.map(({ job, company }, index) => (
+              <Fragment key={job.id}>
+                <Link
+                  href={`/dashboard/pending-jobs?jobId=${job.id}`}
+                  as={`/dashboard/pending-jobs/${job.id}`}
+                >
+                  <ListItem button>
+                    {!!company && (
+                      <ListItemAvatar>
+                        <CompanyLogo company={company} size="small" />
+                      </ListItemAvatar>
+                    )}
+                    <ListItemText
+                      primary={job.position}
+                      primaryTypographyProps={{ variant: "subtitle2" }}
+                      secondary={!!company ? company.name : job.jobType}
+                    />
+                  </ListItem>
+                </Link>
+                {index + 1 !== jobs.length && <Divider light />}
+              </Fragment>
+            ))}
+          </List>
+        </Box>
+      )}
+      {jobs.length === 0 && <NoData message="There are no pending jobs" />}
       {!!activeJobData && (
         <Box className={classes.jobDisplay}>
           <Toolbar>
@@ -148,7 +150,8 @@ function PendingJobs({ jobs, user }) {
               variant="contained"
               className={classes.actionButton}
               disabled={jobUpdateState.inProgress}
-              onClick={() => approveJob(activeJobId)}>
+              onClick={() => approveJob(activeJobId)}
+            >
               <DoneIcon /> Approve
             </Button>
             <Button
@@ -156,7 +159,8 @@ function PendingJobs({ jobs, user }) {
               variant="contained"
               className={classes.actionButton}
               disabled={jobUpdateState.inProgress}
-              onClick={() => declineJob(activeJobId)}>
+              onClick={() => declineJob(activeJobId)}
+            >
               <ClearIcon /> Drop
             </Button>
           </Toolbar>
@@ -170,7 +174,7 @@ function PendingJobs({ jobs, user }) {
           />
         </Box>
       )}
-    </Layout>
+    </DashboardLayout>
   );
 }
 
@@ -182,7 +186,7 @@ PendingJobs.getInitialProps = async function(ctx) {
     return {};
   }
 
-  let jobs;
+  let jobs = [];
   try {
     jobs = await api.getPendingJobs(ctx);
   } catch (err) {
@@ -190,5 +194,3 @@ PendingJobs.getInitialProps = async function(ctx) {
   }
   return { jobs };
 };
-
-export default PendingJobs;
