@@ -456,6 +456,15 @@ class Db ***REMOVED***
     ***REMOVED***
   ***REMOVED***
 
+  async getUserByTelegramId(telegramuserId) ***REMOVED***
+    const row = await this.knex("users")
+      .first()
+      .where("telegram_id", telegramuserId);
+    if (!!row) ***REMOVED***
+      return User.fromDb(row);
+    ***REMOVED***
+  ***REMOVED***
+
   async createUser(userData) ***REMOVED***
     const hashedPassword = await bcrypt.hash(userData.password, 15);
     if (!userData) ***REMOVED***

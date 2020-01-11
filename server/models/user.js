@@ -17,6 +17,7 @@ class User ***REMOVED***
     this.password = password;
     this.confirmed = confirmed;
     this.role = role;
+    this.telegramId = telegramId;
     this.telegramUserName = telegramUserName;
   ***REMOVED***
 

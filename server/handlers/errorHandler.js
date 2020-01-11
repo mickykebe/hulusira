@@ -11,6 +11,7 @@ exports.notFound = (req, res, next) => ***REMOVED***
 ***REMOVED***;
 
 exports.developmentErrors = (error, req, res, next) => ***REMOVED***
+  console.log(error);
   res.status(error.status || 500);
   res.json(***REMOVED***
     errors: ***REMOVED***

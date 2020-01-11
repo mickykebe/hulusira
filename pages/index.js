@@ -251,8 +251,7 @@ function Index(***REMOVED*** user, jobPage, primaryTags ***REMOVED***) ***REMOVE
             </Link>
           </Fragment>
         )
-      ***REMOVED***
-    >
+      ***REMOVED***>
       <Head>
         <title>***REMOVED***pageTitle***REMOVED***</title>
         <meta name="description" content=***REMOVED***pageDescription***REMOVED*** />
@@ -277,8 +276,7 @@ function Index(***REMOVED*** user, jobPage, primaryTags ***REMOVED***) ***REMOVE
                 expanded=***REMOVED***!filterCollapsed***REMOVED***
                 onChange=***REMOVED***(_ev, isExpanded) => ***REMOVED***
                   setFilterCollapsed(!isExpanded);
-                ***REMOVED******REMOVED***
-              >
+                ***REMOVED******REMOVED***>
                 <ExpansionPanelSummary
                   classes=***REMOVED******REMOVED***
                     root: classes.filterPanelSummary
@@ -291,8 +289,7 @@ function Index(***REMOVED*** user, jobPage, primaryTags ***REMOVED***) ***REMOVE
                     ) : (
                       <FilterListIcon />
                     )
-                  ***REMOVED***
-                >
+                  ***REMOVED***>
                   <Typography variant="h6">Filter</Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
@@ -377,8 +374,7 @@ function Index(***REMOVED*** user, jobPage, primaryTags ***REMOVED***) ***REMOVE
                   variant="h4"
                   color="textSecondary"
                   align="center"
-                  className=***REMOVED***classes.nothingFound***REMOVED***
-                >
+                  className=***REMOVED***classes.nothingFound***REMOVED***>
                   😬 <br /> Nothing Found
                 </Typography>
               )***REMOVED***
@@ -398,8 +394,7 @@ function Index(***REMOVED*** user, jobPage, primaryTags ***REMOVED***) ***REMOVE
                   onClick=***REMOVED***fetchMoreJobs***REMOVED***
                   variant="extended"
                   color="primary"
-                  size="medium"
-                >
+                  size="medium">
                   <RefreshIcon />
                   Try Again
                 </Fab>
