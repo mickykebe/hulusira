@@ -31,6 +31,15 @@ exports.logAxiosErrors = error => {
   throw error;
 };
 
+exports.jobTypes = [
+  "Full-time",
+  "Part-time",
+  "Contract",
+  "Freelance",
+  "Internship",
+  "Temporary"
+];
+
 const careerLevels = [
   {
     id: "entry",

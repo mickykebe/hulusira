@@ -251,8 +251,7 @@ function Index({ user, jobPage, primaryTags }) {
             </Link>
           </Fragment>
         )
-      }
-    >
+      }>
       <Head>
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
@@ -277,8 +276,7 @@ function Index({ user, jobPage, primaryTags }) {
                 expanded={!filterCollapsed}
                 onChange={(_ev, isExpanded) => {
                   setFilterCollapsed(!isExpanded);
-                }}
-              >
+                }}>
                 <ExpansionPanelSummary
                   classes={{
                     root: classes.filterPanelSummary
@@ -291,8 +289,7 @@ function Index({ user, jobPage, primaryTags }) {
                     ) : (
                       <FilterListIcon />
                     )
-                  }
-                >
+                  }>
                   <Typography variant="h6">Filter</Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
@@ -377,8 +374,7 @@ function Index({ user, jobPage, primaryTags }) {
                   variant="h4"
                   color="textSecondary"
                   align="center"
-                  className={classes.nothingFound}
-                >
+                  className={classes.nothingFound}>
                   😬 <br /> Nothing Found
                 </Typography>
               )}
@@ -398,8 +394,7 @@ function Index({ user, jobPage, primaryTags }) {
                   onClick={fetchMoreJobs}
                   variant="extended"
                   color="primary"
-                  size="medium"
-                >
+                  size="medium">
                   <RefreshIcon />
                   Try Again
                 </Fab>

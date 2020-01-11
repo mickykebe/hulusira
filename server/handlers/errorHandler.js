@@ -11,6 +11,7 @@ exports.notFound = (req, res, next) => {
 };
 
 exports.developmentErrors = (error, req, res, next) => {
+  console.log(error);
   res.status(error.status || 500);
   res.json({
     errors: {

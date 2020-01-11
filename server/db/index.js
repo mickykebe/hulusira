@@ -456,6 +456,15 @@ class Db {
     }
   }
 
+  async getUserByTelegramId(telegramuserId) {
+    const row = await this.knex("users")
+      .first()
+      .where("telegram_id", telegramuserId);
+    if (!!row) {
+      return User.fromDb(row);
+    }
+  }
+
   async createUser(userData) {
     const hashedPassword = await bcrypt.hash(userData.password, 15);
     if (!userData) {

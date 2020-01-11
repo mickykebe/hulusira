@@ -15,10 +15,10 @@ const useStyles = makeStyles(theme => ({
   expansionPanel: {
     marginTop: "0.5rem",
     boxShadow: "none",
-    backgroundColor: "inherit",
-    "&::before": {
+    backgroundColor: "inherit"
+    /* "&::before": {
       display: "none"
-    }
+    } */
   },
   expansionPanelExpanded: {
     backgroundColor: theme.palette.common.white,

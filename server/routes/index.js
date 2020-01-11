@@ -10,6 +10,7 @@ const jobController = require("../controllers/job-controller");
 const uploadController = require("../controllers/upload-controller");
 const userController = require("../controllers/user-controller");
 const tagController = require("../controllers/tag-controller");
+const telegramController = require("../controllers/telegram-controller");
 const { catchErrors } = require("../handlers/errorHandler");
 const { isProduction } = require("../utils");
 const redis = require("../redis");
@@ -136,6 +137,11 @@ router.get(
 router.get("/logout", catchErrors(userController.logout));
 
 router.get("/tags", catchErrors(tagController.getTags));
+
+router.post(
+  `/telegram/${process.env.TELEGRAM_BOT_TOKEN}`,
+  catchErrors(telegramController.handleTelegramUpdate)
+);
 
 router.use(errorHandlers.notFound);
 if (!isProduction) {
