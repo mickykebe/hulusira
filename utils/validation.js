@@ -1,11 +1,18 @@
 import * as Yup from "yup";
-import { cleanTags } from ".";
+import { cleanTags, jobTypes, careerLevels } from ".";
 
 export const jobValidationSchema = Yup.object().shape(
   {
     position: Yup.string().required("Required"),
-    jobType: Yup.string().required("Required"),
-    careerLevel: Yup.string().required("Required"),
+    jobType: Yup.string()
+      .required("Required")
+      .oneOf(jobTypes, "Invalid Job Type"),
+    careerLevel: Yup.string()
+      .required("Required")
+      .oneOf(
+        careerLevels.map(level => level.id),
+        "Invalid Career Level"
+      ),
     primaryTag: Yup.string()
       .nullable()
       .test(

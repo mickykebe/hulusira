@@ -8,11 +8,12 @@ exports.setupWebhook = function() {
   });
 };
 
-exports.sendMessage = function(chatId, text, { replyMarkup }) {
+exports.sendMessage = function(chatId, text, { replyMarkup, parseMode } = {}) {
   return axios.post(`${TELEGRAM_API_BASE_URL}/sendMessage`, {
     chat_id: chatId,
     text,
-    reply_markup: replyMarkup
+    reply_markup: replyMarkup,
+    parse_mode: parseMode
   });
 };
 

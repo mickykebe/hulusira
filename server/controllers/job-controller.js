@@ -2,12 +2,15 @@ const Yup = require("yup");
 const db = require("../db/index");
 const socialHandler = require("../handlers/social");
 const utils = require("../utils");
+const validation = require("../utils/validation");
+const jobHandler = require("../handlers/jobHandler");
+const telegramBot = require("../telegram_bot");
 
 const validationSchema = Yup.object().shape(
   {
-    position: Yup.string().required("Required"),
-    jobType: Yup.string().required("Required"),
-    careerLevel: Yup.string().required("Required"),
+    position: validation.positionValidator,
+    jobType: validation.jobTypeValidator,
+    careerLevel: validation.careerLevelValidator,
     primaryTag: Yup.string()
       .nullable()
       .test(
@@ -32,23 +35,16 @@ const validationSchema = Yup.object().shape(
         return true;
       }
     ),
-    deadline: Yup.date()
-      .nullable()
-      .default(null),
-    description: Yup.string().required("Required"),
-    applyEmail: Yup.string()
-      .nullable()
-      .notRequired()
-      .email(),
+    deadline: validation.deadlineValidator,
+    description: validation.descriptionValidator,
+    applyEmail: validation.applyEmailValidator,
     companyName: Yup.string().when(["hasCompany", "companyId"], {
       is: (hasCompany, companyId) => hasCompany && !companyId,
-      then: Yup.string().required("Required")
+      then: validation.companyNameValidator
     }),
     companyEmail: Yup.string().when(["hasCompany", "companyId"], {
       is: (hasCompany, companyId) => hasCompany && !companyId,
-      then: Yup.string()
-        .email()
-        .required("Required")
+      then: validation.companyEmailValidator
     }),
     companyId: Yup.number()
       .nullable()
@@ -96,49 +92,7 @@ exports.editJob = async (req, res) => {
 };
 
 exports.createJob = async (req, res) => {
-  const data = req.body;
-  const {
-    hasCompany,
-    companyName,
-    companyEmail,
-    companyLogo,
-    companyId,
-    ...jobData
-  } = data;
-  const isAdminUser = req.user && req.user.role === "admin";
-  if (req.user) {
-    jobData.owner = req.user.id;
-  }
-  if (isAdminUser) {
-    jobData.approvalStatus = "Active";
-  }
-  let resData;
-  if (hasCompany) {
-    if (companyId) {
-      const company = await db.getCompany(companyId, req.user.id);
-      if (!company) {
-        throw new Error("Company not found");
-      }
-      const job = await db.createJob(jobData, companyId);
-      resData = { job, company };
-    } else {
-      const company = {
-        name: companyName,
-        email: companyEmail,
-        logo: companyLogo
-      };
-      if (req.user) {
-        company.owner = req.user.id;
-      }
-      resData = await db.createJobAndCompany({ company, job: jobData });
-    }
-  } else {
-    const job = await db.createJob(jobData);
-    resData = { job, company: null };
-  }
-  if (isAdminUser) {
-    socialHandler.postJobToSocialMedia(resData);
-  }
+  const resData = await jobHandler.createJob(req.user, req.body);
   res.status(200).send(resData);
 };
 
@@ -287,6 +241,18 @@ exports.approveJob = async (req, res) => {
     res.status(200).send(true);
     const jobData = await db.getJobById(jobId);
     socialHandler.postJobToSocialMedia(jobData);
+    if (jobData.job.owner) {
+      const owner = await db.getUserById(jobData.job.owner);
+      if (owner.telegramId || owner.telegramUserName) {
+        await telegramBot.sendMessage(
+          owner.telegramId || owner.telegramUserName,
+          `🙌🙌🙌Your job listing has been approved 🙌🙌🙌.
+It's been shared on Hulusira's telegram channel and facebook page.
+
+You can find the job here: ${utils.jobUrlFromSlug(jobData.job.slug)}`
+        );
+      }
+    }
     return;
   }
   res.sendStatus(404);

@@ -4,8 +4,8 @@ exports.base64decode = value => Buffer.from(value, "base64").toString("utf-8");
 
 exports.isProduction = process.env.NODE_ENV === "production";
 
-exports.tagNamesFromQueryParam = tags => {
-  return tags
+exports.parseTags = tagsStr => {
+  return tagsStr
     .split(",")
     .filter(tagName => !!tagName)
     .map(name => name.toUpperCase().trim());
@@ -71,7 +71,13 @@ const careerLevels = [
   }
 ];
 
+exports.careerLevels = careerLevels;
+
 exports.careerLevelLabel = function(careerLevel) {
   const level = careerLevels.find(level => level.id === careerLevel);
   return level ? level.label : "";
+};
+
+exports.jobUrlFromSlug = function(slug) {
+  return `${process.env.ROOT_URL}/jobs/${slug}`;
 };
