@@ -1,7 +1,7 @@
 require("dotenv").config();
 const next = require("next");
 const server = require("./server/app");
-const telegramBot = require("./lib/telegram_bot");
+const telegramBot = require("./server/telegram_bot");
 const redis = require("./server/redis");
 
 const port = process.env.PORT || 3000;
@@ -19,11 +19,17 @@ app.prepare().then(() => ***REMOVED***
   server.listen(port, err => ***REMOVED***
     if (err) throw err;
     console.log(`Server running on http://localhost:$***REMOVED***port***REMOVED***`);
+    setupTelegramBot();
   ***REMOVED***);
 ***REMOVED***);
 
 async function setupTelegramBot() ***REMOVED***
-  telegramBot.setupWebhook();
+  try ***REMOVED***
+    //redis.flushall();
+    await telegramBot.setupWebhook();
+  ***REMOVED*** catch (err) ***REMOVED***
+    console.log(err);
+  ***REMOVED***
 ***REMOVED***
 
-setupTelegramBot();
+//setupTelegramBot();

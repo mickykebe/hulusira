@@ -2,12 +2,15 @@ const Yup = require("yup");
 const db = require("../db/index");
 const socialHandler = require("../handlers/social");
 const utils = require("../utils");
+const validation = require("../utils/validation");
+const jobHandler = require("../handlers/jobHandler");
+const telegramBot = require("../telegram_bot");
 
 const validationSchema = Yup.object().shape(
   ***REMOVED***
-    position: Yup.string().required("Required"),
-    jobType: Yup.string().required("Required"),
-    careerLevel: Yup.string().required("Required"),
+    position: validation.positionValidator,
+    jobType: validation.jobTypeValidator,
+    careerLevel: validation.careerLevelValidator,
     primaryTag: Yup.string()
       .nullable()
       .test(
@@ -32,23 +35,16 @@ const validationSchema = Yup.object().shape(
         return true;
       ***REMOVED***
     ),
-    deadline: Yup.date()
-      .nullable()
-      .default(null),
-    description: Yup.string().required("Required"),
-    applyEmail: Yup.string()
-      .nullable()
-      .notRequired()
-      .email(),
+    deadline: validation.deadlineValidator,
+    description: validation.descriptionValidator,
+    applyEmail: validation.applyEmailValidator,
     companyName: Yup.string().when(["hasCompany", "companyId"], ***REMOVED***
       is: (hasCompany, companyId) => hasCompany && !companyId,
-      then: Yup.string().required("Required")
+      then: validation.companyNameValidator
     ***REMOVED***),
     companyEmail: Yup.string().when(["hasCompany", "companyId"], ***REMOVED***
       is: (hasCompany, companyId) => hasCompany && !companyId,
-      then: Yup.string()
-        .email()
-        .required("Required")
+      then: validation.companyEmailValidator
     ***REMOVED***),
     companyId: Yup.number()
       .nullable()
@@ -96,49 +92,7 @@ exports.editJob = async (req, res) => ***REMOVED***
 ***REMOVED***;
 
 exports.createJob = async (req, res) => ***REMOVED***
-  const data = req.body;
-  const ***REMOVED***
-    hasCompany,
-    companyName,
-    companyEmail,
-    companyLogo,
-    companyId,
-    ...jobData
-  ***REMOVED*** = data;
-  const isAdminUser = req.user && req.user.role === "admin";
-  if (req.user) ***REMOVED***
-    jobData.owner = req.user.id;
-  ***REMOVED***
-  if (isAdminUser) ***REMOVED***
-    jobData.approvalStatus = "Active";
-  ***REMOVED***
-  let resData;
-  if (hasCompany) ***REMOVED***
-    if (companyId) ***REMOVED***
-      const company = await db.getCompany(companyId, req.user.id);
-      if (!company) ***REMOVED***
-        throw new Error("Company not found");
-      ***REMOVED***
-      const job = await db.createJob(jobData, companyId);
-      resData = ***REMOVED*** job, company ***REMOVED***;
-    ***REMOVED*** else ***REMOVED***
-      const company = ***REMOVED***
-        name: companyName,
-        email: companyEmail,
-        logo: companyLogo
-      ***REMOVED***;
-      if (req.user) ***REMOVED***
-        company.owner = req.user.id;
-      ***REMOVED***
-      resData = await db.createJobAndCompany(***REMOVED*** company, job: jobData ***REMOVED***);
-    ***REMOVED***
-  ***REMOVED*** else ***REMOVED***
-    const job = await db.createJob(jobData);
-    resData = ***REMOVED*** job, company: null ***REMOVED***;
-  ***REMOVED***
-  if (isAdminUser) ***REMOVED***
-    socialHandler.postJobToSocialMedia(resData);
-  ***REMOVED***
+  const resData = await jobHandler.createJob(req.user, req.body);
   res.status(200).send(resData);
 ***REMOVED***;
 
@@ -287,6 +241,18 @@ exports.approveJob = async (req, res) => ***REMOVED***
     res.status(200).send(true);
     const jobData = await db.getJobById(jobId);
     socialHandler.postJobToSocialMedia(jobData);
+    if (jobData.job.owner) ***REMOVED***
+      const owner = await db.getUserById(jobData.job.owner);
+      if (owner.telegramId || owner.telegramUserName) ***REMOVED***
+        await telegramBot.sendMessage(
+          owner.telegramId || owner.telegramUserName,
+          `🙌🙌🙌Your job listing has been approved 🙌🙌🙌.
+It's been shared on Hulusira's telegram channel and facebook page.
+
+You can find the job here: $***REMOVED***utils.jobUrlFromSlug(jobData.job.slug)***REMOVED***`
+        );
+      ***REMOVED***
+    ***REMOVED***
     return;
   ***REMOVED***
   res.sendStatus(404);
