@@ -1266,6 +1266,7 @@ exports.handleTelegramUpdate = async (req, res) => ***REMOVED***
   const telegramUser = telegramBot.userFromIncomingUpdate(update);
   console.log(***REMOVED*** update, telegramUser ***REMOVED***);
   if (!telegramUser) ***REMOVED***
+    res.sendStatus(200);
     return;
   ***REMOVED***
   let botMachine = machine;
