@@ -1248,7 +1248,6 @@ You'll be notified once your job is live.`
           console.log(err);
           throw err;
         ***REMOVED***
-        //console.log(***REMOVED*** myJobs: jobs ***REMOVED***);
       ***REMOVED***,
       errorGettingJobs: async context => ***REMOVED***
         await telegramBot.sendMessage(
@@ -1261,17 +1260,14 @@ You'll be notified once your job is live.`
 );
 
 exports.handleTelegramUpdate = async (req, res) => ***REMOVED***
-  console.log("incoming request");
   const update = req.body;
   const telegramUser = telegramBot.userFromIncomingUpdate(update);
-  console.log(***REMOVED*** update, telegramUser ***REMOVED***);
   if (!telegramUser) ***REMOVED***
     res.sendStatus(200);
     return;
   ***REMOVED***
   let botMachine = machine;
   let previousState = await getPersistedState(telegramUser.id);
-  console.log("previousState");
   let currentState;
   if (previousState) ***REMOVED***
     currentState = botMachine.resolveState(previousState);
@@ -1287,14 +1283,12 @@ exports.handleTelegramUpdate = async (req, res) => ***REMOVED***
     ***REMOVED***);
     currentState = botMachine.initialState;
   ***REMOVED***
-  console.log("starting interpreter");
   const service = interpret(botMachine);
   service.onTransition(state => ***REMOVED***
     if (state.changed) ***REMOVED***
       persistState(telegramUser.id, state);
     ***REMOVED***
   ***REMOVED***);
-  console.log("starting service");
   service.start(currentState);
   if (update.callback_query) ***REMOVED***
     const callbackQuery = update.callback_query;
@@ -1358,7 +1352,6 @@ async function closeJob(telegramUserId, callbackQueryId, jobId) ***REMOVED***
 
 async function getPersistedState(telegramUserId) ***REMOVED***
   let rawState = await redis.get(`telegram_user_$***REMOVED***telegramUserId***REMOVED***`);
-  console.log(***REMOVED*** redisState: rawState ***REMOVED***);
   if (rawState) ***REMOVED***
     return State.create(JSON.parse(rawState));
   ***REMOVED***
