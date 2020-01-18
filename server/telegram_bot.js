@@ -17,6 +17,17 @@ exports.sendMessage = function(chatId, text, { replyMarkup, parseMode } = {}) {
   });
 };
 
+exports.answerCallbackQuery = function(
+  callbackQueryId,
+  { text, showAlert = false } = {}
+) {
+  return axios.post(`${TELEGRAM_API_BASE_URL}/answerCallbackQuery`, {
+    callback_query_id: callbackQueryId,
+    text,
+    show_alert: showAlert
+  });
+};
+
 exports.userFromIncomingUpdate = function(update) {
   if (update.message) {
     return update.message.from;

@@ -6,8 +6,10 @@ const db = require("../db");
 const utils = require("../utils/index");
 const validation = require("../utils/validation");
 const jobHandler = require("../handlers/jobHandler");
+const socialHandler = require("../handlers/social");
 
 const MESSAGE_POST_JOB = "📝 Post a Job";
+const MESSAGE_MY_JOBS = "🗂️ My Jobs";
 const MESSAGE_START = "/start";
 const MESSAGE_BACK_TO_MAIN_MENU = "🔚 Main Menu";
 const MESSAGE_BACK = "⬅️ Back";
@@ -18,9 +20,26 @@ const MESSAGE_YES = "✅ Yes";
 const MESSAGE_NO = "❌ No";
 const MESSAGE_ADD_COMPANY = "🏢 Add Company";
 const MESSAGE_RETRY = "🔄 Retry";
+const MESSAGE_PENDING_JOBS = "⏳ Pending Jobs";
+const MESSAGE_ACTIVE_JOBS = "✅ Active Jobs";
+const MESSAGE_CLOSED_JOBS = "🚪 Closed Jobs";
+const MESSAGE_DECLINED_JOBS = "🚫 Declined Jobs";
+const APPROVAL_STATUS_MESSAGES = [
+  MESSAGE_PENDING_JOBS,
+  MESSAGE_ACTIVE_JOBS,
+  MESSAGE_CLOSED_JOBS,
+  MESSAGE_DECLINED_JOBS
+];
+const MESSAGE_APPROVAL_STATUS_MAP = {
+  [MESSAGE_PENDING_JOBS]: "Pending",
+  [MESSAGE_ACTIVE_JOBS]: "Active",
+  [MESSAGE_CLOSED_JOBS]: "Closed",
+  [MESSAGE_DECLINED_JOBS]: "Declined"
+};
 
 const EVENT_START = "START";
 const EVENT_BACK_TO_MAIN_MENU = "BACK_TO_MAIN_MENU";
+const EVENT_CLOSE_JOB = "CLOSE_JOB";
 
 const checkTelegramMessageEvent = MESSAGE => (context, event) => {
   return (
@@ -38,10 +57,10 @@ const resetContextField = field =>
 const machine = Machine(
   {
     id: "telegramBotMachine",
-    initial: "promptMainMenu",
     context: {
       telegramUserId: null
     },
+    initial: "promptMainMenu",
     states: {
       promptMainMenu: {
         invoke: {
@@ -61,8 +80,56 @@ const machine = Machine(
             {
               cond: "isEventPostJob",
               target: "postingJob"
+            },
+            {
+              cond: "isEventMyJobs",
+              target: "promptMyJobs"
             }
           ]
+        }
+      },
+      promptMyJobs: {
+        invoke: {
+          id: "promptMyJobs",
+          src: "promptMyJobs",
+          onDone: {
+            target: "waitingApprovalStatus"
+          }
+        }
+      },
+      waitingApprovalStatus: {
+        on: {
+          [EVENT_BACK_TO_MAIN_MENU]: {
+            target: "promptMainMenu"
+          },
+          RECEIVED_UPDATE: [
+            {
+              cond: "isValidApprovalStatus",
+              target: "getMyJobs",
+              actions: "setApprovalStatus"
+            }
+          ]
+        }
+      },
+      getMyJobs: {
+        invoke: {
+          id: "getMyJobs",
+          src: "getMyJobs",
+          onDone: {
+            target: "promptMyJobs"
+          },
+          onError: {
+            target: "errorGettingMyJobs"
+          }
+        }
+      },
+      errorGettingMyJobs: {
+        invoke: {
+          id: "errorGettingJobs",
+          src: "errorGettingJobs",
+          onDone: {
+            target: "promptMyJobs"
+          }
         }
       },
       postingJob: {
@@ -608,6 +675,7 @@ const machine = Machine(
     guards: {
       isEventBack: checkTelegramMessageEvent(MESSAGE_BACK),
       isEventPostJob: checkTelegramMessageEvent(MESSAGE_POST_JOB),
+      isEventMyJobs: checkTelegramMessageEvent(MESSAGE_MY_JOBS),
       isEventSkip: checkTelegramMessageEvent(MESSAGE_SKIP),
       isEventApplyEmail: checkTelegramMessageEvent(MESSAGE_APPLY_EMAIL),
       isEventApplyUrl: checkTelegramMessageEvent(MESSAGE_APPLY_URL),
@@ -628,7 +696,6 @@ const machine = Machine(
         const level = utils.careerLevels.find(
           level => level.label === message.text
         );
-        console.log({ level });
         return !!level && validation.careerLevelValidator.isValidSync(level.id);
       },
       tagsValid: (context, event) => {
@@ -667,6 +734,10 @@ const machine = Machine(
       companyEmailValid: (context, event) => {
         const message = event.update && event.update.message;
         return validation.companyEmailValidator.isValidSync(message.text);
+      },
+      isValidApprovalStatus: (context, event) => {
+        const message = event.update && event.update.message;
+        return APPROVAL_STATUS_MESSAGES.indexOf(message.text) !== -1;
       }
     },
     actions: {
@@ -744,7 +815,12 @@ const machine = Machine(
       saveCompanyEmail: assign({
         companyEmail: (context, event) => event.update.message.text
       }),
-      resetCompanyEmail: resetContextField("companyEmail")
+      resetCompanyEmail: resetContextField("companyEmail"),
+      setApprovalStatus: assign({
+        currentApprovalStatus: (context, event) => {
+          return MESSAGE_APPROVAL_STATUS_MAP[event.update.message.text];
+        }
+      })
     },
     services: {
       promptMainMenu: async context => {
@@ -753,7 +829,9 @@ const machine = Machine(
           "Choose an option",
           {
             replyMarkup: {
-              keyboard: [[{ text: MESSAGE_POST_JOB }]],
+              keyboard: [
+                [{ text: MESSAGE_POST_JOB }, { text: MESSAGE_MY_JOBS }]
+              ],
               resize_keyboard: true
             }
           }
@@ -1020,7 +1098,6 @@ _(Format YYYY-MM-DD E.g. 2020-02-23)_`,
       },
       promptChooseCompany: async context => {
         const companies = await db.getCompanies(parseInt(context.userId));
-        console.log({ companies });
         await telegramBot.sendMessage(
           context.telegramUserId,
           `Choose a company for this job`,
@@ -1073,20 +1150,15 @@ _(Email is kept strictly confidential. Job applicants won't be able to see your 
         );
       },
       saveJob: async context => {
-        try {
-          const user = await db.getUserById(context.userId);
-          const data = await jobHandler.createJob(user, context);
-          await telegramBot.sendMessage(
-            context.telegramUserId,
-            `🎉🎉🎉Job Successfully Created🎉🎉🎉. ${data.job.approvalStatus ===
-              "Pending" && `It will be live once it gets admin approval.`}
+        const user = await db.getUserById(context.userId);
+        const data = await jobHandler.createJob(user, context);
+        await telegramBot.sendMessage(
+          context.telegramUserId,
+          `🎉🎉🎉Job Successfully Created🎉🎉🎉. ${data.job.approvalStatus ===
+            "Pending" && `It will be live once it gets admin approval.`}
               
 You'll be notified once your job is live.`
-          );
-        } catch (err) {
-          console.log(err);
-          throw err;
-        }
+        );
       },
       promptErrorSavingJob: async context => {
         await telegramBot.sendMessage(
@@ -1102,6 +1174,86 @@ You'll be notified once your job is live.`
               resize_keyboard: true
             }
           }
+        );
+      },
+      promptMyJobs: async context => {
+        await telegramBot.sendMessage(
+          context.telegramUserId,
+          `Choose a category of jobs`,
+          {
+            replyMarkup: {
+              keyboard: _.chunk(
+                APPROVAL_STATUS_MESSAGES.map(appStatusMessage => ({
+                  text: appStatusMessage
+                })),
+                2
+              ).concat([[{ text: MESSAGE_BACK_TO_MAIN_MENU }]]),
+              resize_keyboard: true
+            }
+          }
+        );
+      },
+      getMyJobs: async context => {
+        const jobs = await db.getJobs({
+          ownerId: context.userId,
+          approvalStatus: context.currentApprovalStatus
+        });
+        const sendJob = jobData => {
+          const { job } = jobData;
+          const viewOnWebButtonRow =
+            job.approvalStatus === "Active"
+              ? [
+                  [
+                    {
+                      text: "🌍 View on web",
+                      url: utils.jobUrlFromSlug(job.slug)
+                    }
+                  ]
+                ]
+              : [];
+          const closeJobButtonRow =
+            job.approvalStatus === "Active" || job.approvalStatus === "Pending"
+              ? [
+                  [
+                    {
+                      text: "🚪 Close Job",
+                      callback_data: JSON.stringify({
+                        event: EVENT_CLOSE_JOB,
+                        id: job.id
+                      })
+                    }
+                  ]
+                ]
+              : [];
+          return telegramBot.sendMessage(
+            context.telegramUserId,
+            socialHandler.createJobMessage(jobData),
+            {
+              replyMarkup: {
+                inline_keyboard: [...viewOnWebButtonRow, ...closeJobButtonRow]
+              }
+            }
+          );
+        };
+        try {
+          if (jobs.length === 0) {
+            await telegramBot.sendMessage(
+              context.telegramUserId,
+              `😐 No Jobs in ${context.currentApprovalStatus} Category`
+            );
+          } else {
+            await Promise.all(jobs.map(jobData => sendJob(jobData)));
+          }
+        } catch (err) {
+          console.log(err);
+          throw err;
+        }
+        //console.log({ myJobs: jobs });
+      },
+      errorGettingJobs: async context => {
+        await telegramBot.sendMessage(
+          context.telegramUserId,
+          `🙈 Failed trying to retreive your jobs.`
         );
       }
     }
@@ -1139,6 +1291,26 @@ exports.handleTelegramUpdate = async (req, res) => {
     }
   });
   service.start(currentState);
+  if (update.callback_query) {
+    const callbackQuery = update.callback_query;
+    if (callbackQuery.data) {
+      let callbackData;
+      try {
+        callbackData = JSON.parse(callbackQuery.data);
+      } catch (err) {
+        console.log("Problem parsing event from callback data");
+      }
+      if (callbackData.event === EVENT_CLOSE_JOB) {
+        await closeJob(
+          telegramUser.id,
+          callbackQuery.id,
+          parseInt(callbackData.id)
+        );
+        res.sendStatus(200);
+        return;
+      }
+    }
+  }
   if (update.message && update.message.text === MESSAGE_START) {
     service.send({ type: EVENT_START });
   } else if (
@@ -1152,6 +1324,34 @@ exports.handleTelegramUpdate = async (req, res) => {
   res.sendStatus(200);
 };
 
+async function closeJob(telegramUserId, callbackQueryId, jobId) {
+  const user = await db.getUserByTelegramId(telegramUserId);
+  if (user) {
+    try {
+      const numClosed = await db.closeJob(jobId, { ownerId: user.id });
+      console.log({ numClosed });
+      if (numClosed > 0) {
+        telegramBot.answerCallbackQuery(callbackQueryId, {
+          text: "Job Closed Successfully",
+          showAlert: true
+        });
+      } else {
+        telegramBot.answerCallbackQuery(callbackQueryId, {
+          text: `Couldn't close job. It may have been closed before`,
+          showAlert: true
+        });
+      }
+      return;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  telegramBot.answerCallbackQuery(callbackQueryId, {
+    text: "🙈 Problem occurred closing job",
+    showAlert: true
+  });
+}
+
 async function getPersistedState(telegramUserId) {
   let rawState = await redis.get(`telegram_user_${telegramUserId}`);
   if (rawState) {
@@ -1164,6 +1364,6 @@ async function persistState(telegramUserId, state) {
     `telegram_user_${telegramUserId}`,
     JSON.stringify(state),
     "ex",
-    6 * 60 * 60
+    24 * 60 * 60
   );
 }

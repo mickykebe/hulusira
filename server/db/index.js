@@ -534,11 +534,15 @@ class Db {
     return rows.map(Tag.fromDb);
   }
 
-  closeJob(id) {
+  closeJob(id, { ownerId } = {}) {
     return this.knex("job")
       .where("id", id)
+      .whereIn("approval_status", ["Pending", "Active"])
       .update({
-        approval_status: "Closed"
+        approval_status: "Closed",
+        ...(ownerId && {
+          owner: ownerId
+        })
       });
   }
 
