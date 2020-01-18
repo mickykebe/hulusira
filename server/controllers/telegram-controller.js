@@ -1286,7 +1286,6 @@ exports.handleTelegramUpdate = async (req, res) => {
   const service = interpret(botMachine);
   service.onTransition(state => {
     if (state.changed) {
-      console.log({ currentState: state.value, context: state.context });
       persistState(telegramUser.id, state);
     }
   });
@@ -1329,7 +1328,6 @@ async function closeJob(telegramUserId, callbackQueryId, jobId) {
   if (user) {
     try {
       const numClosed = await db.closeJob(jobId, { ownerId: user.id });
-      console.log({ numClosed });
       if (numClosed > 0) {
         telegramBot.answerCallbackQuery(callbackQueryId, {
           text: "Job Closed Successfully",

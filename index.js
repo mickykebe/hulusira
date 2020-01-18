@@ -27,6 +27,7 @@ async function setupTelegramBot() {
   try {
     //redis.flushall();
     await telegramBot.setupWebhook();
+    console.log("setup telegram bot webhook");
   } catch (err) {
     console.log(err);
   }
