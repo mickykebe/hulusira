@@ -534,11 +534,15 @@ class Db ***REMOVED***
     return rows.map(Tag.fromDb);
   ***REMOVED***
 
-  closeJob(id) ***REMOVED***
+  closeJob(id, ***REMOVED*** ownerId ***REMOVED*** = ***REMOVED******REMOVED***) ***REMOVED***
     return this.knex("job")
       .where("id", id)
+      .whereIn("approval_status", ["Pending", "Active"])
       .update(***REMOVED***
-        approval_status: "Closed"
+        approval_status: "Closed",
+        ...(ownerId && ***REMOVED***
+          owner: ownerId
+        ***REMOVED***)
       ***REMOVED***);
   ***REMOVED***
 

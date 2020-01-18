@@ -17,6 +17,17 @@ exports.sendMessage = function(chatId, text, ***REMOVED*** replyMarkup, parseMod
   ***REMOVED***);
 ***REMOVED***;
 
+exports.answerCallbackQuery = function(
+  callbackQueryId,
+  ***REMOVED*** text, showAlert = false ***REMOVED*** = ***REMOVED******REMOVED***
+) ***REMOVED***
+  return axios.post(`$***REMOVED***TELEGRAM_API_BASE_URL***REMOVED***/answerCallbackQuery`, ***REMOVED***
+    callback_query_id: callbackQueryId,
+    text,
+    show_alert: showAlert
+  ***REMOVED***);
+***REMOVED***;
+
 exports.userFromIncomingUpdate = function(update) ***REMOVED***
   if (update.message) ***REMOVED***
     return update.message.from;

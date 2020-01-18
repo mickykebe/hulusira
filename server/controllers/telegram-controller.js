@@ -6,8 +6,10 @@ const db = require("../db");
 const utils = require("../utils/index");
 const validation = require("../utils/validation");
 const jobHandler = require("../handlers/jobHandler");
+const socialHandler = require("../handlers/social");
 
 const MESSAGE_POST_JOB = "📝 Post a Job";
+const MESSAGE_MY_JOBS = "🗂️ My Jobs";
 const MESSAGE_START = "/start";
 const MESSAGE_BACK_TO_MAIN_MENU = "🔚 Main Menu";
 const MESSAGE_BACK = "⬅️ Back";
@@ -18,9 +20,26 @@ const MESSAGE_YES = "✅ Yes";
 const MESSAGE_NO = "❌ No";
 const MESSAGE_ADD_COMPANY = "🏢 Add Company";
 const MESSAGE_RETRY = "🔄 Retry";
+const MESSAGE_PENDING_JOBS = "⏳ Pending Jobs";
+const MESSAGE_ACTIVE_JOBS = "✅ Active Jobs";
+const MESSAGE_CLOSED_JOBS = "🚪 Closed Jobs";
+const MESSAGE_DECLINED_JOBS = "🚫 Declined Jobs";
+const APPROVAL_STATUS_MESSAGES = [
+  MESSAGE_PENDING_JOBS,
+  MESSAGE_ACTIVE_JOBS,
+  MESSAGE_CLOSED_JOBS,
+  MESSAGE_DECLINED_JOBS
+];
+const MESSAGE_APPROVAL_STATUS_MAP = ***REMOVED***
+  [MESSAGE_PENDING_JOBS]: "Pending",
+  [MESSAGE_ACTIVE_JOBS]: "Active",
+  [MESSAGE_CLOSED_JOBS]: "Closed",
+  [MESSAGE_DECLINED_JOBS]: "Declined"
+***REMOVED***;
 
 const EVENT_START = "START";
 const EVENT_BACK_TO_MAIN_MENU = "BACK_TO_MAIN_MENU";
+const EVENT_CLOSE_JOB = "CLOSE_JOB";
 
 const checkTelegramMessageEvent = MESSAGE => (context, event) => ***REMOVED***
   return (
@@ -38,10 +57,10 @@ const resetContextField = field =>
 const machine = Machine(
   ***REMOVED***
     id: "telegramBotMachine",
-    initial: "promptMainMenu",
     context: ***REMOVED***
       telegramUserId: null
     ***REMOVED***,
+    initial: "promptMainMenu",
     states: ***REMOVED***
       promptMainMenu: ***REMOVED***
         invoke: ***REMOVED***
@@ -61,8 +80,56 @@ const machine = Machine(
             ***REMOVED***
               cond: "isEventPostJob",
               target: "postingJob"
+            ***REMOVED***,
+            ***REMOVED***
+              cond: "isEventMyJobs",
+              target: "promptMyJobs"
             ***REMOVED***
           ]
+        ***REMOVED***
+      ***REMOVED***,
+      promptMyJobs: ***REMOVED***
+        invoke: ***REMOVED***
+          id: "promptMyJobs",
+          src: "promptMyJobs",
+          onDone: ***REMOVED***
+            target: "waitingApprovalStatus"
+          ***REMOVED***
+        ***REMOVED***
+      ***REMOVED***,
+      waitingApprovalStatus: ***REMOVED***
+        on: ***REMOVED***
+          [EVENT_BACK_TO_MAIN_MENU]: ***REMOVED***
+            target: "promptMainMenu"
+          ***REMOVED***,
+          RECEIVED_UPDATE: [
+            ***REMOVED***
+              cond: "isValidApprovalStatus",
+              target: "getMyJobs",
+              actions: "setApprovalStatus"
+            ***REMOVED***
+          ]
+        ***REMOVED***
+      ***REMOVED***,
+      getMyJobs: ***REMOVED***
+        invoke: ***REMOVED***
+          id: "getMyJobs",
+          src: "getMyJobs",
+          onDone: ***REMOVED***
+            target: "promptMyJobs"
+          ***REMOVED***,
+          onError: ***REMOVED***
+            target: "errorGettingMyJobs"
+          ***REMOVED***
+        ***REMOVED***
+      ***REMOVED***,
+      errorGettingMyJobs: ***REMOVED***
+        invoke: ***REMOVED***
+          id: "errorGettingJobs",
+          src: "errorGettingJobs",
+          onDone: ***REMOVED***
+            target: "promptMyJobs"
+          ***REMOVED***
         ***REMOVED***
       ***REMOVED***,
       postingJob: ***REMOVED***
@@ -608,6 +675,7 @@ const machine = Machine(
     guards: ***REMOVED***
       isEventBack: checkTelegramMessageEvent(MESSAGE_BACK),
       isEventPostJob: checkTelegramMessageEvent(MESSAGE_POST_JOB),
+      isEventMyJobs: checkTelegramMessageEvent(MESSAGE_MY_JOBS),
       isEventSkip: checkTelegramMessageEvent(MESSAGE_SKIP),
       isEventApplyEmail: checkTelegramMessageEvent(MESSAGE_APPLY_EMAIL),
       isEventApplyUrl: checkTelegramMessageEvent(MESSAGE_APPLY_URL),
@@ -628,7 +696,6 @@ const machine = Machine(
         const level = utils.careerLevels.find(
           level => level.label === message.text
         );
-        console.log(***REMOVED*** level ***REMOVED***);
         return !!level && validation.careerLevelValidator.isValidSync(level.id);
       ***REMOVED***,
       tagsValid: (context, event) => ***REMOVED***
@@ -667,6 +734,10 @@ const machine = Machine(
       companyEmailValid: (context, event) => ***REMOVED***
         const message = event.update && event.update.message;
         return validation.companyEmailValidator.isValidSync(message.text);
+      ***REMOVED***,
+      isValidApprovalStatus: (context, event) => ***REMOVED***
+        const message = event.update && event.update.message;
+        return APPROVAL_STATUS_MESSAGES.indexOf(message.text) !== -1;
       ***REMOVED***
     ***REMOVED***,
     actions: ***REMOVED***
@@ -744,7 +815,12 @@ const machine = Machine(
       saveCompanyEmail: assign(***REMOVED***
         companyEmail: (context, event) => event.update.message.text
       ***REMOVED***),
-      resetCompanyEmail: resetContextField("companyEmail")
+      resetCompanyEmail: resetContextField("companyEmail"),
+      setApprovalStatus: assign(***REMOVED***
+        currentApprovalStatus: (context, event) => ***REMOVED***
+          return MESSAGE_APPROVAL_STATUS_MAP[event.update.message.text];
+        ***REMOVED***
+      ***REMOVED***)
     ***REMOVED***,
     services: ***REMOVED***
       promptMainMenu: async context => ***REMOVED***
@@ -753,7 +829,9 @@ const machine = Machine(
           "Choose an option",
           ***REMOVED***
             replyMarkup: ***REMOVED***
-              keyboard: [[***REMOVED*** text: MESSAGE_POST_JOB ***REMOVED***]],
+              keyboard: [
+                [***REMOVED*** text: MESSAGE_POST_JOB ***REMOVED***, ***REMOVED*** text: MESSAGE_MY_JOBS ***REMOVED***]
+              ],
               resize_keyboard: true
             ***REMOVED***
           ***REMOVED***
@@ -1020,7 +1098,6 @@ _(Format YYYY-MM-DD E.g. 2020-02-23)_`,
       ***REMOVED***,
       promptChooseCompany: async context => ***REMOVED***
         const companies = await db.getCompanies(parseInt(context.userId));
-        console.log(***REMOVED*** companies ***REMOVED***);
         await telegramBot.sendMessage(
           context.telegramUserId,
           `Choose a company for this job`,
@@ -1073,20 +1150,15 @@ _(Email is kept strictly confidential. Job applicants won't be able to see your 
         );
       ***REMOVED***,
       saveJob: async context => ***REMOVED***
-        try ***REMOVED***
-          const user = await db.getUserById(context.userId);
-          const data = await jobHandler.createJob(user, context);
-          await telegramBot.sendMessage(
-            context.telegramUserId,
-            `🎉🎉🎉Job Successfully Created🎉🎉🎉. $***REMOVED***data.job.approvalStatus ===
-              "Pending" && `It will be live once it gets admin approval.`***REMOVED***
+        const user = await db.getUserById(context.userId);
+        const data = await jobHandler.createJob(user, context);
+        await telegramBot.sendMessage(
+          context.telegramUserId,
+          `🎉🎉🎉Job Successfully Created🎉🎉🎉. $***REMOVED***data.job.approvalStatus ===
+            "Pending" && `It will be live once it gets admin approval.`***REMOVED***
               
 You'll be notified once your job is live.`
-          );
-        ***REMOVED*** catch (err) ***REMOVED***
-          console.log(err);
-          throw err;
-        ***REMOVED***
+        );
       ***REMOVED***,
       promptErrorSavingJob: async context => ***REMOVED***
         await telegramBot.sendMessage(
@@ -1102,6 +1174,86 @@ You'll be notified once your job is live.`
               resize_keyboard: true
             ***REMOVED***
           ***REMOVED***
+        );
+      ***REMOVED***,
+      promptMyJobs: async context => ***REMOVED***
+        await telegramBot.sendMessage(
+          context.telegramUserId,
+          `Choose a category of jobs`,
+          ***REMOVED***
+            replyMarkup: ***REMOVED***
+              keyboard: _.chunk(
+                APPROVAL_STATUS_MESSAGES.map(appStatusMessage => (***REMOVED***
+                  text: appStatusMessage
+                ***REMOVED***)),
+                2
+              ).concat([[***REMOVED*** text: MESSAGE_BACK_TO_MAIN_MENU ***REMOVED***]]),
+              resize_keyboard: true
+            ***REMOVED***
+          ***REMOVED***
+        );
+      ***REMOVED***,
+      getMyJobs: async context => ***REMOVED***
+        const jobs = await db.getJobs(***REMOVED***
+          ownerId: context.userId,
+          approvalStatus: context.currentApprovalStatus
+        ***REMOVED***);
+        const sendJob = jobData => ***REMOVED***
+          const ***REMOVED*** job ***REMOVED*** = jobData;
+          const viewOnWebButtonRow =
+            job.approvalStatus === "Active"
+              ? [
+                  [
+                    ***REMOVED***
+                      text: "🌍 View on web",
+                      url: utils.jobUrlFromSlug(job.slug)
+                    ***REMOVED***
+                  ]
+                ]
+              : [];
+          const closeJobButtonRow =
+            job.approvalStatus === "Active" || job.approvalStatus === "Pending"
+              ? [
+                  [
+                    ***REMOVED***
+                      text: "🚪 Close Job",
+                      callback_data: JSON.stringify(***REMOVED***
+                        event: EVENT_CLOSE_JOB,
+                        id: job.id
+                      ***REMOVED***)
+                    ***REMOVED***
+                  ]
+                ]
+              : [];
+          return telegramBot.sendMessage(
+            context.telegramUserId,
+            socialHandler.createJobMessage(jobData),
+            ***REMOVED***
+              replyMarkup: ***REMOVED***
+                inline_keyboard: [...viewOnWebButtonRow, ...closeJobButtonRow]
+              ***REMOVED***
+            ***REMOVED***
+          );
+        ***REMOVED***;
+        try ***REMOVED***
+          if (jobs.length === 0) ***REMOVED***
+            await telegramBot.sendMessage(
+              context.telegramUserId,
+              `😐 No Jobs in $***REMOVED***context.currentApprovalStatus***REMOVED*** Category`
+            );
+          ***REMOVED*** else ***REMOVED***
+            await Promise.all(jobs.map(jobData => sendJob(jobData)));
+          ***REMOVED***
+        ***REMOVED*** catch (err) ***REMOVED***
+          console.log(err);
+          throw err;
+        ***REMOVED***
+        //console.log(***REMOVED*** myJobs: jobs ***REMOVED***);
+      ***REMOVED***,
+      errorGettingJobs: async context => ***REMOVED***
+        await telegramBot.sendMessage(
+          context.telegramUserId,
+          `🙈 Failed trying to retreive your jobs.`
         );
       ***REMOVED***
     ***REMOVED***
@@ -1139,6 +1291,26 @@ exports.handleTelegramUpdate = async (req, res) => ***REMOVED***
     ***REMOVED***
   ***REMOVED***);
   service.start(currentState);
+  if (update.callback_query) ***REMOVED***
+    const callbackQuery = update.callback_query;
+    if (callbackQuery.data) ***REMOVED***
+      let callbackData;
+      try ***REMOVED***
+        callbackData = JSON.parse(callbackQuery.data);
+      ***REMOVED*** catch (err) ***REMOVED***
+        console.log("Problem parsing event from callback data");
+      ***REMOVED***
+      if (callbackData.event === EVENT_CLOSE_JOB) ***REMOVED***
+        await closeJob(
+          telegramUser.id,
+          callbackQuery.id,
+          parseInt(callbackData.id)
+        );
+        res.sendStatus(200);
+        return;
+      ***REMOVED***
+    ***REMOVED***
+  ***REMOVED***
   if (update.message && update.message.text === MESSAGE_START) ***REMOVED***
     service.send(***REMOVED*** type: EVENT_START ***REMOVED***);
   ***REMOVED*** else if (
@@ -1152,6 +1324,34 @@ exports.handleTelegramUpdate = async (req, res) => ***REMOVED***
   res.sendStatus(200);
 ***REMOVED***;
 
+async function closeJob(telegramUserId, callbackQueryId, jobId) ***REMOVED***
+  const user = await db.getUserByTelegramId(telegramUserId);
+  if (user) ***REMOVED***
+    try ***REMOVED***
+      const numClosed = await db.closeJob(jobId, ***REMOVED*** ownerId: user.id ***REMOVED***);
+      console.log(***REMOVED*** numClosed ***REMOVED***);
+      if (numClosed > 0) ***REMOVED***
+        telegramBot.answerCallbackQuery(callbackQueryId, ***REMOVED***
+          text: "Job Closed Successfully",
+          showAlert: true
+        ***REMOVED***);
+      ***REMOVED*** else ***REMOVED***
+        telegramBot.answerCallbackQuery(callbackQueryId, ***REMOVED***
+          text: `Couldn't close job. It may have been closed before`,
+          showAlert: true
+        ***REMOVED***);
+      ***REMOVED***
+      return;
+    ***REMOVED*** catch (err) ***REMOVED***
+      console.log(err);
+    ***REMOVED***
+  ***REMOVED***
+  telegramBot.answerCallbackQuery(callbackQueryId, ***REMOVED***
+    text: "🙈 Problem occurred closing job",
+    showAlert: true
+  ***REMOVED***);
+***REMOVED***
+
 async function getPersistedState(telegramUserId) ***REMOVED***
   let rawState = await redis.get(`telegram_user_$***REMOVED***telegramUserId***REMOVED***`);
   if (rawState) ***REMOVED***
@@ -1164,6 +1364,6 @@ async function persistState(telegramUserId, state) ***REMOVED***
     `telegram_user_$***REMOVED***telegramUserId***REMOVED***`,
     JSON.stringify(state),
     "ex",
-    6 * 60 * 60
+    24 * 60 * 60
   );
 ***REMOVED***
