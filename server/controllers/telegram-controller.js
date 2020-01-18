@@ -1261,6 +1261,7 @@ You'll be notified once your job is live.`
 );
 
 exports.handleTelegramUpdate = async (req, res) => ***REMOVED***
+  console.log("incoming request");
   const update = req.body;
   const telegramUser = telegramBot.userFromIncomingUpdate(update);
   if (!telegramUser) ***REMOVED***
@@ -1268,6 +1269,7 @@ exports.handleTelegramUpdate = async (req, res) => ***REMOVED***
   ***REMOVED***
   let botMachine = machine;
   let previousState = await getPersistedState(telegramUser.id);
+  console.log("previousState");
   let currentState;
   if (previousState) ***REMOVED***
     currentState = botMachine.resolveState(previousState);
@@ -1283,12 +1285,14 @@ exports.handleTelegramUpdate = async (req, res) => ***REMOVED***
     ***REMOVED***);
     currentState = botMachine.initialState;
   ***REMOVED***
+  console.log("starting interpreter");
   const service = interpret(botMachine);
   service.onTransition(state => ***REMOVED***
     if (state.changed) ***REMOVED***
       persistState(telegramUser.id, state);
     ***REMOVED***
   ***REMOVED***);
+  console.log("starting service");
   service.start(currentState);
   if (update.callback_query) ***REMOVED***
     const callbackQuery = update.callback_query;
