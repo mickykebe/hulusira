@@ -1264,6 +1264,7 @@ exports.handleTelegramUpdate = async (req, res) => {
   console.log("incoming request");
   const update = req.body;
   const telegramUser = telegramBot.userFromIncomingUpdate(update);
+  console.log({ telegramUser });
   if (!telegramUser) {
     return;
   }
@@ -1356,6 +1357,7 @@ async function closeJob(telegramUserId, callbackQueryId, jobId) {
 
 async function getPersistedState(telegramUserId) {
   let rawState = await redis.get(`telegram_user_${telegramUserId}`);
+  console.log({ redisState: rawState });
   if (rawState) {
     return State.create(JSON.parse(rawState));
   }
