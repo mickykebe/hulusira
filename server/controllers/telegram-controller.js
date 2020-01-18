@@ -1248,7 +1248,6 @@ You'll be notified once your job is live.`
           console.log(err);
           throw err;
         }
-        //console.log({ myJobs: jobs });
       },
       errorGettingJobs: async context => {
         await telegramBot.sendMessage(
@@ -1261,17 +1260,14 @@ You'll be notified once your job is live.`
 );
 
 exports.handleTelegramUpdate = async (req, res) => {
-  console.log("incoming request");
   const update = req.body;
   const telegramUser = telegramBot.userFromIncomingUpdate(update);
-  console.log({ update, telegramUser });
   if (!telegramUser) {
     res.sendStatus(200);
     return;
   }
   let botMachine = machine;
   let previousState = await getPersistedState(telegramUser.id);
-  console.log("previousState");
   let currentState;
   if (previousState) {
     currentState = botMachine.resolveState(previousState);
@@ -1287,14 +1283,12 @@ exports.handleTelegramUpdate = async (req, res) => {
     });
     currentState = botMachine.initialState;
   }
-  console.log("starting interpreter");
   const service = interpret(botMachine);
   service.onTransition(state => {
     if (state.changed) {
       persistState(telegramUser.id, state);
     }
   });
-  console.log("starting service");
   service.start(currentState);
   if (update.callback_query) {
     const callbackQuery = update.callback_query;
@@ -1358,7 +1352,6 @@ async function closeJob(telegramUserId, callbackQueryId, jobId) {
 
 async function getPersistedState(telegramUserId) {
   let rawState = await redis.get(`telegram_user_${telegramUserId}`);
-  console.log({ redisState: rawState });
   if (rawState) {
     return State.create(JSON.parse(rawState));
   }
