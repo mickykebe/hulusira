@@ -27,6 +27,7 @@ async function setupTelegramBot() ***REMOVED***
   try ***REMOVED***
     //redis.flushall();
     await telegramBot.setupWebhook();
+    console.log("setup telegram bot webhook");
   ***REMOVED*** catch (err) ***REMOVED***
     console.log(err);
   ***REMOVED***
