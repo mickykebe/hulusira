@@ -16,6 +16,7 @@ const MESSAGE_BACK = "⬅️ Back";
 const MESSAGE_SKIP = "➡️ Skip";
 const MESSAGE_APPLY_EMAIL = "📧 Apply via Email";
 const MESSAGE_APPLY_URL = "🔗 Apply via URL";
+const MESSAGE_APPLY_TELEGRAM = "💬 Apply via Telegram chat";
 const MESSAGE_YES = "✅ Yes";
 const MESSAGE_NO = "❌ No";
 const MESSAGE_ADD_COMPANY = "🏢 Add Company";
@@ -453,6 +454,11 @@ const machine = Machine(
                   target: "promptIsCompanyJob"
                 },
                 {
+                  cond: { type: "isEventApplyTelegram" },
+                  target: "promptIsCompanyJob",
+                  actions: "saveTelegramApplyUrl"
+                },
+                {
                   cond: { type: "isEventApplyEmail" },
                   target: "promptApplyEmail"
                 },
@@ -677,6 +683,14 @@ const machine = Machine(
       isEventPostJob: checkTelegramMessageEvent(MESSAGE_POST_JOB),
       isEventMyJobs: checkTelegramMessageEvent(MESSAGE_MY_JOBS),
       isEventSkip: checkTelegramMessageEvent(MESSAGE_SKIP),
+      isEventApplyTelegram: (context, event) => {
+        return (
+          !!context.telegramUsername &&
+          event.update &&
+          event.update.message &&
+          event.update.message.text === MESSAGE_APPLY_TELEGRAM
+        );
+      },
       isEventApplyEmail: checkTelegramMessageEvent(MESSAGE_APPLY_EMAIL),
       isEventApplyUrl: checkTelegramMessageEvent(MESSAGE_APPLY_URL),
       isEventYes: checkTelegramMessageEvent(MESSAGE_YES),
@@ -790,6 +804,11 @@ const machine = Machine(
         howToApply: (context, event) => event.update.message.text
       }),
       resetHowToApply: resetContextField("howToApply"),
+      saveTelegramApplyUrl: assign({
+        applyUrl: (context, event) => {
+          return `https://t.me/${context.telegramUsername}`;
+        }
+      }),
       saveApplyEmail: assign({
         applyEmail: (context, event) => event.update.message.text
       }),
@@ -905,10 +924,11 @@ const machine = Machine(
       promptTags: async context => {
         await telegramBot.sendMessage(
           context.telegramUserId,
-          `Please enter some tags(at least one) that describe the job(separated by comma)
+          `Please enter some tags(at least one) that describe the job *(separated by comma)*
           
 E.g. Accounting, NGO, Information Technology, Driver, Messenger etc.`,
           {
+            parseMode: "Markdown",
             replyMarkup: {
               keyboard: [
                 [{ text: MESSAGE_BACK }],
@@ -1028,12 +1048,16 @@ _(Format YYYY-MM-DD E.g. 2020-02-23)_`,
         );
       },
       promptApplyMethodChoice: async context => {
+        const { telegramUsername } = context;
         await telegramBot.sendMessage(
           context.telegramUserId,
-          `Allow candidates to apply via email or throgh a custom url?`,
+          `Allow candidates to apply via telegram, email or throgh a custom url?`,
           {
             replyMarkup: {
               keyboard: [
+                ...(telegramUsername
+                  ? [[{ text: MESSAGE_APPLY_TELEGRAM }]]
+                  : []),
                 [{ text: MESSAGE_APPLY_EMAIL }, { text: MESSAGE_APPLY_URL }],
                 [{ text: MESSAGE_BACK }, { text: MESSAGE_SKIP }],
                 [{ text: MESSAGE_BACK_TO_MAIN_MENU }]
@@ -1279,7 +1303,8 @@ exports.handleTelegramUpdate = async (req, res) => {
     botMachine = machine.withContext({
       ...machine.context,
       userId: user.id,
-      telegramUserId: telegramUser.id
+      telegramUserId: telegramUser.id,
+      telegramUsername: telegramUser.username
     });
     currentState = botMachine.initialState;
   }
