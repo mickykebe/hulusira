@@ -16,6 +16,7 @@ const MESSAGE_BACK = "⬅️ Back";
 const MESSAGE_SKIP = "➡️ Skip";
 const MESSAGE_APPLY_EMAIL = "📧 Apply via Email";
 const MESSAGE_APPLY_URL = "🔗 Apply via URL";
+const MESSAGE_APPLY_TELEGRAM = "💬 Apply via Telegram chat";
 const MESSAGE_YES = "✅ Yes";
 const MESSAGE_NO = "❌ No";
 const MESSAGE_ADD_COMPANY = "🏢 Add Company";
@@ -453,6 +454,11 @@ const machine = Machine(
                   target: "promptIsCompanyJob"
                 ***REMOVED***,
                 ***REMOVED***
+                  cond: ***REMOVED*** type: "isEventApplyTelegram" ***REMOVED***,
+                  target: "promptIsCompanyJob",
+                  actions: "saveTelegramApplyUrl"
+                ***REMOVED***,
+                ***REMOVED***
                   cond: ***REMOVED*** type: "isEventApplyEmail" ***REMOVED***,
                   target: "promptApplyEmail"
                 ***REMOVED***,
@@ -677,6 +683,14 @@ const machine = Machine(
       isEventPostJob: checkTelegramMessageEvent(MESSAGE_POST_JOB),
       isEventMyJobs: checkTelegramMessageEvent(MESSAGE_MY_JOBS),
       isEventSkip: checkTelegramMessageEvent(MESSAGE_SKIP),
+      isEventApplyTelegram: (context, event) => ***REMOVED***
+        return (
+          !!context.telegramUsername &&
+          event.update &&
+          event.update.message &&
+          event.update.message.text === MESSAGE_APPLY_TELEGRAM
+        );
+      ***REMOVED***,
       isEventApplyEmail: checkTelegramMessageEvent(MESSAGE_APPLY_EMAIL),
       isEventApplyUrl: checkTelegramMessageEvent(MESSAGE_APPLY_URL),
       isEventYes: checkTelegramMessageEvent(MESSAGE_YES),
@@ -790,6 +804,11 @@ const machine = Machine(
         howToApply: (context, event) => event.update.message.text
       ***REMOVED***),
       resetHowToApply: resetContextField("howToApply"),
+      saveTelegramApplyUrl: assign(***REMOVED***
+        applyUrl: (context, event) => ***REMOVED***
+          return `https://t.me/$***REMOVED***context.telegramUsername***REMOVED***`;
+        ***REMOVED***
+      ***REMOVED***),
       saveApplyEmail: assign(***REMOVED***
         applyEmail: (context, event) => event.update.message.text
       ***REMOVED***),
@@ -905,10 +924,11 @@ const machine = Machine(
       promptTags: async context => ***REMOVED***
         await telegramBot.sendMessage(
           context.telegramUserId,
-          `Please enter some tags(at least one) that describe the job(separated by comma)
+          `Please enter some tags(at least one) that describe the job *(separated by comma)*
           
 E.g. Accounting, NGO, Information Technology, Driver, Messenger etc.`,
           ***REMOVED***
+            parseMode: "Markdown",
             replyMarkup: ***REMOVED***
               keyboard: [
                 [***REMOVED*** text: MESSAGE_BACK ***REMOVED***],
@@ -1028,12 +1048,16 @@ _(Format YYYY-MM-DD E.g. 2020-02-23)_`,
         );
       ***REMOVED***,
       promptApplyMethodChoice: async context => ***REMOVED***
+        const ***REMOVED*** telegramUsername ***REMOVED*** = context;
         await telegramBot.sendMessage(
           context.telegramUserId,
-          `Allow candidates to apply via email or throgh a custom url?`,
+          `Allow candidates to apply via telegram, email or throgh a custom url?`,
           ***REMOVED***
             replyMarkup: ***REMOVED***
               keyboard: [
+                ...(telegramUsername
+                  ? [[***REMOVED*** text: MESSAGE_APPLY_TELEGRAM ***REMOVED***]]
+                  : []),
                 [***REMOVED*** text: MESSAGE_APPLY_EMAIL ***REMOVED***, ***REMOVED*** text: MESSAGE_APPLY_URL ***REMOVED***],
                 [***REMOVED*** text: MESSAGE_BACK ***REMOVED***, ***REMOVED*** text: MESSAGE_SKIP ***REMOVED***],
                 [***REMOVED*** text: MESSAGE_BACK_TO_MAIN_MENU ***REMOVED***]
@@ -1279,7 +1303,8 @@ exports.handleTelegramUpdate = async (req, res) => ***REMOVED***
     botMachine = machine.withContext(***REMOVED***
       ...machine.context,
       userId: user.id,
-      telegramUserId: telegramUser.id
+      telegramUserId: telegramUser.id,
+      telegramUsername: telegramUser.username
     ***REMOVED***);
     currentState = botMachine.initialState;
   ***REMOVED***
