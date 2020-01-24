@@ -22,22 +22,37 @@ const createJobMessage = (***REMOVED*** job, company ***REMOVED***) => ***REMOVE
 $***REMOVED***job.tags.map(tag => `#$***REMOVED***tag.name.replace(/\s+/g, "_")***REMOVED***`).join(" ")***REMOVED***`;
 ***REMOVED***;
 
-const sendPostToFacebook = async function(message, jobUrl) ***REMOVED***
+const sendPostToFacebook = async function(message, jobUrl, ***REMOVED*** scheduleTime ***REMOVED***) ***REMOVED***
+  let fbPostId;
+  const encodedMessage = encodeURIComponent(message);
+  const encodedJobUrl = encodeURIComponent(jobUrl);
   try ***REMOVED***
     const ***REMOVED*** data: response ***REMOVED*** = await axios
       .post(
-        `https://graph.facebook.com/$***REMOVED***
-          process.env.FB_PAGE_ID
-        ***REMOVED***/feed?message=$***REMOVED***encodeURIComponent(message)***REMOVED***&link=$***REMOVED***encodeURIComponent(
-          jobUrl
-        )***REMOVED***&access_token=$***REMOVED***process.env.FB_PAGE_ACCESS_TOKEN***REMOVED***`
+        `https://graph.facebook.com/$***REMOVED***process.env.FB_PAGE_ID***REMOVED***/feed?message=$***REMOVED***encodedMessage***REMOVED***&link=$***REMOVED***encodedJobUrl***REMOVED***&access_token=$***REMOVED***process.env.FB_PAGE_ACCESS_TOKEN***REMOVED***`
       )
       .catch(logAxiosErrors);
     if (response.id) ***REMOVED***
-      return response.id;
+      fbPostId = response.id;
+    ***REMOVED***
+    if (scheduleTime) ***REMOVED***
+      const shareablePages = JSON.parse(process.env.SHARING_FB_PAGES) || [];
+      await Promise.all(
+        shareablePages.map((page, index) => ***REMOVED***
+          //within 30 minutes of each other
+          const time = scheduleTime + index * 1800;
+          return axios
+            .post(
+              `https://graph.facebook.com/$***REMOVED***page.id***REMOVED***/feed?message=$***REMOVED***encodedMessage***REMOVED***&link=https://www.facebook.com/$***REMOVED***fbPostId***REMOVED***&access_token=$***REMOVED***page.token***REMOVED***&published=false&scheduled_publish_time=$***REMOVED***time***REMOVED***`
+            )
+            .catch(logAxiosErrors);
+        ***REMOVED***)
+      );
     ***REMOVED***
   ***REMOVED*** catch (error) ***REMOVED***
-    console.log("Couldn't post job to facebook");
+    console.log("Problem occurred posting job to facebook");
+  ***REMOVED*** finally ***REMOVED***
+    return fbPostId;
   ***REMOVED***
 ***REMOVED***;
 
@@ -68,7 +83,7 @@ const sendPostToTelegram = async function(channelUsername, message, jobUrl) ***R
   ***REMOVED***
 ***REMOVED***;
 
-exports.postJobToSocialMedia = async function(jobData) ***REMOVED***
+exports.postJobToSocialMedia = async function(jobData, ***REMOVED*** fbSchedule ***REMOVED***) ***REMOVED***
   const messageBody = createJobMessage(jobData);
   const jobUrl = `$***REMOVED***process.env.ROOT_URL***REMOVED***/jobs/$***REMOVED***jobData.job.slug***REMOVED***`;
   const jobFacebookUrl = `$***REMOVED***jobUrl***REMOVED***?utm_source=HuluSira%20Facebook%20Page&utm_medium=facebook&utm_campaign=$***REMOVED***jobData.job.slug***REMOVED***`;
@@ -112,7 +127,8 @@ $***REMOVED***jobFacebookUrl***REMOVED***
 
   const facebookPostId = await sendPostToFacebook(
     facebookMessage,
-    jobFacebookUrl
+    jobFacebookUrl,
+    ***REMOVED*** scheduleTime: fbSchedule ***REMOVED***
   ).catch(() => null);
   await db.createJobSocialPost(jobData.job.id, ***REMOVED***
     telegramMessages,

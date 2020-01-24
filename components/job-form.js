@@ -21,6 +21,9 @@ import JobPreviewFormElement from "./job-preview-form-element";
 import PageProgress from "./page-progress";
 import HSSnackBar from "./hs-snackbar";
 import Router from "next/router";
+import ***REMOVED*** MuiPickersUtilsProvider, DateTimePicker ***REMOVED*** from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
+import add from "date-fns/add";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   form: ***REMOVED***
@@ -31,6 +34,9 @@ const useStyles = makeStyles(theme => (***REMOVED***
     marginBottom: theme.spacing(3)
   ***REMOVED***,
   companyPanel: ***REMOVED***
+    marginBottom: theme.spacing(3)
+  ***REMOVED***,
+  jobDetailsCard: ***REMOVED***
     marginBottom: theme.spacing(3)
   ***REMOVED***,
   orText: ***REMOVED***
@@ -46,6 +52,10 @@ const useStyles = makeStyles(theme => (***REMOVED***
     marginTop: theme.spacing(3)
   ***REMOVED***
 ***REMOVED***));
+
+function DateTimePickerTextField(props) ***REMOVED***
+  return <TextField margin="normal" fullWidth ***REMOVED***...props***REMOVED*** />;
+***REMOVED***
 
 export default function JobForm(***REMOVED***
   initialValues = ***REMOVED***
@@ -64,12 +74,14 @@ export default function JobForm(***REMOVED***
     applyUrl: "",
     applyEmail: "",
     deadline: null,
-    companyId: null
+    companyId: null,
+    socialPostScheduleTime: null
   ***REMOVED***,
   companies,
   primaryTags,
   onSubmit,
-  disableSaveButton = false
+  disableSaveButton = false,
+  user
 ***REMOVED***) ***REMOVED***
   const classes = useStyles();
   const [showErrorSubmitting, setShowErrorSubmitting] = useState(false);
@@ -163,6 +175,7 @@ export default function JobForm(***REMOVED***
               </HSCard>
             </Collapse>
             <JobDetailsFormElement
+              className=***REMOVED***classes.jobDetailsCard***REMOVED***
               values=***REMOVED***values***REMOVED***
               errors=***REMOVED***errors***REMOVED***
               touched=***REMOVED***touched***REMOVED***
@@ -170,6 +183,27 @@ export default function JobForm(***REMOVED***
               setFieldValue=***REMOVED***setFieldValue***REMOVED***
               primaryTags=***REMOVED***primaryTags***REMOVED***
             />
+            ***REMOVED***user.role === "admin" && (
+              <HSCard title="Facebook post schedule">
+                <MuiPickersUtilsProvider utils=***REMOVED***DateFnsUtils***REMOVED***>
+                  <DateTimePicker
+                    label="Schedule time"
+                    inputVariant="outlined"
+                    value=***REMOVED***
+                      values.socialPostScheduleTime &&
+                      new Date(values.socialPostScheduleTime * 1000)
+                    ***REMOVED***
+                    onChange=***REMOVED***date => ***REMOVED***
+                      const inSeconds = parseInt(date.getTime() / 1000);
+                      setFieldValue("socialPostScheduleTime", inSeconds);
+                    ***REMOVED******REMOVED***
+                    TextFieldComponent=***REMOVED***DateTimePickerTextField***REMOVED***
+                    minDate=***REMOVED***add(new Date(), ***REMOVED*** minutes: 20 ***REMOVED***)***REMOVED***
+                    minDateMessage="Can't schedule for that time. Please move it forward."
+                  />
+                </MuiPickersUtilsProvider>
+              </HSCard>
+            )***REMOVED***
             <Fab
               type="submit"
               variant="extended"

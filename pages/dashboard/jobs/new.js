@@ -39,8 +39,7 @@ export default function DashboardNewJob(***REMOVED*** user, companies, primaryTa
   const [disableSaveButton, setDisableSaveButton] = useState(false);
   const handleSubmit = async function(values) ***REMOVED***
     const tags = cleanTags(values.tags);
-    const primaryTag =
-      values.primaryTag !== "" ? values.primaryTag : null;
+    const primaryTag = values.primaryTag !== "" ? values.primaryTag : null;
     await api.createJob(***REMOVED***
       ...values,
       tags,
@@ -58,6 +57,7 @@ export default function DashboardNewJob(***REMOVED*** user, companies, primaryTa
           primaryTags=***REMOVED***primaryTags***REMOVED***
           onSubmit=***REMOVED***handleSubmit***REMOVED***
           disableSaveButton=***REMOVED***disableSaveButton***REMOVED***
+          user=***REMOVED***user***REMOVED***
         />
       </Container>
     </DashboardLayout>
