@@ -21,6 +21,9 @@ import JobPreviewFormElement from "./job-preview-form-element";
 import PageProgress from "./page-progress";
 import HSSnackBar from "./hs-snackbar";
 import Router from "next/router";
+import { MuiPickersUtilsProvider, DateTimePicker } from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
+import add from "date-fns/add";
 
 const useStyles = makeStyles(theme => ({
   form: {
@@ -31,6 +34,9 @@ const useStyles = makeStyles(theme => ({
     marginBottom: theme.spacing(3)
   },
   companyPanel: {
+    marginBottom: theme.spacing(3)
+  },
+  jobDetailsCard: {
     marginBottom: theme.spacing(3)
   },
   orText: {
@@ -46,6 +52,10 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(3)
   }
 }));
+
+function DateTimePickerTextField(props) {
+  return <TextField margin="normal" fullWidth {...props} />;
+}
 
 export default function JobForm({
   initialValues = {
@@ -64,12 +74,14 @@ export default function JobForm({
     applyUrl: "",
     applyEmail: "",
     deadline: null,
-    companyId: null
+    companyId: null,
+    socialPostScheduleTime: null
   },
   companies,
   primaryTags,
   onSubmit,
-  disableSaveButton = false
+  disableSaveButton = false,
+  user
 }) {
   const classes = useStyles();
   const [showErrorSubmitting, setShowErrorSubmitting] = useState(false);
@@ -163,6 +175,7 @@ export default function JobForm({
               </HSCard>
             </Collapse>
             <JobDetailsFormElement
+              className={classes.jobDetailsCard}
               values={values}
               errors={errors}
               touched={touched}
@@ -170,6 +183,27 @@ export default function JobForm({
               setFieldValue={setFieldValue}
               primaryTags={primaryTags}
             />
+            {user.role === "admin" && (
+              <HSCard title="Facebook post schedule">
+                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                  <DateTimePicker
+                    label="Schedule time"
+                    inputVariant="outlined"
+                    value={
+                      values.socialPostScheduleTime &&
+                      new Date(values.socialPostScheduleTime * 1000)
+                    }
+                    onChange={date => {
+                      const inSeconds = parseInt(date.getTime() / 1000);
+                      setFieldValue("socialPostScheduleTime", inSeconds);
+                    }}
+                    TextFieldComponent={DateTimePickerTextField}
+                    minDate={add(new Date(), { minutes: 20 })}
+                    minDateMessage="Can't schedule for that time. Please move it forward."
+                  />
+                </MuiPickersUtilsProvider>
+              </HSCard>
+            )}
             <Fab
               type="submit"
               variant="extended"

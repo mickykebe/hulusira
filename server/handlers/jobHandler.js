@@ -7,6 +7,7 @@ exports.createJob = async (user, data) => {
     companyEmail,
     companyLogo,
     companyId,
+    socialPostScheduleTime,
     ...jobData
   } = data;
   const isAdminUser = user && user.role === "admin";
@@ -39,7 +40,9 @@ exports.createJob = async (user, data) => {
     resData = { job, company: null };
   }
   if (isAdminUser) {
-    socialHandler.postJobToSocialMedia(resData);
+    socialHandler.postJobToSocialMedia(resData, {
+      fbSchedule: socialPostScheduleTime
+    });
   }
   return resData;
 };

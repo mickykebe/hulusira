@@ -22,22 +22,37 @@ const createJobMessage = ({ job, company }) => {
 ${job.tags.map(tag => `#${tag.name.replace(/\s+/g, "_")}`).join(" ")}`;
 };
 
-const sendPostToFacebook = async function(message, jobUrl) {
+const sendPostToFacebook = async function(message, jobUrl, { scheduleTime }) {
+  let fbPostId;
+  const encodedMessage = encodeURIComponent(message);
+  const encodedJobUrl = encodeURIComponent(jobUrl);
   try {
     const { data: response } = await axios
       .post(
-        `https://graph.facebook.com/${
-          process.env.FB_PAGE_ID
-        }/feed?message=${encodeURIComponent(message)}&link=${encodeURIComponent(
-          jobUrl
-        )}&access_token=${process.env.FB_PAGE_ACCESS_TOKEN}`
+        `https://graph.facebook.com/${process.env.FB_PAGE_ID}/feed?message=${encodedMessage}&link=${encodedJobUrl}&access_token=${process.env.FB_PAGE_ACCESS_TOKEN}`
       )
       .catch(logAxiosErrors);
     if (response.id) {
-      return response.id;
+      fbPostId = response.id;
+    }
+    if (scheduleTime) {
+      const shareablePages = JSON.parse(process.env.SHARING_FB_PAGES) || [];
+      await Promise.all(
+        shareablePages.map((page, index) => {
+          //within 30 minutes of each other
+          const time = scheduleTime + index * 1800;
+          return axios
+            .post(
+              `https://graph.facebook.com/${page.id}/feed?message=${encodedMessage}&link=https://www.facebook.com/${fbPostId}&access_token=${page.token}&published=false&scheduled_publish_time=${time}`
+            )
+            .catch(logAxiosErrors);
+        })
+      );
     }
   } catch (error) {
-    console.log("Couldn't post job to facebook");
+    console.log("Problem occurred posting job to facebook");
+  } finally {
+    return fbPostId;
   }
 };
 
@@ -68,7 +83,7 @@ const sendPostToTelegram = async function(channelUsername, message, jobUrl) {
   }
 };
 
-exports.postJobToSocialMedia = async function(jobData) {
+exports.postJobToSocialMedia = async function(jobData, { fbSchedule }) {
   const messageBody = createJobMessage(jobData);
   const jobUrl = `${process.env.ROOT_URL}/jobs/${jobData.job.slug}`;
   const jobFacebookUrl = `${jobUrl}?utm_source=HuluSira%20Facebook%20Page&utm_medium=facebook&utm_campaign=${jobData.job.slug}`;
@@ -112,7 +127,8 @@ ${jobFacebookUrl}
 
   const facebookPostId = await sendPostToFacebook(
     facebookMessage,
-    jobFacebookUrl
+    jobFacebookUrl,
+    { scheduleTime: fbSchedule }
   ).catch(() => null);
   await db.createJobSocialPost(jobData.job.id, {
     telegramMessages,
