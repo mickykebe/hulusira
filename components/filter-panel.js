@@ -20,10 +20,7 @@ const useStyles = makeStyles(theme => (***REMOVED***
       display: "none"
     ***REMOVED*** */
   ***REMOVED***,
-  expansionPanelExpanded: ***REMOVED***
-    backgroundColor: theme.palette.common.white,
-    boxShadow: theme.boxShadows[0]
-  ***REMOVED***,
+  expansionPanelExpanded: ***REMOVED******REMOVED***,
   panelSummary: ***REMOVED***
     padding: 0,
     transition: `padding 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms`

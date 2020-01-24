@@ -9,7 +9,6 @@ import ***REMOVED***
   CircularProgress,
   Typography,
   Fab,
-  Grid,
   useMediaQuery,
   useTheme,
   Badge,
@@ -29,16 +28,31 @@ import HeaderAd from "../components/header-ad";
 import FeedAd from "../components/feed-ad";
 import JobFilterPanels from "../components/job-filter-panels";
 import queryString from "query-string";
+import HSPaper from "../components/hs-paper";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   root: ***REMOVED***
     paddingTop: theme.spacing(2)
   ***REMOVED***,
+  wrapperGrid: ***REMOVED***
+    display: "grid",
+    gridTemplateColumns: "1fr 3fr",
+    gridGap: "1.5rem",
+    alignItems: "start",
+    [theme.breakpoints.down("sm")]: ***REMOVED***
+      gridTemplateColumns: "1fr"
+    ***REMOVED***
+  ***REMOVED***,
   headerAd: ***REMOVED***
     marginBottom: theme.spacing(1)
   ***REMOVED***,
+  filterContainer: ***REMOVED***
+    padding: "1.5rem",
+    [theme.breakpoints.down("sm")]: ***REMOVED***
+      padding: "0.5rem 1rem"
+    ***REMOVED***
+  ***REMOVED***,
   filterExpansionPanel: ***REMOVED***
-    marginTop: "0.5rem",
     boxShadow: "none",
     backgroundColor: "inherit",
     "&::before": ***REMOVED***
@@ -251,7 +265,8 @@ function Index(***REMOVED*** user, jobPage, primaryTags ***REMOVED***) ***REMOVE
             </Link>
           </Fragment>
         )
-      ***REMOVED***>
+      ***REMOVED***
+    >
       <Head>
         <title>***REMOVED***pageTitle***REMOVED***</title>
         <meta name="description" content=***REMOVED***pageDescription***REMOVED*** />
@@ -266,8 +281,8 @@ function Index(***REMOVED*** user, jobPage, primaryTags ***REMOVED***) ***REMOVE
       </Head>
       <Container className=***REMOVED***classes.root***REMOVED*** maxWidth="lg">
         <HeaderAd className=***REMOVED***classes.headerAd***REMOVED*** />
-        <Grid container spacing=***REMOVED***smallScreen ? 0 : 3***REMOVED***>
-          <Grid item xs=***REMOVED***12***REMOVED*** md=***REMOVED***3***REMOVED***>
+        <Box className=***REMOVED***classes.wrapperGrid***REMOVED***>
+          <HSPaper className=***REMOVED***classes.filterContainer***REMOVED***>
             ***REMOVED***smallScreen && (
               <ExpansionPanel
                 classes=***REMOVED******REMOVED***
@@ -276,7 +291,8 @@ function Index(***REMOVED*** user, jobPage, primaryTags ***REMOVED***) ***REMOVE
                 expanded=***REMOVED***!filterCollapsed***REMOVED***
                 onChange=***REMOVED***(_ev, isExpanded) => ***REMOVED***
                   setFilterCollapsed(!isExpanded);
-                ***REMOVED******REMOVED***>
+                ***REMOVED******REMOVED***
+              >
                 <ExpansionPanelSummary
                   classes=***REMOVED******REMOVED***
                     root: classes.filterPanelSummary
@@ -289,7 +305,8 @@ function Index(***REMOVED*** user, jobPage, primaryTags ***REMOVED***) ***REMOVE
                     ) : (
                       <FilterListIcon />
                     )
-                  ***REMOVED***>
+                  ***REMOVED***
+                >
                   <Typography variant="h6">Filter</Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
@@ -343,8 +360,8 @@ function Index(***REMOVED*** user, jobPage, primaryTags ***REMOVED***) ***REMOVE
                 />
               </Fragment>
             )***REMOVED***
-          </Grid>
-          <Grid item xs=***REMOVED***12***REMOVED*** md=***REMOVED***9***REMOVED***>
+          </HSPaper>
+          <Box>
             <Fragment>
               ***REMOVED***activeTagNames.length > 0 && (
                 <TagFilter
@@ -374,7 +391,8 @@ function Index(***REMOVED*** user, jobPage, primaryTags ***REMOVED***) ***REMOVE
                   variant="h4"
                   color="textSecondary"
                   align="center"
-                  className=***REMOVED***classes.nothingFound***REMOVED***>
+                  className=***REMOVED***classes.nothingFound***REMOVED***
+                >
                   😬 <br /> Nothing Found
                 </Typography>
               )***REMOVED***
@@ -394,14 +412,15 @@ function Index(***REMOVED*** user, jobPage, primaryTags ***REMOVED***) ***REMOVE
                   onClick=***REMOVED***fetchMoreJobs***REMOVED***
                   variant="extended"
                   color="primary"
-                  size="medium">
+                  size="medium"
+                >
                   <RefreshIcon />
                   Try Again
                 </Fab>
               </Box>
             )***REMOVED***
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
       </Container>
     </Layout>
   );

@@ -4,7 +4,7 @@
     "es6": true,
     "node": true
   ***REMOVED***,
-  "extends": ["prettier"],
+  "extends": ["plugin:prettier/recommended"],
   "globals": ***REMOVED***
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"
