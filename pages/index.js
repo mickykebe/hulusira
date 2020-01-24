@@ -9,7 +9,6 @@ import {
   CircularProgress,
   Typography,
   Fab,
-  Grid,
   useMediaQuery,
   useTheme,
   Badge,
@@ -29,16 +28,31 @@ import HeaderAd from "../components/header-ad";
 import FeedAd from "../components/feed-ad";
 import JobFilterPanels from "../components/job-filter-panels";
 import queryString from "query-string";
+import HSPaper from "../components/hs-paper";
 
 const useStyles = makeStyles(theme => ({
   root: {
     paddingTop: theme.spacing(2)
   },
+  wrapperGrid: {
+    display: "grid",
+    gridTemplateColumns: "1fr 3fr",
+    gridGap: "1.5rem",
+    alignItems: "start",
+    [theme.breakpoints.down("sm")]: {
+      gridTemplateColumns: "1fr"
+    }
+  },
   headerAd: {
     marginBottom: theme.spacing(1)
   },
+  filterContainer: {
+    padding: "1.5rem",
+    [theme.breakpoints.down("sm")]: {
+      padding: "0.5rem 1rem"
+    }
+  },
   filterExpansionPanel: {
-    marginTop: "0.5rem",
     boxShadow: "none",
     backgroundColor: "inherit",
     "&::before": {
@@ -251,7 +265,8 @@ function Index({ user, jobPage, primaryTags }) {
             </Link>
           </Fragment>
         )
-      }>
+      }
+    >
       <Head>
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
@@ -266,8 +281,8 @@ function Index({ user, jobPage, primaryTags }) {
       </Head>
       <Container className={classes.root} maxWidth="lg">
         <HeaderAd className={classes.headerAd} />
-        <Grid container spacing={smallScreen ? 0 : 3}>
-          <Grid item xs={12} md={3}>
+        <Box className={classes.wrapperGrid}>
+          <HSPaper className={classes.filterContainer}>
             {smallScreen && (
               <ExpansionPanel
                 classes={{
@@ -276,7 +291,8 @@ function Index({ user, jobPage, primaryTags }) {
                 expanded={!filterCollapsed}
                 onChange={(_ev, isExpanded) => {
                   setFilterCollapsed(!isExpanded);
-                }}>
+                }}
+              >
                 <ExpansionPanelSummary
                   classes={{
                     root: classes.filterPanelSummary
@@ -289,7 +305,8 @@ function Index({ user, jobPage, primaryTags }) {
                     ) : (
                       <FilterListIcon />
                     )
-                  }>
+                  }
+                >
                   <Typography variant="h6">Filter</Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
@@ -343,8 +360,8 @@ function Index({ user, jobPage, primaryTags }) {
                 />
               </Fragment>
             )}
-          </Grid>
-          <Grid item xs={12} md={9}>
+          </HSPaper>
+          <Box>
             <Fragment>
               {activeTagNames.length > 0 && (
                 <TagFilter
@@ -374,7 +391,8 @@ function Index({ user, jobPage, primaryTags }) {
                   variant="h4"
                   color="textSecondary"
                   align="center"
-                  className={classes.nothingFound}>
+                  className={classes.nothingFound}
+                >
                   😬 <br /> Nothing Found
                 </Typography>
               )}
@@ -394,14 +412,15 @@ function Index({ user, jobPage, primaryTags }) {
                   onClick={fetchMoreJobs}
                   variant="extended"
                   color="primary"
-                  size="medium">
+                  size="medium"
+                >
                   <RefreshIcon />
                   Try Again
                 </Fab>
               </Box>
             )}
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
       </Container>
     </Layout>
   );
