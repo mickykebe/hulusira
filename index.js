@@ -25,7 +25,7 @@ app.prepare().then(() => {
 
 async function setupTelegramBot() {
   try {
-    //redis.flushall();
+    redis.flushall();
     await telegramBot.setupWebhook();
     console.log("setup telegram bot webhook");
   } catch (err) {
