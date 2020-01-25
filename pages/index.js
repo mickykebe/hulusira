@@ -46,12 +46,6 @@ const useStyles = makeStyles(theme => ({
   headerAd: {
     marginBottom: theme.spacing(1)
   },
-  filterContainer: {
-    padding: "1.5rem",
-    [theme.breakpoints.down("sm")]: {
-      padding: "0.5rem 1rem"
-    }
-  },
   filterExpansionPanel: {
     boxShadow: "none",
     backgroundColor: "inherit",
@@ -60,8 +54,10 @@ const useStyles = makeStyles(theme => ({
     }
   },
   filterPanelSummary: {
-    paddingLeft: "0.5rem",
-    paddingRight: "0.5rem"
+    padding: "0 1rem"
+  },
+  filterPanelDetails: {
+    padding: 0
   },
   filterHead: ({ smallScreen }) => {
     return {
@@ -279,10 +275,10 @@ function Index({ user, jobPage, primaryTags }) {
         <meta name="twitter:image:src" content={metaImage} />
         <meta name="twitter:url" content={pageUrl} />
       </Head>
-      <Container className={classes.root} maxWidth="lg">
+      <Container className={classes.root} maxWidth="xl">
         <HeaderAd className={classes.headerAd} />
         <Box className={classes.wrapperGrid}>
-          <HSPaper className={classes.filterContainer}>
+          <HSPaper>
             {smallScreen && (
               <ExpansionPanel
                 classes={{
@@ -309,7 +305,7 @@ function Index({ user, jobPage, primaryTags }) {
                 >
                   <Typography variant="h6">Filter</Typography>
                 </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
+                <ExpansionPanelDetails className={classes.filterPanelDetails}>
                   <JobFilterPanels
                     tags={primaryTags}
                     onCheckTagFilter={addTagToFilter}
@@ -335,7 +331,7 @@ function Index({ user, jobPage, primaryTags }) {
             )}
             {!smallScreen && (
               <Fragment>
-                <Box display="flex" alignItems="center" pb={1}>
+                <Box display="flex" alignItems="center" px="1.5rem" py="1rem">
                   <Typography variant="h6">Filter</Typography>
                 </Box>
                 <JobFilterPanels

@@ -12,10 +12,20 @@ import HSPaper from "../../components/hs-paper";
 import CompanyLogo from "../../components/company-logo";
 import JobItem from "../../components/job-item";
 import HeaderAd from "../../components/header-ad";
+import { Fragment } from "react";
 
 const useStyles = makeStyles(theme => ({
   root: {
     paddingTop: theme.spacing(2)
+  },
+  containerGrid: {
+    display: "grid",
+    gridTemplateColumns: "1fr 3fr",
+    gridGap: "1.5rem",
+    alignItems: "start",
+    [theme.breakpoints.down("sm")]: {
+      gridTemplateColumns: "1fr"
+    }
   },
   headerAd: {
     marginBottom: theme.spacing(2)
@@ -25,9 +35,7 @@ const useStyles = makeStyles(theme => ({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    padding: theme.spacing(3),
-    maxWidth: 200,
-    margin: "0 auto"
+    padding: theme.spacing(3)
   },
   companyName: {
     textAlign: "center",
@@ -42,22 +50,20 @@ export default function CompanyJobs({ user, company, jobs }) {
   const classes = useStyles();
   return (
     <Layout user={user}>
-      <Container className={classes.root} maxWidth="lg">
+      <Container className={classes.root} maxWidth="xl">
         <HeaderAd className={classes.headerAd} />
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={3}>
-            <HSPaper className={classes.companyCard}>
-              <CompanyLogo
-                size="large"
-                company={company}
-                abbrevFallback={false}
-              />
-              <Typography variant="h6" className={classes.companyName}>
-                {company.name}
-              </Typography>
-            </HSPaper>
-          </Grid>
-          <Grid item xs={12} sm={9}>
+        <Box className={classes.containerGrid}>
+          <HSPaper className={classes.companyCard}>
+            <CompanyLogo
+              size="large"
+              company={company}
+              abbrevFallback={false}
+            />
+            <Typography variant="h6" className={classes.companyName}>
+              {company.name}
+            </Typography>
+          </HSPaper>
+          <Box>
             {jobs.map(({ job, company }) => {
               return (
                 <JobItem
@@ -70,8 +76,8 @@ export default function CompanyJobs({ user, company, jobs }) {
                 />
               );
             })}
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
       </Container>
     </Layout>
   );

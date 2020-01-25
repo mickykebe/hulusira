@@ -96,7 +96,7 @@ export default function JobContent({ jobData, withAds = false }) {
   const hasApplySection =
     job.approvalStatus !== "Closed" && (!!job.howToApply || hasApplyButton);
   return (
-    <Container className={classes.root} maxWidth="lg">
+    <Container className={classes.root} maxWidth="xl">
       <Box display="flex" alignItems="center" pb={2}>
         {company && company.logo && (
           <Box mr={1}>

@@ -13,17 +13,12 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 const useStyles = makeStyles(theme => ({
   expansionPanel: {
-    marginTop: "0.5rem",
     boxShadow: "none",
     backgroundColor: "inherit"
-    /* "&::before": {
-      display: "none"
-    } */
   },
   expansionPanelExpanded: {},
-  panelSummary: {
-    padding: 0,
-    transition: `padding 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms`
+  expandIcon: {
+    fontSize: "1.2rem"
   },
   panelSummaryExpanded: {
     padding: `0 1rem 0 1rem`
@@ -56,10 +51,9 @@ export default function FilterPanel({
     >
       <ExpansionPanelSummary
         classes={{
-          root: classes.panelSummary,
           expanded: classes.panelSummaryExpanded
         }}
-        expandIcon={<ExpandMoreIcon />}
+        expandIcon={<ExpandMoreIcon className={classes.expandIcon} />}
       >
         <Typography className={classes.title} variant="subtitle2">
           {title}
