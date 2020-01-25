@@ -96,7 +96,7 @@ export default function JobContent(***REMOVED*** jobData, withAds = false ***REM
   const hasApplySection =
     job.approvalStatus !== "Closed" && (!!job.howToApply || hasApplyButton);
   return (
-    <Container className=***REMOVED***classes.root***REMOVED*** maxWidth="lg">
+    <Container className=***REMOVED***classes.root***REMOVED*** maxWidth="xl">
       <Box display="flex" alignItems="center" pb=***REMOVED***2***REMOVED***>
         ***REMOVED***company && company.logo && (
           <Box mr=***REMOVED***1***REMOVED***>

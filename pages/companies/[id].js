@@ -12,10 +12,20 @@ import HSPaper from "../../components/hs-paper";
 import CompanyLogo from "../../components/company-logo";
 import JobItem from "../../components/job-item";
 import HeaderAd from "../../components/header-ad";
+import ***REMOVED*** Fragment ***REMOVED*** from "react";
 
 const useStyles = makeStyles(theme => (***REMOVED***
   root: ***REMOVED***
     paddingTop: theme.spacing(2)
+  ***REMOVED***,
+  containerGrid: ***REMOVED***
+    display: "grid",
+    gridTemplateColumns: "1fr 3fr",
+    gridGap: "1.5rem",
+    alignItems: "start",
+    [theme.breakpoints.down("sm")]: ***REMOVED***
+      gridTemplateColumns: "1fr"
+    ***REMOVED***
   ***REMOVED***,
   headerAd: ***REMOVED***
     marginBottom: theme.spacing(2)
@@ -25,9 +35,7 @@ const useStyles = makeStyles(theme => (***REMOVED***
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    padding: theme.spacing(3),
-    maxWidth: 200,
-    margin: "0 auto"
+    padding: theme.spacing(3)
   ***REMOVED***,
   companyName: ***REMOVED***
     textAlign: "center",
@@ -42,22 +50,20 @@ export default function CompanyJobs(***REMOVED*** user, company, jobs ***REMOVED
   const classes = useStyles();
   return (
     <Layout user=***REMOVED***user***REMOVED***>
-      <Container className=***REMOVED***classes.root***REMOVED*** maxWidth="lg">
+      <Container className=***REMOVED***classes.root***REMOVED*** maxWidth="xl">
         <HeaderAd className=***REMOVED***classes.headerAd***REMOVED*** />
-        <Grid container spacing=***REMOVED***2***REMOVED***>
-          <Grid item xs=***REMOVED***12***REMOVED*** sm=***REMOVED***3***REMOVED***>
-            <HSPaper className=***REMOVED***classes.companyCard***REMOVED***>
-              <CompanyLogo
-                size="large"
-                company=***REMOVED***company***REMOVED***
-                abbrevFallback=***REMOVED***false***REMOVED***
-              />
-              <Typography variant="h6" className=***REMOVED***classes.companyName***REMOVED***>
-                ***REMOVED***company.name***REMOVED***
-              </Typography>
-            </HSPaper>
-          </Grid>
-          <Grid item xs=***REMOVED***12***REMOVED*** sm=***REMOVED***9***REMOVED***>
+        <Box className=***REMOVED***classes.containerGrid***REMOVED***>
+          <HSPaper className=***REMOVED***classes.companyCard***REMOVED***>
+            <CompanyLogo
+              size="large"
+              company=***REMOVED***company***REMOVED***
+              abbrevFallback=***REMOVED***false***REMOVED***
+            />
+            <Typography variant="h6" className=***REMOVED***classes.companyName***REMOVED***>
+              ***REMOVED***company.name***REMOVED***
+            </Typography>
+          </HSPaper>
+          <Box>
             ***REMOVED***jobs.map((***REMOVED*** job, company ***REMOVED***) => ***REMOVED***
               return (
                 <JobItem
@@ -70,8 +76,8 @@ export default function CompanyJobs(***REMOVED*** user, company, jobs ***REMOVED
                 />
               );
             ***REMOVED***)***REMOVED***
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
       </Container>
     </Layout>
   );

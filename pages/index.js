@@ -46,12 +46,6 @@ const useStyles = makeStyles(theme => (***REMOVED***
   headerAd: ***REMOVED***
     marginBottom: theme.spacing(1)
   ***REMOVED***,
-  filterContainer: ***REMOVED***
-    padding: "1.5rem",
-    [theme.breakpoints.down("sm")]: ***REMOVED***
-      padding: "0.5rem 1rem"
-    ***REMOVED***
-  ***REMOVED***,
   filterExpansionPanel: ***REMOVED***
     boxShadow: "none",
     backgroundColor: "inherit",
@@ -60,8 +54,10 @@ const useStyles = makeStyles(theme => (***REMOVED***
     ***REMOVED***
   ***REMOVED***,
   filterPanelSummary: ***REMOVED***
-    paddingLeft: "0.5rem",
-    paddingRight: "0.5rem"
+    padding: "0 1rem"
+  ***REMOVED***,
+  filterPanelDetails: ***REMOVED***
+    padding: 0
   ***REMOVED***,
   filterHead: (***REMOVED*** smallScreen ***REMOVED***) => ***REMOVED***
     return ***REMOVED***
@@ -279,10 +275,10 @@ function Index(***REMOVED*** user, jobPage, primaryTags ***REMOVED***) ***REMOVE
         <meta name="twitter:image:src" content=***REMOVED***metaImage***REMOVED*** />
         <meta name="twitter:url" content=***REMOVED***pageUrl***REMOVED*** />
       </Head>
-      <Container className=***REMOVED***classes.root***REMOVED*** maxWidth="lg">
+      <Container className=***REMOVED***classes.root***REMOVED*** maxWidth="xl">
         <HeaderAd className=***REMOVED***classes.headerAd***REMOVED*** />
         <Box className=***REMOVED***classes.wrapperGrid***REMOVED***>
-          <HSPaper className=***REMOVED***classes.filterContainer***REMOVED***>
+          <HSPaper>
             ***REMOVED***smallScreen && (
               <ExpansionPanel
                 classes=***REMOVED******REMOVED***
@@ -309,7 +305,7 @@ function Index(***REMOVED*** user, jobPage, primaryTags ***REMOVED***) ***REMOVE
                 >
                   <Typography variant="h6">Filter</Typography>
                 </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
+                <ExpansionPanelDetails className=***REMOVED***classes.filterPanelDetails***REMOVED***>
                   <JobFilterPanels
                     tags=***REMOVED***primaryTags***REMOVED***
                     onCheckTagFilter=***REMOVED***addTagToFilter***REMOVED***
@@ -335,7 +331,7 @@ function Index(***REMOVED*** user, jobPage, primaryTags ***REMOVED***) ***REMOVE
             )***REMOVED***
             ***REMOVED***!smallScreen && (
               <Fragment>
-                <Box display="flex" alignItems="center" pb=***REMOVED***1***REMOVED***>
+                <Box display="flex" alignItems="center" px="1.5rem" py="1rem">
                   <Typography variant="h6">Filter</Typography>
                 </Box>
                 <JobFilterPanels
