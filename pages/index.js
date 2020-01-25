@@ -14,7 +14,8 @@ import {
   Badge,
   ExpansionPanel,
   ExpansionPanelSummary,
-  ExpansionPanelDetails
+  ExpansionPanelDetails,
+  Hidden
 } from "@material-ui/core";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import RefreshIcon from "@material-ui/icons/Refresh";
@@ -37,24 +38,14 @@ const useStyles = makeStyles(theme => ({
   wrapperGrid: {
     display: "grid",
     gridTemplateColumns: "1fr 3fr",
-    gridTemplateRows: "minmax(0, 80px) 1fr",
     gridGap: "1.5rem",
     alignItems: "start",
     [theme.breakpoints.down("sm")]: {
-      gridTemplateColumns: "1fr",
-      gridTemplateRows: "1fr"
-    }
-  },
-  filterColumn: {
-    gridRow: "span 2",
-    [theme.breakpoints.down("sm")]: {
-      gridRow: "span 1"
+      gridTemplateColumns: "1fr"
     }
   },
   headerAd: {
-    [theme.breakpoints.down("sm")]: {
-      order: "-1"
-    }
+    marginBottom: "1.5rem"
   },
   filterExpansionPanel: {
     boxShadow: "none",
@@ -287,7 +278,10 @@ function Index({ user, jobPage, primaryTags }) {
       </Head>
       <Container className={classes.root} maxWidth="xl">
         <Box className={classes.wrapperGrid}>
-          <HSPaper className={classes.filterColumn}>
+          <Hidden mdUp>
+            <HeaderAd />
+          </Hidden>
+          <HSPaper>
             {smallScreen && (
               <ExpansionPanel
                 classes={{
@@ -368,6 +362,9 @@ function Index({ user, jobPage, primaryTags }) {
           </HSPaper>
           <HeaderAd className={classes.headerAd} />
           <Box>
+            <Hidden smDown>
+              <HeaderAd className={classes.headerAd} />
+            </Hidden>
             {activeTagNames.length > 0 && (
               <TagFilter
                 tagNames={activeTagNames}
