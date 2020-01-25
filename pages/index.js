@@ -14,7 +14,8 @@ import ***REMOVED***
   Badge,
   ExpansionPanel,
   ExpansionPanelSummary,
-  ExpansionPanelDetails
+  ExpansionPanelDetails,
+  Hidden
 ***REMOVED*** from "@material-ui/core";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import RefreshIcon from "@material-ui/icons/Refresh";
@@ -37,24 +38,14 @@ const useStyles = makeStyles(theme => (***REMOVED***
   wrapperGrid: ***REMOVED***
     display: "grid",
     gridTemplateColumns: "1fr 3fr",
-    gridTemplateRows: "minmax(0, 80px) 1fr",
     gridGap: "1.5rem",
     alignItems: "start",
     [theme.breakpoints.down("sm")]: ***REMOVED***
-      gridTemplateColumns: "1fr",
-      gridTemplateRows: "1fr"
-    ***REMOVED***
-  ***REMOVED***,
-  filterColumn: ***REMOVED***
-    gridRow: "span 2",
-    [theme.breakpoints.down("sm")]: ***REMOVED***
-      gridRow: "span 1"
+      gridTemplateColumns: "1fr"
     ***REMOVED***
   ***REMOVED***,
   headerAd: ***REMOVED***
-    [theme.breakpoints.down("sm")]: ***REMOVED***
-      order: "-1"
-    ***REMOVED***
+    marginBottom: "1.5rem"
   ***REMOVED***,
   filterExpansionPanel: ***REMOVED***
     boxShadow: "none",
@@ -287,7 +278,10 @@ function Index(***REMOVED*** user, jobPage, primaryTags ***REMOVED***) ***REMOVE
       </Head>
       <Container className=***REMOVED***classes.root***REMOVED*** maxWidth="xl">
         <Box className=***REMOVED***classes.wrapperGrid***REMOVED***>
-          <HSPaper className=***REMOVED***classes.filterColumn***REMOVED***>
+          <Hidden mdUp>
+            <HeaderAd />
+          </Hidden>
+          <HSPaper>
             ***REMOVED***smallScreen && (
               <ExpansionPanel
                 classes=***REMOVED******REMOVED***
@@ -368,6 +362,9 @@ function Index(***REMOVED*** user, jobPage, primaryTags ***REMOVED***) ***REMOVE
           </HSPaper>
           <HeaderAd className=***REMOVED***classes.headerAd***REMOVED*** />
           <Box>
+            <Hidden smDown>
+              <HeaderAd className=***REMOVED***classes.headerAd***REMOVED*** />
+            </Hidden>
             ***REMOVED***activeTagNames.length > 0 && (
               <TagFilter
                 tagNames=***REMOVED***activeTagNames***REMOVED***
