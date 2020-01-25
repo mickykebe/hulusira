@@ -43,8 +43,22 @@ const useStyles = makeStyles(theme => ({
       gridTemplateColumns: "1fr"
     }
   },
+  /* headerAdWrapper: {
+    display: "grid",
+    gridTemplateColumns: "1fr 3fr",
+    "&:before": {
+      display: "block",
+      content: ""
+    },
+    [theme.breakpoints.down("sm")]: {
+      gridTemplateColumns: "1fr"
+    }
+  }, */
   headerAd: {
-    marginBottom: theme.spacing(1)
+    gridColumnStart: 2,
+    [theme.breakpoints.down("sm")]: {
+      gridColumnStart: 1
+    }
   },
   filterExpansionPanel: {
     boxShadow: "none",
@@ -276,8 +290,8 @@ function Index({ user, jobPage, primaryTags }) {
         <meta name="twitter:url" content={pageUrl} />
       </Head>
       <Container className={classes.root} maxWidth="xl">
-        <HeaderAd className={classes.headerAd} />
         <Box className={classes.wrapperGrid}>
+          <HeaderAd className={classes.headerAd} />
           <HSPaper>
             {smallScreen && (
               <ExpansionPanel
