@@ -37,27 +37,23 @@ const useStyles = makeStyles(theme => ({
   wrapperGrid: {
     display: "grid",
     gridTemplateColumns: "1fr 3fr",
+    gridTemplateRows: "minmax(0, 80px) 1fr",
     gridGap: "1.5rem",
     alignItems: "start",
     [theme.breakpoints.down("sm")]: {
-      gridTemplateColumns: "1fr"
+      gridTemplateColumns: "1fr",
+      gridTemplateRows: "1fr"
     }
   },
-  /* headerAdWrapper: {
-    display: "grid",
-    gridTemplateColumns: "1fr 3fr",
-    "&:before": {
-      display: "block",
-      content: ""
-    },
+  filterColumn: {
+    gridRow: "span 2",
     [theme.breakpoints.down("sm")]: {
-      gridTemplateColumns: "1fr"
+      gridRow: "span 1"
     }
-  }, */
+  },
   headerAd: {
-    gridColumnStart: 2,
     [theme.breakpoints.down("sm")]: {
-      gridColumnStart: 1
+      order: "-1"
     }
   },
   filterExpansionPanel: {
@@ -291,8 +287,7 @@ function Index({ user, jobPage, primaryTags }) {
       </Head>
       <Container className={classes.root} maxWidth="xl">
         <Box className={classes.wrapperGrid}>
-          <HeaderAd className={classes.headerAd} />
-          <HSPaper>
+          <HSPaper className={classes.filterColumn}>
             {smallScreen && (
               <ExpansionPanel
                 classes={{
@@ -371,42 +366,41 @@ function Index({ user, jobPage, primaryTags }) {
               </Fragment>
             )}
           </HSPaper>
+          <HeaderAd className={classes.headerAd} />
           <Box>
-            <Fragment>
-              {activeTagNames.length > 0 && (
-                <TagFilter
-                  tagNames={activeTagNames}
-                  onTagRemove={removeTagFromFilter}
-                />
-              )}
-              {jobs.map(({ job, company }, index) => {
-                return (
-                  <Fragment key={job.id}>
-                    {process.env.NODE_ENV === "production" &&
-                      index % 4 === 0 &&
-                      index > 0 && <FeedAd className={classes.feedAd} />}
-                    <JobItem
-                      className={classes.jobItem}
-                      job={job}
-                      tags={job.tags}
-                      company={company}
-                      onTagClick={addTagToFilter}
-                    />
-                  </Fragment>
-                );
-              })}
-              <div ref={sentinelRef} style={{ height: "1px" }} />
-              {ticker.current > 0 && jobs.length === 0 && (
-                <Typography
-                  variant="h4"
-                  color="textSecondary"
-                  align="center"
-                  className={classes.nothingFound}
-                >
-                  😬 <br /> Nothing Found
-                </Typography>
-              )}
-            </Fragment>
+            {activeTagNames.length > 0 && (
+              <TagFilter
+                tagNames={activeTagNames}
+                onTagRemove={removeTagFromFilter}
+              />
+            )}
+            {jobs.map(({ job, company }, index) => {
+              return (
+                <Fragment key={job.id}>
+                  {process.env.NODE_ENV === "production" &&
+                    index % 4 === 0 &&
+                    index > 0 && <FeedAd className={classes.feedAd} />}
+                  <JobItem
+                    className={classes.jobItem}
+                    job={job}
+                    tags={job.tags}
+                    company={company}
+                    onTagClick={addTagToFilter}
+                  />
+                </Fragment>
+              );
+            })}
+            <div ref={sentinelRef} style={{ height: "1px" }} />
+            {ticker.current > 0 && jobs.length === 0 && (
+              <Typography
+                variant="h4"
+                color="textSecondary"
+                align="center"
+                className={classes.nothingFound}
+              >
+                😬 <br /> Nothing Found
+              </Typography>
+            )}
             {isLoading && (
               <CircularProgress
                 classes={{ root: classes.jobsLoadingSpinner }}
