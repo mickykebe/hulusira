@@ -278,7 +278,7 @@ function Index(***REMOVED*** user, jobPage, primaryTags ***REMOVED***) ***REMOVE
       </Head>
       <Container className=***REMOVED***classes.root***REMOVED*** maxWidth="xl">
         <Box className=***REMOVED***classes.wrapperGrid***REMOVED***>
-          <Hidden mdUp>
+          <Hidden implementation="css" mdUp>
             <HeaderAd />
           </Hidden>
           <HSPaper>
@@ -360,9 +360,8 @@ function Index(***REMOVED*** user, jobPage, primaryTags ***REMOVED***) ***REMOVE
               </Fragment>
             )***REMOVED***
           </HSPaper>
-          <HeaderAd className=***REMOVED***classes.headerAd***REMOVED*** />
           <Box>
-            <Hidden smDown>
+            <Hidden implementation="css" smDown>
               <HeaderAd className=***REMOVED***classes.headerAd***REMOVED*** />
             </Hidden>
             ***REMOVED***activeTagNames.length > 0 && (
