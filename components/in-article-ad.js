@@ -6,6 +6,7 @@ export default function InArticleAd() ***REMOVED***
       style=***REMOVED******REMOVED*** textAlign: "center" ***REMOVED******REMOVED***
       dataAdLayout="in-article"
       dataAdSlot="7719911413"
+      dataFullWidthResponsive=***REMOVED***false***REMOVED***
     />
   );
 ***REMOVED***
