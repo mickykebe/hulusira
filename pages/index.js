@@ -37,27 +37,23 @@ const useStyles = makeStyles(theme => (***REMOVED***
   wrapperGrid: ***REMOVED***
     display: "grid",
     gridTemplateColumns: "1fr 3fr",
+    gridTemplateRows: "minmax(0, 80px) 1fr",
     gridGap: "1.5rem",
     alignItems: "start",
     [theme.breakpoints.down("sm")]: ***REMOVED***
-      gridTemplateColumns: "1fr"
+      gridTemplateColumns: "1fr",
+      gridTemplateRows: "1fr"
     ***REMOVED***
   ***REMOVED***,
-  /* headerAdWrapper: ***REMOVED***
-    display: "grid",
-    gridTemplateColumns: "1fr 3fr",
-    "&:before": ***REMOVED***
-      display: "block",
-      content: ""
-    ***REMOVED***,
+  filterColumn: ***REMOVED***
+    gridRow: "span 2",
     [theme.breakpoints.down("sm")]: ***REMOVED***
-      gridTemplateColumns: "1fr"
+      gridRow: "span 1"
     ***REMOVED***
-  ***REMOVED***, */
+  ***REMOVED***,
   headerAd: ***REMOVED***
-    gridColumnStart: 2,
     [theme.breakpoints.down("sm")]: ***REMOVED***
-      gridColumnStart: 1
+      order: "-1"
     ***REMOVED***
   ***REMOVED***,
   filterExpansionPanel: ***REMOVED***
@@ -291,8 +287,7 @@ function Index(***REMOVED*** user, jobPage, primaryTags ***REMOVED***) ***REMOVE
       </Head>
       <Container className=***REMOVED***classes.root***REMOVED*** maxWidth="xl">
         <Box className=***REMOVED***classes.wrapperGrid***REMOVED***>
-          <HeaderAd className=***REMOVED***classes.headerAd***REMOVED*** />
-          <HSPaper>
+          <HSPaper className=***REMOVED***classes.filterColumn***REMOVED***>
             ***REMOVED***smallScreen && (
               <ExpansionPanel
                 classes=***REMOVED******REMOVED***
@@ -371,42 +366,41 @@ function Index(***REMOVED*** user, jobPage, primaryTags ***REMOVED***) ***REMOVE
               </Fragment>
             )***REMOVED***
           </HSPaper>
+          <HeaderAd className=***REMOVED***classes.headerAd***REMOVED*** />
           <Box>
-            <Fragment>
-              ***REMOVED***activeTagNames.length > 0 && (
-                <TagFilter
-                  tagNames=***REMOVED***activeTagNames***REMOVED***
-                  onTagRemove=***REMOVED***removeTagFromFilter***REMOVED***
-                />
-              )***REMOVED***
-              ***REMOVED***jobs.map((***REMOVED*** job, company ***REMOVED***, index) => ***REMOVED***
-                return (
-                  <Fragment key=***REMOVED***job.id***REMOVED***>
-                    ***REMOVED***process.env.NODE_ENV === "production" &&
-                      index % 4 === 0 &&
-                      index > 0 && <FeedAd className=***REMOVED***classes.feedAd***REMOVED*** />***REMOVED***
-                    <JobItem
-                      className=***REMOVED***classes.jobItem***REMOVED***
-                      job=***REMOVED***job***REMOVED***
-                      tags=***REMOVED***job.tags***REMOVED***
-                      company=***REMOVED***company***REMOVED***
-                      onTagClick=***REMOVED***addTagToFilter***REMOVED***
-                    />
-                  </Fragment>
-                );
-              ***REMOVED***)***REMOVED***
-              <div ref=***REMOVED***sentinelRef***REMOVED*** style=***REMOVED******REMOVED*** height: "1px" ***REMOVED******REMOVED*** />
-              ***REMOVED***ticker.current > 0 && jobs.length === 0 && (
-                <Typography
-                  variant="h4"
-                  color="textSecondary"
-                  align="center"
-                  className=***REMOVED***classes.nothingFound***REMOVED***
-                >
-                  😬 <br /> Nothing Found
-                </Typography>
-              )***REMOVED***
-            </Fragment>
+            ***REMOVED***activeTagNames.length > 0 && (
+              <TagFilter
+                tagNames=***REMOVED***activeTagNames***REMOVED***
+                onTagRemove=***REMOVED***removeTagFromFilter***REMOVED***
+              />
+            )***REMOVED***
+            ***REMOVED***jobs.map((***REMOVED*** job, company ***REMOVED***, index) => ***REMOVED***
+              return (
+                <Fragment key=***REMOVED***job.id***REMOVED***>
+                  ***REMOVED***process.env.NODE_ENV === "production" &&
+                    index % 4 === 0 &&
+                    index > 0 && <FeedAd className=***REMOVED***classes.feedAd***REMOVED*** />***REMOVED***
+                  <JobItem
+                    className=***REMOVED***classes.jobItem***REMOVED***
+                    job=***REMOVED***job***REMOVED***
+                    tags=***REMOVED***job.tags***REMOVED***
+                    company=***REMOVED***company***REMOVED***
+                    onTagClick=***REMOVED***addTagToFilter***REMOVED***
+                  />
+                </Fragment>
+              );
+            ***REMOVED***)***REMOVED***
+            <div ref=***REMOVED***sentinelRef***REMOVED*** style=***REMOVED******REMOVED*** height: "1px" ***REMOVED******REMOVED*** />
+            ***REMOVED***ticker.current > 0 && jobs.length === 0 && (
+              <Typography
+                variant="h4"
+                color="textSecondary"
+                align="center"
+                className=***REMOVED***classes.nothingFound***REMOVED***
+              >
+                😬 <br /> Nothing Found
+              </Typography>
+            )***REMOVED***
             ***REMOVED***isLoading && (
               <CircularProgress
                 classes=***REMOVED******REMOVED*** root: classes.jobsLoadingSpinner ***REMOVED******REMOVED***
