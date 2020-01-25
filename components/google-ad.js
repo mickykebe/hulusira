@@ -26,7 +26,8 @@ export default function GoogleAd({
           data-ad-layout-key={dataAdLayoutKey}
           data-ad-client="ca-pub-1430919979045648"
           data-ad-slot={dataAdSlot}
-          data-full-width-responsive={dataFullWidthResponsive}></ins>
+          data-full-width-responsive={dataFullWidthResponsive}
+        ></ins>
       </Box>
     );
   }
