@@ -87,7 +87,9 @@ exports.postJobToSocialMedia = async function(jobData, ***REMOVED*** fbSchedule 
   const messageBody = createJobMessage(jobData);
   const jobUrl = `$***REMOVED***process.env.ROOT_URL***REMOVED***/jobs/$***REMOVED***jobData.job.slug***REMOVED***`;
   const jobFacebookUrl = `$***REMOVED***jobUrl***REMOVED***?utm_source=HuluSira%20Facebook%20Page&utm_medium=facebook&utm_campaign=$***REMOVED***jobData.job.slug***REMOVED***`;
-  const telegramMessage = messageBody;
+  const telegramMessage = `$***REMOVED***messageBody***REMOVED***
+  
+Hulusira ላይ ስራ ማስተዋወቅ የሚፈልጉ ቀጣሪዎች @$***REMOVED***process.env.TELEGRAM_BOT_NAME***REMOVED*** በመጠቀም በነጻ የስራ ማስታወቅያ ማውጣት ይችላሉ፡፡`;
   const facebookMessage = `ክፍት የስራ ቦታ ማስታወቅያ
   
 $***REMOVED***messageBody***REMOVED***
