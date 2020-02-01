@@ -22,7 +22,11 @@ const createJobMessage = ({ job, company }) => {
 ${job.tags.map(tag => `#${tag.name.replace(/\s+/g, "_")}`).join(" ")}`;
 };
 
-const sendPostToFacebook = async function(message, jobUrl, { scheduleTime }) {
+const sendPostToFacebook = async function(
+  message,
+  jobUrl,
+  { scheduleTime } = {}
+) {
   let fbPostId;
   const encodedMessage = encodeURIComponent(message);
   const encodedJobUrl = encodeURIComponent(jobUrl);
