@@ -1,73 +1,73 @@
 import DashboardLayout from "../../../../components/dashboard-layout";
-import ***REMOVED*** Container ***REMOVED*** from "@material-ui/core";
+import { Container } from "@material-ui/core";
 import JobForm from "../../../../components/job-form";
 import redirect from "../../../../utils/redirect";
 import api from "../../../../api";
-import ***REMOVED*** cleanTags ***REMOVED*** from "../../../../utils";
-import ***REMOVED*** useState ***REMOVED*** from "react";
+import { cleanTags } from "../../../../utils";
+import { useState } from "react";
 import HSSnackBar from "../../../../components/hs-snackbar";
 
-export default function EditJob(***REMOVED*** user, jobData, companies, primaryTags ***REMOVED***) ***REMOVED***
+export default function EditJob({ user, jobData, companies, primaryTags }) {
   const tags = jobData.job.tags;
   const primaryTag = tags.find(tag => tag.isPrimary === true);
-  const initialValues = ***REMOVED***
+  const initialValues = {
     ...jobData.job,
     primaryTag: primaryTag ? primaryTag.name : "",
     tags: tags.filter(tag => !tag.isPrimary).map(tag => tag.name),
     hasCompany: !!jobData.job.companyId
-  ***REMOVED***;
+  };
   const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
-  const handleSubmit = async function(values) ***REMOVED***
+  const handleSubmit = async function(values) {
     const tags = cleanTags(values.tags);
     const primaryTag =
       values.primaryTag !== "" ? values.primaryTag : null;
-    await api.updateJob(jobData.job.id, ***REMOVED***
+    await api.updateJob(jobData.job.id, {
       ...values,
       tags,
       primaryTag
-    ***REMOVED***);
+    });
     setShowSuccessSnackbar(true);
-  ***REMOVED***;
+  };
   return (
-    <DashboardLayout user=***REMOVED***user***REMOVED***>
+    <DashboardLayout user={user}>
       <Container maxWidth="md">
         <JobForm
-          initialValues=***REMOVED***initialValues***REMOVED***
-          companies=***REMOVED***companies***REMOVED***
-          primaryTags=***REMOVED***primaryTags***REMOVED***
-          onSubmit=***REMOVED***handleSubmit***REMOVED***
+          initialValues={initialValues}
+          companies={companies}
+          primaryTags={primaryTags}
+          onSubmit={handleSubmit}
         />
         <HSSnackBar
-          open=***REMOVED***showSuccessSnackbar***REMOVED***
+          open={showSuccessSnackbar}
           variant="success"
-          autoHideDuration=***REMOVED***3000***REMOVED***
+          autoHideDuration={3000}
           message="Job successfully updated"
-          onClose=***REMOVED***() => ***REMOVED***
+          onClose={() => {
             setShowSuccessSnackbar(false);
-          ***REMOVED******REMOVED***
+          }}
         />
       </Container>
     </DashboardLayout>
   );
-***REMOVED***
+}
 
-EditJob.getInitialProps = async function(ctx) ***REMOVED***
-  const ***REMOVED*** user ***REMOVED*** = ctx;
+EditJob.getInitialProps = async function(ctx) {
+  const { user } = ctx;
 
-  if (!user) ***REMOVED***
+  if (!user) {
     redirect(ctx, "/");
-  ***REMOVED***
+  }
 
-  const ***REMOVED*** slug ***REMOVED*** = ctx.query;
+  const { slug } = ctx.query;
   const [jobData, companies, primaryTags] = await Promise.all([
     api.getJob(ctx, slug),
     api.getCompanies(ctx),
     api.getPrimaryTags(ctx)
   ]);
 
-  if (jobData.job.owner !== user.id) ***REMOVED***
+  if (jobData.job.owner !== user.id) {
     redirect(ctx, "/dashboard/jobs");
-  ***REMOVED***
+  }
 
-  return ***REMOVED*** jobData, companies, primaryTags ***REMOVED***;
-***REMOVED***;
+  return { jobData, companies, primaryTags };
+};

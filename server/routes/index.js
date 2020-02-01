@@ -11,11 +11,11 @@ const uploadController = require("../controllers/upload-controller");
 const userController = require("../controllers/user-controller");
 const tagController = require("../controllers/tag-controller");
 const telegramController = require("../controllers/telegram-controller");
-const ***REMOVED*** catchErrors ***REMOVED*** = require("../handlers/errorHandler");
-const ***REMOVED*** isProduction ***REMOVED*** = require("../utils");
+const { catchErrors } = require("../handlers/errorHandler");
+const { isProduction } = require("../utils");
 const redis = require("../redis");
-const ***REMOVED*** loadUser ***REMOVED*** = require("../handlers/loadUser");
-const ***REMOVED*** permit, permitAuthenticated ***REMOVED*** = require("../handlers/permission");
+const { loadUser } = require("../handlers/loadUser");
+const { permit, permitAuthenticated } = require("../handlers/permission");
 
 const RedisStore = connectRedis(session);
 
@@ -23,28 +23,28 @@ const router = express.Router();
 
 router.use(cors());
 router.use(
-  session(***REMOVED***
-    store: new RedisStore(***REMOVED***
+  session({
+    store: new RedisStore({
       client: redis
-    ***REMOVED***),
+    }),
     name: "qid",
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     proxy: true,
-    cookie: ***REMOVED***
+    cookie: {
       httpOnly: true,
       secure: isProduction,
       maxAge: 1000 * 60 * 60 * 24 * 7
-    ***REMOVED***
-  ***REMOVED***)
+    }
+  })
 );
 
 router.use(loadUser);
 
 router.use(logger("dev"));
 router.use(bodyParser.json());
-router.use(bodyParser.urlencoded(***REMOVED*** extended: false ***REMOVED***));
+router.use(bodyParser.urlencoded({ extended: false }));
 
 router.post("/image-upload", uploadController.uploadImage);
 
@@ -63,9 +63,9 @@ router.put(
 router.post(
   "/jobs/:id/verify-token",
   catchErrors(jobController.permitJobAdmin),
-  (req, res) => ***REMOVED***
+  (req, res) => {
     res.status(200).send(true);
-  ***REMOVED***
+  }
 );
 
 router.patch(
@@ -139,14 +139,14 @@ router.get("/logout", catchErrors(userController.logout));
 router.get("/tags", catchErrors(tagController.getTags));
 
 router.post(
-  `/telegram/$***REMOVED***process.env.TELEGRAM_BOT_TOKEN***REMOVED***`,
+  `/telegram/${process.env.TELEGRAM_BOT_TOKEN}`,
   catchErrors(telegramController.handleTelegramUpdate)
 );
 
 router.use(errorHandlers.notFound);
-if (!isProduction) ***REMOVED***
+if (!isProduction) {
   router.use(errorHandlers.developmentErrors);
-***REMOVED***
+}
 
 router.use(errorHandlers.productionErrors);
 

@@ -1,4 +1,4 @@
-import ***REMOVED***
+import {
   TableRow,
   TableCell,
   makeStyles,
@@ -6,7 +6,7 @@ import ***REMOVED***
   Box,
   Tooltip,
   IconButton
-***REMOVED*** from "@material-ui/core";
+} from "@material-ui/core";
 import Link from "next/link";
 import CompanyLogo from "./company-logo";
 import JobApprovalStatus from "./job-approval-status";
@@ -14,27 +14,27 @@ import format from "date-fns/format";
 import Router from "next/router";
 import EditIcon from "@material-ui/icons/Edit";
 import CloseIcon from "@material-ui/icons/Close";
-import ***REMOVED*** Fragment ***REMOVED*** from "react";
+import { Fragment } from "react";
 import JobCloseDialog from "./job-close-dialog";
 import HSSnackBar from "./hs-snackbar";
 import api from "../api";
 import useCloseJob from "../hooks/use-close-job";
 
-const useStyles = makeStyles(theme => (***REMOVED***
-  tableHead: ***REMOVED***
+const useStyles = makeStyles(theme => ({
+  tableHead: {
     fontWeight: 800
-  ***REMOVED***
-***REMOVED***));
+  }
+}));
 
-export default function JobTableRow(***REMOVED*** jobData ***REMOVED***) ***REMOVED***
+export default function JobTableRow({ jobData }) {
   const classes = useStyles();
-  const ***REMOVED*** job, company ***REMOVED*** = jobData;
-  const closeJob = async () => ***REMOVED***
+  const { job, company } = jobData;
+  const closeJob = async () => {
     await api.closeJob(job.id);
     Router.replace("/dashboard/jobs");
-  ***REMOVED***;
+  };
   const [
-    ***REMOVED*** closeStatus, closeDialogOpen ***REMOVED***,
+    { closeStatus, closeDialogOpen },
     setCloseDialogOpen,
     clearError,
     handleCloseJob
@@ -42,56 +42,56 @@ export default function JobTableRow(***REMOVED*** jobData ***REMOVED***) ***REMO
   return (
     <Fragment>
       <TableRow>
-        <TableCell variant="head" classes=***REMOVED******REMOVED*** head: classes.tableHead ***REMOVED******REMOVED***>
+        <TableCell variant="head" classes={{ head: classes.tableHead }}>
           <Link
             href="/dashboard/jobs/[slug]"
-            as=***REMOVED***`/dashboard/jobs/$***REMOVED***job.slug***REMOVED***`***REMOVED***
+            as={`/dashboard/jobs/${job.slug}`}
             passHref
           >
             <MuiLink color="inherit" variant="subtitle1">
-              ***REMOVED***job.position***REMOVED***
+              {job.position}
             </MuiLink>
           </Link>
         </TableCell>
         <TableCell>
-          ***REMOVED***company ? (
+          {company ? (
             <Box display="flex" alignItems="center">
-              ***REMOVED***company.logo && (
-                <Box pr=***REMOVED***1***REMOVED***>
+              {company.logo && (
+                <Box pr={1}>
                   <CompanyLogo
-                    company=***REMOVED***company***REMOVED***
-                    abbrevFallback=***REMOVED***false***REMOVED***
+                    company={company}
+                    abbrevFallback={false}
                     size="extraSmall"
                   />
                 </Box>
-              )***REMOVED***
-              ***REMOVED***company.name***REMOVED***
+              )}
+              {company.name}
             </Box>
           ) : (
             "None"
-          )***REMOVED***
+          )}
         </TableCell>
         <TableCell>
-          <JobApprovalStatus approvalStatus=***REMOVED***job.approvalStatus***REMOVED*** />
+          <JobApprovalStatus approvalStatus={job.approvalStatus} />
         </TableCell>
         <TableCell align="left">
-          ***REMOVED***job.deadline ? format(new Date(job.deadline), "MMM dd, yyyy") : "--"***REMOVED***
+          {job.deadline ? format(new Date(job.deadline), "MMM dd, yyyy") : "--"}
         </TableCell>
         <TableCell align="left">
           <Tooltip title="Edit Job">
             <IconButton
-              disabled=***REMOVED***closeStatus === "closing" || closeStatus === "closed"***REMOVED***
+              disabled={closeStatus === "closing" || closeStatus === "closed"}
               color="secondary"
-              onClick=***REMOVED***() => Router.push(`/dashboard/jobs/edit/$***REMOVED***job.slug***REMOVED***`)***REMOVED***
+              onClick={() => Router.push(`/dashboard/jobs/edit/${job.slug}`)}
             >
               <EditIcon />
             </IconButton>
           </Tooltip>
           <Tooltip title="Close Job">
             <IconButton
-              disabled=***REMOVED***closeStatus === "closing" || closeStatus === "closed"***REMOVED***
+              disabled={closeStatus === "closing" || closeStatus === "closed"}
               color="secondary"
-              onClick=***REMOVED***() => setCloseDialogOpen(true)***REMOVED***
+              onClick={() => setCloseDialogOpen(true)}
             >
               <CloseIcon />
             </IconButton>
@@ -99,17 +99,17 @@ export default function JobTableRow(***REMOVED*** jobData ***REMOVED***) ***REMO
         </TableCell>
       </TableRow>
       <JobCloseDialog
-        open=***REMOVED***closeDialogOpen***REMOVED***
-        onClose=***REMOVED***() => setCloseDialogOpen(false)***REMOVED***
-        onConfirmation=***REMOVED***handleCloseJob***REMOVED***
+        open={closeDialogOpen}
+        onClose={() => setCloseDialogOpen(false)}
+        onConfirmation={handleCloseJob}
       />
       <HSSnackBar
-        open=***REMOVED***closeStatus === "errorClosing"***REMOVED***
+        open={closeStatus === "errorClosing"}
         variant="error"
         message="Problem occurred closing job."
-        autoHideDuration=***REMOVED***3000***REMOVED***
-        onClose=***REMOVED***clearError***REMOVED***
+        autoHideDuration={3000}
+        onClose={clearError}
       />
     </Fragment>
   );
-***REMOVED***
+}

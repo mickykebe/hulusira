@@ -4,108 +4,108 @@ const Job = require("../models/job");
 const Tag = require("../models/tag");
 const Company = require("../models/company");
 
-describe("db", () => ***REMOVED***
+describe("db", () => {
   afterEach(global.clearDb);
 
   afterAll(global.endDb);
 
-  function sampleJobData(fields = ***REMOVED******REMOVED***) ***REMOVED***
-    return ***REMOVED***
+  function sampleJobData(fields = {}) {
+    return {
       position: faker.name.jobTitle(),
       job_type: "Full-time",
       description: faker.lorem.sentences(),
       apply_email: faker.internet.email(),
       ...fields
-    ***REMOVED***;
-  ***REMOVED***
+    };
+  }
 
-  function sampleTagData(fields = ***REMOVED******REMOVED***) ***REMOVED***
-    return ***REMOVED***
+  function sampleTagData(fields = {}) {
+    return {
       name: faker.lorem.word(),
       is_primary: false,
       ...fields
-    ***REMOVED***;
-  ***REMOVED***
+    };
+  }
 
-  it("should create company", async () => ***REMOVED***
-    const companyData = ***REMOVED***
+  it("should create company", async () => {
+    const companyData = {
       name: faker.company.companyName(),
       email: faker.internet.email(),
       logo: faker.image.imageUrl()
-    ***REMOVED***;
+    };
     const company = await db.createCompany(companyData);
     expect(company).toMatchObject(companyData);
-  ***REMOVED***);
+  });
 
-  it("createCompany should fail when email is missing", async () => ***REMOVED***
-    const companyData = ***REMOVED***
+  it("createCompany should fail when email is missing", async () => {
+    const companyData = {
       name: faker.company.companyName()
-    ***REMOVED***;
+    };
     await expect(db.createCompany(companyData)).rejects.toThrow();
-  ***REMOVED***);
-  it("createCompany should fail when name is missing", async () => ***REMOVED***
-    const companyData = ***REMOVED***
+  });
+  it("createCompany should fail when name is missing", async () => {
+    const companyData = {
       email: faker.internet.email()
-    ***REMOVED***;
+    };
     await expect(db.createCompany(companyData)).rejects.toThrow();
-  ***REMOVED***);
+  });
 
-  it("findOrCreateTag should create tag", async () => ***REMOVED***
-    const tagData = ***REMOVED*** name: faker.lorem.word() ***REMOVED***;
+  it("findOrCreateTag should create tag", async () => {
+    const tagData = { name: faker.lorem.word() };
     const tag = await db.findOrCreateTag(tagData.name);
-    expect(tag).toMatchObject(***REMOVED***
+    expect(tag).toMatchObject({
       name: tagData.name,
       isPrimary: false
-    ***REMOVED***);
-  ***REMOVED***);
+    });
+  });
 
-  it("findOrCreateTag returns existing tag if name already exists", async () => ***REMOVED***
+  it("findOrCreateTag returns existing tag if name already exists", async () => {
     const tagName = faker.lorem.word();
     await db.findOrCreateTag(tagName);
     await db.findOrCreateTag(tagName);
     const res = await db.pool.query(`SELECT COUNT(*) FROM tag`);
     expect(res.rows[0].count).toBe("1");
-  ***REMOVED***);
+  });
 
-  it("createJobAndCompany creates job and company", async () => ***REMOVED***
-    const data = ***REMOVED***
-      company: ***REMOVED***
+  it("createJobAndCompany creates job and company", async () => {
+    const data = {
+      company: {
         name: faker.company.companyName(),
         email: faker.internet.email(),
         logo: faker.image.imageUrl()
-      ***REMOVED***,
-      job: ***REMOVED***
+      },
+      job: {
         position: faker.lorem.sentence(),
         jobType: "Full-time",
         tags: [faker.random.word()],
         description: faker.lorem.sentences(),
         applyEmail: faker.internet.email()
-      ***REMOVED***
-    ***REMOVED***;
-    const ***REMOVED*** job, company ***REMOVED*** = await db.createJobAndCompany(data);
-    expect(job).toMatchObject(***REMOVED***
+      }
+    };
+    const { job, company } = await db.createJobAndCompany(data);
+    expect(job).toMatchObject({
       position: data.job.position,
       jobType: data.job.jobType,
-      tags: [***REMOVED*** name: data.job.tags[0], isPrimary: false ***REMOVED***],
+      tags: [{ name: data.job.tags[0], isPrimary: false }],
       description: data.job.description,
       applyEmail: data.job.applyEmail
-    ***REMOVED***);
+    });
     expect(company).toMatchObject(data.company);
-  ***REMOVED***);
+  });
 
-  it("createJob creates job", async () => ***REMOVED***
-    const primaryTag = ***REMOVED*** name: "dev", isPrimary: true ***REMOVED***;
+  it("createJob creates job", async () => {
+    const primaryTag = { name: "dev", isPrimary: true };
     const tagRes = await db.pool.query(
       `INSERT INTO tag(name, is_primary) VALUES ($1, $2) RETURNING *`,
       [primaryTag.name, primaryTag.isPrimary]
     );
     const tagId = tagRes.rows[0].id;
-    const company = await db.createCompany(***REMOVED***
+    const company = await db.createCompany({
       name: faker.company.companyName(),
       email: faker.internet.email(),
       logo: faker.image.imageUrl()
-    ***REMOVED***);
-    const jobData = ***REMOVED***
+    });
+    const jobData = {
       position: faker.lorem.sentence(),
       jobType: "Full-time",
       location: faker.address.city(),
@@ -118,26 +118,26 @@ describe("db", () => ***REMOVED***
       howToApply: faker.lorem.sentences(),
       applyUrl: faker.internet.url(),
       applyEmail: ""
-    ***REMOVED***;
+    };
     const job = await db.createJob(jobData, company.id);
-    expect(job).toMatchObject(***REMOVED***
+    expect(job).toMatchObject({
       position: jobData.position,
       jobType: jobData.jobType,
       location: jobData.location,
       companyId: company.id,
       tags: [
-        ***REMOVED***
+        {
           name: primaryTag.name,
           isPrimary: true
-        ***REMOVED***,
-        ***REMOVED***
+        },
+        {
           name: jobData.tags[0],
           isPrimary: false
-        ***REMOVED***,
-        ***REMOVED***
+        },
+        {
           name: jobData.tags[1],
           isPrimary: false
-        ***REMOVED***
+        }
       ],
       salary: jobData.salary,
       description: jobData.description,
@@ -145,63 +145,63 @@ describe("db", () => ***REMOVED***
       howToApply: jobData.howToApply,
       applyUrl: jobData.applyUrl,
       applyEmail: jobData.applyEmail
-    ***REMOVED***);
+    });
     expect(job.slug).toBe(db.jobSlug(job.id, job.position));
     const tagCountRes = await db.pool.query(`SELECT COUNT(*) FROM tag`);
     expect(tagCountRes.rows[0].count).toBe("3");
     const jobTagRes = await db.pool.query(`SELECT COUNT(*) FROM job_tags`);
     expect(jobTagRes.rows[0].count).toBe("3");
-  ***REMOVED***);
+  });
 
-  it("createJob should work without company", async () => ***REMOVED***
-    const jobData = ***REMOVED***
+  it("createJob should work without company", async () => {
+    const jobData = {
       position: faker.lorem.sentence(),
       jobType: "Full-time",
       tags: [],
       description: faker.lorem.sentences(),
       applyEmail: faker.internet.email()
-    ***REMOVED***;
+    };
     const job = await db.createJob(jobData);
-    expect(job).toMatchObject(***REMOVED***
+    expect(job).toMatchObject({
       position: jobData.position,
       jobType: jobData.jobType,
       tags: jobData.tags,
       description: jobData.description,
       applyEmail: jobData.applyEmail
-    ***REMOVED***);
-  ***REMOVED***);
+    });
+  });
 
-  it("createJob should fail when position is missing", async () => ***REMOVED***
-    const jobData = ***REMOVED***
+  it("createJob should fail when position is missing", async () => {
+    const jobData = {
       jobType: "Full-time",
       tags: [],
       description: faker.lorem.sentences(),
       applyEmail: faker.internet.email()
-    ***REMOVED***;
+    };
     await expect(db.createJob(jobData)).rejects.toThrow();
-  ***REMOVED***);
+  });
 
-  it("createJob should fail when description is missing", async () => ***REMOVED***
-    const jobData = ***REMOVED***
+  it("createJob should fail when description is missing", async () => {
+    const jobData = {
       position: faker.lorem.sentence(),
       jobType: "Full-time",
       tags: [],
       applyEmail: faker.internet.email()
-    ***REMOVED***;
+    };
     await expect(db.createJob(jobData)).rejects.toThrow();
-  ***REMOVED***);
+  });
 
-  it("createJob should fail when either of applyEmail or applyUrl is missing", async () => ***REMOVED***
-    const jobData = ***REMOVED***
+  it("createJob should fail when either of applyEmail or applyUrl is missing", async () => {
+    const jobData = {
       position: faker.lorem.sentence(),
       jobType: "Full-time",
       description: faker.lorem.sentences(),
       tags: []
-    ***REMOVED***;
+    };
     await expect(db.createJob(jobData)).rejects.toThrow();
-  ***REMOVED***);
+  });
 
-  it("getPrimaryTags only returns primary tags", async () => ***REMOVED***
+  it("getPrimaryTags only returns primary tags", async () => {
     const query = `INSERT INTO tag(name, is_primary) VALUES ($1, $2), ($3, $4);`;
     const values = ["React", true, "Vue.js", false];
     await db.pool.query(query, values);
@@ -209,48 +209,48 @@ describe("db", () => ***REMOVED***
     expect(primaryTags).toHaveLength(1);
     expect(primaryTags[0].name).toBe("React");
     expect(primaryTags[0].isPrimary).toBe(true);
-  ***REMOVED***);
+  });
 
-  it("getJobById returns job data", async () => ***REMOVED***
+  it("getJobById returns job data", async () => {
     const rows = await db
       .knex("job")
-      .insert(***REMOVED***
+      .insert({
         position: faker.name.jobTitle(),
         job_type: "Full-time",
         description: faker.lorem.sentences(),
         apply_email: faker.internet.email()
-      ***REMOVED***)
+      })
       .returning(db.selectColumns("job", "job", db.jobColumns));
     const jobRow = rows[0];
     const res = await db.getJobById(jobRow.job_id);
 
-    expect(res).toMatchObject(***REMOVED***
+    expect(res).toMatchObject({
       company: null,
       job: Job.fromDb(jobRow, [])
-    ***REMOVED***);
-  ***REMOVED***);
+    });
+  });
 
-  it("getJobs returns jobs with tags", async () => ***REMOVED***
+  it("getJobs returns jobs with tags", async () => {
     const sortById = (obj1, obj2) => (obj1.id > obj2.id ? 1 : -1);
     const tag1 = Tag.fromDb(
       (await db
         .knex("tag")
-        .insert(***REMOVED*** name: faker.lorem.word() ***REMOVED***)
+        .insert({ name: faker.lorem.word() })
         .returning("*"))[0]
     );
     const tag2 = Tag.fromDb(
       (await db
         .knex("tag")
-        .insert(***REMOVED*** name: faker.lorem.word() ***REMOVED***)
+        .insert({ name: faker.lorem.word() })
         .returning("*"))[0]
     );
     const company = Company.fromDb(
       (await db
         .knex("company")
-        .insert(***REMOVED***
+        .insert({
           name: faker.company.companyName(),
           email: faker.internet.email()
-        ***REMOVED***)
+        })
         .returning(
           db.selectColumns("company", "company", db.companyColumns)
         ))[0]
@@ -258,133 +258,133 @@ describe("db", () => ***REMOVED***
     const job = Job.fromDb(
       (await db
         .knex("job")
-        .insert(***REMOVED***
+        .insert({
           position: faker.name.jobTitle(),
           job_type: "Full-time",
           company_id: company.id,
           description: faker.lorem.sentence(),
           apply_email: faker.internet.email()
-        ***REMOVED***)
+        })
         .returning(db.selectColumns("job", "job", db.jobColumns)))[0],
       [tag1, tag2].sort(sortById)
     );
     await db.knex("job_tags").insert([
-      ***REMOVED***
+      {
         job_id: job.id,
         tag_id: tag1.id
-      ***REMOVED***,
-      ***REMOVED***
+      },
+      {
         job_id: job.id,
         tag_id: tag2.id
-      ***REMOVED***
+      }
     ]);
     const jobs = await db.getJobs();
     expect(jobs).toHaveLength(1);
     jobs[0].job.tags = jobs[0].job.tags.sort(sortById);
-    expect(jobs[0]).toMatchObject(***REMOVED***
+    expect(jobs[0]).toMatchObject({
       company,
       job
-    ***REMOVED***);
-  ***REMOVED***);
+    });
+  });
 
-  it("getJobs cursor works", async () => ***REMOVED***
+  it("getJobs cursor works", async () => {
     const rows = await db
       .knex("job")
       .insert([
-        ***REMOVED***
+        {
           position: faker.name.jobTitle(),
           job_type: "Full-time",
           description: faker.lorem.sentences(),
           apply_email: faker.internet.email()
-        ***REMOVED***,
-        ***REMOVED***
+        },
+        {
           position: faker.name.jobTitle(),
           job_type: "Part-time",
           description: faker.lorem.sentences(),
           apply_email: faker.internet.email()
-        ***REMOVED***
+        }
       ])
       .returning("*");
     const firstJobId = rows[0].id;
-    const jobs = await db.getJobs(***REMOVED*** fromJobId: firstJobId ***REMOVED***);
+    const jobs = await db.getJobs({ fromJobId: firstJobId });
     expect(jobs).toHaveLength(1);
     expect(jobs[0].job.id).toBe(firstJobId);
-  ***REMOVED***);
+  });
 
-  it("getJobs can limit number of jobs", async () => ***REMOVED***
+  it("getJobs can limit number of jobs", async () => {
     await db
       .knex("job")
       .insert([
-        ***REMOVED***
+        {
           position: faker.name.jobTitle(),
           job_type: "Full-time",
           description: faker.lorem.sentences(),
           apply_email: faker.internet.email()
-        ***REMOVED***,
-        ***REMOVED***
+        },
+        {
           position: faker.name.jobTitle(),
           job_type: "Part-time",
           description: faker.lorem.sentences(),
           apply_email: faker.internet.email()
-        ***REMOVED***
+        }
       ])
       .returning("*");
-    const jobs = await db.getJobs(***REMOVED*** limit: 1 ***REMOVED***);
+    const jobs = await db.getJobs({ limit: 1 });
     expect(jobs).toHaveLength(1);
-  ***REMOVED***);
+  });
 
-  it("getJobs can filter by approved status", async () => ***REMOVED***
-    const approvedJobData = sampleJobData(***REMOVED*** approved: true ***REMOVED***);
+  it("getJobs can filter by approved status", async () => {
+    const approvedJobData = sampleJobData({ approved: true });
     const jobData = sampleJobData();
     const jobRows = await db
       .knex("job")
       .insert([approvedJobData, jobData])
       .returning(db.selectColumns("job", "job", db.jobColumns));
     expect(jobRows).toHaveLength(2);
-    const jobResults = await db.getJobs(***REMOVED*** approved: true ***REMOVED***);
+    const jobResults = await db.getJobs({ approved: true });
     expect(jobResults).toHaveLength(1);
     expect(jobResults[0].job.position).toBe(approvedJobData.position);
-  ***REMOVED***);
+  });
 
-  it("getJobs can limit results within day ranges", async () => ***REMOVED***
-    const recentJobData = sampleJobData(***REMOVED*** created: new Date() ***REMOVED***);
+  it("getJobs can limit results within day ranges", async () => {
+    const recentJobData = sampleJobData({ created: new Date() });
     const expiredDate = new Date();
     expiredDate.setDate(expiredDate.getDate() - 31);
-    const oldJobData = sampleJobData(***REMOVED*** created: expiredDate ***REMOVED***);
+    const oldJobData = sampleJobData({ created: expiredDate });
     const jobRows = await db
       .knex("job")
       .insert([recentJobData, oldJobData])
       .returning(db.selectColumns("job", "job", db.jobColumns));
     expect(jobRows).toHaveLength(2);
-    const jobResults = await db.getJobs(***REMOVED*** withinDays: 30 ***REMOVED***);
+    const jobResults = await db.getJobs({ withinDays: 30 });
     expect(jobResults).toHaveLength(1);
     expect(jobResults[0].job.position).toBe(recentJobData.position);
-  ***REMOVED***);
+  });
 
-  it("getUserByEmail works", async () => ***REMOVED***
-    const user = ***REMOVED***
+  it("getUserByEmail works", async () => {
+    const user = {
       firstName: faker.name.firstName(),
       lastName: faker.name.lastName(),
       email: faker.internet.email(),
       password: faker.internet.password(),
       role: "user"
-    ***REMOVED***;
+    };
     const res = await db.pool.query(
       `INSERT INTO users(first_name, last_name, email, password, role) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
       [user.firstName, user.lastName, user.email, user.password, user.role]
     );
     const resUser = await db.getUserByEmail(user.email);
     expect(resUser).toMatchObject(user);
-  ***REMOVED***);
+  });
 
-  it("getUserById works", async () => ***REMOVED***
-    const user = ***REMOVED***
+  it("getUserById works", async () => {
+    const user = {
       firstName: faker.name.firstName(),
       lastName: faker.name.lastName(),
       email: faker.internet.email(),
       password: faker.internet.password(),
       role: "user"
-    ***REMOVED***;
+    };
     const res = await db.pool.query(
       `INSERT INTO users(first_name, last_name, email, password, role) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
       [user.firstName, user.lastName, user.email, user.password, user.role]
@@ -392,10 +392,10 @@ describe("db", () => ***REMOVED***
     const userId = res.rows[0].id;
     const resUser = await db.getUserById(userId);
     expect(resUser).toMatchObject(user);
-  ***REMOVED***);
+  });
 
-  it("approveJob should approve pending job", async () => ***REMOVED***
-    const jobData = sampleJobData(***REMOVED******REMOVED***);
+  it("approveJob should approve pending job", async () => {
+    const jobData = sampleJobData({});
     const jobRows = await db
       .knex("job")
       .insert(jobData)
@@ -406,10 +406,10 @@ describe("db", () => ***REMOVED***
     expect(result).toBe(1);
     const result2 = await db.approveJob(1);
     expect(result2).toBe(0);
-  ***REMOVED***);
+  });
 
-  it("closeJob should close a job", async () => ***REMOVED***
-    const jobData = sampleJobData(***REMOVED******REMOVED***);
+  it("closeJob should close a job", async () => {
+    const jobData = sampleJobData({});
     const jobRows = await db
       .knex("job")
       .insert(jobData)
@@ -420,9 +420,9 @@ describe("db", () => ***REMOVED***
     expect(result).toBe(1);
     const result2 = await db.closeJob(1);
     expect(result2).toBe(0);
-  ***REMOVED***);
+  });
 
-  it("deleteJob should delete job", async () => ***REMOVED***
+  it("deleteJob should delete job", async () => {
     const jobData = sampleJobData();
     const jobRows = await db
       .knex("job")
@@ -434,9 +434,9 @@ describe("db", () => ***REMOVED***
     expect(result).toBe(1);
     const result2 = await db.deleteJob(2);
     expect(result2).toBe(0);
-  ***REMOVED***);
+  });
 
-  it("getTags returns tags", async () => ***REMOVED***
+  it("getTags returns tags", async () => {
     const rows = await db
       .knex("tag")
       .insert([sampleTagData(), sampleTagData()])
@@ -444,5 +444,5 @@ describe("db", () => ***REMOVED***
     expect(rows.length).toBe(2);
     const tags = await db.getTags([rows[0].id, rows[1].id]);
     expect(tags).toHaveLength(2);
-  ***REMOVED***);
-***REMOVED***);
+  });
+});

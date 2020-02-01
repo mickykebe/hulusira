@@ -1,27 +1,27 @@
-import ***REMOVED*** Box, Typography ***REMOVED*** from "@material-ui/core";
-import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
+import { Box, Typography } from "@material-ui/core";
+import { makeStyles } from "@material-ui/styles";
 
-const logoSizes = ***REMOVED***
-  extraSmall: ***REMOVED***
+const logoSizes = {
+  extraSmall: {
     width: "2rem",
     height: "2rem"
-  ***REMOVED***,
-  small: ***REMOVED***
+  },
+  small: {
     width: "3rem",
     height: "3rem"
-  ***REMOVED***,
-  medium: ***REMOVED***
+  },
+  medium: {
     width: "4.5rem",
     height: "4.5rem"
-  ***REMOVED***,
-  large: ***REMOVED***
+  },
+  large: {
     width: "6rem",
     height: "6rem"
-  ***REMOVED***
-***REMOVED***;
+  }
+};
 
-const useStyles = makeStyles(theme => (***REMOVED***
-  logoContainer: props => (***REMOVED***
+const useStyles = makeStyles(theme => ({
+  logoContainer: props => ({
     position: "relative",
     backgroundColor: theme.palette.background.default,
     border: `1px solid #eee`,
@@ -31,59 +31,59 @@ const useStyles = makeStyles(theme => (***REMOVED***
     justifyContent: "center",
     alignItems: "center",
     ...logoSizes[props.size]
-  ***REMOVED***),
-  logo: ***REMOVED***
+  }),
+  logo: {
     maxWidth: "100%",
     maxHeight: "100%",
     borderRadius: "50%"
-  ***REMOVED***,
-  abbrev: props => (***REMOVED***
+  },
+  abbrev: props => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     cursor: props.isLink ? "pointer" : "auto",
     ...logoSizes[props.size]
-  ***REMOVED***)
-***REMOVED***));
+  })
+}));
 
-function abbrev(name) ***REMOVED***
+function abbrev(name) {
   const [word1, word2, ..._rest] = name.split(" ");
-  return `$***REMOVED***word1[0] ? word1[0].toUpperCase() : ""***REMOVED***$***REMOVED***word2 ? word2[0] : ""***REMOVED***`;
-***REMOVED***
+  return `${word1[0] ? word1[0].toUpperCase() : ""}${word2 ? word2[0] : ""}`;
+}
 
-export default function CompanyLogo(***REMOVED***
+export default function CompanyLogo({
   company,
   abbrevFallback = true,
   size = "medium",
   onClick
-***REMOVED***) ***REMOVED***
-  const classes = useStyles(***REMOVED*** size, isLink: !!onClick ***REMOVED***);
-  if (company.logo) ***REMOVED***
+}) {
+  const classes = useStyles({ size, isLink: !!onClick });
+  if (company.logo) {
     return (
-      <Box className=***REMOVED***classes.logoContainer***REMOVED*** onClick=***REMOVED***onClick***REMOVED***>
+      <Box className={classes.logoContainer} onClick={onClick}>
         <img
-          className=***REMOVED***classes.logo***REMOVED***
-          src=***REMOVED***company.logo***REMOVED***
+          className={classes.logo}
+          src={company.logo}
           alt="Company logo"
           loading="lazy"
         />
       </Box>
     );
-  ***REMOVED***
-  if (abbrevFallback) ***REMOVED***
+  }
+  if (abbrevFallback) {
     return (
-      <Box className=***REMOVED***classes.logoContainer***REMOVED*** onClick=***REMOVED***onClick***REMOVED***>
+      <Box className={classes.logoContainer} onClick={onClick}>
         <Typography
-          variant=***REMOVED***size === "small" ? "h5" : "h4"***REMOVED***
+          variant={size === "small" ? "h5" : "h4"}
           color="textSecondary"
           align="center"
-          className=***REMOVED***classes.abbrev***REMOVED***
-          onClick=***REMOVED***onClick***REMOVED***
+          className={classes.abbrev}
+          onClick={onClick}
         >
-          ***REMOVED***abbrev(company.name)***REMOVED***
+          {abbrev(company.name)}
         </Typography>
       </Box>
     );
-  ***REMOVED***
+  }
   return null;
-***REMOVED***
+}

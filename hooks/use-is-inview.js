@@ -1,23 +1,23 @@
-import ***REMOVED*** useEffect, useRef, useState ***REMOVED*** from "react";
+import { useEffect, useRef, useState } from "react";
 
-export default function useIsInview(bottomOffset = 0) ***REMOVED***
+export default function useIsInview(bottomOffset = 0) {
   const [isIntersecting, setIsIntersecting] = useState(false);
   const ref = useRef();
-  useEffect(() => ***REMOVED***
+  useEffect(() => {
     const observer = new IntersectionObserver(
-      ([entry]) => ***REMOVED***
+      ([entry]) => {
         setIsIntersecting(entry.isIntersecting);
-      ***REMOVED***,
-      ***REMOVED*** rootMargin: `0px 0px $***REMOVED***bottomOffset***REMOVED***px 0px` ***REMOVED***
+      },
+      { rootMargin: `0px 0px ${bottomOffset}px 0px` }
     );
     const sentinelRef = ref;
-    if (sentinelRef.current) ***REMOVED***
+    if (sentinelRef.current) {
       observer.observe(sentinelRef.current);
-    ***REMOVED***
-    return () => ***REMOVED***
+    }
+    return () => {
       observer.unobserve(sentinelRef.current);
-    ***REMOVED***;
-  ***REMOVED***, [bottomOffset, isIntersecting, ref]);
+    };
+  }, [bottomOffset, isIntersecting, ref]);
 
   return [isIntersecting, ref];
-***REMOVED***
+}

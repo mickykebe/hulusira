@@ -3,9 +3,9 @@ const Job = require("./job");
 const Tag = require("./tag");
 const User = require("./user");
 
-module.exports = ***REMOVED***
+module.exports = {
   Company,
   Job,
   Tag,
   User
-***REMOVED***;
+};

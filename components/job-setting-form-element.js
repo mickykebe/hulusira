@@ -1,5 +1,5 @@
 import HSCard from "./hs-card";
-import ***REMOVED***
+import {
   FormControl,
   RadioGroup,
   makeStyles,
@@ -7,77 +7,77 @@ import ***REMOVED***
   Typography,
   FormControlLabel,
   Radio
-***REMOVED*** from "@material-ui/core";
+} from "@material-ui/core";
 import AccessibilityNewIcon from "@material-ui/icons/AccessibilityNew";
 import BusinessIcon from "@material-ui/icons/Business";
 
-const useStyles = makeStyles(theme => (***REMOVED***
-  radioGroup: ***REMOVED***
+const useStyles = makeStyles(theme => ({
+  radioGroup: {
     justifyContent: "center"
-  ***REMOVED***,
-  hasCompanyIcon: ***REMOVED***
+  },
+  hasCompanyIcon: {
     marginRight: theme.spacing(1),
     width: "2rem",
     height: "2rem"
-  ***REMOVED***,
-  hasCompanyLabel: ***REMOVED***
+  },
+  hasCompanyLabel: {
     paddingTop: theme.spacing(0.5),
     fontWeight: 800,
     fontSize: "1.2rem"
-  ***REMOVED***
-***REMOVED***));
+  }
+}));
 
-function HasCompanyLabel(***REMOVED*** label, Icon ***REMOVED***) ***REMOVED***
+function HasCompanyLabel({ label, Icon }) {
   const classes = useStyles();
   return (
     <Box display="flex" alignItems="center">
-      <Icon className=***REMOVED***classes.hasCompanyIcon***REMOVED*** />
+      <Icon className={classes.hasCompanyIcon} />
       <Typography
         variant="body2"
         component="span"
-        className=***REMOVED***classes.hasCompanyLabel***REMOVED***>
-        ***REMOVED***label***REMOVED***
+        className={classes.hasCompanyLabel}>
+        {label}
       </Typography>
     </Box>
   );
-***REMOVED***
+}
 
-export default function JobSettingFormElement(***REMOVED***
+export default function JobSettingFormElement({
   className,
   values,
   setFieldValue
-***REMOVED***) ***REMOVED***
+}) {
   const classes = useStyles();
   return (
-    <HSCard className=***REMOVED***className***REMOVED*** title="Job Setting">
+    <HSCard className={className} title="Job Setting">
       <FormControl margin="normal" fullWidth component="fieldset">
         <RadioGroup
-          className=***REMOVED***classes.radioGroup***REMOVED***
+          className={classes.radioGroup}
           name="hasCompany"
-          value=***REMOVED***values.hasCompany***REMOVED***
-          onChange=***REMOVED***ev =>
+          value={values.hasCompany}
+          onChange={ev =>
             setFieldValue("hasCompany", ev.target.value === "true")
-          ***REMOVED***
+          }
           row>
           <FormControlLabel
-            value=***REMOVED***true***REMOVED***
-            control=***REMOVED***<Radio color="primary" />***REMOVED***
-            label=***REMOVED***<HasCompanyLabel label="Company Job" Icon=***REMOVED***BusinessIcon***REMOVED*** />***REMOVED***
+            value={true}
+            control={<Radio color="primary" />}
+            label={<HasCompanyLabel label="Company Job" Icon={BusinessIcon} />}
             labelPlacement="end"
           />
           <FormControlLabel
-            value=***REMOVED***false***REMOVED***
-            control=***REMOVED***<Radio color="primary" />***REMOVED***
-            label=***REMOVED***
+            value={false}
+            control={<Radio color="primary" />}
+            label={
               <HasCompanyLabel
                 label="Freelance Job"
-                Icon=***REMOVED***AccessibilityNewIcon***REMOVED***
+                Icon={AccessibilityNewIcon}
               />
-            ***REMOVED***
+            }
             labelPlacement="end"
           />
         </RadioGroup>
       </FormControl>
     </HSCard>
   );
-***REMOVED***
+}

@@ -1,25 +1,25 @@
-import ***REMOVED*** Paper ***REMOVED*** from "@material-ui/core";
-import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
+import { Paper } from "@material-ui/core";
+import { makeStyles } from "@material-ui/styles";
 
-const useStyles = makeStyles(theme => (***REMOVED***
-  root: ***REMOVED***
+const useStyles = makeStyles(theme => ({
+  root: {
     border: `1px solid #EAEDF3`
-  ***REMOVED***,
-  elevation1: ***REMOVED***
+  },
+  elevation1: {
     boxShadow: theme.boxShadows[0]
-  ***REMOVED***
-***REMOVED***));
+  }
+}));
 
-export default function HSPaper(***REMOVED*** className = "", ...props ***REMOVED***) ***REMOVED***
+export default function HSPaper({ className = "", ...props }) {
   const classes = useStyles();
   return (
     <Paper
-      className=***REMOVED***className***REMOVED***
-      classes=***REMOVED******REMOVED***
+      className={className}
+      classes={{
         root: classes.root,
         elevation1: classes.elevation1
-      ***REMOVED******REMOVED***
-      ***REMOVED***...props***REMOVED***
+      }}
+      {...props}
     />
   );
-***REMOVED***
+}

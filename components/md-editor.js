@@ -1,51 +1,51 @@
 import React from "react";
 import clsx from "clsx";
 import SimpleMDE from "react-simplemde-editor";
-import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
+import { makeStyles } from "@material-ui/styles";
 //import "easymde/dist/easymde.min.css";
-import ***REMOVED*** Box, FormHelperText ***REMOVED*** from "@material-ui/core";
+import { Box, FormHelperText } from "@material-ui/core";
 
-const useStyles = makeStyles(theme => (***REMOVED***
-  root: ***REMOVED***
+const useStyles = makeStyles(theme => ({
+  root: {
     display: "flex",
     flexDirection: "column",
-    "& label": ***REMOVED***
+    "& label": {
       fontSize: "1rem",
       marginBottom: theme.spacing(1),
       marginTop: theme.spacing(1),
       opacity: 0.7
-    ***REMOVED***,
-    "& .CodeMirror .CodeMirror-scroll": ***REMOVED***
+    },
+    "& .CodeMirror .CodeMirror-scroll": {
       minHeight: "150px !important"
-    ***REMOVED***,
-    "& .editor-toolbar.fullscreen": ***REMOVED***
+    },
+    "& .editor-toolbar.fullscreen": {
       zIndex: theme.zIndex.drawer + 1
-    ***REMOVED***,
-    "& .CodeMirror-fullscreen": ***REMOVED***
+    },
+    "& .CodeMirror-fullscreen": {
       zIndex: theme.zIndex.drawer + 1
-    ***REMOVED***,
-    "& .editor-preview-side": ***REMOVED***
+    },
+    "& .editor-preview-side": {
       zIndex: theme.zIndex.drawer + 1
-    ***REMOVED***
-  ***REMOVED***,
-  errorRoot: ***REMOVED***
-    "& .CodeMirror": ***REMOVED***
-      border: `1px solid $***REMOVED***theme.palette.error.main***REMOVED***`
-    ***REMOVED***,
-    "& .editor-toolbar": ***REMOVED***
-      borderTop: `1px solid $***REMOVED***theme.palette.error.main***REMOVED***`,
-      borderLeft: `1px solid $***REMOVED***theme.palette.error.main***REMOVED***`,
-      borderRight: `1px solid $***REMOVED***theme.palette.error.main***REMOVED***`
-    ***REMOVED***
-  ***REMOVED***,
-  helperText: ***REMOVED***
-    margin: `$***REMOVED***-theme.spacing(1)***REMOVED***px $***REMOVED***theme.spacing(1.3)***REMOVED***px $***REMOVED***theme.spacing(
+    }
+  },
+  errorRoot: {
+    "& .CodeMirror": {
+      border: `1px solid ${theme.palette.error.main}`
+    },
+    "& .editor-toolbar": {
+      borderTop: `1px solid ${theme.palette.error.main}`,
+      borderLeft: `1px solid ${theme.palette.error.main}`,
+      borderRight: `1px solid ${theme.palette.error.main}`
+    }
+  },
+  helperText: {
+    margin: `${-theme.spacing(1)}px ${theme.spacing(1.3)}px ${theme.spacing(
       1
-    )***REMOVED***px`
-  ***REMOVED***
-***REMOVED***));
+    )}px`
+  }
+}));
 
-export default function MDEditor(***REMOVED***
+export default function MDEditor({
   id,
   label,
   value,
@@ -53,25 +53,25 @@ export default function MDEditor(***REMOVED***
   error = false,
   helperText = "",
   options
-***REMOVED***) ***REMOVED***
-  const classes = useStyles(***REMOVED*** error ***REMOVED***);
+}) {
+  const classes = useStyles({ error });
   return (
-    <Box mt=***REMOVED***2***REMOVED***>
+    <Box mt={2}>
       <SimpleMDE
-        id=***REMOVED***id***REMOVED***
-        className=***REMOVED***clsx(***REMOVED*** [classes.root]: true, [classes.errorRoot]: error ***REMOVED***)***REMOVED***
-        label=***REMOVED***label***REMOVED***
-        value=***REMOVED***value***REMOVED***
-        onChange=***REMOVED***onChange***REMOVED***
-        options=***REMOVED******REMOVED***
+        id={id}
+        className={clsx({ [classes.root]: true, [classes.errorRoot]: error })}
+        label={label}
+        value={value}
+        onChange={onChange}
+        options={{
           spellChecker: true
-        ***REMOVED******REMOVED***
+        }}
       />
-      ***REMOVED***helperText && (
-        <FormHelperText error=***REMOVED***error***REMOVED*** className=***REMOVED***classes.helperText***REMOVED***>
-          ***REMOVED***helperText***REMOVED***
+      {helperText && (
+        <FormHelperText error={error} className={classes.helperText}>
+          {helperText}
         </FormHelperText>
-      )***REMOVED***
+      )}
     </Box>
   );
-***REMOVED***
+}

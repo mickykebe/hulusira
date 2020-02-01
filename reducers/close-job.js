@@ -1,14 +1,14 @@
-export default function jobCloseReducer(state, action) ***REMOVED***
-  switch (action.type) ***REMOVED***
+export default function jobCloseReducer(state, action) {
+  switch (action.type) {
     case "CLOSING_JOB":
-      return ***REMOVED*** ...state, closeStatus: "closing" ***REMOVED***;
+      return { ...state, closeStatus: "closing" };
     case "CLOSED_JOB":
-      return ***REMOVED*** ...state, closeStatus: "closed" ***REMOVED***;
+      return { ...state, closeStatus: "closed" };
     case "ERROR_CLOSING_JOB":
-      return ***REMOVED*** ...state, closeStatus: "errorClosing" ***REMOVED***;
+      return { ...state, closeStatus: "errorClosing" };
     case "CLEAR_ERROR":
-      return ***REMOVED*** ...state, closeStatus: null ***REMOVED***;
+      return { ...state, closeStatus: null };
     default:
       throw new Error("Unidentified action type");
-  ***REMOVED***
-***REMOVED***
+  }
+}

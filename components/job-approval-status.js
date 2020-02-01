@@ -1,22 +1,22 @@
-import ***REMOVED*** Typography, makeStyles ***REMOVED*** from "@material-ui/core";
+import { Typography, makeStyles } from "@material-ui/core";
 
-const colors = ***REMOVED***
+const colors = {
   Pending: "#fb8c00",
   Active: "#43a047",
   Declined: "red"
-***REMOVED***;
+};
 
-const useStyles = makeStyles(theme => (***REMOVED***
-  root: (***REMOVED*** approvalStatus ***REMOVED***) => (***REMOVED***
+const useStyles = makeStyles(theme => ({
+  root: ({ approvalStatus }) => ({
     color: colors[approvalStatus]
-  ***REMOVED***)
-***REMOVED***));
+  })
+}));
 
-export default function JobApprovalStatus(***REMOVED*** approvalStatus ***REMOVED***) ***REMOVED***
-  const classes = useStyles(***REMOVED*** approvalStatus ***REMOVED***);
+export default function JobApprovalStatus({ approvalStatus }) {
+  const classes = useStyles({ approvalStatus });
   return (
-    <Typography variant="subtitle2" className=***REMOVED***classes.root***REMOVED***>
-      ***REMOVED***approvalStatus***REMOVED***
+    <Typography variant="subtitle2" className={classes.root}>
+      {approvalStatus}
     </Typography>
   );
-***REMOVED***
+}

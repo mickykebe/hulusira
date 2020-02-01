@@ -1,76 +1,76 @@
 const Yup = require("yup");
 const db = require("../db");
 
-const validationSchema = Yup.object().shape(***REMOVED***
+const validationSchema = Yup.object().shape({
   name: Yup.string().required("Required"),
   email: Yup.string()
     .email()
     .required("Required")
-***REMOVED***);
+});
 
-exports.validateCompany = async (req, res, next) => ***REMOVED***
+exports.validateCompany = async (req, res, next) => {
   const companyData = req.body;
-  try ***REMOVED***
-    await validationSchema.validate(companyData, ***REMOVED*** abortEarly: false ***REMOVED***);
-  ***REMOVED*** catch (error) ***REMOVED***
-    res.status(500).send(***REMOVED*** error: error.inner ***REMOVED***);
+  try {
+    await validationSchema.validate(companyData, { abortEarly: false });
+  } catch (error) {
+    res.status(500).send({ error: error.inner });
     return;
-  ***REMOVED***
+  }
   next();
-***REMOVED***;
+};
 
-exports.companies = async (req, res) => ***REMOVED***
+exports.companies = async (req, res) => {
   const owner = req.user.id;
-  if (!owner) ***REMOVED***
+  if (!owner) {
     throw new Error("No company owner");
-  ***REMOVED***
+  }
   const companies = await db.getCompanies(owner);
   res.status(200).send(companies);
-***REMOVED***;
+};
 
-exports.getCompany = async (req, res) => ***REMOVED***
-  const ***REMOVED*** companyId ***REMOVED*** = req.params;
+exports.getCompany = async (req, res) => {
+  const { companyId } = req.params;
   let company = await db.getCompany(companyId);
-  if (!company) ***REMOVED***
+  if (!company) {
     throw new Error("Company not found!");
-  ***REMOVED***
-  if (req.user && req.user.id === company.owner) ***REMOVED***
+  }
+  if (req.user && req.user.id === company.owner) {
     res.status(200).send(company);
     return;
-  ***REMOVED***
-  const ***REMOVED*** owner, ...companyData ***REMOVED*** = company;
+  }
+  const { owner, ...companyData } = company;
   res.status(200).send(companyData);
-***REMOVED***;
+};
 
-exports.createCompany = async (req, res) => ***REMOVED***
+exports.createCompany = async (req, res) => {
   const data = req.body;
   const owner = req.user.id;
-  const companyData = ***REMOVED*** owner, ...data ***REMOVED***;
+  const companyData = { owner, ...data };
   const company = await db.createCompany(companyData);
   res.status(200).send(company);
-***REMOVED***;
+};
 
-exports.editCompany = async (req, res) => ***REMOVED***
-  const ***REMOVED*** companyId ***REMOVED*** = req.params;
+exports.editCompany = async (req, res) => {
+  const { companyId } = req.params;
   const data = req.body;
   const ownerId = req.user.id;
   let company = await db.getCompany(companyId, ownerId);
-  if (!company) ***REMOVED***
+  if (!company) {
     throw new Error("Company not found");
-  ***REMOVED***
+  }
   company = await db.updateCompany(companyId, ownerId, data);
-  if (!company) ***REMOVED***
+  if (!company) {
     throw new Error("Failed to update company");
-  ***REMOVED***
+  }
   res.status(200).send(company);
-***REMOVED***;
+};
 
-exports.deleteCompany = async (req, res) => ***REMOVED***
-  const ***REMOVED*** companyId ***REMOVED*** = req.params;
+exports.deleteCompany = async (req, res) => {
+  const { companyId } = req.params;
   const ownerId = req.user.id;
   const numDeleted = await db.deleteCompany(companyId, ownerId);
-  if (numDeleted !== 1) ***REMOVED***
+  if (numDeleted !== 1) {
     throw new Error("Problem occurred deleting company");
-  ***REMOVED***
+  }
   res.sendStatus(200);
-***REMOVED***;
+};

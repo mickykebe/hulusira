@@ -1,38 +1,38 @@
 import useImageDropzone from "../hooks/use-image-dropzone";
-import ***REMOVED*** makeStyles, Box, Typography, Button ***REMOVED*** from "@material-ui/core";
+import { makeStyles, Box, Typography, Button } from "@material-ui/core";
 import FormImagePreview from "./form-image-preview";
 
-const useStyles = makeStyles(theme => (***REMOVED***
-  uploader: ***REMOVED***
-    border: `1px dashed $***REMOVED***theme.palette.grey[200]***REMOVED***`,
+const useStyles = makeStyles(theme => ({
+  uploader: {
+    border: `1px dashed ${theme.palette.grey[200]}`,
     display: "flex",
     padding: theme.spacing(4),
     flexWrap: "wrap",
     alignItems: "center",
     justifyContent: "center",
     cursor: "pointer"
-  ***REMOVED***,
-  uploaderThumbnail: ***REMOVED***
+  },
+  uploaderThumbnail: {
     width: 130
-  ***REMOVED***,
-  flex: ***REMOVED***
+  },
+  flex: {
     flex: 1
-  ***REMOVED***
-***REMOVED***));
+  }
+}));
 
-export default function ImageDropdown(***REMOVED*** preview = "", files, onFilesChange ***REMOVED***) ***REMOVED***
-  const ***REMOVED*** getRootProps, getInputProps ***REMOVED*** = useImageDropzone(
+export default function ImageDropdown({ preview = "", files, onFilesChange }) {
+  const { getRootProps, getInputProps } = useImageDropzone(
     files,
     onFilesChange
   );
   const classes = useStyles();
   return (
-    <Box pt=***REMOVED***2***REMOVED*** pb=***REMOVED***2***REMOVED***>
-      <div ***REMOVED***...getRootProps(***REMOVED*** className: classes.uploader ***REMOVED***)***REMOVED***>
-        <input ***REMOVED***...getInputProps()***REMOVED*** />
+    <Box pt={2} pb={2}>
+      <div {...getRootProps({ className: classes.uploader })}>
+        <input {...getInputProps()} />
         <div>
           <img
-            className=***REMOVED***classes.uploaderThumbnail***REMOVED***
+            className={classes.uploaderThumbnail}
             src="/static/photo.png"
             alt="Uploader thumbnail"
           />
@@ -46,16 +46,16 @@ export default function ImageDropdown(***REMOVED*** preview = "", files, onFiles
           </Typography>
         </div>
       </div>
-      ***REMOVED***files.length === 0 && preview && (
-        <FormImagePreview src=***REMOVED***preview***REMOVED*** alt="Company logo preview" />
-      )***REMOVED***
-      ***REMOVED***files.map(file => (
+      {files.length === 0 && preview && (
+        <FormImagePreview src={preview} alt="Company logo preview" />
+      )}
+      {files.map(file => (
         <FormImagePreview
-          key=***REMOVED***file.name***REMOVED***
-          src=***REMOVED***file.preview***REMOVED***
+          key={file.name}
+          src={file.preview}
           alt="Company logo preview"
         />
-      ))***REMOVED***
+      ))}
     </Box>
   );
-***REMOVED***
+}

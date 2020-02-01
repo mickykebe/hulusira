@@ -1,12 +1,12 @@
 import GoogleAd from "./google-ad";
 
-export default function HeaderAd(***REMOVED*** className ***REMOVED***) ***REMOVED***
+export default function HeaderAd({ className }) {
   return (
     <GoogleAd
-      className=***REMOVED***className***REMOVED***
+      className={className}
       dataAdFormat="horizontal"
       dataAdSlot="7862886800"
       dataFullWidthResponsive="true"
     />
   );
-***REMOVED***
+}

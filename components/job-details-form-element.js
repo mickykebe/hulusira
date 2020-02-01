@@ -1,15 +1,15 @@
-import ***REMOVED*** TextField, MenuItem, Box, Typography ***REMOVED*** from "@material-ui/core";
-import ***REMOVED*** MuiPickersUtilsProvider, DatePicker ***REMOVED*** from "@material-ui/pickers";
+import { TextField, MenuItem, Box, Typography } from "@material-ui/core";
+import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import MDEditor from "./md-editor";
 import HSCard from "./hs-card";
-import ***REMOVED*** careerLevels, jobTypes ***REMOVED*** from "../utils";
+import { careerLevels, jobTypes } from "../utils";
 
-function DatePickerTextField(props) ***REMOVED***
-  return <TextField margin="normal" fullWidth ***REMOVED***...props***REMOVED*** />;
-***REMOVED***
+function DatePickerTextField(props) {
+  return <TextField margin="normal" fullWidth {...props} />;
+}
 
-export default function JobDetailsFormElement(***REMOVED***
+export default function JobDetailsFormElement({
   values,
   errors,
   touched,
@@ -17,56 +17,56 @@ export default function JobDetailsFormElement(***REMOVED***
   primaryTags,
   setFieldValue,
   className
-***REMOVED***) ***REMOVED***
+}) {
   const handleMdeChange = fieldName => value => setFieldValue(fieldName, value);
   return (
-    <HSCard className=***REMOVED***className***REMOVED*** title="Job Details">
+    <HSCard className={className} title="Job Details">
       <TextField
         name="position"
         label="Position*"
         variant="outlined"
         fullWidth
         margin="normal"
-        value=***REMOVED***values.position***REMOVED***
-        onChange=***REMOVED***handleChange***REMOVED***
-        error=***REMOVED***!!(touched.position && errors.position)***REMOVED***
-        helperText=***REMOVED***touched.position && errors.position***REMOVED***
+        value={values.position}
+        onChange={handleChange}
+        error={!!(touched.position && errors.position)}
+        helperText={touched.position && errors.position}
       />
       <TextField
         name="jobType"
         select
-        value=***REMOVED***values.jobType***REMOVED***
+        value={values.jobType}
         label="Job Type*"
         margin="normal"
         variant="outlined"
         fullWidth
-        onChange=***REMOVED***handleChange***REMOVED***
-        error=***REMOVED***!!(touched.jobType && errors.jobType)***REMOVED***
-        helperText=***REMOVED***touched.jobType && errors.jobType***REMOVED***
+        onChange={handleChange}
+        error={!!(touched.jobType && errors.jobType)}
+        helperText={touched.jobType && errors.jobType}
       >
-        ***REMOVED***jobTypes.map(jobType => (
-          <MenuItem key=***REMOVED***jobType***REMOVED*** value=***REMOVED***jobType***REMOVED***>
-            ***REMOVED***jobType***REMOVED***
+        {jobTypes.map(jobType => (
+          <MenuItem key={jobType} value={jobType}>
+            {jobType}
           </MenuItem>
-        ))***REMOVED***
+        ))}
       </TextField>
       <TextField
         name="careerLevel"
         select
-        value=***REMOVED***values.careerLevel***REMOVED***
+        value={values.careerLevel}
         label="Career Level*"
         margin="normal"
         variant="outlined"
         fullWidth
-        onChange=***REMOVED***handleChange***REMOVED***
-        error=***REMOVED***!!(touched.careerLevel && errors.careerLevel)***REMOVED***
-        helperText=***REMOVED***touched.careerLevel && errors.careerLevel***REMOVED***
+        onChange={handleChange}
+        error={!!(touched.careerLevel && errors.careerLevel)}
+        helperText={touched.careerLevel && errors.careerLevel}
       >
-        ***REMOVED***careerLevels.map(careerLevel => (
-          <MenuItem key=***REMOVED***careerLevel.id***REMOVED*** value=***REMOVED***careerLevel.id***REMOVED***>
-            ***REMOVED***careerLevel.label***REMOVED***
+        {careerLevels.map(careerLevel => (
+          <MenuItem key={careerLevel.id} value={careerLevel.id}>
+            {careerLevel.label}
           </MenuItem>
-        ))***REMOVED***
+        ))}
       </TextField>
       <TextField
         name="location"
@@ -74,40 +74,40 @@ export default function JobDetailsFormElement(***REMOVED***
         variant="outlined"
         fullWidth
         margin="normal"
-        value=***REMOVED***values.location***REMOVED***
-        onChange=***REMOVED***handleChange***REMOVED***
-        error=***REMOVED***!!(touched.location && errors.location)***REMOVED***
-        helperText=***REMOVED***touched.location && errors.location***REMOVED***
+        value={values.location}
+        onChange={handleChange}
+        error={!!(touched.location && errors.location)}
+        helperText={touched.location && errors.location}
       />
       <Box display="flex" flexWrap="wrap">
-        <Box flex="1" flexBasis=***REMOVED***["100%", 0]***REMOVED***>
+        <Box flex="1" flexBasis={["100%", 0]}>
           <TextField
             name="primaryTag"
             select
-            value=***REMOVED***values.primaryTag***REMOVED***
+            value={values.primaryTag}
             label="Primary Tag"
             margin="normal"
             variant="outlined"
             fullWidth
-            onChange=***REMOVED***handleChange***REMOVED***
-            error=***REMOVED***!!(touched.primaryTag && errors.primaryTag)***REMOVED***
-            helperText=***REMOVED***
+            onChange={handleChange}
+            error={!!(touched.primaryTag && errors.primaryTag)}
+            helperText={
               !!(touched.primaryTag && errors.primaryTag)
                 ? errors.primaryTag
                 : "Choosing a tag here boosts your job's visibility."
-            ***REMOVED***
+            }
           >
-            ***REMOVED***primaryTags.map(tag => (
-              <MenuItem key=***REMOVED***tag.name***REMOVED*** value=***REMOVED***tag.name***REMOVED***>
-                ***REMOVED***tag.name***REMOVED***
+            {primaryTags.map(tag => (
+              <MenuItem key={tag.name} value={tag.name}>
+                {tag.name}
               </MenuItem>
-            ))***REMOVED***
+            ))}
           </TextField>
         </Box>
-        <Box textAlign="center" px=***REMOVED***2***REMOVED*** my="auto" flexBasis=***REMOVED***["100%", "0"]***REMOVED***>
+        <Box textAlign="center" px={2} my="auto" flexBasis={["100%", "0"]}>
           <Typography variant="subtitle2">AND/OR</Typography>
         </Box>
-        <Box flex="1" flexBasis=***REMOVED***["100%", "0"]***REMOVED***>
+        <Box flex="1" flexBasis={["100%", "0"]}>
           <TextField
             name="tags"
             label="Extra Tags"
@@ -115,19 +115,19 @@ export default function JobDetailsFormElement(***REMOVED***
             margin="normal"
             fullWidth
             placeholder="Marketing, Software developer, Modeling, etc."
-            value=***REMOVED***values.tags.join(",")***REMOVED***
-            onChange=***REMOVED***ev => ***REMOVED***
+            value={values.tags.join(",")}
+            onChange={ev => {
               setFieldValue(
                 "tags",
                 ev.target.value.split(",").map(tag => tag.toUpperCase())
               );
-            ***REMOVED******REMOVED***
-            error=***REMOVED***!!(touched.tags && errors.tags)***REMOVED***
-            helperText=***REMOVED***
+            }}
+            error={!!(touched.tags && errors.tags)}
+            helperText={
               !!(touched.tags && errors.tags)
                 ? errors.tags
                 : "List tags separated by comma(,)."
-            ***REMOVED***
+            }
           />
         </Box>
       </Box>
@@ -137,54 +137,54 @@ export default function JobDetailsFormElement(***REMOVED***
         variant="outlined"
         margin="normal"
         fullWidth
-        value=***REMOVED***values.salary***REMOVED***
-        onChange=***REMOVED***handleChange***REMOVED***
-        error=***REMOVED***!!(touched.salary && errors.salary)***REMOVED***
-        helperText=***REMOVED***
+        value={values.salary}
+        onChange={handleChange}
+        error={!!(touched.salary && errors.salary)}
+        helperText={
           !!(touched.salary && errors.salary)
             ? errors.salary
             : "Salary is not required but highly recommended. Enter salary data for better results."
-        ***REMOVED***
+        }
       />
-      <MuiPickersUtilsProvider utils=***REMOVED***DateFnsUtils***REMOVED***>
+      <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <DatePicker
           format="yyyy-MM-dd"
           label="Application Deadline (optional)"
           inputVariant="outlined"
           disablePast
-          value=***REMOVED***values.deadline***REMOVED***
-          onChange=***REMOVED***date => setFieldValue("deadline", date)***REMOVED***
-          TextFieldComponent=***REMOVED***DatePickerTextField***REMOVED***
+          value={values.deadline}
+          onChange={date => setFieldValue("deadline", date)}
+          TextFieldComponent={DatePickerTextField}
         />
       </MuiPickersUtilsProvider>
       <MDEditor
         id="description"
         label="Job Description*"
-        value=***REMOVED***values.description***REMOVED***
-        onChange=***REMOVED***handleMdeChange("description")***REMOVED***
-        error=***REMOVED***!!(touched.description && errors.description)***REMOVED***
-        helperText=***REMOVED***touched.description && errors.description***REMOVED***
+        value={values.description}
+        onChange={handleMdeChange("description")}
+        error={!!(touched.description && errors.description)}
+        helperText={touched.description && errors.description}
       />
       <MDEditor
         id="requirements"
         label="Job Requirements (optional)"
-        value=***REMOVED***values.requirements***REMOVED***
-        onChange=***REMOVED***handleMdeChange("requirements")***REMOVED***
+        value={values.requirements}
+        onChange={handleMdeChange("requirements")}
       />
       <MDEditor
         id="responsibilities"
         label="Job Responsibilities (optional)"
-        value=***REMOVED***values.responsibilities***REMOVED***
-        onChange=***REMOVED***handleMdeChange("responsibilities")***REMOVED***
+        value={values.responsibilities}
+        onChange={handleMdeChange("responsibilities")}
       />
       <MDEditor
         id="how_to_apply"
         label="How to Apply (optional)"
-        value=***REMOVED***values.howToApply***REMOVED***
-        onChange=***REMOVED***handleMdeChange("howToApply")***REMOVED***
+        value={values.howToApply}
+        onChange={handleMdeChange("howToApply")}
       />
       <Box display="flex" flexWrap="wrap">
-        <Box flex="1" flexBasis=***REMOVED***["100%", "0"]***REMOVED***>
+        <Box flex="1" flexBasis={["100%", "0"]}>
           <TextField
             name="applyUrl"
             label="Apply URL (optional)"
@@ -192,21 +192,21 @@ export default function JobDetailsFormElement(***REMOVED***
             margin="normal"
             helperText="The url can be a link to your telegram account, facebook URL or to a site where the job is posted."
             fullWidth
-            value=***REMOVED***values.applyUrl***REMOVED***
-            onChange=***REMOVED***ev => ***REMOVED***
+            value={values.applyUrl}
+            onChange={ev => {
               setFieldValue("applyEmail", "");
               handleChange(ev);
-            ***REMOVED******REMOVED***
-            error=***REMOVED***!!(touched.applyUrl && errors.applyUrl)***REMOVED***
-            helperText=***REMOVED***
+            }}
+            error={!!(touched.applyUrl && errors.applyUrl)}
+            helperText={
               (touched.applyUrl && errors.applyUrl) || "Used for 'Apply' button"
-            ***REMOVED***
+            }
           />
         </Box>
-        <Box textAlign="center" px=***REMOVED***2***REMOVED*** my="auto" flexBasis=***REMOVED***["100%", "0"]***REMOVED***>
+        <Box textAlign="center" px={2} my="auto" flexBasis={["100%", "0"]}>
           <Typography variant="subtitle2">OR</Typography>
         </Box>
-        <Box flex="1" flexBasis=***REMOVED***["100%", "0"]***REMOVED***>
+        <Box flex="1" flexBasis={["100%", "0"]}>
           <TextField
             name="applyEmail"
             label="Apply Email (optional)"
@@ -214,19 +214,19 @@ export default function JobDetailsFormElement(***REMOVED***
             margin="normal"
             fullWidth
             type="email"
-            value=***REMOVED***values.applyEmail***REMOVED***
-            onChange=***REMOVED***ev => ***REMOVED***
+            value={values.applyEmail}
+            onChange={ev => {
               setFieldValue("applyUrl", "");
               handleChange(ev);
-            ***REMOVED******REMOVED***
-            error=***REMOVED***!!(touched.applyEmail && errors.applyEmail)***REMOVED***
-            helperText=***REMOVED***
+            }}
+            error={!!(touched.applyEmail && errors.applyEmail)}
+            helperText={
               (touched.applyEmail && errors.applyEmail) ||
               "Used for 'apply' button"
-            ***REMOVED***
+            }
           />
         </Box>
       </Box>
     </HSCard>
   );
-***REMOVED***
+}

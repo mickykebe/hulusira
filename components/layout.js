@@ -1,7 +1,7 @@
-import React, ***REMOVED*** useState ***REMOVED*** from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Router from "next/router";
-import ***REMOVED***
+import {
   Box,
   AppBar,
   Toolbar,
@@ -9,139 +9,139 @@ import ***REMOVED***
   Button,
   Menu,
   MenuItem
-***REMOVED*** from "@material-ui/core";
+} from "@material-ui/core";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
+import { makeStyles } from "@material-ui/styles";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import api from "../api";
 
-const useStyles = makeStyles(theme => (***REMOVED***
-  appBar: ***REMOVED***
+const useStyles = makeStyles(theme => ({
+  appBar: {
     backgroundColor: theme.palette.common.white,
     boxShadow: "none",
     borderBottom: "1px solid #dadce0",
     color: theme.palette.getContrastText(theme.palette.common.white),
     zIndex: theme.zIndex.drawer + 1
-  ***REMOVED***,
-  logo: ***REMOVED***
+  },
+  logo: {
     width: 120
-  ***REMOVED***,
-  navLink: ***REMOVED***
+  },
+  navLink: {
     color: theme.palette.text.secondary,
     fontWeight: 800,
     fontSize: "1rem",
     marginRight: theme.spacing(3)
-  ***REMOVED***,
-  menuItem: ***REMOVED***
+  },
+  menuItem: {
     fontWeight: 800,
     color: theme.palette.text.secondary,
     padding: theme.spacing(2)
-  ***REMOVED***,
-  menuIcon: ***REMOVED***
+  },
+  menuIcon: {
     marginRight: theme.spacing(1)
-  ***REMOVED***,
-  accountButton: ***REMOVED***
+  },
+  accountButton: {
     color: theme.palette.text.secondary
-  ***REMOVED***,
+  },
   toolbar: theme.mixins.toolbar,
-  contentContainer: ***REMOVED***
+  contentContainer: {
     height: "calc(100vh - 64px)",
-    [theme.breakpoints.down("xs")]: ***REMOVED***
+    [theme.breakpoints.down("xs")]: {
       height: "calc(100vh - 56px)"
-    ***REMOVED***
-  ***REMOVED***
-***REMOVED***));
+    }
+  }
+}));
 
-function getDisplayName(user) ***REMOVED***
-  if (user.firstName) ***REMOVED***
-    return `$***REMOVED***user.firstName***REMOVED*** $***REMOVED***user.lastName ? user.lastName : ""***REMOVED***`;
-  ***REMOVED***
-  if (user.telegramUserName) ***REMOVED***
-    return `@$***REMOVED***user.telegramUserName***REMOVED***`;
-  ***REMOVED***
+function getDisplayName(user) {
+  if (user.firstName) {
+    return `${user.firstName} ${user.lastName ? user.lastName : ""}`;
+  }
+  if (user.telegramUserName) {
+    return `@${user.telegramUserName}`;
+  }
   return "";
-***REMOVED***
+}
 
-export default function Layout(***REMOVED***
+export default function Layout({
   user = null,
   children,
   toolbarChildren = null,
   toolbarChildrenStart = null
-***REMOVED***) ***REMOVED***
+}) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const isMenuOpen = Boolean(anchorEl);
-  const handleProfileMenuOpen = event => ***REMOVED***
+  const handleProfileMenuOpen = event => {
     setAnchorEl(event.currentTarget);
-  ***REMOVED***;
-  const handleMenuClose = () => ***REMOVED***
+  };
+  const handleMenuClose = () => {
     setAnchorEl(null);
-  ***REMOVED***;
+  };
   const renderMenu = (
     <Menu
-      anchorEl=***REMOVED***anchorEl***REMOVED***
-      anchorOrigin=***REMOVED******REMOVED*** vertical: "top", horizontal: "right" ***REMOVED******REMOVED***
+      anchorEl={anchorEl}
+      anchorOrigin={{ vertical: "top", horizontal: "right" }}
       keepMounted
-      transformOrigin=***REMOVED******REMOVED*** vertical: "top", horizontal: "right" ***REMOVED******REMOVED***
-      open=***REMOVED***isMenuOpen***REMOVED***
-      onClose=***REMOVED***handleMenuClose***REMOVED***
+      transformOrigin={{ vertical: "top", horizontal: "right" }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}
     >
       <MenuItem
-        classes=***REMOVED******REMOVED*** root: classes.menuItem ***REMOVED******REMOVED***
-        onClick=***REMOVED***() => ***REMOVED***
+        classes={{ root: classes.menuItem }}
+        onClick={() => {
           Router.push("/dashboard/jobs");
-        ***REMOVED******REMOVED***
+        }}
       >
-        <DashboardIcon className=***REMOVED***classes.menuIcon***REMOVED*** />
+        <DashboardIcon className={classes.menuIcon} />
         <span>Dashboard</span>
       </MenuItem>
       <MenuItem
-        classes=***REMOVED******REMOVED*** root: classes.menuItem ***REMOVED******REMOVED***
-        onClick=***REMOVED***async () => ***REMOVED***
+        classes={{ root: classes.menuItem }}
+        onClick={async () => {
           await api.logout();
           handleMenuClose();
           Router.push("/");
-        ***REMOVED******REMOVED***
+        }}
       >
-        <ExitToAppIcon className=***REMOVED***classes.menuIcon***REMOVED*** />
+        <ExitToAppIcon className={classes.menuIcon} />
         <span>Sign out</span>
       </MenuItem>
     </Menu>
   );
   return (
     <Box display="flex" flexDirection="column" height="100%">
-      <AppBar className=***REMOVED***classes.appBar***REMOVED***>
+      <AppBar className={classes.appBar}>
         <Toolbar>
-          ***REMOVED***toolbarChildrenStart***REMOVED***
+          {toolbarChildrenStart}
           <Link href="/" passHref>
             <MuiLink variant="h5" color="inherit" underline="none">
               HuluSira
             </MuiLink>
           </Link>
           <Box flex="1" />
-          ***REMOVED***!user && (
-            <MuiLink className=***REMOVED***classes.navLink***REMOVED*** href="/login">
+          {!user && (
+            <MuiLink className={classes.navLink} href="/login">
               Login/Register
             </MuiLink>
-          )***REMOVED***
-          ***REMOVED***!!user && (
+          )}
+          {!!user && (
             <Button
-              className=***REMOVED***classes.accountButton***REMOVED***
-              startIcon=***REMOVED***<AccountCircleIcon />***REMOVED***
-              endIcon=***REMOVED***<ArrowDropDownIcon />***REMOVED***
-              onClick=***REMOVED***handleProfileMenuOpen***REMOVED***
+              className={classes.accountButton}
+              startIcon={<AccountCircleIcon />}
+              endIcon={<ArrowDropDownIcon />}
+              onClick={handleProfileMenuOpen}
             >
-              ***REMOVED***getDisplayName(user)***REMOVED***
+              {getDisplayName(user)}
             </Button>
-          )***REMOVED***
-          ***REMOVED***toolbarChildren***REMOVED***
+          )}
+          {toolbarChildren}
         </Toolbar>
-        ***REMOVED***renderMenu***REMOVED***
+        {renderMenu}
       </AppBar>
-      <div className=***REMOVED***classes.toolbar***REMOVED*** />
-      <Box className=***REMOVED***classes.contentContainer***REMOVED***>***REMOVED***children***REMOVED***</Box>
+      <div className={classes.toolbar} />
+      <Box className={classes.contentContainer}>{children}</Box>
     </Box>
   );
-***REMOVED***
+}

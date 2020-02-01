@@ -1,10 +1,10 @@
 import Router from 'next/router';
 
-export default (ctx, target) => ***REMOVED***
-  if(ctx.res) ***REMOVED***
-    ctx.res.writeHead(303, ***REMOVED*** Location: target ***REMOVED***);
+export default (ctx, target) => {
+  if(ctx.res) {
+    ctx.res.writeHead(303, { Location: target });
     ctx.res.end();
-  ***REMOVED*** else ***REMOVED***
+  } else {
     Router.replace(target);
-  ***REMOVED***
-***REMOVED***
+  }
+}

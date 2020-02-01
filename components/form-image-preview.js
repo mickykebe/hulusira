@@ -1,15 +1,15 @@
-import ***REMOVED*** Box, makeStyles ***REMOVED*** from "@material-ui/core";
+import { Box, makeStyles } from "@material-ui/core";
 
-const useStyles = makeStyles(theme => (***REMOVED***
-  previewThumb: ***REMOVED***
+const useStyles = makeStyles(theme => ({
+  previewThumb: {
     width: 150,
     height: 150,
     position: "relative",
     backgroundColor: "#fafbfc",
-    margin: `$***REMOVED***theme.spacing(2)***REMOVED***px 0`,
+    margin: `${theme.spacing(2)}px 0`,
     border: `1px solid #eee`
-  ***REMOVED***,
-  previewThumbImg: ***REMOVED***
+  },
+  previewThumbImg: {
     position: "absolute",
     top: 0,
     bottom: 0,
@@ -19,14 +19,14 @@ const useStyles = makeStyles(theme => (***REMOVED***
     display: "block",
     maxWidth: "100%",
     maxHeight: "100%"
-  ***REMOVED***
-***REMOVED***));
+  }
+}));
 
-export default function FormImagePreview(***REMOVED*** src, alt = "" ***REMOVED***) ***REMOVED***
+export default function FormImagePreview({ src, alt = "" }) {
   const classes = useStyles();
   return (
-    <Box className=***REMOVED***classes.previewThumb***REMOVED***>
-      <img className=***REMOVED***classes.previewThumbImg***REMOVED*** src=***REMOVED***src***REMOVED*** alt=***REMOVED***alt***REMOVED*** />
+    <Box className={classes.previewThumb}>
+      <img className={classes.previewThumbImg} src={src} alt={alt} />
     </Box>
   );
-***REMOVED***
+}

@@ -1,48 +1,48 @@
 const db = require("../db");
 const socialHandler = require("../handlers/social");
 
-exports.createJob = async (user, data) => ***REMOVED***
-  const ***REMOVED***
+exports.createJob = async (user, data) => {
+  const {
     companyName,
     companyEmail,
     companyLogo,
     companyId,
     socialPostScheduleTime,
     ...jobData
-  ***REMOVED*** = data;
+  } = data;
   const isAdminUser = user && user.role === "admin";
-  if (user) ***REMOVED***
+  if (user) {
     jobData.owner = user.id;
-  ***REMOVED***
-  if (isAdminUser) ***REMOVED***
+  }
+  if (isAdminUser) {
     jobData.approvalStatus = "Active";
-  ***REMOVED***
+  }
   let resData;
-  if (companyId) ***REMOVED***
+  if (companyId) {
     const company = await db.getCompany(companyId, user.id);
-    if (!company) ***REMOVED***
+    if (!company) {
       throw new Error("Company not found");
-    ***REMOVED***
+    }
     const job = await db.createJob(jobData, companyId);
-    resData = ***REMOVED*** job, company ***REMOVED***;
-  ***REMOVED*** else if (companyName && companyEmail) ***REMOVED***
-    const company = ***REMOVED***
+    resData = { job, company };
+  } else if (companyName && companyEmail) {
+    const company = {
       name: companyName,
       email: companyEmail,
       logo: companyLogo
-    ***REMOVED***;
-    if (user) ***REMOVED***
+    };
+    if (user) {
       company.owner = user.id;
-    ***REMOVED***
-    resData = await db.createJobAndCompany(***REMOVED*** company, job: jobData ***REMOVED***);
-  ***REMOVED*** else ***REMOVED***
+    }
+    resData = await db.createJobAndCompany({ company, job: jobData });
+  } else {
     const job = await db.createJob(jobData);
-    resData = ***REMOVED*** job, company: null ***REMOVED***;
-  ***REMOVED***
-  if (isAdminUser) ***REMOVED***
-    socialHandler.postJobToSocialMedia(resData, ***REMOVED***
+    resData = { job, company: null };
+  }
+  if (isAdminUser) {
+    socialHandler.postJobToSocialMedia(resData, {
       fbSchedule: socialPostScheduleTime
-    ***REMOVED***);
-  ***REMOVED***
+    });
+  }
   return resData;
-***REMOVED***;
+};

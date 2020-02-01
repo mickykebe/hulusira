@@ -1,23 +1,23 @@
-exports.permit = (...allowed) => ***REMOVED***
+exports.permit = (...allowed) => {
   const isAllowed = role => allowed.indexOf(role) > -1;
 
-  return (req, res, next) => ***REMOVED***
-    const ***REMOVED*** user ***REMOVED*** = req;
-    if (user && user.confirmed && isAllowed(user.role)) ***REMOVED***
+  return (req, res, next) => {
+    const { user } = req;
+    if (user && user.confirmed && isAllowed(user.role)) {
       next();
       return;
-    ***REMOVED***
+    }
     res.sendStatus(403);
-  ***REMOVED***;
-***REMOVED***;
+  };
+};
 
-exports.permitAuthenticated = () => ***REMOVED***
-  return (req, res, next) => ***REMOVED***
-    const ***REMOVED*** user ***REMOVED*** = req;
-    if (user && user.confirmed) ***REMOVED***
+exports.permitAuthenticated = () => {
+  return (req, res, next) => {
+    const { user } = req;
+    if (user && user.confirmed) {
       next();
       return;
-    ***REMOVED***
+    }
     res.sendStatus(403);
-  ***REMOVED***;
-***REMOVED***;
+  };
+};

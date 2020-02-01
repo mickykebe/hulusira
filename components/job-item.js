@@ -1,161 +1,161 @@
-import React, ***REMOVED*** Fragment ***REMOVED*** from "react";
+import React, { Fragment } from "react";
 import Link from "next/link";
 import Router from "next/router";
 import isAfter from "date-fns/isAfter";
 import formatDistance from "date-fns/formatDistance";
 import endOfDay from "date-fns/endOfDay";
 import clsx from "clsx";
-import ***REMOVED*** Box, Typography, Chip, Link as MuiLink ***REMOVED*** from "@material-ui/core";
-import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
+import { Box, Typography, Chip, Link as MuiLink } from "@material-ui/core";
+import { makeStyles } from "@material-ui/styles";
 import CompanyLogo from "../components/company-logo";
 
-const useStyles = makeStyles(theme => (***REMOVED***
-  root: props => (***REMOVED***
+const useStyles = makeStyles(theme => ({
+  root: props => ({
     position: "relative",
     display: "flex",
     flexWrap: "wrap",
     padding: `0.5rem 1rem`,
-    border: `1px solid $***REMOVED***theme.palette.grey[200]***REMOVED***`,
+    border: `1px solid ${theme.palette.grey[200]}`,
     backgroundColor: theme.palette.common.white,
     alignItems: "center",
     borderRadius: 4,
     boxShadow: theme.boxShadows[0],
-    ...(props.preview && ***REMOVED***
+    ...(props.preview && {
       position: "sticky",
       bottom: 0,
       left: 0,
       right: 0,
       zIndex: 1110
-    ***REMOVED***)
-  ***REMOVED***),
-  logoSmall: ***REMOVED***
+    })
+  }),
+  logoSmall: {
     width: 48,
     height: 48
-  ***REMOVED***,
-  position: ***REMOVED***
+  },
+  position: {
     display: "block"
-  ***REMOVED***,
-  tagChip: ***REMOVED***
-    border: `1px solid $***REMOVED***theme.palette.grey[700]***REMOVED***`,
+  },
+  tagChip: {
+    border: `1px solid ${theme.palette.grey[700]}`,
     marginRight: "0.5rem",
     marginBottom: "0.5rem",
     fontWeight: 800,
     fontSize: ".6875rem",
     color: theme.palette.grey[700]
-  ***REMOVED***,
-  tagChipLabel: ***REMOVED***
+  },
+  tagChipLabel: {
     paddingLeft: "0.5rem",
     paddingRight: "0.5rem"
-  ***REMOVED***,
-  applyButton: ***REMOVED***
+  },
+  applyButton: {
     marginLeft: theme.spacing(2),
-    [theme.breakpoints.down("xs")]: ***REMOVED***
+    [theme.breakpoints.down("xs")]: {
       display: "none"
-    ***REMOVED***
-  ***REMOVED***,
-  extrasText: ***REMOVED***
+    }
+  },
+  extrasText: {
     display: "inline-flex",
     alignItems: "center",
     marginRight: theme.spacing(1),
     paddingBottom: theme.spacing(0.5)
-  ***REMOVED***,
-  expiredTag: ***REMOVED***
+  },
+  expiredTag: {
     padding: `0 0.25rem`,
     border: "1px solid rgb(229, 57, 53)",
     color: "rgb(229, 57, 53)"
-  ***REMOVED***,
-  closedTag: ***REMOVED***
+  },
+  closedTag: {
     padding: `0 0.25rem`,
     backgroundColor: "rgb(229, 57, 53)",
     color: "white"
-  ***REMOVED***
-***REMOVED***));
+  }
+}));
 
-function ExpirationTag(***REMOVED*** deadline ***REMOVED***) ***REMOVED***
+function ExpirationTag({ deadline }) {
   const expired = isAfter(new Date(), endOfDay(deadline));
   const classes = useStyles();
   return expired ? (
     <Typography
-      className=***REMOVED***clsx(classes.extrasText, classes.expiredTag)***REMOVED***
+      className={clsx(classes.extrasText, classes.expiredTag)}
       variant="caption"
     >
       Expired
     </Typography>
   ) : null;
-***REMOVED***
+}
 
-function ClosedTag() ***REMOVED***
+function ClosedTag() {
   const classes = useStyles();
   return (
     <Typography
-      className=***REMOVED***clsx(classes.extrasText, classes.closedTag)***REMOVED***
+      className={clsx(classes.extrasText, classes.closedTag)}
       variant="caption"
     >
       Closed
     </Typography>
   );
-***REMOVED***
+}
 
-export default function JobItem(***REMOVED***
+export default function JobItem({
   company,
   job,
   tags,
   preview = false,
   className = "",
   onTagClick
-***REMOVED***) ***REMOVED***
-  const classes = useStyles(***REMOVED*** preview ***REMOVED***);
+}) {
+  const classes = useStyles({ preview });
 
   return (
-    <Box className=***REMOVED***clsx(classes.root, className)***REMOVED***>
-      <Box display="flex" alignItems="center" flex="1 0 26rem" pr=***REMOVED***2***REMOVED***>
-        <Box className=***REMOVED***classes.logoWrapper***REMOVED*** pr=***REMOVED***[2, 3]***REMOVED***>
-          ***REMOVED***!!company && (
+    <Box className={clsx(classes.root, className)}>
+      <Box display="flex" alignItems="center" flex="1 0 26rem" pr={2}>
+        <Box className={classes.logoWrapper} pr={[2, 3]}>
+          {!!company && (
             <CompanyLogo
-              company=***REMOVED***company***REMOVED***
-              onClick=***REMOVED***
-                !preview ? () => Router.push(`/companies/$***REMOVED***company.id***REMOVED***`) : null
-              ***REMOVED***
+              company={company}
+              onClick={
+                !preview ? () => Router.push(`/companies/${company.id}`) : null
+              }
             />
-          )***REMOVED***
+          )}
         </Box>
-        <Box mb=***REMOVED***1***REMOVED*** flex=***REMOVED***1***REMOVED***>
-          ***REMOVED***preview ? (
-            <Typography variant="h6">***REMOVED***job.position || "Position"***REMOVED***</Typography>
+        <Box mb={1} flex={1}>
+          {preview ? (
+            <Typography variant="h6">{job.position || "Position"}</Typography>
           ) : (
-            <Link href="/jobs/[slug]" as=***REMOVED***`/jobs/$***REMOVED***job.slug***REMOVED***`***REMOVED*** passHref>
+            <Link href="/jobs/[slug]" as={`/jobs/${job.slug}`} passHref>
               <MuiLink
-                classes=***REMOVED******REMOVED*** root: classes.position ***REMOVED******REMOVED***
+                classes={{ root: classes.position }}
                 variant="h6"
                 color="inherit"
               >
-                ***REMOVED***job.position***REMOVED***
+                {job.position}
               </MuiLink>
             </Link>
-          )***REMOVED***
-          ***REMOVED***company && (
+          )}
+          {company && (
             <React.Fragment>
               <Typography variant="body1" component="span">
                 at&nbsp;
               </Typography>
-              ***REMOVED***preview ? (
+              {preview ? (
                 <Typography variant="subtitle2" component="span" gutterBottom>
-                  ***REMOVED***company.name || "Company"***REMOVED***
+                  {company.name || "Company"}
                 </Typography>
               ) : (
                 <Link
                   href="/companies/[id]"
-                  as=***REMOVED***`/companies/$***REMOVED***company.id***REMOVED***`***REMOVED***
+                  as={`/companies/${company.id}`}
                   passHref
                 >
                   <MuiLink variant="subtitle2" color="inherit" gutterBottom>
-                    ***REMOVED***company.name***REMOVED***
+                    {company.name}
                   </MuiLink>
                 </Link>
-              )***REMOVED***
+              )}
             </React.Fragment>
-          )***REMOVED***
-          ***REMOVED***(!preview || !!job.jobType) && (
+          )}
+          {(!preview || !!job.jobType) && (
             <Box
               display="flex"
               alignItems="center"
@@ -163,62 +163,62 @@ export default function JobItem(***REMOVED***
               pb="0.5rem"
               flexWrap="wrap"
             >
-              ***REMOVED***!!job.jobType && (
+              {!!job.jobType && (
                 <Typography
-                  className=***REMOVED***classes.extrasText***REMOVED***
+                  className={classes.extrasText}
                   color="textSecondary"
                   variant="body2"
                 >
-                  📌 ***REMOVED***job.jobType***REMOVED***
+                  📌 {job.jobType}
                 </Typography>
-              )***REMOVED***
-              ***REMOVED***!preview && (
+              )}
+              {!preview && (
                 <Typography
-                  className=***REMOVED***classes.extrasText***REMOVED***
+                  className={classes.extrasText}
                   color="textSecondary"
                   variant="body2"
                 >
-                  ⏱️***REMOVED***" "***REMOVED***
-                  ***REMOVED***formatDistance(
+                  ⏱️{" "}
+                  {formatDistance(
                     job.created ? new Date(job.created) : new Date(),
                     new Date(),
-                    ***REMOVED*** addSuffix: true ***REMOVED***
-                  )***REMOVED***
+                    { addSuffix: true }
+                  )}
                 </Typography>
-              )***REMOVED***
-              ***REMOVED***!preview && (
+              )}
+              {!preview && (
                 <Typography
-                  className=***REMOVED***classes.extrasText***REMOVED***
+                  className={classes.extrasText}
                   color="textSecondary"
                   variant="body2"
                 >
-                  👀 ***REMOVED***job.views ? job.views : 0***REMOVED******REMOVED***" "***REMOVED***
-                  ***REMOVED***`View$***REMOVED***job.views === 1 ? "" : "s"***REMOVED***`***REMOVED***
+                  👀 {job.views ? job.views : 0}{" "}
+                  {`View${job.views === 1 ? "" : "s"}`}
                 </Typography>
-              )***REMOVED***
-              ***REMOVED***!preview && job.approvalStatus !== "Closed" && job.deadline && (
-                <ExpirationTag deadline=***REMOVED***new Date(job.deadline)***REMOVED*** />
-              )***REMOVED***
-              ***REMOVED***!preview && job.approvalStatus === "Closed" && <ClosedTag />***REMOVED***
+              )}
+              {!preview && job.approvalStatus !== "Closed" && job.deadline && (
+                <ExpirationTag deadline={new Date(job.deadline)} />
+              )}
+              {!preview && job.approvalStatus === "Closed" && <ClosedTag />}
             </Box>
-          )***REMOVED***
+          )}
         </Box>
       </Box>
       <Box display="flex" flexWrap="wrap" flex="1">
-        ***REMOVED***tags.map(tag => ***REMOVED***
+        {tags.map(tag => {
           let tagName = typeof tag === "object" ? tag.name : tag;
           return (
             <Chip
-              key=***REMOVED***tagName***REMOVED***
-              classes=***REMOVED******REMOVED*** root: classes.tagChip, label: classes.tagChipLabel ***REMOVED******REMOVED***
-              label=***REMOVED***tagName***REMOVED***
+              key={tagName}
+              classes={{ root: classes.tagChip, label: classes.tagChipLabel }}
+              label={tagName}
               variant="outlined"
               size="small"
-              onClick=***REMOVED***!!onTagClick ? () => onTagClick(tag.name) : null***REMOVED***
+              onClick={!!onTagClick ? () => onTagClick(tag.name) : null}
             />
           );
-        ***REMOVED***)***REMOVED***
+        })}
       </Box>
     </Box>
   );
-***REMOVED***
+}

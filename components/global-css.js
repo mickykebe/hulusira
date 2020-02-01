@@ -1,16 +1,16 @@
-import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
+import { makeStyles } from "@material-ui/styles";
 
-const useStyles = makeStyles(theme => (***REMOVED***
-  "@global": ***REMOVED***
-    html: ***REMOVED***
-      [theme.breakpoints.down("xs")]: ***REMOVED***
+const useStyles = makeStyles(theme => ({
+  "@global": {
+    html: {
+      [theme.breakpoints.down("xs")]: {
         fontSize: "75%"
-      ***REMOVED***
-    ***REMOVED***
-  ***REMOVED***
-***REMOVED***));
+      }
+    }
+  }
+}));
 
-export default function GlobalCss() ***REMOVED***
+export default function GlobalCss() {
   useStyles();
   return null;
-***REMOVED***
+}

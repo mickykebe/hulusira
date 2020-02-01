@@ -1,23 +1,23 @@
-import ***REMOVED*** List, ListSubheader, makeStyles ***REMOVED*** from "@material-ui/core";
+import { List, ListSubheader, makeStyles } from "@material-ui/core";
 
-const useStyles = makeStyles(theme => (***REMOVED***
-  subheader: ***REMOVED***
+const useStyles = makeStyles(theme => ({
+  subheader: {
     fontWeight: 800
-  ***REMOVED***
-***REMOVED***));
+  }
+}));
 
-export default function DrawerList(***REMOVED*** headerTitle, children ***REMOVED***) ***REMOVED***
+export default function DrawerList({ headerTitle, children }) {
   const classes = useStyles();
   return (
     <List
       component="nav"
-      subheader=***REMOVED***
-        <ListSubheader classes=***REMOVED******REMOVED*** root: classes.subheader ***REMOVED******REMOVED*** component="div">
-          ***REMOVED***headerTitle***REMOVED***
+      subheader={
+        <ListSubheader classes={{ root: classes.subheader }} component="div">
+          {headerTitle}
         </ListSubheader>
-      ***REMOVED***
+      }
     >
-      ***REMOVED***children***REMOVED***
+      {children}
     </List>
   );
-***REMOVED***
+}

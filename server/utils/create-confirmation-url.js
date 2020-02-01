@@ -1,12 +1,12 @@
-const ***REMOVED*** v4 ***REMOVED*** = require("uuid");
+const { v4 } = require("uuid");
 const redis = require("../redis");
 
 const confirmUserPrefix = "user-confirmation";
 
 exports.confirmUserPrefix = confirmUserPrefix;
 
-exports.createConfirmationUrl = async userId => ***REMOVED***
+exports.createConfirmationUrl = async userId => {
   const token = v4();
   await redis.set(confirmUserPrefix + token, userId, "ex", 60 * 60 * 24);
-  return `$***REMOVED***process.env.ROOT_URL***REMOVED***/confirm-user/$***REMOVED***token***REMOVED***`;
-***REMOVED***;
+  return `${process.env.ROOT_URL}/confirm-user/${token}`;
+};

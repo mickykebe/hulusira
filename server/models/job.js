@@ -1,4 +1,4 @@
-class Job ***REMOVED***
+class Job {
   constructor(
     id,
     position,
@@ -22,7 +22,7 @@ class Job ***REMOVED***
     deadline,
     owner,
     views
-  ) ***REMOVED***
+  ) {
     this.id = id;
     this.position = position;
     this.jobType = jobType;
@@ -45,14 +45,14 @@ class Job ***REMOVED***
     this.deadline = deadline;
     this.owner = owner;
     this.views = views;
-  ***REMOVED***
+  }
 
-  publicData() ***REMOVED***
-    const ***REMOVED*** adminToken, ...data ***REMOVED*** = this;
+  publicData() {
+    const { adminToken, ...data } = this;
     return data;
-  ***REMOVED***
+  }
 
-  static fromDb(dbJob, tags) ***REMOVED***
+  static fromDb(dbJob, tags) {
     return new Job(
       dbJob.job_id,
       dbJob.job_position,
@@ -77,7 +77,7 @@ class Job ***REMOVED***
       dbJob.job_owner,
       dbJob.job_views
     );
-  ***REMOVED***
-***REMOVED***
+  }
+}
 
 module.exports = Job;

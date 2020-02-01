@@ -1,23 +1,23 @@
-import ***REMOVED*** useState, useEffect ***REMOVED*** from "react";
-import ***REMOVED*** useDropzone ***REMOVED*** from "react-dropzone";
+import { useState, useEffect } from "react";
+import { useDropzone } from "react-dropzone";
 
-export default function useImageDropzone(files, setFiles) ***REMOVED***
-  const ***REMOVED*** getRootProps, getInputProps ***REMOVED*** = useDropzone(***REMOVED***
+export default function useImageDropzone(files, setFiles) {
+  const { getRootProps, getInputProps } = useDropzone({
     accept: "image/*",
     multiple: false,
-    onDrop: acceptedFiles => ***REMOVED***
+    onDrop: acceptedFiles => {
       setFiles(
-        acceptedFiles.map(file => ***REMOVED***
+        acceptedFiles.map(file => {
           file.preview = URL.createObjectURL(file);
           return file;
-        ***REMOVED***)
+        })
       );
-    ***REMOVED***
-  ***REMOVED***);
+    }
+  });
 
-  useEffect(() => ***REMOVED***
+  useEffect(() => {
     files.forEach(file => URL.revokeObjectURL(file.preview));
-  ***REMOVED***, [files]);
+  }, [files]);
 
-  return ***REMOVED*** getRootProps, getInputProps ***REMOVED***;
-***REMOVED***
+  return { getRootProps, getInputProps };
+}

@@ -1,95 +1,95 @@
 import api from "../../api";
 import Layout from "../../components/layout";
 import Router from "next/router";
-import ***REMOVED***
+import {
   Container,
   Grid,
   Typography,
   makeStyles,
   Box
-***REMOVED*** from "@material-ui/core";
+} from "@material-ui/core";
 import HSPaper from "../../components/hs-paper";
 import CompanyLogo from "../../components/company-logo";
 import JobItem from "../../components/job-item";
 import HeaderAd from "../../components/header-ad";
-import ***REMOVED*** Fragment ***REMOVED*** from "react";
+import { Fragment } from "react";
 
-const useStyles = makeStyles(theme => (***REMOVED***
-  root: ***REMOVED***
+const useStyles = makeStyles(theme => ({
+  root: {
     paddingTop: theme.spacing(2)
-  ***REMOVED***,
-  containerGrid: ***REMOVED***
+  },
+  containerGrid: {
     display: "grid",
     gridTemplateColumns: "1fr 3fr",
     gridGap: "1.5rem",
     alignItems: "start",
-    [theme.breakpoints.down("sm")]: ***REMOVED***
+    [theme.breakpoints.down("sm")]: {
       gridTemplateColumns: "1fr"
-    ***REMOVED***
-  ***REMOVED***,
-  headerAd: ***REMOVED***
+    }
+  },
+  headerAd: {
     marginBottom: theme.spacing(2)
-  ***REMOVED***,
-  companyCard: ***REMOVED***
+  },
+  companyCard: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
     padding: theme.spacing(3)
-  ***REMOVED***,
-  companyName: ***REMOVED***
+  },
+  companyName: {
     textAlign: "center",
     marginTop: theme.spacing(1)
-  ***REMOVED***,
-  jobItem: ***REMOVED***
+  },
+  jobItem: {
     marginBottom: theme.spacing(2)
-  ***REMOVED***
-***REMOVED***));
+  }
+}));
 
-export default function CompanyJobs(***REMOVED*** user, company, jobs ***REMOVED***) ***REMOVED***
+export default function CompanyJobs({ user, company, jobs }) {
   const classes = useStyles();
   return (
-    <Layout user=***REMOVED***user***REMOVED***>
-      <Container className=***REMOVED***classes.root***REMOVED*** maxWidth="xl">
-        <HeaderAd className=***REMOVED***classes.headerAd***REMOVED*** />
-        <Box className=***REMOVED***classes.containerGrid***REMOVED***>
-          <HSPaper className=***REMOVED***classes.companyCard***REMOVED***>
+    <Layout user={user}>
+      <Container className={classes.root} maxWidth="xl">
+        <HeaderAd className={classes.headerAd} />
+        <Box className={classes.containerGrid}>
+          <HSPaper className={classes.companyCard}>
             <CompanyLogo
               size="large"
-              company=***REMOVED***company***REMOVED***
-              abbrevFallback=***REMOVED***false***REMOVED***
+              company={company}
+              abbrevFallback={false}
             />
-            <Typography variant="h6" className=***REMOVED***classes.companyName***REMOVED***>
-              ***REMOVED***company.name***REMOVED***
+            <Typography variant="h6" className={classes.companyName}>
+              {company.name}
             </Typography>
           </HSPaper>
           <Box>
-            ***REMOVED***jobs.map((***REMOVED*** job, company ***REMOVED***) => ***REMOVED***
+            {jobs.map(({ job, company }) => {
               return (
                 <JobItem
-                  key=***REMOVED***job.id***REMOVED***
-                  className=***REMOVED***classes.jobItem***REMOVED***
-                  job=***REMOVED***job***REMOVED***
-                  tags=***REMOVED***job.tags***REMOVED***
-                  company=***REMOVED***company***REMOVED***
-                  onTagClick=***REMOVED***tagId => Router.push(`/?tags=$***REMOVED***tagId***REMOVED***`)***REMOVED***
+                  key={job.id}
+                  className={classes.jobItem}
+                  job={job}
+                  tags={job.tags}
+                  company={company}
+                  onTagClick={tagId => Router.push(`/?tags=${tagId}`)}
                 />
               );
-            ***REMOVED***)***REMOVED***
+            })}
           </Box>
         </Box>
       </Container>
     </Layout>
   );
-***REMOVED***
+}
 
-CompanyJobs.getInitialProps = async function(ctx) ***REMOVED***
-  const ***REMOVED*** id ***REMOVED*** = ctx.query;
+CompanyJobs.getInitialProps = async function(ctx) {
+  const { id } = ctx.query;
 
   const [company, jobs] = await Promise.all([
     api.getCompany(ctx, id),
     api.getCompanyJobs(id, ctx)
   ]);
 
-  return ***REMOVED*** company, jobs ***REMOVED***;
-***REMOVED***;
+  return { company, jobs };
+};

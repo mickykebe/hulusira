@@ -1,63 +1,63 @@
-import ***REMOVED*** makeStyles, Box, TextField, Fab, Typography ***REMOVED*** from "@material-ui/core";
+import { makeStyles, Box, TextField, Fab, Typography } from "@material-ui/core";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import AuthLayout from "../components/auth-layout";
 import Layout from "../components/layout";
 import HSSnackBar from "../components/hs-snackbar";
-import ***REMOVED*** Formik ***REMOVED*** from "formik";
+import { Formik } from "formik";
 import * as Yup from "yup";
-import ***REMOVED*** useState ***REMOVED*** from "react";
+import { useState } from "react";
 import api from "../api";
 import redirect from "../utils/redirect";
 import PageProgress from "../components/page-progress";
 
-const useStyles = makeStyles(theme => (***REMOVED***
-  registerButton: ***REMOVED***
+const useStyles = makeStyles(theme => ({
+  registerButton: {
     width: "100% !important",
     marginTop: theme.spacing(1)
-  ***REMOVED***,
-  confirmationIcon: ***REMOVED***
+  },
+  confirmationIcon: {
     color: "green",
     width: 64,
     height: 64
-  ***REMOVED***
-***REMOVED***));
+  }
+}));
 
-const validationSchema = Yup.object().shape(***REMOVED***
+const validationSchema = Yup.object().shape({
   firstName: Yup.string().required("Required"),
   lastName: Yup.string().required("Required"),
   email: Yup.string()
     .email()
     .required("Required"),
   password: Yup.string().required("Required")
-***REMOVED***);
+});
 
-export default function Register() ***REMOVED***
+export default function Register() {
   const classes = useStyles();
   const [registerError, setRegisterError] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const handleSubmit = async function(values, actions) ***REMOVED***
+  const handleSubmit = async function(values, actions) {
     setRegisterError(false);
-    try ***REMOVED***
+    try {
       await api.register(values);
       setShowConfirmation(true);
-    ***REMOVED*** catch (err) ***REMOVED***
+    } catch (err) {
       setRegisterError(true);
-    ***REMOVED*** finally ***REMOVED***
+    } finally {
       actions.setSubmitting(false);
-    ***REMOVED***
-  ***REMOVED***;
-  if (showConfirmation) ***REMOVED***
+    }
+  };
+  if (showConfirmation) {
     return (
       <Layout>
         <Box
           display="flex"
           justifyContent="center"
           color="text.secondary"
-          pt=***REMOVED***2***REMOVED***
+          pt={2}
           alignItems="center"
-          maxWidth=***REMOVED***600***REMOVED***
+          maxWidth={600}
           margin="auto">
-          <CheckCircleOutlineIcon className=***REMOVED***classes.confirmationIcon***REMOVED*** />
+          <CheckCircleOutlineIcon className={classes.confirmationIcon} />
           <Typography variant="h6" align="center">
             You've successfully registered on HuluSira. We've emailed you an
             activation link. Use it to sign in.
@@ -65,34 +65,34 @@ export default function Register() ***REMOVED***
         </Box>
       </Layout>
     );
-  ***REMOVED***
+  }
   return (
     <AuthLayout>
       <Formik
-        validationSchema=***REMOVED***validationSchema***REMOVED***
-        onSubmit=***REMOVED***handleSubmit***REMOVED***
-        initialValues=***REMOVED******REMOVED***
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+        initialValues={{
           firstName: "",
           lastName: "",
           email: "",
           password: ""
-        ***REMOVED******REMOVED***>
-        ***REMOVED***(***REMOVED***
+        }}>
+        {({
           values,
           isSubmitting,
           handleChange,
           errors,
           touched,
           handleSubmit
-        ***REMOVED***) => ***REMOVED***
+        }) => {
           return (
-            <form onSubmit=***REMOVED***handleSubmit***REMOVED***>
+            <form onSubmit={handleSubmit}>
               <TextField
                 name="firstName"
-                value=***REMOVED***values.firstName***REMOVED***
-                onChange=***REMOVED***handleChange***REMOVED***
-                error=***REMOVED***!!(touched.firstName && errors.firstName)***REMOVED***
-                helperText=***REMOVED***touched.firstName && errors.firstName***REMOVED***
+                value={values.firstName}
+                onChange={handleChange}
+                error={!!(touched.firstName && errors.firstName)}
+                helperText={touched.firstName && errors.firstName}
                 label="First Name"
                 margin="normal"
                 variant="outlined"
@@ -100,10 +100,10 @@ export default function Register() ***REMOVED***
               />
               <TextField
                 name="lastName"
-                value=***REMOVED***values.lastName***REMOVED***
-                onChange=***REMOVED***handleChange***REMOVED***
-                error=***REMOVED***!!(touched.lastName && errors.lastName)***REMOVED***
-                helperText=***REMOVED***touched.lastName && errors.lastName***REMOVED***
+                value={values.lastName}
+                onChange={handleChange}
+                error={!!(touched.lastName && errors.lastName)}
+                helperText={touched.lastName && errors.lastName}
                 label="Last Name"
                 margin="normal"
                 variant="outlined"
@@ -111,10 +111,10 @@ export default function Register() ***REMOVED***
               />
               <TextField
                 name="email"
-                value=***REMOVED***values.email***REMOVED***
-                onChange=***REMOVED***handleChange***REMOVED***
-                error=***REMOVED***!!(touched.email && errors.email)***REMOVED***
-                helperText=***REMOVED***touched.email && errors.email***REMOVED***
+                value={values.email}
+                onChange={handleChange}
+                error={!!(touched.email && errors.email)}
+                helperText={touched.email && errors.email}
                 label="Email"
                 margin="normal"
                 variant="outlined"
@@ -122,10 +122,10 @@ export default function Register() ***REMOVED***
               />
               <TextField
                 name="password"
-                value=***REMOVED***values.password***REMOVED***
-                onChange=***REMOVED***handleChange***REMOVED***
-                error=***REMOVED***!!(touched.password && errors.password)***REMOVED***
-                helperText=***REMOVED***touched.password && errors.password***REMOVED***
+                value={values.password}
+                onChange={handleChange}
+                error={!!(touched.password && errors.password)}
+                helperText={touched.password && errors.password}
                 label="Password"
                 type="password"
                 margin="normal"
@@ -133,36 +133,36 @@ export default function Register() ***REMOVED***
                 fullWidth
               />
               <Fab
-                classes=***REMOVED******REMOVED*** root: classes.registerButton ***REMOVED******REMOVED***
+                classes={{ root: classes.registerButton }}
                 type="submit"
                 variant="extended"
                 color="primary"
-                disabled=***REMOVED***isSubmitting***REMOVED***>
+                disabled={isSubmitting}>
                 Register
               </Fab>
-              ***REMOVED***isSubmitting && <PageProgress />***REMOVED***
+              {isSubmitting && <PageProgress />}
             </form>
           );
-        ***REMOVED******REMOVED***
+        }}
       </Formik>
       <HSSnackBar
         variant="error"
         message="Registration Failed."
-        open=***REMOVED***registerError***REMOVED***
-        anchorOrigin=***REMOVED******REMOVED*** vertical: "bottom", horizontal: "center" ***REMOVED******REMOVED***
-        autoHideDuration=***REMOVED***3000***REMOVED***
-        onClose=***REMOVED***() => setRegisterError(false)***REMOVED***
+        open={registerError}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        autoHideDuration={3000}
+        onClose={() => setRegisterError(false)}
       />
     </AuthLayout>
   );
-***REMOVED***
+}
 
-Register.getInitialProps = async function(ctx) ***REMOVED***
-  const ***REMOVED*** user ***REMOVED*** = ctx;
+Register.getInitialProps = async function(ctx) {
+  const { user } = ctx;
 
-  if (user) ***REMOVED***
+  if (user) {
     redirect(ctx, "/");
-  ***REMOVED***
+  }
 
-  return ***REMOVED******REMOVED***;
-***REMOVED***;
+  return {};
+};

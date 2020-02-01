@@ -1,71 +1,71 @@
 import clsx from "clsx";
-import ***REMOVED*** Snackbar, SnackbarContent, IconButton ***REMOVED*** from "@material-ui/core";
-import ***REMOVED*** amber, green ***REMOVED*** from "@material-ui/core/colors";
-import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
+import { Snackbar, SnackbarContent, IconButton } from "@material-ui/core";
+import { amber, green } from "@material-ui/core/colors";
+import { makeStyles } from "@material-ui/styles";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CloseIcon from "@material-ui/icons/Close";
 import ErrorIcon from "@material-ui/icons/Error";
 import InfoIcon from "@material-ui/icons/Info";
 import WarningIcon from "@material-ui/icons/Warning";
 
-const variantIcon = ***REMOVED***
+const variantIcon = {
   success: CheckCircleIcon,
   warning: WarningIcon,
   error: ErrorIcon,
   info: InfoIcon
-***REMOVED***;
+};
 
-const useStyles = makeStyles(theme => (***REMOVED***
-  success: ***REMOVED***
+const useStyles = makeStyles(theme => ({
+  success: {
     backgroundColor: green[600]
-  ***REMOVED***,
-  error: ***REMOVED***
+  },
+  error: {
     backgroundColor: theme.palette.error.dark
-  ***REMOVED***,
-  info: ***REMOVED***
+  },
+  info: {
     backgroundColor: theme.palette.primary.main
-  ***REMOVED***,
-  warning: ***REMOVED***
+  },
+  warning: {
     backgroundColor: amber[700]
-  ***REMOVED***,
-  icon: ***REMOVED***
+  },
+  icon: {
     fontSize: "1.25rem"
-  ***REMOVED***,
-  iconVariant: ***REMOVED***
+  },
+  iconVariant: {
     opacity: 0.9,
     marginRight: theme.spacing(1)
-  ***REMOVED***,
-  message: ***REMOVED***
+  },
+  message: {
     display: "flex",
     alignItems: "center"
-  ***REMOVED***
-***REMOVED***));
+  }
+}));
 
-export default function HSSnackBar(***REMOVED***
+export default function HSSnackBar({
   open = false,
   variant = "info",
   message,
   onClose,
   ...props
-***REMOVED***) ***REMOVED***
+}) {
   const classes = useStyles();
   const Icon = variantIcon[variant];
   return (
-    <Snackbar onClose=***REMOVED***onClose***REMOVED*** open=***REMOVED***open***REMOVED*** ***REMOVED***...props***REMOVED***>
+    <Snackbar onClose={onClose} open={open} {...props}>
       <SnackbarContent
-        className=***REMOVED***classes[variant]***REMOVED***
-        message=***REMOVED***
-          <span id="client-snackbar" className=***REMOVED***classes.message***REMOVED***>
-            <Icon className=***REMOVED***clsx(classes.icon, classes.iconVariant)***REMOVED*** />
-            ***REMOVED***message***REMOVED***
+        className={classes[variant]}
+        message={
+          <span id="client-snackbar" className={classes.message}>
+            <Icon className={clsx(classes.icon, classes.iconVariant)} />
+            {message}
           </span>
-        ***REMOVED***
-        action=***REMOVED***[
-          <IconButton key="close" color="inherit" onClick=***REMOVED***onClose***REMOVED***>
-            <CloseIcon className=***REMOVED***classes.icon***REMOVED*** />
+        }
+        action={[
+          <IconButton key="close" color="inherit" onClick={onClose}>
+            <CloseIcon className={classes.icon} />
           </IconButton>
-        ]***REMOVED***
+        ]}
       />
     </Snackbar>
   );
-***REMOVED***
+}

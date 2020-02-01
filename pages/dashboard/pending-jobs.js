@@ -1,7 +1,7 @@
-import ***REMOVED*** Fragment, useReducer ***REMOVED*** from "react";
-import Router, ***REMOVED*** useRouter ***REMOVED*** from "next/router";
+import { Fragment, useReducer } from "react";
+import Router, { useRouter } from "next/router";
 import Link from "next/link";
-import ***REMOVED***
+import {
   Box,
   List,
   ListItem,
@@ -11,7 +11,7 @@ import ***REMOVED***
   Toolbar,
   Button,
   makeStyles
-***REMOVED*** from "@material-ui/core";
+} from "@material-ui/core";
 import DoneIcon from "@material-ui/icons/Done";
 import ClearIcon from "@material-ui/icons/Clear";
 import redirect from "../../utils/redirect";
@@ -22,175 +22,175 @@ import DashboardLayout from "../../components/dashboard-layout";
 import api from "../../api";
 import NoData from "../../components/no-data";
 
-const useStyles = makeStyles(theme => (***REMOVED***
-  jobList: props => (***REMOVED***
+const useStyles = makeStyles(theme => ({
+  jobList: props => ({
     position: "fixed",
     top: 64,
     bottom: 0,
     display: props.activeJob ? "none" : "flex",
     flexDirection: "column",
-    borderRight: `1px solid $***REMOVED***theme.palette.grey[200]***REMOVED***`,
+    borderRight: `1px solid ${theme.palette.grey[200]}`,
     width: "100%",
     backgroundColor: theme.palette.background.paper,
-    [theme.breakpoints.up("md")]: ***REMOVED***
+    [theme.breakpoints.up("md")]: {
       display: "flex",
       width: 300,
       flexShrink: 0
-    ***REMOVED***
-  ***REMOVED***),
-  jobDisplay: props => (***REMOVED***
+    }
+  }),
+  jobDisplay: props => ({
     marginLeft: props.jobs.length > 0 ? 300 : 0,
     display: "flex",
     flexDirection: "column",
-    [theme.breakpoints.down("sm")]: ***REMOVED***
+    [theme.breakpoints.down("sm")]: {
       display: "flex",
       margin: 0
-    ***REMOVED***
-  ***REMOVED***),
-  actionButton: ***REMOVED***
+    }
+  }),
+  actionButton: {
     marginRight: theme.spacing(1)
-  ***REMOVED***
-***REMOVED***));
+  }
+}));
 
-const jobReducer = (state, action) => ***REMOVED***
-  switch (action.type) ***REMOVED***
-    case "UPDATING_JOB": ***REMOVED***
-      return ***REMOVED*** ...state, inProgress: true, error: false ***REMOVED***;
-    ***REMOVED***
-    case "UPDATED_JOB": ***REMOVED***
-      return ***REMOVED***
+const jobReducer = (state, action) => {
+  switch (action.type) {
+    case "UPDATING_JOB": {
+      return { ...state, inProgress: true, error: false };
+    }
+    case "UPDATED_JOB": {
+      return {
         ...state,
         inProgress: false,
         error: false
-      ***REMOVED***;
-    ***REMOVED***
-    case "ERROR_UPDATING_JOB": ***REMOVED***
-      return ***REMOVED*** ...state, inProgress: false, error: true ***REMOVED***;
-    ***REMOVED***
-    case "CLEAR_ERROR": ***REMOVED***
-      return ***REMOVED*** ...state, error: false ***REMOVED***;
-    ***REMOVED***
+      };
+    }
+    case "ERROR_UPDATING_JOB": {
+      return { ...state, inProgress: false, error: true };
+    }
+    case "CLEAR_ERROR": {
+      return { ...state, error: false };
+    }
     default:
       throw new Error("Unrecognized action type");
-  ***REMOVED***
-***REMOVED***;
+  }
+};
 
-export default function PendingJobs(***REMOVED*** user, jobs ***REMOVED***) ***REMOVED***
-  const [jobUpdateState, dispatch] = useReducer(jobReducer, ***REMOVED***
+export default function PendingJobs({ user, jobs }) {
+  const [jobUpdateState, dispatch] = useReducer(jobReducer, {
     inProgress: false,
     error: false
-  ***REMOVED***);
+  });
   let activeJobData;
   const router = useRouter();
-  const ***REMOVED*** jobId ***REMOVED*** = router.query;
+  const { jobId } = router.query;
   const activeJobId = parseInt(jobId);
-  if (!!activeJobId) ***REMOVED***
+  if (!!activeJobId) {
     activeJobData = jobs.find(jobData => jobData.job.id === activeJobId);
-  ***REMOVED***
-  const approveJob = async jobId => ***REMOVED***
-    dispatch(***REMOVED*** type: "UPDATING_JOB" ***REMOVED***);
-    try ***REMOVED***
+  }
+  const approveJob = async jobId => {
+    dispatch({ type: "UPDATING_JOB" });
+    try {
       await api.approveJob(jobId);
-      dispatch(***REMOVED*** type: "UPDATED_JOB" ***REMOVED***);
+      dispatch({ type: "UPDATED_JOB" });
       Router.replace("/dashboard/pending-jobs");
-    ***REMOVED*** catch (err) ***REMOVED***
+    } catch (err) {
       console.error(err);
-      dispatch(***REMOVED*** type: "ERROR_UPDATING_JOB" ***REMOVED***);
-    ***REMOVED***
-  ***REMOVED***;
-  const declineJob = async jobId => ***REMOVED***
-    dispatch(***REMOVED*** type: "UPDATING_JOB" ***REMOVED***);
-    try ***REMOVED***
+      dispatch({ type: "ERROR_UPDATING_JOB" });
+    }
+  };
+  const declineJob = async jobId => {
+    dispatch({ type: "UPDATING_JOB" });
+    try {
       await api.declineJob(jobId);
-      dispatch(***REMOVED*** type: "UPDATED_JOB" ***REMOVED***);
+      dispatch({ type: "UPDATED_JOB" });
       Router.replace("/dashboard/pending-jobs");
-    ***REMOVED*** catch (err) ***REMOVED***
+    } catch (err) {
       console.error(err);
-      dispatch(***REMOVED*** type: "ERROR_UPDATING_JOB" ***REMOVED***);
-    ***REMOVED***
-  ***REMOVED***;
-  const classes = useStyles(***REMOVED*** activeJob: !!activeJobData, jobs ***REMOVED***);
+      dispatch({ type: "ERROR_UPDATING_JOB" });
+    }
+  };
+  const classes = useStyles({ activeJob: !!activeJobData, jobs });
   return (
-    <DashboardLayout user=***REMOVED***user***REMOVED*** selectedItem="pendingJobs" pendingJobs=***REMOVED***jobs***REMOVED***>
-      ***REMOVED***jobs.length > 0 && (
-        <Box className=***REMOVED***classes.jobList***REMOVED***>
-          <List className=***REMOVED***classes.list***REMOVED***>
-            ***REMOVED***jobs.map((***REMOVED*** job, company ***REMOVED***, index) => (
-              <Fragment key=***REMOVED***job.id***REMOVED***>
+    <DashboardLayout user={user} selectedItem="pendingJobs" pendingJobs={jobs}>
+      {jobs.length > 0 && (
+        <Box className={classes.jobList}>
+          <List className={classes.list}>
+            {jobs.map(({ job, company }, index) => (
+              <Fragment key={job.id}>
                 <Link
-                  href=***REMOVED***`/dashboard/pending-jobs?jobId=$***REMOVED***job.id***REMOVED***`***REMOVED***
-                  as=***REMOVED***`/dashboard/pending-jobs/$***REMOVED***job.id***REMOVED***`***REMOVED***
+                  href={`/dashboard/pending-jobs?jobId=${job.id}`}
+                  as={`/dashboard/pending-jobs/${job.id}`}
                 >
                   <ListItem button>
-                    ***REMOVED***!!company && (
+                    {!!company && (
                       <ListItemAvatar>
-                        <CompanyLogo company=***REMOVED***company***REMOVED*** size="small" />
+                        <CompanyLogo company={company} size="small" />
                       </ListItemAvatar>
-                    )***REMOVED***
+                    )}
                     <ListItemText
-                      primary=***REMOVED***job.position***REMOVED***
-                      primaryTypographyProps=***REMOVED******REMOVED*** variant: "subtitle2" ***REMOVED******REMOVED***
-                      secondary=***REMOVED***!!company ? company.name : job.jobType***REMOVED***
+                      primary={job.position}
+                      primaryTypographyProps={{ variant: "subtitle2" }}
+                      secondary={!!company ? company.name : job.jobType}
                     />
                   </ListItem>
                 </Link>
-                ***REMOVED***index + 1 !== jobs.length && <Divider light />***REMOVED***
+                {index + 1 !== jobs.length && <Divider light />}
               </Fragment>
-            ))***REMOVED***
+            ))}
           </List>
         </Box>
-      )***REMOVED***
-      ***REMOVED***jobs.length === 0 && <NoData message="There are no pending jobs" />***REMOVED***
-      ***REMOVED***!!activeJobData && (
-        <Box className=***REMOVED***classes.jobDisplay***REMOVED***>
+      )}
+      {jobs.length === 0 && <NoData message="There are no pending jobs" />}
+      {!!activeJobData && (
+        <Box className={classes.jobDisplay}>
           <Toolbar>
-            <Box flexGrow=***REMOVED***1***REMOVED*** />
+            <Box flexGrow={1} />
             <Button
               color="primary"
               variant="contained"
-              className=***REMOVED***classes.actionButton***REMOVED***
-              disabled=***REMOVED***jobUpdateState.inProgress***REMOVED***
-              onClick=***REMOVED***() => approveJob(activeJobId)***REMOVED***
+              className={classes.actionButton}
+              disabled={jobUpdateState.inProgress}
+              onClick={() => approveJob(activeJobId)}
             >
               <DoneIcon /> Approve
             </Button>
             <Button
               color="secondary"
               variant="contained"
-              className=***REMOVED***classes.actionButton***REMOVED***
-              disabled=***REMOVED***jobUpdateState.inProgress***REMOVED***
-              onClick=***REMOVED***() => declineJob(activeJobId)***REMOVED***
+              className={classes.actionButton}
+              disabled={jobUpdateState.inProgress}
+              onClick={() => declineJob(activeJobId)}
             >
               <ClearIcon /> Drop
             </Button>
           </Toolbar>
-          <JobContent jobData=***REMOVED***activeJobData***REMOVED*** />
+          <JobContent jobData={activeJobData} />
           <HSSnackbar
             variant="error"
-            open=***REMOVED***jobUpdateState.error***REMOVED***
+            open={jobUpdateState.error}
             message="Problem occurred updating job"
-            autoHideDuration=***REMOVED***3000***REMOVED***
-            onClose=***REMOVED***() => dispatch(***REMOVED*** type: "CLEAR_ERROR" ***REMOVED***)***REMOVED***
+            autoHideDuration={3000}
+            onClose={() => dispatch({ type: "CLEAR_ERROR" })}
           />
         </Box>
-      )***REMOVED***
+      )}
     </DashboardLayout>
   );
-***REMOVED***
+}
 
-PendingJobs.getInitialProps = async function(ctx) ***REMOVED***
-  const ***REMOVED*** user ***REMOVED*** = ctx;
+PendingJobs.getInitialProps = async function(ctx) {
+  const { user } = ctx;
 
-  if (!user || user.role !== "admin") ***REMOVED***
+  if (!user || user.role !== "admin") {
     redirect(ctx, "/");
-    return ***REMOVED******REMOVED***;
-  ***REMOVED***
+    return {};
+  }
 
   let jobs = [];
-  try ***REMOVED***
+  try {
     jobs = await api.getPendingJobs(ctx);
-  ***REMOVED*** catch (err) ***REMOVED***
+  } catch (err) {
     console.log(err);
-  ***REMOVED***
-  return ***REMOVED*** jobs ***REMOVED***;
-***REMOVED***;
+  }
+  return { jobs };
+};

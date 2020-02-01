@@ -1,6 +1,6 @@
 import DashboardLayout from "../../../components/dashboard-layout";
 import Router from "next/router";
-import ***REMOVED***
+import {
   Container,
   Button,
   Box,
@@ -10,7 +10,7 @@ import ***REMOVED***
   TableCell,
   TableBody,
   makeStyles
-***REMOVED*** from "@material-ui/core";
+} from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import redirect from "../../../utils/redirect";
 import HSPaper from "../../../components/hs-paper";
@@ -18,73 +18,73 @@ import api from "../../../api";
 import EmptyList from "../../../components/empty-list";
 import JobTableRow from "../../../components/job-table-row";
 
-const useStyles = makeStyles(theme => (***REMOVED***
-  tableHead: ***REMOVED***
+const useStyles = makeStyles(theme => ({
+  tableHead: {
     fontWeight: 800
-  ***REMOVED***
-***REMOVED***));
+  }
+}));
 
-export default function DashboardJobs(***REMOVED*** user, jobs ***REMOVED***) ***REMOVED***
+export default function DashboardJobs({ user, jobs }) {
   const classes = useStyles();
   return (
-    <DashboardLayout user=***REMOVED***user***REMOVED*** selectedItem="jobs">
+    <DashboardLayout user={user} selectedItem="jobs">
       <Container maxWidth="lg">
-        <Box display="flex" py=***REMOVED***2***REMOVED***>
+        <Box display="flex" py={2}>
           <Box flex="1" />
           <Button
             variant="contained"
             color="primary"
             size="small"
-            startIcon=***REMOVED***<AddIcon />***REMOVED***
-            onClick=***REMOVED***() => Router.push("/dashboard/jobs/new")***REMOVED***
+            startIcon={<AddIcon />}
+            onClick={() => Router.push("/dashboard/jobs/new")}
           >
             Post Job
           </Button>
         </Box>
-        ***REMOVED***jobs.length === 0 && <EmptyList message="No Jobs Available" />***REMOVED***
-        ***REMOVED***jobs.length > 0 && (
+        {jobs.length === 0 && <EmptyList message="No Jobs Available" />}
+        {jobs.length > 0 && (
           <HSPaper>
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell classes=***REMOVED******REMOVED*** head: classes.tableHead ***REMOVED******REMOVED***>
+                  <TableCell classes={{ head: classes.tableHead }}>
                     Position
                   </TableCell>
-                  <TableCell classes=***REMOVED******REMOVED*** head: classes.tableHead ***REMOVED******REMOVED***>
+                  <TableCell classes={{ head: classes.tableHead }}>
                     Company
                   </TableCell>
-                  <TableCell classes=***REMOVED******REMOVED*** head: classes.tableHead ***REMOVED******REMOVED***>
+                  <TableCell classes={{ head: classes.tableHead }}>
                     Status
                   </TableCell>
-                  <TableCell classes=***REMOVED******REMOVED*** head: classes.tableHead ***REMOVED******REMOVED***>
+                  <TableCell classes={{ head: classes.tableHead }}>
                     Deadline
                   </TableCell>
-                  <TableCell classes=***REMOVED******REMOVED*** head: classes.tableHead ***REMOVED******REMOVED***>
+                  <TableCell classes={{ head: classes.tableHead }}>
                     Actions
                   </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                ***REMOVED***jobs.map(jobData => ***REMOVED***
-                  return <JobTableRow key=***REMOVED***jobData.job.id***REMOVED*** jobData=***REMOVED***jobData***REMOVED*** />;
-                ***REMOVED***)***REMOVED***
+                {jobs.map(jobData => {
+                  return <JobTableRow key={jobData.job.id} jobData={jobData} />;
+                })}
               </TableBody>
             </Table>
           </HSPaper>
-        )***REMOVED***
+        )}
       </Container>
     </DashboardLayout>
   );
-***REMOVED***
+}
 
-DashboardJobs.getInitialProps = async function(ctx) ***REMOVED***
-  const ***REMOVED*** user ***REMOVED*** = ctx;
+DashboardJobs.getInitialProps = async function(ctx) {
+  const { user } = ctx;
 
-  if (!user) ***REMOVED***
+  if (!user) {
     redirect(ctx, "/");
-  ***REMOVED***
+  }
 
   const jobs = await api.getMyJobs(ctx);
 
-  return ***REMOVED*** jobs ***REMOVED***;
-***REMOVED***;
+  return { jobs };
+};

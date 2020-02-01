@@ -1,79 +1,79 @@
 import DashboardLayout from "../../../components/dashboard-layout";
-import ***REMOVED*** Container, makeStyles ***REMOVED*** from "@material-ui/core";
+import { Container, makeStyles } from "@material-ui/core";
 import redirect from "../../../utils/redirect";
 import api from "../../../api";
 import Router from "next/router";
-import ***REMOVED*** cleanTags ***REMOVED*** from "../../../utils";
+import { cleanTags } from "../../../utils";
 import JobForm from "../../../components/job-form";
-import ***REMOVED*** useState ***REMOVED*** from "react";
+import { useState } from "react";
 
-const useStyles = makeStyles(theme => (***REMOVED***
-  root: ***REMOVED***
+const useStyles = makeStyles(theme => ({
+  root: {
     paddingBottom: theme.spacing(2)
-  ***REMOVED***,
-  form: ***REMOVED***
+  },
+  form: {
     display: "flex",
     flexDirection: "column"
-  ***REMOVED***,
-  jobSetting: ***REMOVED***
+  },
+  jobSetting: {
     marginBottom: theme.spacing(3)
-  ***REMOVED***,
-  companyPanel: ***REMOVED***
+  },
+  companyPanel: {
     marginBottom: theme.spacing(3)
-  ***REMOVED***,
-  orText: ***REMOVED***
+  },
+  orText: {
     marginBottom: theme.spacing(1)
-  ***REMOVED***,
-  postButton: ***REMOVED***
+  },
+  postButton: {
     marginTop: theme.spacing(1)
-  ***REMOVED***,
-  saveButtonIcon: ***REMOVED***
+  },
+  saveButtonIcon: {
     marginRight: theme.spacing(1)
-  ***REMOVED***,
-  jobPreview: ***REMOVED***
+  },
+  jobPreview: {
     marginTop: theme.spacing(3)
-  ***REMOVED***
-***REMOVED***));
+  }
+}));
 
-export default function DashboardNewJob(***REMOVED*** user, companies, primaryTags ***REMOVED***) ***REMOVED***
+export default function DashboardNewJob({ user, companies, primaryTags }) {
   const [disableSaveButton, setDisableSaveButton] = useState(false);
-  const handleSubmit = async function(values) ***REMOVED***
+  const handleSubmit = async function(values) {
     const tags = cleanTags(values.tags);
     const primaryTag = values.primaryTag !== "" ? values.primaryTag : null;
-    await api.createJob(***REMOVED***
+    await api.createJob({
       ...values,
       tags,
       primaryTag
-    ***REMOVED***);
+    });
     setDisableSaveButton(true);
     Router.push("/dashboard/jobs");
-  ***REMOVED***;
+  };
   const classes = useStyles();
   return (
-    <DashboardLayout user=***REMOVED***user***REMOVED***>
-      <Container maxWidth="md" className=***REMOVED***classes.root***REMOVED***>
+    <DashboardLayout user={user}>
+      <Container maxWidth="md" className={classes.root}>
         <JobForm
-          companies=***REMOVED***companies***REMOVED***
-          primaryTags=***REMOVED***primaryTags***REMOVED***
-          onSubmit=***REMOVED***handleSubmit***REMOVED***
-          disableSaveButton=***REMOVED***disableSaveButton***REMOVED***
-          user=***REMOVED***user***REMOVED***
+          companies={companies}
+          primaryTags={primaryTags}
+          onSubmit={handleSubmit}
+          disableSaveButton={disableSaveButton}
+          user={user}
         />
       </Container>
     </DashboardLayout>
   );
-***REMOVED***
+}
 
-DashboardNewJob.getInitialProps = async function(ctx) ***REMOVED***
-  const ***REMOVED*** user ***REMOVED*** = ctx;
+DashboardNewJob.getInitialProps = async function(ctx) {
+  const { user } = ctx;
 
-  if (!user) ***REMOVED***
+  if (!user) {
     redirect(ctx, "/new");
-  ***REMOVED***
+  }
 
   const [companies, primaryTags] = await Promise.all([
     api.getCompanies(ctx),
     api.getPrimaryTags(ctx)
   ]);
-  return ***REMOVED*** companies, primaryTags ***REMOVED***;
-***REMOVED***;
+  return { companies, primaryTags };
+};

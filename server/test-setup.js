@@ -1,16 +1,16 @@
 const path = require("path");
-require("dotenv").config(***REMOVED*** path: path.resolve(process.cwd(), ".env.test") ***REMOVED***);
+require("dotenv").config({ path: path.resolve(process.cwd(), ".env.test") });
 
 const db = require("./db");
 
-global.clearDb = async () => ***REMOVED***
+global.clearDb = async () => {
   await db.pool.query(`DELETE FROM job_tags`);
   await db.pool.query(`DELETE FROM job`);
   await db.pool.query(`DELETE FROM company`);
   await db.pool.query(`DELETE FROM tag`);
   await db.pool.query(`DELETE FROM users`);
-***REMOVED***;
+};
 
-global.endDb = async () => ***REMOVED***
+global.endDb = async () => {
   await db.end();
-***REMOVED***;
+};

@@ -1,201 +1,201 @@
 import Link from "next/link";
 import Router from "next/router";
-import ***REMOVED***
+import {
   Box,
   Typography,
   Container,
   Grid,
   Button,
   Link as MuiLink
-***REMOVED*** from "@material-ui/core";
-import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
+} from "@material-ui/core";
+import { makeStyles } from "@material-ui/styles";
 import CompanyLogo from "./company-logo";
 import HSPaper from "./hs-paper";
 import Markdown from "./markdown";
 import format from "date-fns/format";
-import ***REMOVED*** Fragment ***REMOVED*** from "react";
+import { Fragment } from "react";
 import InArticleAd from "./in-article-ad";
 import * as gtag from "../lib/gtag";
-import ***REMOVED*** careerLevelLabel ***REMOVED*** from "../utils/index";
+import { careerLevelLabel } from "../utils/index";
 
-const useStyles = makeStyles(theme => (***REMOVED***
-  root: ***REMOVED***
+const useStyles = makeStyles(theme => ({
+  root: {
     paddingTop: theme.spacing(2)
-  ***REMOVED***,
-  jobGrid: ***REMOVED***
+  },
+  jobGrid: {
     width: "100%"
-  ***REMOVED***,
-  jobInfo: ***REMOVED***
+  },
+  jobInfo: {
     display: "flex",
     flexWrap: "wrap",
     padding: theme.spacing(2),
     marginBottom: theme.spacing(2)
-  ***REMOVED***,
-  jobMain: ***REMOVED***
+  },
+  jobMain: {
     padding: theme.spacing(2),
     marginBottom: theme.spacing(2)
-  ***REMOVED***,
-  applyGrid: ***REMOVED***
+  },
+  applyGrid: {
     width: "100%",
-    [theme.breakpoints.down("xs")]: ***REMOVED***
+    [theme.breakpoints.down("xs")]: {
       maxWidth: "100%"
-    ***REMOVED***,
-    [theme.breakpoints.down("md")]: ***REMOVED***
+    },
+    [theme.breakpoints.down("md")]: {
       marginTop: -1 * theme.spacing(2)
-    ***REMOVED***
-  ***REMOVED***,
-  apply: ***REMOVED***
+    }
+  },
+  apply: {
     padding: theme.spacing(2),
     overflowWrap: "break-word",
     wordWrap: "break-word",
     wordBreak: "break-all",
     wordBreak: "bread-word",
     hyphens: "auto"
-  ***REMOVED***,
-  jobInfoDeadline: ***REMOVED***
+  },
+  jobInfoDeadline: {
     color: "red"
-  ***REMOVED***
-***REMOVED***));
+  }
+}));
 
-function JobInfoItem(***REMOVED*** title, value, classes = ***REMOVED******REMOVED*** ***REMOVED***) ***REMOVED***
+function JobInfoItem({ title, value, classes = {} }) {
   return (
-    <Box flex=***REMOVED***1***REMOVED*** pr=***REMOVED***3***REMOVED***>
-      <Typography variant="subtitle1">***REMOVED***title***REMOVED***</Typography>
-      <Typography variant="body1" className=***REMOVED***classes.value***REMOVED***>
-        ***REMOVED***value***REMOVED***
+    <Box flex={1} pr={3}>
+      <Typography variant="subtitle1">{title}</Typography>
+      <Typography variant="body1" className={classes.value}>
+        {value}
       </Typography>
     </Box>
   );
-***REMOVED***
+}
 
-function ApplyButton(***REMOVED*** job ***REMOVED***) ***REMOVED***
+function ApplyButton({ job }) {
   return (
     <Button
       variant="contained"
       color="primary"
-      href=***REMOVED***job.applyUrl || `mailto:$***REMOVED***job.applyEmail***REMOVED***`***REMOVED***
+      href={job.applyUrl || `mailto:${job.applyEmail}`}
       target="_blank"
       fullWidth
-      onClick=***REMOVED***() => ***REMOVED***
-        gtag.event(***REMOVED***
+      onClick={() => {
+        gtag.event({
           action: "Click Apply Now",
           category: "Job",
           label: job.slug
-        ***REMOVED***);
-      ***REMOVED******REMOVED***
+        });
+      }}
     >
       Apply Now
     </Button>
   );
-***REMOVED***
+}
 
-export default function JobContent(***REMOVED*** jobData, withAds = false ***REMOVED***) ***REMOVED***
+export default function JobContent({ jobData, withAds = false }) {
   const classes = useStyles();
-  const ***REMOVED*** job, company ***REMOVED*** = jobData;
+  const { job, company } = jobData;
   const hasApplyButton = !!job.applyUrl || !!job.applyEmail;
   const hasApplySection =
     job.approvalStatus !== "Closed" && (!!job.howToApply || hasApplyButton);
   return (
-    <Container className=***REMOVED***classes.root***REMOVED*** maxWidth="xl">
-      <Box display="flex" alignItems="center" pb=***REMOVED***2***REMOVED***>
-        ***REMOVED***company && company.logo && (
-          <Box mr=***REMOVED***1***REMOVED***>
+    <Container className={classes.root} maxWidth="xl">
+      <Box display="flex" alignItems="center" pb={2}>
+        {company && company.logo && (
+          <Box mr={1}>
             <CompanyLogo
-              company=***REMOVED***company***REMOVED***
-              abbrevFallback=***REMOVED***false***REMOVED***
+              company={company}
+              abbrevFallback={false}
               size="large"
-              onClick=***REMOVED***() => Router.push(`/companies/$***REMOVED***company.id***REMOVED***`)***REMOVED***
+              onClick={() => Router.push(`/companies/${company.id}`)}
             />
           </Box>
-        )***REMOVED***
-        <Box ml=***REMOVED***1***REMOVED***>
-          <Typography variant="h4">***REMOVED***job.position***REMOVED***</Typography>
-          ***REMOVED***company && company.name && (
+        )}
+        <Box ml={1}>
+          <Typography variant="h4">{job.position}</Typography>
+          {company && company.name && (
             <Fragment>
               <Typography variant="body1" component="span">
                 at&nbsp;
               </Typography>
               <Link
                 href="/companies/[id]"
-                as=***REMOVED***`/companies/$***REMOVED***company.id***REMOVED***`***REMOVED***
+                as={`/companies/${company.id}`}
                 passHref
               >
                 <MuiLink variant="subtitle2" color="inherit" gutterBottom>
-                  ***REMOVED***company.name***REMOVED***
+                  {company.name}
                 </MuiLink>
               </Link>
             </Fragment>
-          )***REMOVED***
+          )}
         </Box>
       </Box>
-      <Grid container spacing=***REMOVED***2***REMOVED***>
+      <Grid container spacing={2}>
         <Grid
-          className=***REMOVED***classes.jobGrid***REMOVED***
+          className={classes.jobGrid}
           item
-          sm=***REMOVED***12***REMOVED***
-          lg=***REMOVED***hasApplySection ? 9 : 12***REMOVED***
+          sm={12}
+          lg={hasApplySection ? 9 : 12}
         >
-          <HSPaper className=***REMOVED***classes.jobInfo***REMOVED***>
-            ***REMOVED***job.location && (
-              <JobInfoItem title="📍 Location" value=***REMOVED***job.location***REMOVED*** />
-            )***REMOVED***
-            ***REMOVED***job.jobType && (
-              <JobInfoItem title="🕔 Job Type" value=***REMOVED***job.jobType***REMOVED*** />
-            )***REMOVED***
-            ***REMOVED***job.careerLevel && (
+          <HSPaper className={classes.jobInfo}>
+            {job.location && (
+              <JobInfoItem title="📍 Location" value={job.location} />
+            )}
+            {job.jobType && (
+              <JobInfoItem title="🕔 Job Type" value={job.jobType} />
+            )}
+            {job.careerLevel && (
               <JobInfoItem
                 title="📈 Career Level"
-                value=***REMOVED***careerLevelLabel(job.careerLevel)***REMOVED***
+                value={careerLevelLabel(job.careerLevel)}
               />
-            )***REMOVED***
-            ***REMOVED***job.salary && <JobInfoItem title="💰 Salary" value=***REMOVED***job.salary***REMOVED*** />***REMOVED***
-            ***REMOVED***job.deadline && (
+            )}
+            {job.salary && <JobInfoItem title="💰 Salary" value={job.salary} />}
+            {job.deadline && (
               <JobInfoItem
                 title="⏳ Deadline"
-                value=***REMOVED***format(new Date(job.deadline), "MMM dd, yyyy")***REMOVED***
-                classes=***REMOVED******REMOVED*** value: classes.jobInfoDeadline ***REMOVED******REMOVED***
+                value={format(new Date(job.deadline), "MMM dd, yyyy")}
+                classes={{ value: classes.jobInfoDeadline }}
               />
-            )***REMOVED***
+            )}
           </HSPaper>
-          <HSPaper className=***REMOVED***classes.jobMain***REMOVED***>
+          <HSPaper className={classes.jobMain}>
             <Typography variant="h5">Description</Typography>
-            <Markdown>***REMOVED***job.description***REMOVED***</Markdown>
-            ***REMOVED***process.env.NODE_ENV === "production" && withAds && (
+            <Markdown>{job.description}</Markdown>
+            {process.env.NODE_ENV === "production" && withAds && (
               <InArticleAd />
-            )***REMOVED***
-            ***REMOVED***job.responsibilities && (
+            )}
+            {job.responsibilities && (
               <Fragment>
                 <Typography variant="h5">Responsibilities</Typography>
-                <Markdown>***REMOVED***job.responsibilities***REMOVED***</Markdown>
+                <Markdown>{job.responsibilities}</Markdown>
               </Fragment>
-            )***REMOVED***
-            ***REMOVED***job.requirements && (
+            )}
+            {job.requirements && (
               <Fragment>
                 <Typography variant="h5">Requirements</Typography>
-                <Markdown>***REMOVED***job.requirements***REMOVED***</Markdown>
+                <Markdown>{job.requirements}</Markdown>
               </Fragment>
-            )***REMOVED***
+            )}
           </HSPaper>
         </Grid>
-        ***REMOVED***hasApplySection && (
-          <Grid item sm=***REMOVED***12***REMOVED*** lg=***REMOVED***3***REMOVED*** className=***REMOVED***classes.applyGrid***REMOVED***>
-            ***REMOVED***!job.howToApply && hasApplyButton && <ApplyButton job=***REMOVED***job***REMOVED*** />***REMOVED***
-            ***REMOVED***!!job.howToApply && (
-              <HSPaper className=***REMOVED***classes.apply***REMOVED***>
-                ***REMOVED***(job.applyUrl || job.applyEmail) && <ApplyButton job=***REMOVED***job***REMOVED*** />***REMOVED***
-                ***REMOVED***job.howToApply && (
-                  <Box pt=***REMOVED***hasApplyButton ? 2 : 0***REMOVED***>
+        {hasApplySection && (
+          <Grid item sm={12} lg={3} className={classes.applyGrid}>
+            {!job.howToApply && hasApplyButton && <ApplyButton job={job} />}
+            {!!job.howToApply && (
+              <HSPaper className={classes.apply}>
+                {(job.applyUrl || job.applyEmail) && <ApplyButton job={job} />}
+                {job.howToApply && (
+                  <Box pt={hasApplyButton ? 2 : 0}>
                     <Typography variant="subtitle1">
                       Are you interested in this job?
                     </Typography>
-                    <Markdown>***REMOVED***job.howToApply***REMOVED***</Markdown>
+                    <Markdown>{job.howToApply}</Markdown>
                   </Box>
-                )***REMOVED***
+                )}
               </HSPaper>
-            )***REMOVED***
+            )}
           </Grid>
-        )***REMOVED***
+        )}
       </Grid>
     </Container>
   );
-***REMOVED***
+}

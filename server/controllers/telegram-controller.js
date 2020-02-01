@@ -1,4 +1,4 @@
-const ***REMOVED*** Machine, State, assign, interpret ***REMOVED*** = require("xstate");
+const { Machine, State, assign, interpret } = require("xstate");
 const _ = require("lodash");
 const telegramBot = require("../telegram_bot");
 const redis = require("../redis");
@@ -31,1207 +31,1207 @@ const APPROVAL_STATUS_MESSAGES = [
   MESSAGE_CLOSED_JOBS,
   MESSAGE_DECLINED_JOBS
 ];
-const MESSAGE_APPROVAL_STATUS_MAP = ***REMOVED***
+const MESSAGE_APPROVAL_STATUS_MAP = {
   [MESSAGE_PENDING_JOBS]: "Pending",
   [MESSAGE_ACTIVE_JOBS]: "Active",
   [MESSAGE_CLOSED_JOBS]: "Closed",
   [MESSAGE_DECLINED_JOBS]: "Declined"
-***REMOVED***;
+};
 
 const EVENT_START = "START";
 const EVENT_BACK_TO_MAIN_MENU = "BACK_TO_MAIN_MENU";
 const EVENT_CLOSE_JOB = "CLOSE_JOB";
 
-const checkTelegramMessageEvent = MESSAGE => (context, event) => ***REMOVED***
+const checkTelegramMessageEvent = MESSAGE => (context, event) => {
   return (
     event.update &&
     event.update.message &&
     event.update.message.text === MESSAGE
   );
-***REMOVED***;
+};
 
 const resetContextField = field =>
-  assign(***REMOVED***
+  assign({
     [field]: (context, event) => undefined
-  ***REMOVED***);
+  });
 
 const machine = Machine(
-  ***REMOVED***
+  {
     id: "telegramBotMachine",
-    context: ***REMOVED***
+    context: {
       telegramUserId: null
-    ***REMOVED***,
+    },
     initial: "promptMainMenu",
-    states: ***REMOVED***
-      promptMainMenu: ***REMOVED***
-        invoke: ***REMOVED***
+    states: {
+      promptMainMenu: {
+        invoke: {
           id: "promptMainMenu",
           src: "promptMainMenu",
-          onDone: ***REMOVED***
+          onDone: {
             target: "waitingMainReply"
-          ***REMOVED***
-        ***REMOVED***
-      ***REMOVED***,
-      waitingMainReply: ***REMOVED***
-        on: ***REMOVED***
-          [EVENT_START]: ***REMOVED***
+          }
+        }
+      },
+      waitingMainReply: {
+        on: {
+          [EVENT_START]: {
             target: "promptMainMenu"
-          ***REMOVED***,
+          },
           RECEIVED_UPDATE: [
-            ***REMOVED***
+            {
               cond: "isEventPostJob",
               target: "postingJob"
-            ***REMOVED***,
-            ***REMOVED***
+            },
+            {
               cond: "isEventMyJobs",
               target: "promptMyJobs"
-            ***REMOVED***
+            }
           ]
-        ***REMOVED***
-      ***REMOVED***,
-      promptMyJobs: ***REMOVED***
-        invoke: ***REMOVED***
+        }
+      },
+      promptMyJobs: {
+        invoke: {
           id: "promptMyJobs",
           src: "promptMyJobs",
-          onDone: ***REMOVED***
+          onDone: {
             target: "waitingApprovalStatus"
-          ***REMOVED***
-        ***REMOVED***
-      ***REMOVED***,
-      waitingApprovalStatus: ***REMOVED***
-        on: ***REMOVED***
-          [EVENT_BACK_TO_MAIN_MENU]: ***REMOVED***
+          }
+        }
+      },
+      waitingApprovalStatus: {
+        on: {
+          [EVENT_BACK_TO_MAIN_MENU]: {
             target: "promptMainMenu"
-          ***REMOVED***,
+          },
           RECEIVED_UPDATE: [
-            ***REMOVED***
+            {
               cond: "isValidApprovalStatus",
               target: "getMyJobs",
               actions: "setApprovalStatus"
-            ***REMOVED***
+            }
           ]
-        ***REMOVED***
-      ***REMOVED***,
-      getMyJobs: ***REMOVED***
-        invoke: ***REMOVED***
+        }
+      },
+      getMyJobs: {
+        invoke: {
           id: "getMyJobs",
           src: "getMyJobs",
-          onDone: ***REMOVED***
+          onDone: {
             target: "promptMyJobs"
-          ***REMOVED***,
-          onError: ***REMOVED***
+          },
+          onError: {
             target: "errorGettingMyJobs"
-          ***REMOVED***
-        ***REMOVED***
-      ***REMOVED***,
-      errorGettingMyJobs: ***REMOVED***
-        invoke: ***REMOVED***
+          }
+        }
+      },
+      errorGettingMyJobs: {
+        invoke: {
           id: "errorGettingJobs",
           src: "errorGettingJobs",
-          onDone: ***REMOVED***
+          onDone: {
             target: "promptMyJobs"
-          ***REMOVED***
-        ***REMOVED***
-      ***REMOVED***,
-      postingJob: ***REMOVED***
-        on: ***REMOVED***
-          [EVENT_START]: ***REMOVED***
+          }
+        }
+      },
+      postingJob: {
+        on: {
+          [EVENT_START]: {
             target: "promptMainMenu"
-          ***REMOVED***,
-          [EVENT_BACK_TO_MAIN_MENU]: ***REMOVED***
+          },
+          [EVENT_BACK_TO_MAIN_MENU]: {
             target: "promptMainMenu"
-          ***REMOVED***
-        ***REMOVED***,
+          }
+        },
         initial: "promptTitle",
-        states: ***REMOVED***
-          promptTitle: ***REMOVED***
-            invoke: ***REMOVED***
+        states: {
+          promptTitle: {
+            invoke: {
               id: "promptTitle",
               src: "promptTitle",
-              onDone: ***REMOVED***
+              onDone: {
                 target: "waitingTitle"
-              ***REMOVED***
-            ***REMOVED***
-          ***REMOVED***,
-          waitingTitle: ***REMOVED***
+              }
+            }
+          },
+          waitingTitle: {
             entry: ["resetTitle"],
-            on: ***REMOVED***
-              RECEIVED_UPDATE: ***REMOVED***
+            on: {
+              RECEIVED_UPDATE: {
                 target: "promptJobType",
                 actions: ["saveTitle"],
-                cond: ***REMOVED*** type: "titleValid" ***REMOVED***
-              ***REMOVED***
-            ***REMOVED***
-          ***REMOVED***,
-          promptJobType: ***REMOVED***
-            invoke: ***REMOVED***
+                cond: { type: "titleValid" }
+              }
+            }
+          },
+          promptJobType: {
+            invoke: {
               id: "promptJobType",
               src: "promptJobType",
-              onDone: ***REMOVED***
+              onDone: {
                 target: "waitingJobType"
-              ***REMOVED***
-            ***REMOVED***
-          ***REMOVED***,
-          waitingJobType: ***REMOVED***
+              }
+            }
+          },
+          waitingJobType: {
             entry: ["resetJobType"],
-            on: ***REMOVED***
+            on: {
               RECEIVED_UPDATE: [
-                ***REMOVED***
+                {
                   cond: "isEventBack",
                   target: "promptTitle"
-                ***REMOVED***,
-                ***REMOVED***
+                },
+                {
                   target: "promptCareerLevel",
-                  cond: ***REMOVED*** type: "jobTypeValid" ***REMOVED***,
+                  cond: { type: "jobTypeValid" },
                   actions: "saveJobType"
-                ***REMOVED***
+                }
               ]
-            ***REMOVED***
-          ***REMOVED***,
-          promptCareerLevel: ***REMOVED***
-            invoke: ***REMOVED***
+            }
+          },
+          promptCareerLevel: {
+            invoke: {
               id: "promptCareerLevel",
               src: "promptCareerLevel",
-              onDone: ***REMOVED***
+              onDone: {
                 target: "waitingCareerLevel"
-              ***REMOVED***
-            ***REMOVED***
-          ***REMOVED***,
-          waitingCareerLevel: ***REMOVED***
+              }
+            }
+          },
+          waitingCareerLevel: {
             entry: ["resetCareerLevel"],
-            on: ***REMOVED***
+            on: {
               RECEIVED_UPDATE: [
-                ***REMOVED***
+                {
                   cond: "isEventBack",
                   target: "promptJobType"
-                ***REMOVED***,
-                ***REMOVED***
+                },
+                {
                   target: "promptLocation",
-                  cond: ***REMOVED*** type: "careerLevelValid" ***REMOVED***,
+                  cond: { type: "careerLevelValid" },
                   actions: "saveCareerLevel"
-                ***REMOVED***
+                }
               ]
-            ***REMOVED***
-          ***REMOVED***,
-          promptLocation: ***REMOVED***
-            invoke: ***REMOVED***
+            }
+          },
+          promptLocation: {
+            invoke: {
               id: "promptLocation",
               src: "promptLocation",
-              onDone: ***REMOVED***
+              onDone: {
                 target: "waitingLocation"
-              ***REMOVED***
-            ***REMOVED***
-          ***REMOVED***,
-          waitingLocation: ***REMOVED***
+              }
+            }
+          },
+          waitingLocation: {
             entry: ["resetLocation"],
-            on: ***REMOVED***
+            on: {
               RECEIVED_UPDATE: [
-                ***REMOVED***
-                  cond: ***REMOVED*** type: "isEventSkip" ***REMOVED***,
+                {
+                  cond: { type: "isEventSkip" },
                   target: "promptTags"
-                ***REMOVED***,
-                ***REMOVED***
+                },
+                {
                   cond: "isEventBack",
                   target: "promptCareerLevel"
-                ***REMOVED***,
-                ***REMOVED***
+                },
+                {
                   target: "promptTags",
                   actions: "saveLocation"
-                ***REMOVED***
+                }
               ]
-            ***REMOVED***
-          ***REMOVED***,
-          promptTags: ***REMOVED***
-            invoke: ***REMOVED***
+            }
+          },
+          promptTags: {
+            invoke: {
               id: "promptTags",
               src: "promptTags",
-              onDone: ***REMOVED***
+              onDone: {
                 target: "waitingTags"
-              ***REMOVED***
-            ***REMOVED***
-          ***REMOVED***,
-          waitingTags: ***REMOVED***
+              }
+            }
+          },
+          waitingTags: {
             entry: ["resetTags"],
-            on: ***REMOVED***
+            on: {
               RECEIVED_UPDATE: [
-                ***REMOVED***
+                {
                   cond: "isEventBack",
                   target: "promptLocation"
-                ***REMOVED***,
-                ***REMOVED***
-                  cond: ***REMOVED*** type: "tagsValid" ***REMOVED***,
+                },
+                {
+                  cond: { type: "tagsValid" },
                   target: "promptSalary",
                   actions: "saveTags"
-                ***REMOVED***
+                }
               ]
-            ***REMOVED***
-          ***REMOVED***,
-          promptSalary: ***REMOVED***
-            invoke: ***REMOVED***
+            }
+          },
+          promptSalary: {
+            invoke: {
               id: "promptSalary",
               src: "promptSalary",
-              onDone: ***REMOVED***
+              onDone: {
                 target: "waitingSalary"
-              ***REMOVED***
-            ***REMOVED***
-          ***REMOVED***,
-          waitingSalary: ***REMOVED***
+              }
+            }
+          },
+          waitingSalary: {
             entry: ["resetSalary"],
-            on: ***REMOVED***
+            on: {
               RECEIVED_UPDATE: [
-                ***REMOVED***
+                {
                   cond: "isEventBack",
                   target: "promptTags"
-                ***REMOVED***,
-                ***REMOVED***
-                  cond: ***REMOVED*** type: "isEventSkip" ***REMOVED***,
+                },
+                {
+                  cond: { type: "isEventSkip" },
                   target: "promptDeadline"
-                ***REMOVED***,
-                ***REMOVED***
+                },
+                {
                   target: "promptDeadline",
                   actions: "saveSalary"
-                ***REMOVED***
+                }
               ]
-            ***REMOVED***
-          ***REMOVED***,
-          promptDeadline: ***REMOVED***
-            invoke: ***REMOVED***
+            }
+          },
+          promptDeadline: {
+            invoke: {
               id: "promptDeadline",
               src: "promptDeadline",
-              onDone: ***REMOVED***
+              onDone: {
                 target: "waitingDeadline"
-              ***REMOVED***
-            ***REMOVED***
-          ***REMOVED***,
-          waitingDeadline: ***REMOVED***
+              }
+            }
+          },
+          waitingDeadline: {
             entry: ["resetDeadline"],
-            on: ***REMOVED***
+            on: {
               RECEIVED_UPDATE: [
-                ***REMOVED***
+                {
                   cond: "isEventBack",
                   target: "promptSalary"
-                ***REMOVED***,
-                ***REMOVED***
-                  cond: ***REMOVED*** type: "isEventSkip" ***REMOVED***,
+                },
+                {
+                  cond: { type: "isEventSkip" },
                   target: "promptDescription"
-                ***REMOVED***,
-                ***REMOVED***
-                  cond: ***REMOVED*** type: "deadlineValid" ***REMOVED***,
+                },
+                {
+                  cond: { type: "deadlineValid" },
                   target: "promptDescription",
                   actions: "saveDeadline"
-                ***REMOVED***
+                }
               ]
-            ***REMOVED***
-          ***REMOVED***,
-          promptDescription: ***REMOVED***
-            invoke: ***REMOVED***
+            }
+          },
+          promptDescription: {
+            invoke: {
               id: "promptDescription",
               src: "promptDescription",
-              onDone: ***REMOVED***
+              onDone: {
                 target: "waitingDescription"
-              ***REMOVED***
-            ***REMOVED***
-          ***REMOVED***,
-          waitingDescription: ***REMOVED***
+              }
+            }
+          },
+          waitingDescription: {
             entry: ["resetDescription"],
-            on: ***REMOVED***
+            on: {
               RECEIVED_UPDATE: [
-                ***REMOVED***
+                {
                   cond: "isEventBack",
                   target: "promptDeadline"
-                ***REMOVED***,
-                ***REMOVED***
+                },
+                {
                   target: "promptRequirements",
                   actions: "saveDescription",
-                  cond: ***REMOVED*** type: "descriptionValid" ***REMOVED***
-                ***REMOVED***
+                  cond: { type: "descriptionValid" }
+                }
               ]
-            ***REMOVED***
-          ***REMOVED***,
-          promptRequirements: ***REMOVED***
-            invoke: ***REMOVED***
+            }
+          },
+          promptRequirements: {
+            invoke: {
               id: "promptRequirements",
               src: "promptRequirements",
-              onDone: ***REMOVED***
+              onDone: {
                 target: "waitingRequirements"
-              ***REMOVED***
-            ***REMOVED***
-          ***REMOVED***,
-          waitingRequirements: ***REMOVED***
+              }
+            }
+          },
+          waitingRequirements: {
             entry: ["resetRequirements"],
-            on: ***REMOVED***
+            on: {
               RECEIVED_UPDATE: [
-                ***REMOVED***
+                {
                   cond: "isEventBack",
                   target: "promptDescription"
-                ***REMOVED***,
-                ***REMOVED***
-                  cond: ***REMOVED*** type: "isEventSkip" ***REMOVED***,
+                },
+                {
+                  cond: { type: "isEventSkip" },
                   target: "promptResponsibilities"
-                ***REMOVED***,
-                ***REMOVED***
+                },
+                {
                   target: "promptResponsibilities",
                   actions: "saveRequirements"
-                ***REMOVED***
+                }
               ]
-            ***REMOVED***
-          ***REMOVED***,
-          promptResponsibilities: ***REMOVED***
-            invoke: ***REMOVED***
+            }
+          },
+          promptResponsibilities: {
+            invoke: {
               id: "promptResponsibilities",
               src: "promptResponsibilities",
-              onDone: ***REMOVED***
+              onDone: {
                 target: "waitingResponsibilities"
-              ***REMOVED***
-            ***REMOVED***
-          ***REMOVED***,
-          waitingResponsibilities: ***REMOVED***
+              }
+            }
+          },
+          waitingResponsibilities: {
             entry: ["resetResponsibilities"],
-            on: ***REMOVED***
+            on: {
               RECEIVED_UPDATE: [
-                ***REMOVED***
+                {
                   cond: "isEventBack",
                   target: "promptRequirements"
-                ***REMOVED***,
-                ***REMOVED***
-                  cond: ***REMOVED*** type: "isEventSkip" ***REMOVED***,
+                },
+                {
+                  cond: { type: "isEventSkip" },
                   target: "promptHowToApply"
-                ***REMOVED***,
-                ***REMOVED***
+                },
+                {
                   target: "promptHowToApply",
                   actions: "saveResponsibilities"
-                ***REMOVED***
+                }
               ]
-            ***REMOVED***
-          ***REMOVED***,
-          promptHowToApply: ***REMOVED***
-            invoke: ***REMOVED***
+            }
+          },
+          promptHowToApply: {
+            invoke: {
               id: "promptHowToApply",
               src: "promptHowToApply",
-              onDone: ***REMOVED***
+              onDone: {
                 target: "waitingHowToApply"
-              ***REMOVED***
-            ***REMOVED***
-          ***REMOVED***,
-          waitingHowToApply: ***REMOVED***
+              }
+            }
+          },
+          waitingHowToApply: {
             entry: ["resetHowToApply"],
-            on: ***REMOVED***
+            on: {
               RECEIVED_UPDATE: [
-                ***REMOVED***
+                {
                   cond: "isEventBack",
                   target: "promptResponsibilities"
-                ***REMOVED***,
-                ***REMOVED***
-                  cond: ***REMOVED*** type: "isEventSkip" ***REMOVED***,
+                },
+                {
+                  cond: { type: "isEventSkip" },
                   target: "promptApplyMethodChoice"
-                ***REMOVED***,
-                ***REMOVED***
+                },
+                {
                   target: "promptApplyMethodChoice",
                   actions: "saveHowToApply"
-                ***REMOVED***
+                }
               ]
-            ***REMOVED***
-          ***REMOVED***,
-          promptApplyMethodChoice: ***REMOVED***
-            invoke: ***REMOVED***
+            }
+          },
+          promptApplyMethodChoice: {
+            invoke: {
               id: "promptApplyMethodChoice",
               src: "promptApplyMethodChoice",
-              onDone: ***REMOVED***
+              onDone: {
                 target: "waitingForApplyMethodChoice"
-              ***REMOVED***
-            ***REMOVED***
-          ***REMOVED***,
-          waitingForApplyMethodChoice: ***REMOVED***
+              }
+            }
+          },
+          waitingForApplyMethodChoice: {
             entry: ["resetApplyUrl", "resetApplyEmail"],
-            on: ***REMOVED***
+            on: {
               RECEIVED_UPDATE: [
-                ***REMOVED***
+                {
                   cond: "isEventBack",
                   target: "promptHowToApply"
-                ***REMOVED***,
-                ***REMOVED***
-                  cond: ***REMOVED*** type: "isEventSkip" ***REMOVED***,
+                },
+                {
+                  cond: { type: "isEventSkip" },
                   target: "promptIsCompanyJob"
-                ***REMOVED***,
-                ***REMOVED***
-                  cond: ***REMOVED*** type: "isEventApplyTelegram" ***REMOVED***,
+                },
+                {
+                  cond: { type: "isEventApplyTelegram" },
                   target: "promptIsCompanyJob",
                   actions: "saveTelegramApplyUrl"
-                ***REMOVED***,
-                ***REMOVED***
-                  cond: ***REMOVED*** type: "isEventApplyEmail" ***REMOVED***,
+                },
+                {
+                  cond: { type: "isEventApplyEmail" },
                   target: "promptApplyEmail"
-                ***REMOVED***,
-                ***REMOVED***
-                  cond: ***REMOVED*** type: "isEventApplyUrl" ***REMOVED***,
+                },
+                {
+                  cond: { type: "isEventApplyUrl" },
                   target: "promptApplyUrl"
-                ***REMOVED***
+                }
               ]
-            ***REMOVED***
-          ***REMOVED***,
-          promptApplyEmail: ***REMOVED***
-            invoke: ***REMOVED***
+            }
+          },
+          promptApplyEmail: {
+            invoke: {
               id: "promptApplyEmail",
               src: "promptApplyEmail",
-              onDone: ***REMOVED***
+              onDone: {
                 target: "waitingApplyEmail"
-              ***REMOVED***
-            ***REMOVED***
-          ***REMOVED***,
-          waitingApplyEmail: ***REMOVED***
-            on: ***REMOVED***
+              }
+            }
+          },
+          waitingApplyEmail: {
+            on: {
               RECEIVED_UPDATE: [
-                ***REMOVED***
+                {
                   cond: "isEventBack",
                   target: "promptApplyMethodChoice"
-                ***REMOVED***,
-                ***REMOVED***
-                  cond: ***REMOVED*** type: "applyEmailValid" ***REMOVED***,
+                },
+                {
+                  cond: { type: "applyEmailValid" },
                   target: "promptIsCompanyJob",
                   actions: "saveApplyEmail"
-                ***REMOVED***
+                }
               ]
-            ***REMOVED***
-          ***REMOVED***,
-          promptApplyUrl: ***REMOVED***
-            invoke: ***REMOVED***
+            }
+          },
+          promptApplyUrl: {
+            invoke: {
               id: "promptApplyUrl",
               src: "promptApplyUrl",
-              onDone: ***REMOVED***
+              onDone: {
                 target: "waitingApplyUrl"
-              ***REMOVED***
-            ***REMOVED***
-          ***REMOVED***,
-          waitingApplyUrl: ***REMOVED***
-            on: ***REMOVED***
+              }
+            }
+          },
+          waitingApplyUrl: {
+            on: {
               RECEIVED_UPDATE: [
-                ***REMOVED***
+                {
                   cond: "isEventBack",
                   target: "promptApplyMethodChoice"
-                ***REMOVED***,
-                ***REMOVED***
+                },
+                {
                   target: "promptIsCompanyJob",
                   actions: "saveApplyUrl"
-                ***REMOVED***
+                }
               ]
-            ***REMOVED***
-          ***REMOVED***,
-          promptIsCompanyJob: ***REMOVED***
-            invoke: ***REMOVED***
+            }
+          },
+          promptIsCompanyJob: {
+            invoke: {
               id: "promptIsCompanyJob",
               src: "promptIsCompanyJob",
-              onDone: ***REMOVED***
+              onDone: {
                 target: "waitingIsCompanyJob"
-              ***REMOVED***
-            ***REMOVED***
-          ***REMOVED***,
-          waitingIsCompanyJob: ***REMOVED***
-            on: ***REMOVED***
+              }
+            }
+          },
+          waitingIsCompanyJob: {
+            on: {
               RECEIVED_UPDATE: [
-                ***REMOVED***
+                {
                   cond: "isEventBack",
                   target: "promptApplyMethodChoice"
-                ***REMOVED***,
-                ***REMOVED***
+                },
+                {
                   cond: "isEventYes",
                   target: "getUserCompanies"
-                ***REMOVED***,
-                ***REMOVED***
+                },
+                {
                   cond: "isEventNo",
                   target: "savingJob"
-                ***REMOVED***
+                }
               ]
-            ***REMOVED***
-          ***REMOVED***,
-          getUserCompanies: ***REMOVED***
-            invoke: ***REMOVED***
+            }
+          },
+          getUserCompanies: {
+            invoke: {
               id: "getUserCompanies",
               src: "getUserCompanies",
               onDone: [
-                ***REMOVED***
+                {
                   cond: "userHasCompanies",
                   target: "promptChooseCompany",
                   actions: "saveMyCompanies"
-                ***REMOVED***,
-                ***REMOVED***
+                },
+                {
                   target: "promptCompanyName"
-                ***REMOVED***
+                }
               ]
-            ***REMOVED***
-          ***REMOVED***,
-          promptChooseCompany: ***REMOVED***
-            invoke: ***REMOVED***
+            }
+          },
+          promptChooseCompany: {
+            invoke: {
               id: "promptChooseCompany",
               src: "promptChooseCompany",
-              onDone: ***REMOVED***
+              onDone: {
                 target: "waitingCompanyChoice"
-              ***REMOVED***
-            ***REMOVED***
-          ***REMOVED***,
-          waitingCompanyChoice: ***REMOVED***
+              }
+            }
+          },
+          waitingCompanyChoice: {
             entry: ["resetCompanyId"],
-            on: ***REMOVED***
+            on: {
               RECEIVED_UPDATE: [
-                ***REMOVED***
+                {
                   cond: "isEventBack",
                   target: "promptIsCompanyJob"
-                ***REMOVED***,
-                ***REMOVED***
+                },
+                {
                   cond: "isEventAddCompany",
                   target: "promptCompanyName"
-                ***REMOVED***,
-                ***REMOVED***
+                },
+                {
                   cond: "chosenCompanyValid",
                   target: "savingJob",
                   actions: "saveCompanyId"
-                ***REMOVED***
+                }
               ]
-            ***REMOVED***
-          ***REMOVED***,
-          promptCompanyName: ***REMOVED***
-            invoke: ***REMOVED***
+            }
+          },
+          promptCompanyName: {
+            invoke: {
               id: "promptCompanyName",
               src: "promptCompanyName",
-              onDone: ***REMOVED***
+              onDone: {
                 target: "waitingCompanyName"
-              ***REMOVED***
-            ***REMOVED***
-          ***REMOVED***,
-          waitingCompanyName: ***REMOVED***
+              }
+            }
+          },
+          waitingCompanyName: {
             entry: ["resetCompanyName"],
-            on: ***REMOVED***
+            on: {
               RECEIVED_UPDATE: [
-                ***REMOVED***
+                {
                   cond: "isEventBack",
                   target: "promptIsCompanyJob"
-                ***REMOVED***,
-                ***REMOVED***
+                },
+                {
                   cond: "companyNameValid",
                   target: "promptCompanyEmail",
                   actions: "saveCompanyName"
-                ***REMOVED***
+                }
               ]
-            ***REMOVED***
-          ***REMOVED***,
-          promptCompanyEmail: ***REMOVED***
-            invoke: ***REMOVED***
+            }
+          },
+          promptCompanyEmail: {
+            invoke: {
               id: "promptCompanyEmail",
               src: "promptCompanyEmail",
-              onDone: ***REMOVED***
+              onDone: {
                 target: "waitingCompanyEmail"
-              ***REMOVED***
-            ***REMOVED***
-          ***REMOVED***,
-          waitingCompanyEmail: ***REMOVED***
+              }
+            }
+          },
+          waitingCompanyEmail: {
             entry: ["resetCompanyEmail"],
-            on: ***REMOVED***
+            on: {
               RECEIVED_UPDATE: [
-                ***REMOVED***
+                {
                   cond: "isEventBack",
                   target: "promptCompanyName"
-                ***REMOVED***,
-                ***REMOVED***
+                },
+                {
                   cond: "companyEmailValid",
                   target: "savingJob",
                   actions: "saveCompanyEmail"
-                ***REMOVED***
+                }
               ]
-            ***REMOVED***
-          ***REMOVED***,
-          savingJob: ***REMOVED***
-            invoke: ***REMOVED***
+            }
+          },
+          savingJob: {
+            invoke: {
               id: "saveJob",
               src: "saveJob",
-              onDone: ***REMOVED***
+              onDone: {
                 target: "#telegramBotMachine.promptMainMenu"
-              ***REMOVED***,
-              onError: ***REMOVED***
+              },
+              onError: {
                 target: "errorSavingJob"
-              ***REMOVED***
-            ***REMOVED***
-          ***REMOVED***,
-          errorSavingJob: ***REMOVED***
-            invoke: ***REMOVED***
+              }
+            }
+          },
+          errorSavingJob: {
+            invoke: {
               id: "errorSavingJob",
               src: "promptErrorSavingJob",
-              onDone: ***REMOVED***
+              onDone: {
                 target: "waitingErrorSavingJobReply"
-              ***REMOVED***
-            ***REMOVED***
-          ***REMOVED***,
-          waitingErrorSavingJobReply: ***REMOVED***
-            on: ***REMOVED***
+              }
+            }
+          },
+          waitingErrorSavingJobReply: {
+            on: {
               RECEIVED_UPDATE: [
-                ***REMOVED***
+                {
                   cond: "isEventBack",
                   target: "promptIsCompanyJob"
-                ***REMOVED***,
-                ***REMOVED***
+                },
+                {
                   cond: "isEventRetry",
                   target: "savingJob"
-                ***REMOVED***
+                }
               ]
-            ***REMOVED***
-          ***REMOVED***
-        ***REMOVED***
-      ***REMOVED***
-    ***REMOVED***
-  ***REMOVED***,
-  ***REMOVED***
-    guards: ***REMOVED***
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    guards: {
       isEventBack: checkTelegramMessageEvent(MESSAGE_BACK),
       isEventPostJob: checkTelegramMessageEvent(MESSAGE_POST_JOB),
       isEventMyJobs: checkTelegramMessageEvent(MESSAGE_MY_JOBS),
       isEventSkip: checkTelegramMessageEvent(MESSAGE_SKIP),
-      isEventApplyTelegram: (context, event) => ***REMOVED***
+      isEventApplyTelegram: (context, event) => {
         return (
           !!context.telegramUsername &&
           event.update &&
           event.update.message &&
           event.update.message.text === MESSAGE_APPLY_TELEGRAM
         );
-      ***REMOVED***,
+      },
       isEventApplyEmail: checkTelegramMessageEvent(MESSAGE_APPLY_EMAIL),
       isEventApplyUrl: checkTelegramMessageEvent(MESSAGE_APPLY_URL),
       isEventYes: checkTelegramMessageEvent(MESSAGE_YES),
       isEventNo: checkTelegramMessageEvent(MESSAGE_NO),
       isEventAddCompany: checkTelegramMessageEvent(MESSAGE_ADD_COMPANY),
       isEventRetry: checkTelegramMessageEvent(MESSAGE_RETRY),
-      titleValid: (context, event) => ***REMOVED***
+      titleValid: (context, event) => {
         const message = event.update && event.update.message;
         return validation.positionValidator.isValidSync(message.text);
-      ***REMOVED***,
-      jobTypeValid: (context, event) => ***REMOVED***
+      },
+      jobTypeValid: (context, event) => {
         const message = event.update && event.update.message;
         return validation.jobTypeValidator.isValidSync(message.text);
-      ***REMOVED***,
-      careerLevelValid: (context, event) => ***REMOVED***
+      },
+      careerLevelValid: (context, event) => {
         const message = event.update && event.update.message;
         const level = utils.careerLevels.find(
           level => level.label === message.text
         );
         return !!level && validation.careerLevelValidator.isValidSync(level.id);
-      ***REMOVED***,
-      tagsValid: (context, event) => ***REMOVED***
+      },
+      tagsValid: (context, event) => {
         const message = event.update && event.update.message;
         const tags = utils.parseTags(message.text);
         return tags.length > 0;
-      ***REMOVED***,
-      deadlineValid: (context, event) => ***REMOVED***
+      },
+      deadlineValid: (context, event) => {
         const message = event.update && event.update.message;
         return validation.deadlineValidator.isValidSync(message.text);
-      ***REMOVED***,
-      descriptionValid: (context, event) => ***REMOVED***
+      },
+      descriptionValid: (context, event) => {
         const message = event.update && event.update.message;
         return validation.descriptionValidator.isValidSync(message.text);
-      ***REMOVED***,
-      applyEmailValid: (context, event) => ***REMOVED***
+      },
+      applyEmailValid: (context, event) => {
         const message = event.update && event.update.message;
         return validation.applyEmailValidator.isValidSync(message.text);
-      ***REMOVED***,
-      userHasCompanies: (context, event) => ***REMOVED***
+      },
+      userHasCompanies: (context, event) => {
         const companies = event.data;
         return companies.length > 0;
-      ***REMOVED***,
-      chosenCompanyValid: (context, event) => ***REMOVED***
+      },
+      chosenCompanyValid: (context, event) => {
         const message = event.update && event.update.message;
         const companyId = parseInt(message.text.split("-")[0]);
         return (
           context.companies.findIndex(company => company.id === companyId) !==
           -1
         );
-      ***REMOVED***,
-      companyNameValid: (context, event) => ***REMOVED***
+      },
+      companyNameValid: (context, event) => {
         const message = event.update && event.update.message;
         return validation.companyNameValidator.isValidSync(message.text);
-      ***REMOVED***,
-      companyEmailValid: (context, event) => ***REMOVED***
+      },
+      companyEmailValid: (context, event) => {
         const message = event.update && event.update.message;
         return validation.companyEmailValidator.isValidSync(message.text);
-      ***REMOVED***,
-      isValidApprovalStatus: (context, event) => ***REMOVED***
+      },
+      isValidApprovalStatus: (context, event) => {
         const message = event.update && event.update.message;
         return APPROVAL_STATUS_MESSAGES.indexOf(message.text) !== -1;
-      ***REMOVED***
-    ***REMOVED***,
-    actions: ***REMOVED***
-      saveTitle: assign(***REMOVED***
+      }
+    },
+    actions: {
+      saveTitle: assign({
         position: (context, event) => event.update.message.text
-      ***REMOVED***),
+      }),
       resetTitle: resetContextField("position"),
-      saveJobType: assign(***REMOVED***
+      saveJobType: assign({
         jobType: (context, event) => event.update.message.text
-      ***REMOVED***),
+      }),
       resetJobType: resetContextField("jobType"),
-      saveCareerLevel: assign(***REMOVED***
-        careerLevel: (context, event) => ***REMOVED***
+      saveCareerLevel: assign({
+        careerLevel: (context, event) => {
           const level = utils.careerLevels.find(
             level => level.label === event.update.message.text
           );
           return level && level.id;
-        ***REMOVED***
-      ***REMOVED***),
+        }
+      }),
       resetCareerLevel: resetContextField("careerLevel"),
-      saveLocation: assign(***REMOVED***
+      saveLocation: assign({
         location: (context, event) => event.update.message.text
-      ***REMOVED***),
+      }),
       resetLocation: resetContextField("location"),
-      saveTags: assign(***REMOVED***
+      saveTags: assign({
         tags: (context, event) => utils.parseTags(event.update.message.text)
-      ***REMOVED***),
+      }),
       resetTags: resetContextField("tags"),
-      saveSalary: assign(***REMOVED***
+      saveSalary: assign({
         salary: (context, event) => event.update.message.text
-      ***REMOVED***),
+      }),
       resetSalary: resetContextField("salary"),
-      saveDeadline: assign(***REMOVED***
+      saveDeadline: assign({
         deadline: (context, event) => event.update.message.text
-      ***REMOVED***),
+      }),
       resetDeadline: resetContextField("deadline"),
-      saveDescription: assign(***REMOVED***
+      saveDescription: assign({
         description: (context, event) => event.update.message.text
-      ***REMOVED***),
+      }),
       resetDescription: resetContextField("description"),
-      saveRequirements: assign(***REMOVED***
+      saveRequirements: assign({
         requirements: (context, event) => event.update.message.text
-      ***REMOVED***),
+      }),
       resetRequirements: resetContextField("requirements"),
-      saveResponsibilities: assign(***REMOVED***
+      saveResponsibilities: assign({
         responsibilities: (context, event) => event.update.message.text
-      ***REMOVED***),
+      }),
       resetResponsibilities: resetContextField("responsibilities"),
-      saveHowToApply: assign(***REMOVED***
+      saveHowToApply: assign({
         howToApply: (context, event) => event.update.message.text
-      ***REMOVED***),
+      }),
       resetHowToApply: resetContextField("howToApply"),
-      saveTelegramApplyUrl: assign(***REMOVED***
-        applyUrl: (context, event) => ***REMOVED***
-          return `https://t.me/$***REMOVED***context.telegramUsername***REMOVED***`;
-        ***REMOVED***
-      ***REMOVED***),
-      saveApplyEmail: assign(***REMOVED***
+      saveTelegramApplyUrl: assign({
+        applyUrl: (context, event) => {
+          return `https://t.me/${context.telegramUsername}`;
+        }
+      }),
+      saveApplyEmail: assign({
         applyEmail: (context, event) => event.update.message.text
-      ***REMOVED***),
+      }),
       resetApplyEmail: resetContextField("applyEmail"),
-      saveApplyUrl: assign(***REMOVED***
+      saveApplyUrl: assign({
         applyUrl: (context, event) => event.update.message.text
-      ***REMOVED***),
+      }),
       resetApplyUrl: resetContextField("applyUrl"),
-      saveMyCompanies: assign(***REMOVED***
+      saveMyCompanies: assign({
         companies: (context, event) => event.data
-      ***REMOVED***),
+      }),
       resetCompanies: resetContextField("companies"),
-      saveCompanyId: assign(***REMOVED***
-        companyId: (context, event) => ***REMOVED***
+      saveCompanyId: assign({
+        companyId: (context, event) => {
           return parseInt(event.update.message.text.split("-")[0]);
-        ***REMOVED***
-      ***REMOVED***),
+        }
+      }),
       resetCompanyId: resetContextField("companyId"),
-      saveCompanyName: assign(***REMOVED***
+      saveCompanyName: assign({
         companyName: (context, event) => event.update.message.text
-      ***REMOVED***),
+      }),
       resetCompanyName: resetContextField("companyName"),
-      saveCompanyEmail: assign(***REMOVED***
+      saveCompanyEmail: assign({
         companyEmail: (context, event) => event.update.message.text
-      ***REMOVED***),
+      }),
       resetCompanyEmail: resetContextField("companyEmail"),
-      setApprovalStatus: assign(***REMOVED***
-        currentApprovalStatus: (context, event) => ***REMOVED***
+      setApprovalStatus: assign({
+        currentApprovalStatus: (context, event) => {
           return MESSAGE_APPROVAL_STATUS_MAP[event.update.message.text];
-        ***REMOVED***
-      ***REMOVED***)
-    ***REMOVED***,
-    services: ***REMOVED***
-      promptMainMenu: async context => ***REMOVED***
+        }
+      })
+    },
+    services: {
+      promptMainMenu: async context => {
         await telegramBot.sendMessage(
           context.telegramUserId,
           "Choose an option",
-          ***REMOVED***
-            replyMarkup: ***REMOVED***
+          {
+            replyMarkup: {
               keyboard: [
-                [***REMOVED*** text: MESSAGE_POST_JOB ***REMOVED***, ***REMOVED*** text: MESSAGE_MY_JOBS ***REMOVED***]
+                [{ text: MESSAGE_POST_JOB }, { text: MESSAGE_MY_JOBS }]
               ],
               resize_keyboard: true
-            ***REMOVED***
-          ***REMOVED***
+            }
+          }
         );
-      ***REMOVED***,
-      promptTitle: async context => ***REMOVED***
+      },
+      promptTitle: async context => {
         await telegramBot.sendMessage(
           context.telegramUserId,
           "Enter the job title",
-          ***REMOVED***
-            replyMarkup: ***REMOVED***
-              keyboard: [[***REMOVED*** text: MESSAGE_BACK_TO_MAIN_MENU ***REMOVED***]],
+          {
+            replyMarkup: {
+              keyboard: [[{ text: MESSAGE_BACK_TO_MAIN_MENU }]],
               resize_keyboard: true
-            ***REMOVED***
-          ***REMOVED***
+            }
+          }
         );
-      ***REMOVED***,
-      promptJobType: async context => ***REMOVED***
+      },
+      promptJobType: async context => {
         await telegramBot.sendMessage(
           context.telegramUserId,
           "Choose Job Type",
-          ***REMOVED***
-            replyMarkup: ***REMOVED***
+          {
+            replyMarkup: {
               keyboard: _.chunk(
-                utils.jobTypes.map(jobType => (***REMOVED*** text: jobType ***REMOVED***)),
+                utils.jobTypes.map(jobType => ({ text: jobType })),
                 3
               ).concat([
-                [***REMOVED*** text: MESSAGE_BACK ***REMOVED***],
-                [***REMOVED*** text: MESSAGE_BACK_TO_MAIN_MENU ***REMOVED***]
+                [{ text: MESSAGE_BACK }],
+                [{ text: MESSAGE_BACK_TO_MAIN_MENU }]
               ]),
               resize_keyboard: true
-            ***REMOVED***
-          ***REMOVED***
+            }
+          }
         );
-      ***REMOVED***,
-      promptCareerLevel: async context => ***REMOVED***
+      },
+      promptCareerLevel: async context => {
         await telegramBot.sendMessage(
           context.telegramUserId,
           "Choose the job's required level of experience",
-          ***REMOVED***
-            replyMarkup: ***REMOVED***
+          {
+            replyMarkup: {
               keyboard: _.chunk(
-                utils.careerLevels.map(careerLevel => (***REMOVED***
+                utils.careerLevels.map(careerLevel => ({
                   text: careerLevel.label
-                ***REMOVED***)),
+                })),
                 1
               ).concat([
-                [***REMOVED*** text: MESSAGE_BACK ***REMOVED***],
-                [***REMOVED*** text: MESSAGE_BACK_TO_MAIN_MENU ***REMOVED***]
+                [{ text: MESSAGE_BACK }],
+                [{ text: MESSAGE_BACK_TO_MAIN_MENU }]
               ]),
               resize_keyboard: true
-            ***REMOVED***
-          ***REMOVED***
+            }
+          }
         );
-      ***REMOVED***,
-      promptLocation: async context => ***REMOVED***
+      },
+      promptLocation: async context => {
         await telegramBot.sendMessage(
           context.telegramUserId,
           "Enter job location",
-          ***REMOVED***
-            replyMarkup: ***REMOVED***
+          {
+            replyMarkup: {
               keyboard: [
-                [***REMOVED*** text: MESSAGE_BACK ***REMOVED***, ***REMOVED*** text: MESSAGE_SKIP ***REMOVED***],
-                [***REMOVED*** text: MESSAGE_BACK_TO_MAIN_MENU ***REMOVED***]
+                [{ text: MESSAGE_BACK }, { text: MESSAGE_SKIP }],
+                [{ text: MESSAGE_BACK_TO_MAIN_MENU }]
               ],
               resize_keyboard: true
-            ***REMOVED***
-          ***REMOVED***
+            }
+          }
         );
-      ***REMOVED***,
-      promptTags: async context => ***REMOVED***
+      },
+      promptTags: async context => {
         await telegramBot.sendMessage(
           context.telegramUserId,
           `Please enter some tags(at least one) that describe the job *(separated by comma)*
           
 E.g. Accounting, NGO, Information Technology, Driver, Messenger etc.`,
-          ***REMOVED***
+          {
             parseMode: "Markdown",
-            replyMarkup: ***REMOVED***
+            replyMarkup: {
               keyboard: [
-                [***REMOVED*** text: MESSAGE_BACK ***REMOVED***],
-                [***REMOVED*** text: MESSAGE_BACK_TO_MAIN_MENU ***REMOVED***]
+                [{ text: MESSAGE_BACK }],
+                [{ text: MESSAGE_BACK_TO_MAIN_MENU }]
               ],
               resize_keyboard: true
-            ***REMOVED***
-          ***REMOVED***
+            }
+          }
         );
-      ***REMOVED***,
-      promptSalary: async context => ***REMOVED***
+      },
+      promptSalary: async context => {
         await telegramBot.sendMessage(
           context.telegramUserId,
           `Enter Salary
           
 _(Salary is not required, but recommended for better job visibility)_`,
-          ***REMOVED***
+          {
             parseMode: "Markdown",
-            replyMarkup: ***REMOVED***
+            replyMarkup: {
               keyboard: [
-                [***REMOVED*** text: MESSAGE_BACK ***REMOVED***, ***REMOVED*** text: MESSAGE_SKIP ***REMOVED***],
-                [***REMOVED*** text: MESSAGE_BACK_TO_MAIN_MENU ***REMOVED***]
+                [{ text: MESSAGE_BACK }, { text: MESSAGE_SKIP }],
+                [{ text: MESSAGE_BACK_TO_MAIN_MENU }]
               ],
               resize_keyboard: true
-            ***REMOVED***
-          ***REMOVED***
+            }
+          }
         );
-      ***REMOVED***,
-      promptDeadline: async context => ***REMOVED***
+      },
+      promptDeadline: async context => {
         await telegramBot.sendMessage(
           context.telegramUserId,
           `Enter Application Deadline
           
 _(Format YYYY-MM-DD E.g. 2020-02-23)_`,
-          ***REMOVED***
+          {
             parseMode: "Markdown",
-            replyMarkup: ***REMOVED***
+            replyMarkup: {
               keyboard: [
-                [***REMOVED*** text: MESSAGE_BACK ***REMOVED***, ***REMOVED*** text: MESSAGE_SKIP ***REMOVED***],
-                [***REMOVED*** text: MESSAGE_BACK_TO_MAIN_MENU ***REMOVED***]
+                [{ text: MESSAGE_BACK }, { text: MESSAGE_SKIP }],
+                [{ text: MESSAGE_BACK_TO_MAIN_MENU }]
               ],
               resize_keyboard: true
-            ***REMOVED***
-          ***REMOVED***
+            }
+          }
         );
-      ***REMOVED***,
-      promptDescription: async context => ***REMOVED***
+      },
+      promptDescription: async context => {
         await telegramBot.sendMessage(
           context.telegramUserId,
           `Enter Job Description
           
 (Supports [Markdown](https://www.markdownguide.org/basic-syntax/))`,
-          ***REMOVED***
+          {
             parseMode: "Markdown",
-            replyMarkup: ***REMOVED***
+            replyMarkup: {
               keyboard: [
-                [***REMOVED*** text: MESSAGE_BACK ***REMOVED***],
-                [***REMOVED*** text: MESSAGE_BACK_TO_MAIN_MENU ***REMOVED***]
+                [{ text: MESSAGE_BACK }],
+                [{ text: MESSAGE_BACK_TO_MAIN_MENU }]
               ],
               resize_keyboard: true
-            ***REMOVED***
-          ***REMOVED***
+            }
+          }
         );
-      ***REMOVED***,
-      promptRequirements: async context => ***REMOVED***
+      },
+      promptRequirements: async context => {
         await telegramBot.sendMessage(
           context.telegramUserId,
           `Enter Job Requirements
           
 (Supports [Markdown](https://www.markdownguide.org/basic-syntax/))`,
-          ***REMOVED***
+          {
             parseMode: "Markdown",
-            replyMarkup: ***REMOVED***
+            replyMarkup: {
               keyboard: [
-                [***REMOVED*** text: MESSAGE_BACK ***REMOVED***, ***REMOVED*** text: MESSAGE_SKIP ***REMOVED***],
-                [***REMOVED*** text: MESSAGE_BACK_TO_MAIN_MENU ***REMOVED***]
+                [{ text: MESSAGE_BACK }, { text: MESSAGE_SKIP }],
+                [{ text: MESSAGE_BACK_TO_MAIN_MENU }]
               ],
               resize_keyboard: true
-            ***REMOVED***
-          ***REMOVED***
+            }
+          }
         );
-      ***REMOVED***,
-      promptResponsibilities: async context => ***REMOVED***
+      },
+      promptResponsibilities: async context => {
         await telegramBot.sendMessage(
           context.telegramUserId,
           `Enter Job Responsibilities
           
 (Supports [Markdown](https://www.markdownguide.org/basic-syntax/))`,
-          ***REMOVED***
+          {
             parseMode: "Markdown",
-            replyMarkup: ***REMOVED***
+            replyMarkup: {
               keyboard: [
-                [***REMOVED*** text: MESSAGE_BACK ***REMOVED***, ***REMOVED*** text: MESSAGE_SKIP ***REMOVED***],
-                [***REMOVED*** text: MESSAGE_BACK_TO_MAIN_MENU ***REMOVED***]
+                [{ text: MESSAGE_BACK }, { text: MESSAGE_SKIP }],
+                [{ text: MESSAGE_BACK_TO_MAIN_MENU }]
               ],
               resize_keyboard: true
-            ***REMOVED***
-          ***REMOVED***
+            }
+          }
         );
-      ***REMOVED***,
-      promptHowToApply: async context => ***REMOVED***
+      },
+      promptHowToApply: async context => {
         await telegramBot.sendMessage(
           context.telegramUserId,
           `Enter instructions for interested applicants on how they can apply for the job.
           
 (Supports [Markdown](https://www.markdownguide.org/basic-syntax/))`,
-          ***REMOVED***
+          {
             parseMode: "Markdown",
-            replyMarkup: ***REMOVED***
+            replyMarkup: {
               keyboard: [
-                [***REMOVED*** text: MESSAGE_BACK ***REMOVED***, ***REMOVED*** text: MESSAGE_SKIP ***REMOVED***],
-                [***REMOVED*** text: MESSAGE_BACK_TO_MAIN_MENU ***REMOVED***]
+                [{ text: MESSAGE_BACK }, { text: MESSAGE_SKIP }],
+                [{ text: MESSAGE_BACK_TO_MAIN_MENU }]
               ],
               resize_keyboard: true
-            ***REMOVED***
-          ***REMOVED***
+            }
+          }
         );
-      ***REMOVED***,
-      promptApplyMethodChoice: async context => ***REMOVED***
-        const ***REMOVED*** telegramUsername ***REMOVED*** = context;
+      },
+      promptApplyMethodChoice: async context => {
+        const { telegramUsername } = context;
         await telegramBot.sendMessage(
           context.telegramUserId,
           `Allow candidates to apply via telegram, email or throgh a custom url?`,
-          ***REMOVED***
-            replyMarkup: ***REMOVED***
+          {
+            replyMarkup: {
               keyboard: [
                 ...(telegramUsername
-                  ? [[***REMOVED*** text: MESSAGE_APPLY_TELEGRAM ***REMOVED***]]
+                  ? [[{ text: MESSAGE_APPLY_TELEGRAM }]]
                   : []),
-                [***REMOVED*** text: MESSAGE_APPLY_EMAIL ***REMOVED***, ***REMOVED*** text: MESSAGE_APPLY_URL ***REMOVED***],
-                [***REMOVED*** text: MESSAGE_BACK ***REMOVED***, ***REMOVED*** text: MESSAGE_SKIP ***REMOVED***],
-                [***REMOVED*** text: MESSAGE_BACK_TO_MAIN_MENU ***REMOVED***]
+                [{ text: MESSAGE_APPLY_EMAIL }, { text: MESSAGE_APPLY_URL }],
+                [{ text: MESSAGE_BACK }, { text: MESSAGE_SKIP }],
+                [{ text: MESSAGE_BACK_TO_MAIN_MENU }]
               ],
               resize_keyboard: true
-            ***REMOVED***
-          ***REMOVED***
+            }
+          }
         );
-      ***REMOVED***,
-      promptApplyEmail: async context => ***REMOVED***
+      },
+      promptApplyEmail: async context => {
         await telegramBot.sendMessage(
           context.telegramUserId,
           `Enter the email address where interested candidates can apply to`,
-          ***REMOVED***
-            replyMarkup: ***REMOVED***
+          {
+            replyMarkup: {
               keyboard: [
-                [***REMOVED*** text: MESSAGE_BACK ***REMOVED***],
-                [***REMOVED*** text: MESSAGE_BACK_TO_MAIN_MENU ***REMOVED***]
+                [{ text: MESSAGE_BACK }],
+                [{ text: MESSAGE_BACK_TO_MAIN_MENU }]
               ],
               resize_keyboard: true
-            ***REMOVED***
-          ***REMOVED***
+            }
+          }
         );
-      ***REMOVED***,
-      promptApplyUrl: async context => ***REMOVED***
+      },
+      promptApplyUrl: async context => {
         await telegramBot.sendMessage(
           context.telegramUserId,
           `Enter the application url where interested candidates can apply to`,
-          ***REMOVED***
-            replyMarkup: ***REMOVED***
+          {
+            replyMarkup: {
               keyboard: [
-                [***REMOVED*** text: MESSAGE_BACK ***REMOVED***],
-                [***REMOVED*** text: MESSAGE_BACK_TO_MAIN_MENU ***REMOVED***]
+                [{ text: MESSAGE_BACK }],
+                [{ text: MESSAGE_BACK_TO_MAIN_MENU }]
               ],
               resize_keyboard: true
-            ***REMOVED***
-          ***REMOVED***
+            }
+          }
         );
-      ***REMOVED***,
-      promptIsCompanyJob: async context => ***REMOVED***
+      },
+      promptIsCompanyJob: async context => {
         await telegramBot.sendMessage(
           context.telegramUserId,
           `Is this job at a company/organization`,
-          ***REMOVED***
-            replyMarkup: ***REMOVED***
+          {
+            replyMarkup: {
               keyboard: [
-                [***REMOVED*** text: MESSAGE_YES ***REMOVED***, ***REMOVED*** text: MESSAGE_NO ***REMOVED***],
-                [***REMOVED*** text: MESSAGE_BACK ***REMOVED***],
-                [***REMOVED*** text: MESSAGE_BACK_TO_MAIN_MENU ***REMOVED***]
+                [{ text: MESSAGE_YES }, { text: MESSAGE_NO }],
+                [{ text: MESSAGE_BACK }],
+                [{ text: MESSAGE_BACK_TO_MAIN_MENU }]
               ],
               resize_keyboard: true
-            ***REMOVED***
-          ***REMOVED***
+            }
+          }
         );
-      ***REMOVED***,
-      getUserCompanies: async context => ***REMOVED***
-        if (!context.userId) ***REMOVED***
+      },
+      getUserCompanies: async context => {
+        if (!context.userId) {
           throw new Error("User not found");
-        ***REMOVED***
+        }
         const companies = await db.getCompanies(parseInt(context.userId));
         return companies;
-      ***REMOVED***,
-      promptChooseCompany: async context => ***REMOVED***
+      },
+      promptChooseCompany: async context => {
         const companies = await db.getCompanies(parseInt(context.userId));
         await telegramBot.sendMessage(
           context.telegramUserId,
           `Choose a company for this job`,
-          ***REMOVED***
-            replyMarkup: ***REMOVED***
+          {
+            replyMarkup: {
               keyboard: [
-                ...companies.map(company => ***REMOVED***
-                  return [***REMOVED*** text: `$***REMOVED***company.id***REMOVED***-$***REMOVED***company.name***REMOVED***` ***REMOVED***];
-                ***REMOVED***),
-                [***REMOVED*** text: MESSAGE_ADD_COMPANY ***REMOVED***],
-                [***REMOVED*** text: MESSAGE_BACK ***REMOVED***],
-                [***REMOVED*** text: MESSAGE_BACK_TO_MAIN_MENU ***REMOVED***]
+                ...companies.map(company => {
+                  return [{ text: `${company.id}-${company.name}` }];
+                }),
+                [{ text: MESSAGE_ADD_COMPANY }],
+                [{ text: MESSAGE_BACK }],
+                [{ text: MESSAGE_BACK_TO_MAIN_MENU }]
               ],
               resize_keyboard: true
-            ***REMOVED***
-          ***REMOVED***
+            }
+          }
         );
-      ***REMOVED***,
-      promptCompanyName: async context => ***REMOVED***
+      },
+      promptCompanyName: async context => {
         await telegramBot.sendMessage(
           context.telegramUserId,
           `Enter Company Name`,
-          ***REMOVED***
-            replyMarkup: ***REMOVED***
+          {
+            replyMarkup: {
               keyboard: [
-                [***REMOVED*** text: MESSAGE_BACK ***REMOVED***],
-                [***REMOVED*** text: MESSAGE_BACK_TO_MAIN_MENU ***REMOVED***]
+                [{ text: MESSAGE_BACK }],
+                [{ text: MESSAGE_BACK_TO_MAIN_MENU }]
               ],
               resize_keyboard: true
-            ***REMOVED***
-          ***REMOVED***
+            }
+          }
         );
-      ***REMOVED***,
-      promptCompanyEmail: async context => ***REMOVED***
+      },
+      promptCompanyEmail: async context => {
         await telegramBot.sendMessage(
           context.telegramUserId,
           `Enter Company Email Address
           
 _(Email is kept strictly confidential. Job applicants won't be able to see your company email)_`,
-          ***REMOVED***
+          {
             parseMode: "Markdown",
-            replyMarkup: ***REMOVED***
+            replyMarkup: {
               keyboard: [
-                [***REMOVED*** text: MESSAGE_BACK ***REMOVED***],
-                [***REMOVED*** text: MESSAGE_BACK_TO_MAIN_MENU ***REMOVED***]
+                [{ text: MESSAGE_BACK }],
+                [{ text: MESSAGE_BACK_TO_MAIN_MENU }]
               ],
               resize_keyboard: true
-            ***REMOVED***
-          ***REMOVED***
+            }
+          }
         );
-      ***REMOVED***,
-      saveJob: async context => ***REMOVED***
+      },
+      saveJob: async context => {
         const user = await db.getUserById(context.userId);
         const data = await jobHandler.createJob(user, context);
         await telegramBot.sendMessage(
           context.telegramUserId,
-          `🎉🎉🎉Job Successfully Created🎉🎉🎉. $***REMOVED***data.job.approvalStatus ===
-            "Pending" && `It will be live once it gets admin approval.`***REMOVED***
+          `🎉🎉🎉Job Successfully Created🎉🎉🎉. ${data.job.approvalStatus ===
+            "Pending" && `It will be live once it gets admin approval.`}
               
 You'll be notified once your job is live.`
         );
-      ***REMOVED***,
-      promptErrorSavingJob: async context => ***REMOVED***
+      },
+      promptErrorSavingJob: async context => {
         await telegramBot.sendMessage(
           context.telegramUserId,
           `🙈 Failed trying to save job. Press retry to try again. 😰`,
-          ***REMOVED***
-            replyMarkup: ***REMOVED***
+          {
+            replyMarkup: {
               keyboard: [
-                [***REMOVED*** text: MESSAGE_RETRY ***REMOVED***],
-                [***REMOVED*** text: MESSAGE_BACK ***REMOVED***],
-                [***REMOVED*** text: MESSAGE_BACK_TO_MAIN_MENU ***REMOVED***]
+                [{ text: MESSAGE_RETRY }],
+                [{ text: MESSAGE_BACK }],
+                [{ text: MESSAGE_BACK_TO_MAIN_MENU }]
               ],
               resize_keyboard: true
-            ***REMOVED***
-          ***REMOVED***
+            }
+          }
         );
-      ***REMOVED***,
-      promptMyJobs: async context => ***REMOVED***
+      },
+      promptMyJobs: async context => {
         await telegramBot.sendMessage(
           context.telegramUserId,
           `Choose a category of jobs`,
-          ***REMOVED***
-            replyMarkup: ***REMOVED***
+          {
+            replyMarkup: {
               keyboard: _.chunk(
-                APPROVAL_STATUS_MESSAGES.map(appStatusMessage => (***REMOVED***
+                APPROVAL_STATUS_MESSAGES.map(appStatusMessage => ({
                   text: appStatusMessage
-                ***REMOVED***)),
+                })),
                 2
-              ).concat([[***REMOVED*** text: MESSAGE_BACK_TO_MAIN_MENU ***REMOVED***]]),
+              ).concat([[{ text: MESSAGE_BACK_TO_MAIN_MENU }]]),
               resize_keyboard: true
-            ***REMOVED***
-          ***REMOVED***
+            }
+          }
         );
-      ***REMOVED***,
-      getMyJobs: async context => ***REMOVED***
-        const jobs = await db.getJobs(***REMOVED***
+      },
+      getMyJobs: async context => {
+        const jobs = await db.getJobs({
           ownerId: context.userId,
           approvalStatus: context.currentApprovalStatus
-        ***REMOVED***);
-        const sendJob = jobData => ***REMOVED***
-          const ***REMOVED*** job ***REMOVED*** = jobData;
+        });
+        const sendJob = jobData => {
+          const { job } = jobData;
           const viewOnWebButtonRow =
             job.approvalStatus === "Active"
               ? [
                   [
-                    ***REMOVED***
+                    {
                       text: "🌍 View on web",
                       url: utils.jobUrlFromSlug(job.slug)
-                    ***REMOVED***
+                    }
                   ]
                 ]
               : [];
@@ -1239,92 +1239,92 @@ You'll be notified once your job is live.`
             job.approvalStatus === "Active" || job.approvalStatus === "Pending"
               ? [
                   [
-                    ***REMOVED***
+                    {
                       text: "🚪 Close Job",
-                      callback_data: JSON.stringify(***REMOVED***
+                      callback_data: JSON.stringify({
                         event: EVENT_CLOSE_JOB,
                         id: job.id
-                      ***REMOVED***)
-                    ***REMOVED***
+                      })
+                    }
                   ]
                 ]
               : [];
           return telegramBot.sendMessage(
             context.telegramUserId,
             socialHandler.createJobMessage(jobData),
-            ***REMOVED***
-              replyMarkup: ***REMOVED***
+            {
+              replyMarkup: {
                 inline_keyboard: [...viewOnWebButtonRow, ...closeJobButtonRow]
-              ***REMOVED***
-            ***REMOVED***
+              }
+            }
           );
-        ***REMOVED***;
-        try ***REMOVED***
-          if (jobs.length === 0) ***REMOVED***
+        };
+        try {
+          if (jobs.length === 0) {
             await telegramBot.sendMessage(
               context.telegramUserId,
-              `😐 No Jobs in $***REMOVED***context.currentApprovalStatus***REMOVED*** Category`
+              `😐 No Jobs in ${context.currentApprovalStatus} Category`
             );
-          ***REMOVED*** else ***REMOVED***
+          } else {
             await Promise.all(jobs.map(jobData => sendJob(jobData)));
-          ***REMOVED***
-        ***REMOVED*** catch (err) ***REMOVED***
+          }
+        } catch (err) {
           console.log(err);
           throw err;
-        ***REMOVED***
-      ***REMOVED***,
-      errorGettingJobs: async context => ***REMOVED***
+        }
+      },
+      errorGettingJobs: async context => {
         await telegramBot.sendMessage(
           context.telegramUserId,
           `🙈 Failed trying to retreive your jobs.`
         );
-      ***REMOVED***
-    ***REMOVED***
-  ***REMOVED***
+      }
+    }
+  }
 );
 
-exports.handleTelegramUpdate = async (req, res) => ***REMOVED***
+exports.handleTelegramUpdate = async (req, res) => {
   const update = req.body;
   const telegramUser = telegramBot.userFromIncomingUpdate(update);
-  if (!telegramUser) ***REMOVED***
+  if (!telegramUser) {
     res.sendStatus(200);
     return;
-  ***REMOVED***
+  }
   let botMachine = machine;
   let previousState = await getPersistedState(telegramUser.id);
   let currentState;
-  if (previousState) ***REMOVED***
+  if (previousState) {
     currentState = botMachine.resolveState(previousState);
-  ***REMOVED*** else ***REMOVED***
-    const user = await db.findOrCreateTelegramUser(***REMOVED***
+  } else {
+    const user = await db.findOrCreateTelegramUser({
       ...telegramUser,
       role: "user"
-    ***REMOVED***);
-    botMachine = machine.withContext(***REMOVED***
+    });
+    botMachine = machine.withContext({
       ...machine.context,
       userId: user.id,
       telegramUserId: telegramUser.id,
       telegramUsername: telegramUser.username
-    ***REMOVED***);
+    });
     currentState = botMachine.initialState;
-  ***REMOVED***
+  }
   const service = interpret(botMachine);
-  service.onTransition(state => ***REMOVED***
-    if (state.changed) ***REMOVED***
+  service.onTransition(state => {
+    if (state.changed) {
       persistState(telegramUser.id, state);
-    ***REMOVED***
-  ***REMOVED***);
+    }
+  });
   service.start(currentState);
-  if (update.callback_query) ***REMOVED***
+  if (update.callback_query) {
     const callbackQuery = update.callback_query;
-    if (callbackQuery.data) ***REMOVED***
+    if (callbackQuery.data) {
       let callbackData;
-      try ***REMOVED***
+      try {
         callbackData = JSON.parse(callbackQuery.data);
-      ***REMOVED*** catch (err) ***REMOVED***
+      } catch (err) {
         console.log("Problem parsing event from callback data");
-      ***REMOVED***
-      if (callbackData.event === EVENT_CLOSE_JOB) ***REMOVED***
+      }
+      if (callbackData.event === EVENT_CLOSE_JOB) {
         await closeJob(
           telegramUser.id,
           callbackQuery.id,
@@ -1332,61 +1332,61 @@ exports.handleTelegramUpdate = async (req, res) => ***REMOVED***
         );
         res.sendStatus(200);
         return;
-      ***REMOVED***
-    ***REMOVED***
-  ***REMOVED***
-  if (update.message && update.message.text === MESSAGE_START) ***REMOVED***
-    service.send(***REMOVED*** type: EVENT_START ***REMOVED***);
-  ***REMOVED*** else if (
+      }
+    }
+  }
+  if (update.message && update.message.text === MESSAGE_START) {
+    service.send({ type: EVENT_START });
+  } else if (
     update.message &&
     update.message.text === MESSAGE_BACK_TO_MAIN_MENU
-  ) ***REMOVED***
-    service.send(***REMOVED*** type: EVENT_BACK_TO_MAIN_MENU ***REMOVED***);
-  ***REMOVED*** else ***REMOVED***
-    service.send(***REMOVED*** type: "RECEIVED_UPDATE", update ***REMOVED***);
-  ***REMOVED***
+  ) {
+    service.send({ type: EVENT_BACK_TO_MAIN_MENU });
+  } else {
+    service.send({ type: "RECEIVED_UPDATE", update });
+  }
   res.sendStatus(200);
-***REMOVED***;
+};
 
-async function closeJob(telegramUserId, callbackQueryId, jobId) ***REMOVED***
+async function closeJob(telegramUserId, callbackQueryId, jobId) {
   const user = await db.getUserByTelegramId(telegramUserId);
-  if (user) ***REMOVED***
-    try ***REMOVED***
-      const numClosed = await db.closeJob(jobId, ***REMOVED*** ownerId: user.id ***REMOVED***);
-      if (numClosed > 0) ***REMOVED***
-        telegramBot.answerCallbackQuery(callbackQueryId, ***REMOVED***
+  if (user) {
+    try {
+      const numClosed = await db.closeJob(jobId, { ownerId: user.id });
+      if (numClosed > 0) {
+        telegramBot.answerCallbackQuery(callbackQueryId, {
           text: "Job Closed Successfully",
           showAlert: true
-        ***REMOVED***);
-      ***REMOVED*** else ***REMOVED***
-        telegramBot.answerCallbackQuery(callbackQueryId, ***REMOVED***
+        });
+      } else {
+        telegramBot.answerCallbackQuery(callbackQueryId, {
           text: `Couldn't close job. It may have been closed before`,
           showAlert: true
-        ***REMOVED***);
-      ***REMOVED***
+        });
+      }
       return;
-    ***REMOVED*** catch (err) ***REMOVED***
+    } catch (err) {
       console.log(err);
-    ***REMOVED***
-  ***REMOVED***
-  telegramBot.answerCallbackQuery(callbackQueryId, ***REMOVED***
+    }
+  }
+  telegramBot.answerCallbackQuery(callbackQueryId, {
     text: "🙈 Problem occurred closing job",
     showAlert: true
-  ***REMOVED***);
-***REMOVED***
+  });
+}
 
-async function getPersistedState(telegramUserId) ***REMOVED***
-  let rawState = await redis.get(`telegram_user_$***REMOVED***telegramUserId***REMOVED***`);
-  if (rawState) ***REMOVED***
+async function getPersistedState(telegramUserId) {
+  let rawState = await redis.get(`telegram_user_${telegramUserId}`);
+  if (rawState) {
     return State.create(JSON.parse(rawState));
-  ***REMOVED***
-***REMOVED***
+  }
+}
 
-async function persistState(telegramUserId, state) ***REMOVED***
+async function persistState(telegramUserId, state) {
   return redis.set(
-    `telegram_user_$***REMOVED***telegramUserId***REMOVED***`,
+    `telegram_user_${telegramUserId}`,
     JSON.stringify(state),
     "ex",
     24 * 60 * 60
   );
-***REMOVED***
+}

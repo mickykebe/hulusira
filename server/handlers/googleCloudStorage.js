@@ -1,48 +1,48 @@
-const ***REMOVED*** Storage ***REMOVED*** = require("@google-cloud/storage");
+const { Storage } = require("@google-cloud/storage");
 const path = require("path");
 
-const gcStorage = new Storage(***REMOVED***
+const gcStorage = new Storage({
   projectId: "hulusira",
   keyFilename: path.resolve(process.cwd(), "Hulusira-97ccaea38cdd.json")
-***REMOVED***);
+});
 
 const bucketName = process.env.GCS_STATIC_BUCKET_NAME;
 const bucket = gcStorage.bucket(bucketName);
 
-function getPublicUrl(filename) ***REMOVED***
-  if(process.env.BASE_STATIC_URL) ***REMOVED***
-    return `$***REMOVED***process.env.BASE_STATIC_URL***REMOVED***/$***REMOVED***filename***REMOVED***`;
-  ***REMOVED***
-  return `https://storage.googleapis.com/$***REMOVED***bucketName***REMOVED***/$***REMOVED***filename***REMOVED***`;
-***REMOVED***
+function getPublicUrl(filename) {
+  if(process.env.BASE_STATIC_URL) {
+    return `${process.env.BASE_STATIC_URL}/${filename}`;
+  }
+  return `https://storage.googleapis.com/${bucketName}/${filename}`;
+}
 
-exports.upload = (req, res, next) => ***REMOVED***
-  if (!req.file) ***REMOVED***
+exports.upload = (req, res, next) => {
+  if (!req.file) {
     return next();
-  ***REMOVED***
+  }
 
   const gcsFileName = Date.now() + req.file.originalname;
   const file = bucket.file(gcsFileName);
 
-  const stream = file.createWriteStream(***REMOVED***
-    metadata: ***REMOVED***
+  const stream = file.createWriteStream({
+    metadata: {
       contentType: req.file.mimetype
-    ***REMOVED***
-  ***REMOVED***);
+    }
+  });
 
-  stream.on("error", err => ***REMOVED***
+  stream.on("error", err => {
     console.error(err);
     req.file.cloudStorageError = err;
     next(err);
-  ***REMOVED***);
+  });
 
-  stream.on("finish", () => ***REMOVED***
+  stream.on("finish", () => {
     req.file.cloudStorageObject = gcsFileName;
-    file.makePublic().then(() => ***REMOVED***
+    file.makePublic().then(() => {
       req.file.cloudStoragePublicUrl = getPublicUrl(gcsFileName);
       next();
-    ***REMOVED***);
-  ***REMOVED***);
+    });
+  });
 
   stream.end(req.file.buffer);
-***REMOVED***;
+};

@@ -3,50 +3,50 @@ import NProgress from "nprogress";
 import App from "next/app";
 import Head from "next/head";
 import Router from "next/router";
-import ***REMOVED*** ThemeProvider ***REMOVED*** from "@material-ui/styles";
+import { ThemeProvider } from "@material-ui/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import api from "../api";
 import theme from "../components/theme";
 import GlobalCss from "../components/global-css";
 import * as gtag from "../lib/gtag";
 import "easymde/dist/easymde.min.css";
-import ***REMOVED*** Box ***REMOVED*** from "@material-ui/core";
+import { Box } from "@material-ui/core";
 
-NProgress.configure(***REMOVED*** showSpinner: false ***REMOVED***);
+NProgress.configure({ showSpinner: false });
 
 Router.events.on("routeChangeStart", () => NProgress.start());
-Router.events.on("routeChangeComplete", url => ***REMOVED***
+Router.events.on("routeChangeComplete", url => {
   NProgress.done();
   gtag.pageview(url);
-***REMOVED***);
+});
 Router.events.on("routeChangeError", () => NProgress.done());
 
-class MyApp extends App ***REMOVED***
-  static async getInitialProps(***REMOVED*** Component, ctx ***REMOVED***) ***REMOVED***
+class MyApp extends App {
+  static async getInitialProps({ Component, ctx }) {
     let user;
-    let pageProps = ***REMOVED******REMOVED***;
-    try ***REMOVED***
+    let pageProps = {};
+    try {
       user = await api.activeUser(ctx);
-    ***REMOVED*** catch (err) ***REMOVED***
+    } catch (err) {
       user = null;
-    ***REMOVED***
+    }
     ctx.user = user;
-    if (Component.getInitialProps) ***REMOVED***
+    if (Component.getInitialProps) {
       pageProps = await Component.getInitialProps(ctx);
-    ***REMOVED***
-    return ***REMOVED*** pageProps: ***REMOVED*** user, ...pageProps ***REMOVED*** ***REMOVED***;
-  ***REMOVED***
+    }
+    return { pageProps: { user, ...pageProps } };
+  }
 
-  componentDidMount() ***REMOVED***
+  componentDidMount() {
     // Remove the server-side injected CSS.
     const jssStyles = document.querySelector("#jss-server-side");
-    if (jssStyles) ***REMOVED***
+    if (jssStyles) {
       jssStyles.parentElement.removeChild(jssStyles);
-    ***REMOVED***
-  ***REMOVED***
+    }
+  }
 
-  render() ***REMOVED***
-    const ***REMOVED*** Component, pageProps ***REMOVED*** = this.props;
+  render() {
+    const { Component, pageProps } = this.props;
 
     return (
       <Box>
@@ -54,14 +54,14 @@ class MyApp extends App ***REMOVED***
           <title>HuluSira</title>
           <link rel="stylesheet" type="text/css" href="/nprogress.css" />
         </Head>
-        <ThemeProvider theme=***REMOVED***theme***REMOVED***>
+        <ThemeProvider theme={theme}>
           <CssBaseline />
           <GlobalCss />
-          <Component ***REMOVED***...pageProps***REMOVED*** />
+          <Component {...pageProps} />
         </ThemeProvider>
       </Box>
     );
-  ***REMOVED***
-***REMOVED***
+  }
+}
 
 export default MyApp;

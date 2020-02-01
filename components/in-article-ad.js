@@ -1,12 +1,12 @@
 import GoogleAd from "./google-ad";
 
-export default function InArticleAd() ***REMOVED***
+export default function InArticleAd() {
   return (
     <GoogleAd
-      style=***REMOVED******REMOVED*** textAlign: "center" ***REMOVED******REMOVED***
+      style={{ textAlign: "center" }}
       dataAdLayout="in-article"
       dataAdSlot="7719911413"
-      dataFullWidthResponsive=***REMOVED***false***REMOVED***
+      dataFullWidthResponsive={false}
     />
   );
-***REMOVED***
+}

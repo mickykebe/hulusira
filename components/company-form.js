@@ -1,62 +1,62 @@
-import ***REMOVED*** Box, Button, makeStyles, TextField ***REMOVED*** from "@material-ui/core";
+import { Box, Button, makeStyles, TextField } from "@material-ui/core";
 import SaveIcon from "@material-ui/icons/Save";
-import ***REMOVED*** Formik ***REMOVED*** from "formik";
+import { Formik } from "formik";
 import * as Yup from "yup";
 import HSCard from "./hs-card";
-import ***REMOVED*** useState, useEffect ***REMOVED*** from "react";
+import { useState, useEffect } from "react";
 import ImageDropdown from "./image-dropdown";
 import PageProgress from "./page-progress";
 import HSSnackBar from "./hs-snackbar";
 
-const useStyles = makeStyles(theme => (***REMOVED***
-  form: ***REMOVED***
+const useStyles = makeStyles(theme => ({
+  form: {
     display: "flex",
     flexDirection: "column"
-  ***REMOVED***
-***REMOVED***));
+  }
+}));
 
-const validationSchema = Yup.object().shape(***REMOVED***
+const validationSchema = Yup.object().shape({
   name: Yup.string().required("Required"),
   email: Yup.string()
     .email()
     .required("Required")
-***REMOVED***);
+});
 
-export default function CompanyForm(***REMOVED***
-  initialValues = ***REMOVED*** name: "", email: "", logo: "" ***REMOVED***,
+export default function CompanyForm({
+  initialValues = { name: "", email: "", logo: "" },
   onSubmit,
   disableSaveButton = false
-***REMOVED***) ***REMOVED***
+}) {
   const classes = useStyles();
   const [files, setFiles] = useState([]);
   const [showErrorSubmitting, setShowErrorSubmitting] = useState(false);
-  useEffect(() => ***REMOVED***
+  useEffect(() => {
     files.forEach(file => URL.revokeObjectURL(file.preview));
-  ***REMOVED***, [files]);
-  const handleSubmit = async function(values, actions) ***REMOVED***
-    try ***REMOVED***
+  }, [files]);
+  const handleSubmit = async function(values, actions) {
+    try {
       await onSubmit(values, files);
-    ***REMOVED*** catch (err) ***REMOVED***
+    } catch (err) {
       console.error(err);
       setShowErrorSubmitting(true);
-    ***REMOVED***
+    }
     actions.setSubmitting(false);
-  ***REMOVED***;
+  };
   return (
     <Formik
-      validationSchema=***REMOVED***validationSchema***REMOVED***
-      initialValues=***REMOVED***initialValues***REMOVED***
-      onSubmit=***REMOVED***handleSubmit***REMOVED***>
-      ***REMOVED***(***REMOVED***
+      validationSchema={validationSchema}
+      initialValues={initialValues}
+      onSubmit={handleSubmit}>
+      {({
         values,
         isSubmitting,
         handleChange,
         errors,
         touched,
         handleSubmit
-      ***REMOVED***) => ***REMOVED***
+      }) => {
         return (
-          <form className=***REMOVED***classes.form***REMOVED*** onSubmit=***REMOVED***handleSubmit***REMOVED***>
+          <form className={classes.form} onSubmit={handleSubmit}>
             <HSCard title="Company">
               <TextField
                 label="Company Name*"
@@ -64,10 +64,10 @@ export default function CompanyForm(***REMOVED***
                 margin="normal"
                 fullWidth
                 name="name"
-                value=***REMOVED***values.name***REMOVED***
-                onChange=***REMOVED***handleChange***REMOVED***
-                error=***REMOVED***!!(touched.name && errors.name)***REMOVED***
-                helperText=***REMOVED***touched.name && errors.name***REMOVED***
+                value={values.name}
+                onChange={handleChange}
+                error={!!(touched.name && errors.name)}
+                helperText={touched.name && errors.name}
               />
               <TextField
                 label="Company Email*"
@@ -76,40 +76,40 @@ export default function CompanyForm(***REMOVED***
                 fullWidth
                 type="email"
                 name="email"
-                value=***REMOVED***values.email***REMOVED***
-                onChange=***REMOVED***handleChange***REMOVED***
-                error=***REMOVED***!!(touched.email && errors.email)***REMOVED***
-                helperText=***REMOVED***touched.email && errors.email***REMOVED***
+                value={values.email}
+                onChange={handleChange}
+                error={!!(touched.email && errors.email)}
+                helperText={touched.email && errors.email}
               />
               <ImageDropdown
-                preview=***REMOVED***initialValues.logo***REMOVED***
-                files=***REMOVED***files***REMOVED***
-                onFilesChange=***REMOVED***setFiles***REMOVED***
+                preview={initialValues.logo}
+                files={files}
+                onFilesChange={setFiles}
               />
               <Box display="flex">
                 <Box flex="1" />
                 <Button
                   type="submit"
-                  className=***REMOVED***classes.saveBtn***REMOVED***
+                  className={classes.saveBtn}
                   color="primary"
                   variant="contained"
-                  disabled=***REMOVED***isSubmitting || disableSaveButton***REMOVED***
-                  startIcon=***REMOVED***<SaveIcon />***REMOVED***>
+                  disabled={isSubmitting || disableSaveButton}
+                  startIcon={<SaveIcon />}>
                   Save
                 </Button>
               </Box>
             </HSCard>
-            ***REMOVED***isSubmitting && <PageProgress />***REMOVED***
+            {isSubmitting && <PageProgress />}
             <HSSnackBar
               variant="error"
-              open=***REMOVED***showErrorSubmitting***REMOVED***
-              onClose=***REMOVED***() => setShowErrorSubmitting(false)***REMOVED***
+              open={showErrorSubmitting}
+              onClose={() => setShowErrorSubmitting(false)}
               message="Problem occurred submitting data. Please try again later."
-              autoHideDuration=***REMOVED***5000***REMOVED***
+              autoHideDuration={5000}
             />
           </form>
         );
-      ***REMOVED******REMOVED***
+      }}
     </Formik>
   );
-***REMOVED***
+}

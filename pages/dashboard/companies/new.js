@@ -1,40 +1,40 @@
 import DashboardLayout from "../../../components/dashboard-layout";
 import redirect from "../../../utils/redirect";
 import Router from "next/router";
-import ***REMOVED*** Container ***REMOVED*** from "@material-ui/core";
+import { Container } from "@material-ui/core";
 import api from "../../../api";
 import CompanyForm from "../../../components/company-form";
-import ***REMOVED*** useState ***REMOVED*** from "react";
+import { useState } from "react";
 
-export default function NewCompany(***REMOVED*** user ***REMOVED***) ***REMOVED***
+export default function NewCompany({ user }) {
   const [disableSaveButton, setDisableSaveButton] = useState(false);
-  const handleSubmit = async function(values, files) ***REMOVED***
+  const handleSubmit = async function(values, files) {
     let logo = null;
-    if (files.length > 0) ***REMOVED***
+    if (files.length > 0) {
       logo = await api.uploadImage(files[0]);
-    ***REMOVED***
-    await api.createCompany(***REMOVED***
+    }
+    await api.createCompany({
       ...values,
       logo
-    ***REMOVED***);
+    });
     Router.push("/dashboard/companies");
     setDisableSaveButton(true);
-  ***REMOVED***;
+  };
   return (
-    <DashboardLayout user=***REMOVED***user***REMOVED***>
+    <DashboardLayout user={user}>
       <Container maxWidth="md">
-        <CompanyForm onSubmit=***REMOVED***handleSubmit***REMOVED*** disableSaveButton=***REMOVED***disableSaveButton***REMOVED*** />
+        <CompanyForm onSubmit={handleSubmit} disableSaveButton={disableSaveButton} />
       </Container>
     </DashboardLayout>
   );
-***REMOVED***
+}
 
-NewCompany.getInitialProps = async function(ctx) ***REMOVED***
-  const ***REMOVED*** user ***REMOVED*** = ctx;
+NewCompany.getInitialProps = async function(ctx) {
+  const { user } = ctx;
 
-  if (!user) ***REMOVED***
+  if (!user) {
     redirect(ctx, "/");
-  ***REMOVED***
+  }
 
-  return ***REMOVED******REMOVED***;
-***REMOVED***;
+  return {};
+};

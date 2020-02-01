@@ -1,15 +1,15 @@
-import ***REMOVED***
+import {
   Dialog,
   DialogTitle,
   DialogContent,
   DialogContentText,
   DialogActions,
   Button
-***REMOVED*** from "@material-ui/core";
+} from "@material-ui/core";
 
-export default function JobCloseDialog(***REMOVED*** open, onClose, onConfirmation ***REMOVED***) ***REMOVED***
+export default function JobCloseDialog({ open, onClose, onConfirmation }) {
   return (
-    <Dialog open=***REMOVED***open***REMOVED*** onClose=***REMOVED***onClose***REMOVED***>
+    <Dialog open={open} onClose={onClose}>
       <DialogTitle>Close this job?</DialogTitle>
       <DialogContent>
         <DialogContentText>
@@ -17,13 +17,13 @@ export default function JobCloseDialog(***REMOVED*** open, onClose, onConfirmati
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick=***REMOVED***onClose***REMOVED*** color="primary">
+        <Button onClick={onClose} color="primary">
           Cancel
         </Button>
-        <Button onClick=***REMOVED***onConfirmation***REMOVED*** color="primary">
+        <Button onClick={onConfirmation} color="primary">
           Yes
         </Button>
       </DialogActions>
     </Dialog>
   );
-***REMOVED***
+}

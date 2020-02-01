@@ -1,35 +1,35 @@
-import ***REMOVED*** useEffect ***REMOVED*** from "react";
-import ***REMOVED*** Box ***REMOVED*** from "@material-ui/core";
+import { useEffect } from "react";
+import { Box } from "@material-ui/core";
 
-export default function GoogleAd(***REMOVED***
+export default function GoogleAd({
   className = "",
-  style = ***REMOVED******REMOVED***,
+  style = {},
   dataAdLayout,
   dataAdFormat = "fluid",
   dataAdLayoutKey,
   dataAdSlot,
   dataFullWidthResponsive
-***REMOVED***) ***REMOVED***
-  useEffect(() => ***REMOVED***
-    if (process.env.NODE_ENV === "production") ***REMOVED***
-      (window.adsbygoogle = window.adsbygoogle || []).push(***REMOVED******REMOVED***);
-    ***REMOVED***
-  ***REMOVED***, []);
-  if (process.env.NODE_ENV === "production") ***REMOVED***
+}) {
+  useEffect(() => {
+    if (process.env.NODE_ENV === "production") {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    }
+  }, []);
+  if (process.env.NODE_ENV === "production") {
     return (
-      <Box minWidth=***REMOVED***250***REMOVED*** className=***REMOVED***className***REMOVED***>
+      <Box minWidth={250} className={className}>
         <ins
           className="adsbygoogle"
-          style=***REMOVED******REMOVED*** display: "block", minWidth: 250, ...style ***REMOVED******REMOVED***
-          data-ad-layout=***REMOVED***dataAdLayout***REMOVED***
-          data-ad-format=***REMOVED***dataAdFormat***REMOVED***
-          data-ad-layout-key=***REMOVED***dataAdLayoutKey***REMOVED***
+          style={{ display: "block", minWidth: 250, ...style }}
+          data-ad-layout={dataAdLayout}
+          data-ad-format={dataAdFormat}
+          data-ad-layout-key={dataAdLayoutKey}
           data-ad-client="ca-pub-1430919979045648"
-          data-ad-slot=***REMOVED***dataAdSlot***REMOVED***
-          data-full-width-responsive=***REMOVED***dataFullWidthResponsive***REMOVED***
+          data-ad-slot={dataAdSlot}
+          data-full-width-responsive={dataFullWidthResponsive}
         ></ins>
       </Box>
     );
-  ***REMOVED***
+  }
   return null;
-***REMOVED***
+}

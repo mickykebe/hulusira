@@ -1,6 +1,6 @@
 const Yup = require("yup");
 
-const ***REMOVED*** jobTypes, careerLevels ***REMOVED*** = require("./index");
+const { jobTypes, careerLevels } = require("./index");
 
 const requiredValidator = Yup.string().required("Required");
 

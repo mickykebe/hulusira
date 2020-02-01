@@ -1,4 +1,4 @@
-class User ***REMOVED***
+class User {
   constructor(
     id,
     firstName,
@@ -9,7 +9,7 @@ class User ***REMOVED***
     role,
     telegramId,
     telegramUserName
-  ) ***REMOVED***
+  ) {
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
@@ -19,9 +19,9 @@ class User ***REMOVED***
     this.role = role;
     this.telegramId = telegramId;
     this.telegramUserName = telegramUserName;
-  ***REMOVED***
+  }
 
-  static fromDb(dbUser) ***REMOVED***
+  static fromDb(dbUser) {
     const user = new User(
       dbUser.id,
       dbUser.first_name,
@@ -34,12 +34,12 @@ class User ***REMOVED***
       dbUser.telegram_user_name
     );
     return user;
-  ***REMOVED***
+  }
 
-  publicData() ***REMOVED***
-    const ***REMOVED*** password, confirmed, ...rest ***REMOVED*** = this;
+  publicData() {
+    const { password, confirmed, ...rest } = this;
     return rest;
-  ***REMOVED***
-***REMOVED***
+  }
+}
 
 module.exports = User;

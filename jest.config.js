@@ -1,3 +1,3 @@
-module.exports = ***REMOVED***
+module.exports = {
   setupFiles: ["./server/test-setup.js"]
-***REMOVED***;
+};

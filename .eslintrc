@@ -1,25 +1,25 @@
-***REMOVED***
-  "env": ***REMOVED***
+{
+  "env": {
     "browser": true,
     "es6": true,
     "node": true
-  ***REMOVED***,
+  },
   "extends": ["plugin:prettier/recommended"],
-  "globals": ***REMOVED***
+  "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"
-  ***REMOVED***,
-  "parserOptions": ***REMOVED***
-    "ecmaFeatures": ***REMOVED***
+  },
+  "parserOptions": {
+    "ecmaFeatures": {
       "jsx": true
-    ***REMOVED***,
+    },
     "ecmaVersion": 2018,
     "sourceType": "module"
-  ***REMOVED***,
+  },
   "plugins": ["react-hooks", "jest", "prettier"],
-  "rules": ***REMOVED***
+  "rules": {
     "prettier/prettier": ["error"],
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn"
-  ***REMOVED***
-***REMOVED***
+  }
+}

@@ -1,8 +1,8 @@
 import * as Yup from "yup";
-import ***REMOVED*** cleanTags, jobTypes, careerLevels ***REMOVED*** from ".";
+import { cleanTags, jobTypes, careerLevels } from ".";
 
 export const jobValidationSchema = Yup.object().shape(
-  ***REMOVED***
+  {
     position: Yup.string().required("Required"),
     jobType: Yup.string()
       .required("Required")
@@ -18,24 +18,24 @@ export const jobValidationSchema = Yup.object().shape(
       .test(
         "primaryTag-required",
         "Choose at least one tag here or enter a tag in the Extra Tags input below.",
-        function(value) ***REMOVED***
+        function(value) {
           const tags = cleanTags(this.parent.tags);
-          if (!tags || tags.length === 0) ***REMOVED***
+          if (!tags || tags.length === 0) {
             return !!value;
-          ***REMOVED***
+          }
           return true;
-        ***REMOVED***
+        }
       ),
     tags: Yup.array().test(
       "tags-required",
       "Please enter at least one tag here or choose a tag in the Primary Tag input above.",
-      function(value) ***REMOVED***
-        const ***REMOVED*** primaryTag ***REMOVED*** = this.parent;
-        if (primaryTag === null || primaryTag === undefined) ***REMOVED***
+      function(value) {
+        const { primaryTag } = this.parent;
+        if (primaryTag === null || primaryTag === undefined) {
           return value && cleanTags(value).length > 0;
-        ***REMOVED***
+        }
         return true;
-      ***REMOVED***
+      }
     ),
     deadline: Yup.date()
       .nullable()
@@ -45,22 +45,22 @@ export const jobValidationSchema = Yup.object().shape(
       .nullable()
       .notRequired()
       .email(),
-    companyName: Yup.string().when(["hasCompany", "companyId"], ***REMOVED***
+    companyName: Yup.string().when(["hasCompany", "companyId"], {
       is: (hasCompany, companyId) => hasCompany && !companyId,
       then: Yup.string().required("Required")
-    ***REMOVED***),
-    companyEmail: Yup.string().when(["hasCompany", "companyId"], ***REMOVED***
+    }),
+    companyEmail: Yup.string().when(["hasCompany", "companyId"], {
       is: (hasCompany, companyId) => hasCompany && !companyId,
       then: Yup.string()
         .email()
         .required("Required")
-    ***REMOVED***),
+    }),
     companyId: Yup.number()
       .nullable()
-      .when(["hasCompany", "companyName"], ***REMOVED***
+      .when(["hasCompany", "companyName"], {
         is: (hasCompany, companyName) => hasCompany && !companyName,
         then: Yup.number().required("Required")
-      ***REMOVED***)
-  ***REMOVED***,
+      })
+  },
   ["companyId", "companyName"]
 );

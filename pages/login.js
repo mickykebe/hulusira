@@ -1,17 +1,17 @@
-import ***REMOVED*** useState ***REMOVED*** from "react";
+import { useState } from "react";
 import Link from "next/link";
 import Router from "next/router";
 import Head from "next/head";
-import ***REMOVED*** Formik ***REMOVED*** from "formik";
+import { Formik } from "formik";
 import * as Yup from "yup";
-import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
-import ***REMOVED***
+import { makeStyles } from "@material-ui/styles";
+import {
   Box,
   TextField,
   Fab,
   Link as MuiLink,
   Typography
-***REMOVED*** from "@material-ui/core";
+} from "@material-ui/core";
 import TelegramLoginButton from "react-telegram-login";
 import api from "../api";
 import HSSnackbar from "../components/hs-snackbar";
@@ -19,87 +19,87 @@ import redirect from "../utils/redirect";
 import AuthLayout from "../components/auth-layout";
 import PageProgress from "../components/page-progress";
 
-const useStyles = makeStyles(theme => (***REMOVED***
-  telegramBtnContainer: ***REMOVED***
+const useStyles = makeStyles(theme => ({
+  telegramBtnContainer: {
     display: "flex",
     justifyContent: "center",
     paddingBottom: theme.spacing(2),
     paddingTop: theme.spacing(2)
-  ***REMOVED***,
-  signinButton: ***REMOVED***
+  },
+  signinButton: {
     width: "100% !important",
     marginTop: theme.spacing(1)
-  ***REMOVED***,
-  registerLink: ***REMOVED***
+  },
+  registerLink: {
     fontWeight: 800
-  ***REMOVED***
-***REMOVED***));
+  }
+}));
 
-const validationSchema = Yup.object().shape(***REMOVED***
+const validationSchema = Yup.object().shape({
   email: Yup.string()
     .email()
     .required("Required"),
   password: Yup.string().required("Required")
-***REMOVED***);
+});
 
-function Login() ***REMOVED***
+function Login() {
   const [loginSuccess, setLoginSuccess] = useState(false);
   const [errorLogin, setErrorLogin] = useState(false);
   const classes = useStyles();
-  const handleSubmit = async function(values, actions) ***REMOVED***
+  const handleSubmit = async function(values, actions) {
     setErrorLogin(false);
-    try ***REMOVED***
+    try {
       await api.login(values);
       setLoginSuccess(true);
       Router.push("/dashboard/jobs");
-    ***REMOVED*** catch (err) ***REMOVED***
+    } catch (err) {
       setErrorLogin(true);
-    ***REMOVED***
+    }
     actions.setSubmitting(false);
-  ***REMOVED***;
-  const handleTelegramLogin = async function(user) ***REMOVED***
-    try ***REMOVED***
+  };
+  const handleTelegramLogin = async function(user) {
+    try {
       await api.telegramLogin(user);
       Router.push("/dashboard/jobs");
-    ***REMOVED*** catch (err) ***REMOVED***
+    } catch (err) {
       console.error(err);
       setErrorLogin(true);
-    ***REMOVED***
-  ***REMOVED***;
+    }
+  };
   return (
     <AuthLayout>
       <TelegramLoginButton
-        className=***REMOVED***classes.telegramBtnContainer***REMOVED***
-        dataOnauth=***REMOVED***handleTelegramLogin***REMOVED***
-        botName=***REMOVED***process.env.TELEGRAM_BOT_NAME***REMOVED***
+        className={classes.telegramBtnContainer}
+        dataOnauth={handleTelegramLogin}
+        botName={process.env.TELEGRAM_BOT_NAME}
       />
       <Typography variant="subtitle1" align="center">
         OR
       </Typography>
       <Formik
-        validationSchema=***REMOVED***validationSchema***REMOVED***
-        initialValues=***REMOVED******REMOVED***
+        validationSchema={validationSchema}
+        initialValues={{
           email: "",
           password: ""
-        ***REMOVED******REMOVED***
-        onSubmit=***REMOVED***handleSubmit***REMOVED***
+        }}
+        onSubmit={handleSubmit}
       >
-        ***REMOVED***(***REMOVED***
+        {({
           values,
           isSubmitting,
           handleChange,
           errors,
           touched,
           handleSubmit
-        ***REMOVED***) => ***REMOVED***
+        }) => {
           return (
-            <form onSubmit=***REMOVED***handleSubmit***REMOVED***>
+            <form onSubmit={handleSubmit}>
               <TextField
                 name="email"
-                value=***REMOVED***values.email***REMOVED***
-                onChange=***REMOVED***handleChange***REMOVED***
-                error=***REMOVED***!!(touched.email && errors.email)***REMOVED***
-                helperText=***REMOVED***touched.email && errors.email***REMOVED***
+                value={values.email}
+                onChange={handleChange}
+                error={!!(touched.email && errors.email)}
+                helperText={touched.email && errors.email}
                 label="Email"
                 margin="normal"
                 variant="outlined"
@@ -107,10 +107,10 @@ function Login() ***REMOVED***
               />
               <TextField
                 name="password"
-                value=***REMOVED***values.password***REMOVED***
-                onChange=***REMOVED***handleChange***REMOVED***
-                error=***REMOVED***!!(touched.password && errors.password)***REMOVED***
-                helperText=***REMOVED***touched.password && errors.password***REMOVED***
+                value={values.password}
+                onChange={handleChange}
+                error={!!(touched.password && errors.password)}
+                helperText={touched.password && errors.password}
                 label="Password"
                 type="password"
                 margin="normal"
@@ -118,47 +118,47 @@ function Login() ***REMOVED***
                 fullWidth
               />
               <Fab
-                classes=***REMOVED******REMOVED*** root: classes.signinButton ***REMOVED******REMOVED***
+                classes={{ root: classes.signinButton }}
                 type="submit"
                 variant="extended"
                 color="primary"
-                disabled=***REMOVED***isSubmitting || loginSuccess***REMOVED***
+                disabled={isSubmitting || loginSuccess}
               >
                 Sign In
               </Fab>
-              <Box textAlign="right" pt=***REMOVED***2***REMOVED*** fontSize="1rem">
+              <Box textAlign="right" pt={2} fontSize="1rem">
                 <Link href="/register" passHref>
-                  <MuiLink classes=***REMOVED******REMOVED*** root: classes.registerLink ***REMOVED******REMOVED***>
+                  <MuiLink classes={{ root: classes.registerLink }}>
                     Register
                   </MuiLink>
-                </Link>***REMOVED***" "***REMOVED***
+                </Link>{" "}
                 for an account
               </Box>
-              ***REMOVED***isSubmitting && <PageProgress />***REMOVED***
+              {isSubmitting && <PageProgress />}
             </form>
           );
-        ***REMOVED******REMOVED***
+        }}
       </Formik>
       <HSSnackbar
         variant="error"
         message="Login Failed."
-        open=***REMOVED***errorLogin***REMOVED***
-        anchorOrigin=***REMOVED******REMOVED*** vertical: "bottom", horizontal: "center" ***REMOVED******REMOVED***
-        autoHideDuration=***REMOVED***3000***REMOVED***
-        onClose=***REMOVED***() => setErrorLogin(false)***REMOVED***
+        open={errorLogin}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        autoHideDuration={3000}
+        onClose={() => setErrorLogin(false)}
       />
     </AuthLayout>
   );
-***REMOVED***
+}
 
-Login.getInitialProps = async function(ctx) ***REMOVED***
-  const ***REMOVED*** user ***REMOVED*** = ctx;
+Login.getInitialProps = async function(ctx) {
+  const { user } = ctx;
 
-  if (user) ***REMOVED***
+  if (user) {
     redirect(ctx, "/");
-  ***REMOVED***
+  }
 
-  return ***REMOVED******REMOVED***;
-***REMOVED***;
+  return {};
+};
 
 export default Login;

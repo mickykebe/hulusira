@@ -1,11 +1,11 @@
 const express = require("express");
 const routes = require("./routes/index");
-const ***REMOVED*** isProduction ***REMOVED*** = require("./utils");
+const { isProduction } = require("./utils");
 
 const app = express();
-/* if (isProduction) ***REMOVED***
+/* if (isProduction) {
   app.set("trust proxy", true);
-***REMOVED*** */
+} */
 app.use("/api", routes);
 
 module.exports = app;

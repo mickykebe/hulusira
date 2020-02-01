@@ -1,22 +1,22 @@
-import ***REMOVED*** makeStyles, Box, Typography ***REMOVED*** from "@material-ui/core";
+import { makeStyles, Box, Typography } from "@material-ui/core";
 
-const useStyles = makeStyles(theme => (***REMOVED***
-  image: ***REMOVED***
+const useStyles = makeStyles(theme => ({
+  image: {
     width: "20rem",
     height: "20rem"
-  ***REMOVED***
-***REMOVED***));
+  }
+}));
 
-export default function EmptyList(***REMOVED*** message ***REMOVED***) ***REMOVED***
+export default function EmptyList({ message }) {
   const classes = useStyles();
   return (
     <Box display="flex" flexDirection="column" alignItems="center">
       <img
-        className=***REMOVED***classes.image***REMOVED***
+        className={classes.image}
         src="/static/nodata.svg"
         alt="Empty List"
       />
-      <Typography variant="h6">***REMOVED***message***REMOVED***</Typography>
+      <Typography variant="h6">{message}</Typography>
     </Box>
   );
-***REMOVED***
+}

@@ -1,42 +1,42 @@
-import ***REMOVED*** Card, CardContent, CardHeader ***REMOVED*** from "@material-ui/core";
-import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
+import { Card, CardContent, CardHeader } from "@material-ui/core";
+import { makeStyles } from "@material-ui/styles";
 
-const useStyles = makeStyles(theme => (***REMOVED***
-  root: ***REMOVED***
+const useStyles = makeStyles(theme => ({
+  root: {
     border: `1px solid #EAEDF3`,
     boxShadow: theme.boxShadows[0]
-  ***REMOVED***,
-  cardContent: ***REMOVED***
+  },
+  cardContent: {
     paddingTop: 0
-  ***REMOVED***,
-  cardHeaderTitle: ***REMOVED***
+  },
+  cardHeaderTitle: {
     fontSize: "1.2rem",
     fontWeight: 800
-  ***REMOVED***
-***REMOVED***));
+  }
+}));
 
-export default function HSCard(***REMOVED*** className, children, title ***REMOVED***) ***REMOVED***
+export default function HSCard({ className, children, title }) {
   const classes = useStyles();
   return (
     <Card
-      className=***REMOVED***className***REMOVED***
-      classes=***REMOVED******REMOVED***
+      className={className}
+      classes={{
         root: classes.root
-      ***REMOVED******REMOVED***>
-      ***REMOVED***title && (
+      }}>
+      {title && (
         <CardHeader
-          title=***REMOVED***title***REMOVED***
-          classes=***REMOVED******REMOVED***
+          title={title}
+          classes={{
             title: classes.cardHeaderTitle
-          ***REMOVED******REMOVED***
+          }}
         />
-      )***REMOVED***
+      )}
       <CardContent
-        classes=***REMOVED******REMOVED***
+        classes={{
           root: classes.cardContent
-        ***REMOVED******REMOVED***>
-        ***REMOVED***children***REMOVED***
+        }}>
+        {children}
       </CardContent>
     </Card>
   );
-***REMOVED***
+}

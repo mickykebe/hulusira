@@ -1,36 +1,36 @@
-exports.catchErrors = fn => ***REMOVED***
-  return function(req, res, next) ***REMOVED***
+exports.catchErrors = fn => {
+  return function(req, res, next) {
     return fn(req, res, next).catch(next);
-  ***REMOVED***;
-***REMOVED***;
+  };
+};
 
-exports.notFound = (req, res, next) => ***REMOVED***
+exports.notFound = (req, res, next) => {
   const error = new Error("Not Found");
   error.status = 404;
   next(error);
-***REMOVED***;
+};
 
-exports.developmentErrors = (error, req, res, next) => ***REMOVED***
+exports.developmentErrors = (error, req, res, next) => {
   console.log(error);
   res.status(error.status || 500);
-  res.json(***REMOVED***
-    errors: ***REMOVED***
+  res.json({
+    errors: {
       message: error.message,
       status: error.status,
       stackHighlighted: error.stack.replace(
         /[a-z_-\d]+.js:\d+:\d+/gi,
         "<mark>$&</mark>"
       )
-    ***REMOVED***
-  ***REMOVED***);
-***REMOVED***;
+    }
+  });
+};
 
-exports.productionErrors = (err, req, res, next) => ***REMOVED***
+exports.productionErrors = (err, req, res, next) => {
   res.status(err.status || 500);
-  res.json(***REMOVED***
-    errors: ***REMOVED***
+  res.json({
+    errors: {
       message: err.message,
-      error: ***REMOVED******REMOVED***
-    ***REMOVED***
-  ***REMOVED***);
-***REMOVED***;
+      error: {}
+    }
+  });
+};

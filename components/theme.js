@@ -1,18 +1,18 @@
-import ***REMOVED*** createMuiTheme ***REMOVED*** from "@material-ui/core/styles";
+import { createMuiTheme } from "@material-ui/core/styles";
 
-const theme = createMuiTheme(***REMOVED***
-  palette: ***REMOVED***
-    primary: ***REMOVED***
+const theme = createMuiTheme({
+  palette: {
+    primary: {
       main: "#0069ff"
-    ***REMOVED***,
-    secondary: ***REMOVED***
+    },
+    secondary: {
       main: "#172b4d"
-    ***REMOVED***,
-    background: ***REMOVED***
+    },
+    background: {
       default: "#FBFBFB"
-    ***REMOVED***
-  ***REMOVED***,
-  typography: ***REMOVED***
+    }
+  },
+  typography: {
     fontFamily: [
       "Source Sans Pro",
       "-apple-system",
@@ -26,35 +26,35 @@ const theme = createMuiTheme(***REMOVED***
       '"Segoe UI Emoji"',
       '"Segoe UI Symbol"'
     ],
-    h6: ***REMOVED***
+    h6: {
       fontWeight: 800
-    ***REMOVED***,
-    h5: ***REMOVED***
+    },
+    h5: {
       fontWeight: 800
-    ***REMOVED***,
-    h4: ***REMOVED***
+    },
+    h4: {
       fontWeight: 800
-    ***REMOVED***,
-    h3: ***REMOVED***
+    },
+    h3: {
       fontWeight: 800
-    ***REMOVED***,
-    subtitle1: ***REMOVED***
+    },
+    subtitle1: {
       fontWeight: 800
-    ***REMOVED***,
-    subtitle2: ***REMOVED***
+    },
+    subtitle2: {
       fontWeight: 800
-    ***REMOVED***,
-    caption: ***REMOVED***
+    },
+    caption: {
       fontWeight: 800
-    ***REMOVED***,
-    button: ***REMOVED***
+    },
+    button: {
       fontWeight: 800
-    ***REMOVED***,
-    overline: ***REMOVED***
+    },
+    overline: {
       fontWeight: 800
-    ***REMOVED***
-  ***REMOVED***,
+    }
+  },
   boxShadows: ["0 1px 3px 0 rgba(0, 0, 0, 0.04)"]
-***REMOVED***);
+});
 
 export default theme;

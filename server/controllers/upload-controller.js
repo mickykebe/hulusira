@@ -1,29 +1,29 @@
 const multer = require("multer");
 const gcsHelper = require("../handlers/googleCloudStorage");
 
-const multerOptions = ***REMOVED***
+const multerOptions = {
   storage: multer.memoryStorage(),
-  limits: ***REMOVED***
+  limits: {
     fileSize: 5 * 1024 * 1024
-  ***REMOVED***,
-  fileFilter(_req, file, cb) ***REMOVED***
+  },
+  fileFilter(_req, file, cb) {
     const isPhoto = file.mimetype.startsWith("image/");
-    if (isPhoto) ***REMOVED***
+    if (isPhoto) {
       cb(null, true);
-    ***REMOVED*** else ***REMOVED***
-      cb(***REMOVED*** message: "The file type isn't allowed!" ***REMOVED***, false);
-    ***REMOVED***
-  ***REMOVED***
-***REMOVED***;
+    } else {
+      cb({ message: "The file type isn't allowed!" }, false);
+    }
+  }
+};
 
 exports.uploadImage = [
   multer(multerOptions).single("image"),
   gcsHelper.upload,
-  (req, res) => ***REMOVED***
+  (req, res) => {
     const data = req.body;
-    if (req.file && req.file.cloudStoragePublicUrl) ***REMOVED***
+    if (req.file && req.file.cloudStoragePublicUrl) {
       data.imageUrl = req.file.cloudStoragePublicUrl;
-    ***REMOVED***
+    }
     res.send(data);
-  ***REMOVED***
+  }
 ];

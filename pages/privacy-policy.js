@@ -1,19 +1,19 @@
-import ***REMOVED*** Typography, makeStyles, Container ***REMOVED*** from "@material-ui/core";
+import { Typography, makeStyles, Container } from "@material-ui/core";
 import Layout from "../components/layout";
 import HSPaper from "../components/hs-paper";
 
-const useStyles = makeStyles(theme => (***REMOVED***
-  root: ***REMOVED***
+const useStyles = makeStyles(theme => ({
+  root: {
     padding: theme.spacing(2)
-  ***REMOVED***
-***REMOVED***));
+  }
+}));
 
-export default function PrivacyPolicy(***REMOVED*** user ***REMOVED***) ***REMOVED***
+export default function PrivacyPolicy({ user }) {
   const classes = useStyles();
   return (
-    <Layout user=***REMOVED***user***REMOVED***>
+    <Layout user={user}>
       <Container>
-        <HSPaper className=***REMOVED***classes.root***REMOVED***>
+        <HSPaper className={classes.root}>
           <Typography variant="h4" paragraph>
             Privacy Policy for HuluSira
           </Typography>
@@ -71,7 +71,7 @@ export default function PrivacyPolicy(***REMOVED*** user ***REMOVED***) ***REMOV
             based upon their visit to www.website.com and other sites on the
             internet. However, visitors may choose to decline the use of DART
             cookies by visiting the Google ad and content network Privacy Policy
-            at the following URL –***REMOVED***" "***REMOVED***
+            at the following URL –{" "}
             <a href="https://policies.google.com/technologies/ads">
               https://policies.google.com/technologies/ads
             </a>
@@ -107,7 +107,7 @@ export default function PrivacyPolicy(***REMOVED*** user ***REMOVED***) ***REMOV
           <Typography variant="body2" paragraph>
             You may consult this list to find the Privacy Policy for each of the
             advertising partners of hulusira.com. Our Privacy Policy was created
-            with the help of the***REMOVED***" "***REMOVED***
+            with the help of the{" "}
             <a href="https://www.privacypolicygenerator.info">
               Privacy Policy Generator
             </a>
@@ -192,4 +192,4 @@ export default function PrivacyPolicy(***REMOVED*** user ***REMOVED***) ***REMOV
       </Container>
     </Layout>
   );
-***REMOVED***
+}

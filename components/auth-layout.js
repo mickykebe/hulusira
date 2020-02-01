@@ -1,36 +1,36 @@
-import ***REMOVED*** makeStyles ***REMOVED*** from "@material-ui/styles";
+import { makeStyles } from "@material-ui/styles";
 import Link from "next/link";
-import ***REMOVED*** Link as MuiLink ***REMOVED*** from "@material-ui/core";
+import { Link as MuiLink } from "@material-ui/core";
 import HSPaper from "./hs-paper";
 
-const useStyles = makeStyles(theme => (***REMOVED***
-  root: ***REMOVED***
+const useStyles = makeStyles(theme => ({
+  root: {
     height: "100vh",
     width: "100%",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    padding: `0 $***REMOVED***theme.spacing(2)***REMOVED***px`
-  ***REMOVED***,
-  signinCard: ***REMOVED***
+    padding: `0 ${theme.spacing(2)}px`
+  },
+  signinCard: {
     padding: theme.spacing(2),
     maxWidth: 400,
     margin: "auto"
-  ***REMOVED***,
-  logoLink: ***REMOVED***
+  },
+  logoLink: {
     display: "block"
-  ***REMOVED***
-***REMOVED***));
+  }
+}));
 
-export default function AuthLayout(***REMOVED*** children ***REMOVED***) ***REMOVED***
+export default function AuthLayout({ children }) {
   const classes = useStyles();
 
   return (
-    <div className=***REMOVED***classes.root***REMOVED***>
-      <HSPaper className=***REMOVED***classes.signinCard***REMOVED***>
+    <div className={classes.root}>
+      <HSPaper className={classes.signinCard}>
         <Link href="/" passHref>
           <MuiLink
-            classes=***REMOVED******REMOVED*** root: classes.logoLink ***REMOVED******REMOVED***
+            classes={{ root: classes.logoLink }}
             variant="h5"
             align="center"
             color="inherit"
@@ -38,8 +38,8 @@ export default function AuthLayout(***REMOVED*** children ***REMOVED***) ***REMO
             HuluSira
           </MuiLink>
         </Link>
-        ***REMOVED***children***REMOVED***
+        {children}
       </HSPaper>
     </div>
   );
-***REMOVED***
+}

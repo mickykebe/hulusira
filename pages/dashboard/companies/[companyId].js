@@ -2,51 +2,51 @@ import Router from "next/router";
 import redirect from "../../../utils/redirect";
 import api from "../../../api";
 import DashboardLayout from "../../../components/dashboard-layout";
-import ***REMOVED*** Container ***REMOVED*** from "@material-ui/core";
+import { Container } from "@material-ui/core";
 import CompanyForm from "../../../components/company-form";
-import ***REMOVED*** useState ***REMOVED*** from "react";
+import { useState } from "react";
 import HSSnackBar from "../../../components/hs-snackbar";
 
-export default function EditCompany(***REMOVED*** user, company ***REMOVED***) ***REMOVED***
+export default function EditCompany({ user, company }) {
   const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
-  const handleSubmit = async function(values, files) ***REMOVED***
+  const handleSubmit = async function(values, files) {
     let logo = values.logo;
-    if (files.length > 0) ***REMOVED***
+    if (files.length > 0) {
       logo = await api.uploadImage(files[0]);
-    ***REMOVED***
-    await api.updateCompany(company.id, ***REMOVED***
+    }
+    await api.updateCompany(company.id, {
       ...values,
       logo
-    ***REMOVED***);
+    });
     setShowSuccessSnackbar(true);
-  ***REMOVED***;
+  };
   return (
-    <DashboardLayout user=***REMOVED***user***REMOVED***>
+    <DashboardLayout user={user}>
       <Container maxWidth="md">
-        <CompanyForm initialValues=***REMOVED***company***REMOVED*** onSubmit=***REMOVED***handleSubmit***REMOVED*** />
+        <CompanyForm initialValues={company} onSubmit={handleSubmit} />
         <HSSnackBar
-          open=***REMOVED***showSuccessSnackbar***REMOVED***
+          open={showSuccessSnackbar}
           variant="success"
-          autoHideDuration=***REMOVED***3000***REMOVED***
+          autoHideDuration={3000}
           message="Company successfully updated"
-          onClose=***REMOVED***() => ***REMOVED***
+          onClose={() => {
             setShowSuccessSnackbar(false);
-          ***REMOVED******REMOVED***
+          }}
         />
       </Container>
     </DashboardLayout>
   );
-***REMOVED***
+}
 
-EditCompany.getInitialProps = async function(ctx) ***REMOVED***
-  const ***REMOVED*** user ***REMOVED*** = ctx;
+EditCompany.getInitialProps = async function(ctx) {
+  const { user } = ctx;
 
-  if (!user) ***REMOVED***
+  if (!user) {
     redirect(ctx, "/");
-  ***REMOVED***
+  }
 
-  const ***REMOVED*** companyId ***REMOVED*** = ctx.query;
+  const { companyId } = ctx.query;
   const company = await api.getCompany(ctx, companyId);
 
-  return ***REMOVED*** company ***REMOVED***;
-***REMOVED***;
+  return { company };
+};

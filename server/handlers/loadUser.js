@@ -1,9 +1,9 @@
 const db = require('../db');
 
-exports.loadUser = async (req, _res, next) => ***REMOVED***
+exports.loadUser = async (req, _res, next) => {
   const userId = req.session.userId;
-  if (userId) ***REMOVED***
+  if (userId) {
     req.user = await db.getUserById(userId);
-  ***REMOVED***
+  }
   next();
-***REMOVED***;
+};

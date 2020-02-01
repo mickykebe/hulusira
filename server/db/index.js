@@ -1,19 +1,19 @@
 const assert = require("assert");
-const ***REMOVED*** Pool ***REMOVED*** = require("pg");
-const ***REMOVED*** Company, Tag, Job, User ***REMOVED*** = require("../models");
+const { Pool } = require("pg");
+const { Company, Tag, Job, User } = require("../models");
 const Knex = require("knex");
 const slug = require("slug");
 const bcrypt = require("bcryptjs");
 
-class Db ***REMOVED***
-  constructor() ***REMOVED***
-    this.pool = new Pool(***REMOVED***
+class Db {
+  constructor() {
+    this.pool = new Pool({
       connectionString: process.env.DATABASE_URL
-    ***REMOVED***);
-    this.knex = Knex(***REMOVED***
+    });
+    this.knex = Knex({
       client: "pg",
       connection: process.env.DATABASE_URL
-    ***REMOVED***);
+    });
     this.jobColumns = [
       "id",
       "position",
@@ -37,49 +37,49 @@ class Db ***REMOVED***
       "views"
     ];
     this.companyColumns = ["id", "name", "email", "logo", "verified"];
-  ***REMOVED***
+  }
 
-  async createJobAndCompany(***REMOVED*** company: companyData, job: jobData ***REMOVED***) ***REMOVED***
+  async createJobAndCompany({ company: companyData, job: jobData }) {
     let company = null;
 
-    if (companyData) ***REMOVED***
+    if (companyData) {
       company = await this.createCompany(companyData);
-    ***REMOVED***
+    }
 
     const job = await this.createJob(jobData, company && company.id);
-    return ***REMOVED***
+    return {
       company,
       job
-    ***REMOVED***;
-  ***REMOVED***
+    };
+  }
 
-  jobSlug(id, position) ***REMOVED***
-    return `$***REMOVED***id***REMOVED***-$***REMOVED***slug(position)***REMOVED***`;
-  ***REMOVED***
+  jobSlug(id, position) {
+    return `${id}-${slug(position)}`;
+  }
 
-  async createJob(jobData, companyId = null) ***REMOVED***
+  async createJob(jobData, companyId = null) {
     assert(!!jobData);
     let primaryTag;
 
-    if (jobData.primaryTag) ***REMOVED***
+    if (jobData.primaryTag) {
       const primaryTagRow = await this.knex("tag")
         .first()
         .where("name", jobData.primaryTag);
-      if (!primaryTagRow || primaryTagRow.is_primary === false) ***REMOVED***
+      if (!primaryTagRow || primaryTagRow.is_primary === false) {
         throw new Error("Primary tag value set to invalid tag");
-      ***REMOVED***
+      }
       primaryTag = Tag.fromDb(primaryTagRow);
-    ***REMOVED***
+    }
 
-    const job = await this.knex.transaction(async trx => ***REMOVED***
+    const job = await this.knex.transaction(async trx => {
       const tags = (
         await Promise.all(
-          jobData.tags.map(tagName => this.findOrCreateTag(tagName, ***REMOVED*** trx ***REMOVED***))
+          jobData.tags.map(tagName => this.findOrCreateTag(tagName, { trx }))
         )
-      ).map(tag => (***REMOVED*** ...tag, isPrimary: false ***REMOVED***));
+      ).map(tag => ({ ...tag, isPrimary: false }));
 
       let rows = await trx("job")
-        .insert(***REMOVED***
+        .insert({
           position: jobData.position,
           job_type: jobData.jobType,
           career_level: jobData.careerLevel,
@@ -95,19 +95,19 @@ class Db ***REMOVED***
           apply_email: jobData.applyEmail,
           approval_status: jobData.approvalStatus || "Pending",
           owner: jobData.owner || null
-        ***REMOVED***)
+        })
         .returning(this.selectColumns("job", "job", this.jobColumns));
 
-      if (rows.length !== 1) ***REMOVED***
+      if (rows.length !== 1) {
         throw new Error("Problem occurred inserting job");
-      ***REMOVED***
+      }
       const row = rows[0];
 
       rows = await trx("job")
         .where("id", row.job_id)
-        .update(***REMOVED***
+        .update({
           slug: this.jobSlug(row.job_id, row.job_position)
-        ***REMOVED***)
+        })
         .returning(this.selectColumns("job", "job", this.jobColumns));
 
       const job = Job.fromDb(
@@ -115,48 +115,48 @@ class Db ***REMOVED***
         primaryTag ? [primaryTag, ...tags] : tags
       );
 
-      if (jobData.primaryTag) ***REMOVED***
-        await this.createJobTag(job.id, jobData.primaryTag, true, ***REMOVED*** trx ***REMOVED***);
-      ***REMOVED***
+      if (jobData.primaryTag) {
+        await this.createJobTag(job.id, jobData.primaryTag, true, { trx });
+      }
       await Promise.all(
-        tags.map(tag => this.createJobTag(job.id, tag.name, false, ***REMOVED*** trx ***REMOVED***))
+        tags.map(tag => this.createJobTag(job.id, tag.name, false, { trx }))
       );
 
       return job;
-    ***REMOVED***);
+    });
 
     return job;
-  ***REMOVED***
+  }
 
-  async updateJob(jobId, jobData) ***REMOVED***
+  async updateJob(jobId, jobData) {
     let primaryTag;
 
-    if (jobData.primaryTag) ***REMOVED***
+    if (jobData.primaryTag) {
       const primaryTagRow = await this.knex("tag")
         .first()
         .where("name", jobData.primaryTag);
-      if (!primaryTagRow || primaryTagRow.is_primary === false) ***REMOVED***
+      if (!primaryTagRow || primaryTagRow.is_primary === false) {
         throw new Error("Primary tag value set to invalid tag");
-      ***REMOVED***
+      }
       primaryTag = Tag.fromDb(primaryTagRow);
-    ***REMOVED***
+    }
 
-    const job = await this.knex.transaction(async trx => ***REMOVED***
+    const job = await this.knex.transaction(async trx => {
       await trx("job_tags")
-        .where(***REMOVED***
+        .where({
           job_id: jobId
-        ***REMOVED***)
+        })
         .del();
 
       const tags = (
         await Promise.all(
-          jobData.tags.map(tagName => this.findOrCreateTag(tagName, ***REMOVED*** trx ***REMOVED***))
+          jobData.tags.map(tagName => this.findOrCreateTag(tagName, { trx }))
         )
-      ).map(tag => (***REMOVED*** ...tag, isPrimary: false ***REMOVED***));
+      ).map(tag => ({ ...tag, isPrimary: false }));
 
       let rows = await trx("job")
         .where("id", jobId)
-        .update(***REMOVED***
+        .update({
           position: jobData.position,
           job_type: jobData.jobType,
           career_level: jobData.careerLevel,
@@ -170,95 +170,95 @@ class Db ***REMOVED***
           how_to_apply: jobData.howToApply,
           apply_url: jobData.applyUrl,
           apply_email: jobData.applyEmail
-        ***REMOVED***)
+        })
         .returning(this.selectColumns("job", "job", this.jobColumns));
 
-      if (rows.length !== 1) ***REMOVED***
+      if (rows.length !== 1) {
         throw new Error("Problem occurred updating job");
-      ***REMOVED***
+      }
 
       const job = Job.fromDb(
         rows[0],
         primaryTag ? [primaryTag, ...tags] : tags
       );
 
-      if (jobData.primaryTag) ***REMOVED***
-        await this.createJobTag(job.id, jobData.primaryTag, true, ***REMOVED*** trx ***REMOVED***);
-      ***REMOVED***
+      if (jobData.primaryTag) {
+        await this.createJobTag(job.id, jobData.primaryTag, true, { trx });
+      }
 
       await Promise.all(
-        tags.map(tag => this.createJobTag(job.id, tag.name, false, ***REMOVED*** trx ***REMOVED***))
+        tags.map(tag => this.createJobTag(job.id, tag.name, false, { trx }))
       );
 
       return job;
-    ***REMOVED***);
+    });
 
     return job;
-  ***REMOVED***
+  }
 
-  async createJobTag(jobId, tagName, isPrimary = false, ***REMOVED*** trx = null ***REMOVED*** = ***REMOVED******REMOVED***) ***REMOVED***
-    return (trx || this.knex)("job_tags").insert(***REMOVED***
+  async createJobTag(jobId, tagName, isPrimary = false, { trx = null } = {}) {
+    return (trx || this.knex)("job_tags").insert({
       job_id: jobId,
       tag_name: tagName,
       is_primary: isPrimary
-    ***REMOVED***);
-  ***REMOVED***
+    });
+  }
 
-  async createCompany(companyData) ***REMOVED***
+  async createCompany(companyData) {
     const rows = await this.knex("company")
-      .insert(***REMOVED***
+      .insert({
         name: companyData.name,
         email: companyData.email,
         logo: companyData.logo,
         owner: companyData.owner || null
-      ***REMOVED***)
+      })
       .returning(this.selectColumns("company", "company", this.companyColumns));
     return Company.fromDb(rows[0]);
-  ***REMOVED***
+  }
 
-  async updateCompany(companyId, ownerId, companyData) ***REMOVED***
+  async updateCompany(companyId, ownerId, companyData) {
     const rows = await this.knex("company")
-      .where(***REMOVED***
+      .where({
         id: companyId,
         owner: ownerId
-      ***REMOVED***)
-      .update(***REMOVED***
+      })
+      .update({
         name: companyData.name,
         email: companyData.email,
         logo: companyData.logo
-      ***REMOVED***)
+      })
       .returning("*");
-    if (rows.length > 0) ***REMOVED***
+    if (rows.length > 0) {
       return rows[0];
-    ***REMOVED***
-  ***REMOVED***
+    }
+  }
 
-  getCompanies(ownerId) ***REMOVED***
+  getCompanies(ownerId) {
     return this.knex("company")
       .select()
       .where("owner", ownerId)
       .orderBy("name", "asc");
-  ***REMOVED***
+  }
 
-  async findOrCreateTag(name, ***REMOVED*** trx = null ***REMOVED*** = ***REMOVED******REMOVED***) ***REMOVED***
+  async findOrCreateTag(name, { trx = null } = {}) {
     const res = await (
       trx || this.knex
     ).raw(
       "with new_row as (insert into tag(name) select :name where not exists (select * from tag where name = :name) returning *) select * from new_row union select * from tag where name = :name",
-      ***REMOVED*** name: name.toUpperCase().trim() ***REMOVED***
+      { name: name.toUpperCase().trim() }
     );
     return Tag.fromDb(res.rows[0]);
-  ***REMOVED***
+  }
 
-  async getPrimaryTags() ***REMOVED***
+  async getPrimaryTags() {
     const rows = this.knex("tag")
       .select()
       .where("is_primary", true)
       .orderBy("name");
     return rows.map(Tag.fromDb);
-  ***REMOVED***
+  }
 
-  async getJobs(***REMOVED***
+  async getJobs({
     fromJobId,
     limit,
     approvalStatus = [],
@@ -269,7 +269,7 @@ class Db ***REMOVED***
     publicOnly = false,
     ownerId,
     companyId
-  ***REMOVED*** = ***REMOVED******REMOVED***) ***REMOVED***
+  } = {}) {
     let query = this.knex("job")
       .select(
         ...this.selectColumns("job", "job", this.jobColumns),
@@ -286,31 +286,31 @@ class Db ***REMOVED***
       .groupBy("job.id", "company.id")
       .orderBy("job.id", "desc");
 
-    if (typeof fromJobId === "number") ***REMOVED***
+    if (typeof fromJobId === "number") {
       query = query.andWhere("job.id", "<=", fromJobId);
-    ***REMOVED***
-    if (ownerId) ***REMOVED***
+    }
+    if (ownerId) {
       query = query.andWhere("job.owner", ownerId);
-    ***REMOVED***
-    if (companyId) ***REMOVED***
+    }
+    if (companyId) {
       query = query.andWhere("job.company_id", companyId);
-    ***REMOVED***
-    if (approvalStatus) ***REMOVED***
+    }
+    if (approvalStatus) {
       let approvalStatusIn = [];
-      if (typeof approvalStatus === "string") ***REMOVED***
+      if (typeof approvalStatus === "string") {
         approvalStatusIn = [approvalStatus];
-      ***REMOVED*** else ***REMOVED***
+      } else {
         approvalStatusIn = approvalStatus;
-      ***REMOVED***
+      }
 
-      if (approvalStatusIn.length > 0) ***REMOVED***
+      if (approvalStatusIn.length > 0) {
         query = query.whereIn("job.approval_status", approvalStatusIn);
-      ***REMOVED***
-    ***REMOVED***
-    if (jobTypes && jobTypes.length > 0) ***REMOVED***
+      }
+    }
+    if (jobTypes && jobTypes.length > 0) {
       query = query.whereIn("job.job_type", jobTypes);
-    ***REMOVED***
-    if (tagNames && tagNames.length > 0) ***REMOVED***
+    }
+    if (tagNames && tagNames.length > 0) {
       const subQuery = this.knex("job_tags")
         .select("job_id")
         .whereIn(
@@ -320,21 +320,21 @@ class Db ***REMOVED***
             .whereIn("name", tagNames)
         );
       query = query.andWhere("job.id", "in", subQuery);
-    ***REMOVED***
-    if (careerLevels && careerLevels.length > 0) ***REMOVED***
+    }
+    if (careerLevels && careerLevels.length > 0) {
       query = query.whereIn("job.career_level", careerLevels);
-    ***REMOVED***
-    if (typeof withinDays === "number") ***REMOVED***
+    }
+    if (typeof withinDays === "number") {
       query = query.andWhere(
         "job.created",
         ">=",
         this.knex.raw("NOW() - (?*'1 DAY'::INTERVAL)", [withinDays])
       );
-    ***REMOVED***
-    if (typeof limit === "number") ***REMOVED***
+    }
+    if (typeof limit === "number") {
       query = query.limit(limit);
-    ***REMOVED***
-    /* tagNames.forEach(tagName => ***REMOVED***
+    }
+    /* tagNames.forEach(tagName => {
       const subQuery = this.knex("job_tags")
         .select("job_id")
         .whereIn(
@@ -344,25 +344,25 @@ class Db ***REMOVED***
             .whereIn("name", [tagName])
         );
       query = query.where("job.id", "in", subQuery);
-    ***REMOVED***); */
+    }); */
     const rows = await query;
-    return rows.map(row => ***REMOVED***
+    return rows.map(row => {
       let job = Job.fromDb(row, row.tags || []);
-      if (publicOnly) ***REMOVED***
+      if (publicOnly) {
         job = job.publicData();
-      ***REMOVED***
-      return ***REMOVED***
+      }
+      return {
         company: row.company_id && Company.fromDb(row),
         job
-      ***REMOVED***;
-    ***REMOVED***);
-  ***REMOVED***
+      };
+    });
+  }
 
-  selectColumns(tableName, prefix, fields) ***REMOVED***
-    return fields.map(f => `$***REMOVED***tableName***REMOVED***.$***REMOVED***f***REMOVED*** as $***REMOVED***prefix***REMOVED***_$***REMOVED***f***REMOVED***`);
-  ***REMOVED***
+  selectColumns(tableName, prefix, fields) {
+    return fields.map(f => `${tableName}.${f} as ${prefix}_${f}`);
+  }
 
-  jobQuery() ***REMOVED***
+  jobQuery() {
     return this.knex("job")
       .first(
         ...this.selectColumns("job", "job", this.jobColumns),
@@ -379,264 +379,264 @@ class Db ***REMOVED***
         this.knex.raw("tag extra_tags on job_tags.tag_name = extra_tags.name")
       )
       .groupBy("job.id", "company.id");
-  ***REMOVED***
+  }
 
-  async jobCount(***REMOVED*** id, owner ***REMOVED***) ***REMOVED***
+  async jobCount({ id, owner }) {
     const result = await this.knex("job")
       .count("id")
-      .where(***REMOVED***
-        ...(id && ***REMOVED***
+      .where({
+        ...(id && {
           id
-        ***REMOVED***),
-        ...(owner && ***REMOVED***
+        }),
+        ...(owner && {
           owner
-        ***REMOVED***)
-      ***REMOVED***);
+        })
+      });
     return parseInt(result[0].count);
-  ***REMOVED***
+  }
 
-  incrementJobView(***REMOVED*** slug ***REMOVED***) ***REMOVED***
+  incrementJobView({ slug }) {
     return this.knex("job")
       .where("slug", slug)
       .increment("views", 1);
-  ***REMOVED***
+  }
 
-  async companyCount(id) ***REMOVED***
+  async companyCount(id) {
     const result = await this.knex("company")
       .count("id")
       .where("id", id);
     return parseInt(result[0].count);
-  ***REMOVED***
+  }
 
-  async getJobBySlug(slug, where) ***REMOVED***
+  async getJobBySlug(slug, where) {
     const query = this.jobQuery().where("job.slug", slug);
-    if (where) ***REMOVED***
+    if (where) {
       query.andWhere(where);
-    ***REMOVED***
+    }
     const row = await query;
-    if (!!row) ***REMOVED***
+    if (!!row) {
       const company = row.company_id && Company.fromDb(row);
-      return ***REMOVED***
+      return {
         company: company,
         job: Job.fromDb(row, row.tags || [])
-      ***REMOVED***;
-    ***REMOVED***
+      };
+    }
     return null;
-  ***REMOVED***
+  }
 
-  async getJobById(id) ***REMOVED***
+  async getJobById(id) {
     const row = await this.jobQuery().where("job.id", id);
-    if (!!row) ***REMOVED***
+    if (!!row) {
       const company = row.company_id && Company.fromDb(row);
-      return ***REMOVED***
+      return {
         company: company,
         job: Job.fromDb(row, row.tags || [])
-      ***REMOVED***;
-    ***REMOVED***
+      };
+    }
     return null;
-  ***REMOVED***
+  }
 
-  getCompany(companyId, ownerId) ***REMOVED***
+  getCompany(companyId, ownerId) {
     return this.knex("company")
       .first()
-      .where(***REMOVED***
+      .where({
         id: companyId,
-        ...(ownerId && ***REMOVED***
+        ...(ownerId && {
           owner: ownerId
-        ***REMOVED***)
-      ***REMOVED***);
-  ***REMOVED***
+        })
+      });
+  }
 
-  async getUserByEmail(email) ***REMOVED***
+  async getUserByEmail(email) {
     const row = await this.knex("users")
       .first()
       .where("email", email);
-    if (!!row) ***REMOVED***
+    if (!!row) {
       return User.fromDb(row);
-    ***REMOVED***
-  ***REMOVED***
+    }
+  }
 
-  async getUserByTelegramId(telegramuserId) ***REMOVED***
+  async getUserByTelegramId(telegramuserId) {
     const row = await this.knex("users")
       .first()
       .where("telegram_id", telegramuserId);
-    if (!!row) ***REMOVED***
+    if (!!row) {
       return User.fromDb(row);
-    ***REMOVED***
-  ***REMOVED***
+    }
+  }
 
-  async createUser(userData) ***REMOVED***
+  async createUser(userData) {
     const hashedPassword = await bcrypt.hash(userData.password, 15);
-    if (!userData) ***REMOVED***
+    if (!userData) {
       throw new Error("Invalid user data supplied");
-    ***REMOVED***
+    }
     const rows = await this.knex("users")
-      .insert(***REMOVED***
+      .insert({
         first_name: userData.firstName,
         last_name: userData.lastName,
         email: userData.email,
         password: hashedPassword,
         role: userData.role
-      ***REMOVED***)
+      })
       .returning("*");
-    if (rows.length !== 1) ***REMOVED***
+    if (rows.length !== 1) {
       throw new Error("Problem occurred creating user");
-    ***REMOVED***
+    }
     return User.fromDb(rows[0]);
-  ***REMOVED***
+  }
 
-  async findOrCreateTelegramUser(userData) ***REMOVED***
+  async findOrCreateTelegramUser(userData) {
     const row = await this.knex("users")
       .first()
-      .where(***REMOVED***
+      .where({
         telegram_id: userData.id
-      ***REMOVED***);
-    if (!!row) ***REMOVED***
+      });
+    if (!!row) {
       return User.fromDb(row);
-    ***REMOVED***
+    }
     const rows = await this.knex("users")
-      .insert(***REMOVED***
+      .insert({
         first_name: userData.first_name,
         last_name: userData.last_name,
         telegram_id: userData.id,
         telegram_user_name: userData.username,
         confirmed: true,
         role: userData.role
-      ***REMOVED***)
+      })
       .returning("*");
-    if (rows.length !== 1) ***REMOVED***
+    if (rows.length !== 1) {
       throw new Error("Problem occurred creating telegram user");
-    ***REMOVED***
+    }
     return User.fromDb(rows[0]);
-  ***REMOVED***
+  }
 
-  async confirmUser(userId) ***REMOVED***
+  async confirmUser(userId) {
     await this.knex("users")
       .where("id", userId)
-      .update(***REMOVED***
+      .update({
         confirmed: true
-      ***REMOVED***);
-  ***REMOVED***
+      });
+  }
 
-  async getUserById(id) ***REMOVED***
+  async getUserById(id) {
     const row = await this.knex("users")
       .first()
       .where("id", id);
-    if (!!row) ***REMOVED***
+    if (!!row) {
       return User.fromDb(row);
-    ***REMOVED***
-  ***REMOVED***
+    }
+  }
 
-  async getTags(tagNames = []) ***REMOVED***
+  async getTags(tagNames = []) {
     const rows = await this.knex("tag")
       .select()
       .whereIn("name", tagNames);
     return rows.map(Tag.fromDb);
-  ***REMOVED***
+  }
 
-  closeJob(id, ***REMOVED*** ownerId ***REMOVED*** = ***REMOVED******REMOVED***) ***REMOVED***
+  closeJob(id, { ownerId } = {}) {
     return this.knex("job")
       .where("id", id)
       .whereIn("approval_status", ["Pending", "Active"])
-      .update(***REMOVED***
+      .update({
         approval_status: "Closed",
-        ...(ownerId && ***REMOVED***
+        ...(ownerId && {
           owner: ownerId
-        ***REMOVED***)
-      ***REMOVED***);
-  ***REMOVED***
+        })
+      });
+  }
 
-  approveJob(id) ***REMOVED***
+  approveJob(id) {
     return this.knex("job")
       .where("id", id)
-      .update(***REMOVED***
+      .update({
         approval_status: "Active"
-      ***REMOVED***);
-  ***REMOVED***
+      });
+  }
 
-  declineJob(id) ***REMOVED***
+  declineJob(id) {
     return this.knex("job")
       .where("id", id)
-      .update(***REMOVED***
+      .update({
         approval_status: "Declined"
-      ***REMOVED***);
-  ***REMOVED***
+      });
+  }
 
-  deleteJob(id) ***REMOVED***
+  deleteJob(id) {
     return this.knex("job")
       .where("id", id)
       .del();
-  ***REMOVED***
+  }
 
-  deleteCompany(id, ownerId) ***REMOVED***
+  deleteCompany(id, ownerId) {
     return this.knex("company")
-      .where(***REMOVED***
+      .where({
         id,
         owner: ownerId
-      ***REMOVED***)
+      })
       .del();
-  ***REMOVED***
+  }
 
-  createJobSocialPost(jobId, ***REMOVED*** telegramMessages, facebookPostId ***REMOVED***) ***REMOVED***
-    const data = ***REMOVED***
+  createJobSocialPost(jobId, { telegramMessages, facebookPostId }) {
+    const data = {
       job_id: jobId
-    ***REMOVED***;
-    if (!telegramMessages && !facebookPostId) ***REMOVED***
+    };
+    if (!telegramMessages && !facebookPostId) {
       return;
-    ***REMOVED***
-    if (telegramMessages) ***REMOVED***
+    }
+    if (telegramMessages) {
       data.telegram_messages = telegramMessages;
-    ***REMOVED***
-    if (facebookPostId) ***REMOVED***
+    }
+    if (facebookPostId) {
       data.facebook_post_id = facebookPostId;
-    ***REMOVED***
+    }
     return this.knex("job_social_post").insert(data);
-  ***REMOVED***
+  }
 
-  async getJobSocialPost(jobId) ***REMOVED***
+  async getJobSocialPost(jobId) {
     const row = await this.knex("job_social_post")
       .first()
       .where("job_id", jobId);
-    if (!!row) ***REMOVED***
-      return ***REMOVED***
+    if (!!row) {
+      return {
         telegramMessageId: row.telegram_message_id,
         telegramMessages: row.telegram_messages,
         facebookPostId: row.facebook_post_id
-      ***REMOVED***;
-    ***REMOVED***
-  ***REMOVED***
+      };
+    }
+  }
 
-  deleteJobSocialPost(jobId) ***REMOVED***
+  deleteJobSocialPost(jobId) {
     return this.knex("job_social_post")
       .where("job_id", jobId)
       .del();
-  ***REMOVED***
+  }
 
-  createUserConfirmation(userId, confirmationKey) ***REMOVED***
-    return this.knex("user_confirmation").insert(***REMOVED***
+  createUserConfirmation(userId, confirmationKey) {
+    return this.knex("user_confirmation").insert({
       user_id: userId,
       confirmation_key: confirmationKey
-    ***REMOVED***);
-  ***REMOVED***
+    });
+  }
 
-  async getUserConfirmation(confirmationKey) ***REMOVED***
+  async getUserConfirmation(confirmationKey) {
     const row = await this.knex("user_confirmation")
       .first()
       .where("confirmation_key", confirmationKey);
-    if (row) ***REMOVED***
-      return ***REMOVED*** userId: row.user_id, confirmationKey: row.confirmation_key ***REMOVED***;
-    ***REMOVED***
-  ***REMOVED***
+    if (row) {
+      return { userId: row.user_id, confirmationKey: row.confirmation_key };
+    }
+  }
 
-  deleteUserConfirmation(userId) ***REMOVED***
+  deleteUserConfirmation(userId) {
     return this.knex("user_confirmation")
       .where("user_id", userId)
       .del();
-  ***REMOVED***
+  }
 
-  end() ***REMOVED***
+  end() {
     return this.pool.end();
-  ***REMOVED***
-***REMOVED***
+  }
+}
 
 module.exports = new Db();

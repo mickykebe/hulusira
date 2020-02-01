@@ -4,35 +4,35 @@ import JobContentManage from "../../../components/job-content-manage";
 import redirect from "../../../utils/redirect";
 import Router from "next/router";
 
-export default function DashboardJob(***REMOVED*** user, jobData ***REMOVED***) ***REMOVED***
-  const closeJob = async () => ***REMOVED***
+export default function DashboardJob({ user, jobData }) {
+  const closeJob = async () => {
     await api.closeJob(jobData.job.id);
     Router.push("/dashboard/jobs");
-  ***REMOVED***;
+  };
   return (
-    <DashboardLayout user=***REMOVED***user***REMOVED***>
+    <DashboardLayout user={user}>
       <JobContentManage
-        isJobOwner=***REMOVED***true***REMOVED***
-        jobData=***REMOVED***jobData***REMOVED***
-        onJobClose=***REMOVED***closeJob***REMOVED***
+        isJobOwner={true}
+        jobData={jobData}
+        onJobClose={closeJob}
       />
     </DashboardLayout>
   );
-***REMOVED***
+}
 
-DashboardJob.getInitialProps = async ctx => ***REMOVED***
-  const ***REMOVED*** user ***REMOVED*** = ctx;
+DashboardJob.getInitialProps = async ctx => {
+  const { user } = ctx;
 
-  if (!user) ***REMOVED***
+  if (!user) {
     redirect(ctx, "/");
-  ***REMOVED***
+  }
 
-  const ***REMOVED*** slug ***REMOVED*** = ctx.query;
+  const { slug } = ctx.query;
   const jobData = await api.getJob(ctx, slug);
 
-  if (jobData.job.owner !== user.id) ***REMOVED***
+  if (jobData.job.owner !== user.id) {
     redirect(ctx, "/dashboard/jobs");
-  ***REMOVED***
+  }
 
-  return ***REMOVED*** jobData ***REMOVED***;
-***REMOVED***;
+  return { jobData };
+};

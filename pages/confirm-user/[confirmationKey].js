@@ -1,33 +1,33 @@
-import ***REMOVED*** useEffect, useState ***REMOVED*** from "react";
+import { useEffect, useState } from "react";
 import api from "../../api";
-import Router, ***REMOVED*** useRouter ***REMOVED*** from "next/router";
+import Router, { useRouter } from "next/router";
 import PageProgress from "../../components/page-progress";
 import Banner from "../../components/banner";
 import Layout from "../../components/layout";
 
-export default function ConfirmUser() ***REMOVED***
+export default function ConfirmUser() {
   const router = useRouter();
-  const ***REMOVED*** confirmationKey ***REMOVED*** = router.query;
+  const { confirmationKey } = router.query;
   const [confirmationStatus, setConfirmationStatus] = useState("confirming");
 
-  useEffect(() => ***REMOVED***
-    async function confirmUser() ***REMOVED***
-      try ***REMOVED***
+  useEffect(() => {
+    async function confirmUser() {
+      try {
         await api.confirmUser(confirmationKey);
         Router.push("/");
-      ***REMOVED*** catch (err) ***REMOVED***
+      } catch (err) {
         setConfirmationStatus("failed");
-      ***REMOVED***
-    ***REMOVED***
+      }
+    }
     confirmUser();
-  ***REMOVED***, [confirmationKey]);
+  }, [confirmationKey]);
 
   return (
     <Layout>
-      ***REMOVED***confirmationStatus === "failed" && (
+      {confirmationStatus === "failed" && (
         <Banner message="Problem occurred " />
-      )***REMOVED***
-      ***REMOVED***confirmationStatus !== "failed" && <PageProgress />***REMOVED***
+      )}
+      {confirmationStatus !== "failed" && <PageProgress />}
     </Layout>
   );
-***REMOVED***
+}

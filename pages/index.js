@@ -1,7 +1,7 @@
 import Link from "next/link";
-import Router, ***REMOVED*** useRouter ***REMOVED*** from "next/router";
+import Router, { useRouter } from "next/router";
 import Head from "next/head";
-import ***REMOVED***
+import {
   makeStyles,
   Button,
   Box,
@@ -16,7 +16,7 @@ import ***REMOVED***
   ExpansionPanelSummary,
   ExpansionPanelDetails,
   Hidden
-***REMOVED*** from "@material-ui/core";
+} from "@material-ui/core";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import api from "../api";
@@ -24,235 +24,235 @@ import Layout from "../components/layout";
 import JobItem from "../components/job-item";
 import useIsInview from "../hooks/use-is-inview";
 import TagFilter from "../components/tag-filter";
-import ***REMOVED*** useEffect, useRef, Fragment, useCallback, useState ***REMOVED*** from "react";
+import { useEffect, useRef, Fragment, useCallback, useState } from "react";
 import HeaderAd from "../components/header-ad";
 import FeedAd from "../components/feed-ad";
 import JobFilterPanels from "../components/job-filter-panels";
 import queryString from "query-string";
 import HSPaper from "../components/hs-paper";
 
-const useStyles = makeStyles(theme => (***REMOVED***
-  root: ***REMOVED***
+const useStyles = makeStyles(theme => ({
+  root: {
     paddingTop: theme.spacing(2)
-  ***REMOVED***,
-  wrapperGrid: ***REMOVED***
+  },
+  wrapperGrid: {
     display: "grid",
     gridTemplateColumns: "1fr 3fr",
     gridGap: "1.5rem",
     alignItems: "start",
-    [theme.breakpoints.down("sm")]: ***REMOVED***
+    [theme.breakpoints.down("sm")]: {
       gridTemplateColumns: "1fr"
-    ***REMOVED***
-  ***REMOVED***,
-  headerAd: ***REMOVED***
+    }
+  },
+  headerAd: {
     marginBottom: "1.5rem"
-  ***REMOVED***,
-  filterExpansionPanel: ***REMOVED***
+  },
+  filterExpansionPanel: {
     boxShadow: "none",
     backgroundColor: "inherit",
-    "&::before": ***REMOVED***
+    "&::before": {
       display: "none"
-    ***REMOVED***
-  ***REMOVED***,
-  filterPanelSummary: ***REMOVED***
+    }
+  },
+  filterPanelSummary: {
     padding: "0 1rem"
-  ***REMOVED***,
-  filterPanelDetails: ***REMOVED***
+  },
+  filterPanelDetails: {
     padding: 0
-  ***REMOVED***,
-  filterHead: (***REMOVED*** smallScreen ***REMOVED***) => ***REMOVED***
-    return ***REMOVED***
-      ...(smallScreen && ***REMOVED***
-        borderBottom: `1px solid $***REMOVED***theme.palette.grey[400]***REMOVED***`,
-        borderTop: `1px solid $***REMOVED***theme.palette.grey[400]***REMOVED***`
-      ***REMOVED***),
-      ...(!smallScreen && ***REMOVED***
+  },
+  filterHead: ({ smallScreen }) => {
+    return {
+      ...(smallScreen && {
+        borderBottom: `1px solid ${theme.palette.grey[400]}`,
+        borderTop: `1px solid ${theme.palette.grey[400]}`
+      }),
+      ...(!smallScreen && {
         paddingBottom: `0.5rem`
-      ***REMOVED***)
-    ***REMOVED***;
-  ***REMOVED***,
-  jobItem: ***REMOVED***
+      })
+    };
+  },
+  jobItem: {
     marginBottom: `0.5rem`
-  ***REMOVED***,
-  feedAd: ***REMOVED***
+  },
+  feedAd: {
     marginBottom: `0.5rem`
-  ***REMOVED***,
-  jobsLoadingSpinner: ***REMOVED***
+  },
+  jobsLoadingSpinner: {
     display: "block",
     margin: "0 auto"
-  ***REMOVED***,
-  categorySelect: ***REMOVED***
+  },
+  categorySelect: {
     marginTop: theme.spacing(2),
     background: theme.palette.common.white
-  ***REMOVED***,
-  categoryItem: ***REMOVED***
+  },
+  categoryItem: {
     fontWeight: 800,
-    padding: `$***REMOVED***theme.spacing(1)***REMOVED***px $***REMOVED***theme.spacing(2)***REMOVED***px`,
+    padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
     fontSize: "0.8rem"
-  ***REMOVED***,
-  nothingFound: ***REMOVED***
+  },
+  nothingFound: {
     paddingTop: theme.spacing(4)
-  ***REMOVED***
-***REMOVED***));
+  }
+}));
 
-function getFilterQuery(queryPath) ***REMOVED***
-  const queryParams = queryString.parse(queryPath, ***REMOVED***
+function getFilterQuery(queryPath) {
+  const queryParams = queryString.parse(queryPath, {
     arrayFormat: "bracket"
-  ***REMOVED***);
+  });
   return queryString.stringify(
-    ***REMOVED***
+    {
       tags: queryParams.tags,
       jobTypes: queryParams.jobTypes,
       careerLevels: queryParams.careerLevels
-    ***REMOVED***,
-    ***REMOVED*** arrayFormat: "bracket" ***REMOVED***
+    },
+    { arrayFormat: "bracket" }
   );
-***REMOVED***
+}
 
 const pageTitle = "Hulusira - Jobs in Ethiopia";
-const pageUrl = `$***REMOVED***process.env.ROOT_URL***REMOVED***/`;
+const pageUrl = `${process.env.ROOT_URL}/`;
 const pageDescription =
   "HuluSira is a job board for jobs based in Ethiopia. We aim to make the job posting and dissemination process as simple as possible. Get workers hired.";
 
-const jobsReducer = (state, action) => ***REMOVED***
-  switch (action.type) ***REMOVED***
+const jobsReducer = (state, action) => {
+  switch (action.type) {
     case "FETCH_INIT":
-      return ***REMOVED*** ...state, isLoading: true, isError: false ***REMOVED***;
+      return { ...state, isLoading: true, isError: false };
     case "FETCH_SUCCESS":
-      return ***REMOVED***
+      return {
         ...state,
         isLoading: false,
         isError: false,
         jobs: [...state.jobs, ...action.payload.jobs],
         nextCursor: action.payload.nextCursor
-      ***REMOVED***;
+      };
     case "FETCH_FAILURE":
-      return ***REMOVED*** ...state, isLoading: false, isError: true ***REMOVED***;
-    case "TAG_FILTER": ***REMOVED***
-      return ***REMOVED***
+      return { ...state, isLoading: false, isError: true };
+    case "TAG_FILTER": {
+      return {
         ...state,
         isLoading: false,
         isError: false,
         jobs: action.payload.jobs,
         nextCursor: action.payload.nextCursor
-      ***REMOVED***;
-    ***REMOVED***
+      };
+    }
     default:
       throw new Error("Invalid action type for jobsReducer");
-  ***REMOVED***
-***REMOVED***;
+  }
+};
 
-function Index(***REMOVED*** user, jobPage, primaryTags ***REMOVED***) ***REMOVED***
-  const [***REMOVED*** jobs, nextCursor, isLoading, isError ***REMOVED***, dispatch] = React.useReducer(
+function Index({ user, jobPage, primaryTags }) {
+  const [{ jobs, nextCursor, isLoading, isError }, dispatch] = React.useReducer(
     jobsReducer,
-    ***REMOVED***
+    {
       jobs: jobPage.jobs,
       nextCursor: jobPage.nextCursor,
       isLoading: false,
       isError: false
-    ***REMOVED***
+    }
   );
   const ticker = useRef(0);
-  useEffect(() => ***REMOVED***
-    if (ticker.current > 0) ***REMOVED***
-      dispatch(***REMOVED*** type: "TAG_FILTER", payload: jobPage ***REMOVED***);
-    ***REMOVED***
+  useEffect(() => {
+    if (ticker.current > 0) {
+      dispatch({ type: "TAG_FILTER", payload: jobPage });
+    }
     ticker.current++;
-  ***REMOVED***, [jobPage]);
+  }, [jobPage]);
 
   const router = useRouter();
-  const parsedQS = queryString.parse(queryString.extract(router.asPath), ***REMOVED***
+  const parsedQS = queryString.parse(queryString.extract(router.asPath), {
     arrayFormat: "bracket"
-  ***REMOVED***);
+  });
   const activeTagNames = parsedQS.tags || [];
   const hasActiveFilter =
     parsedQS.tags || parsedQS.jobTypes || parsedQS.careerLevels;
   const theme = useTheme();
   const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [filterCollapsed, setFilterCollapsed] = useState(true);
-  const classes = useStyles(***REMOVED*** smallScreen ***REMOVED***);
+  const classes = useStyles({ smallScreen });
 
-  const fetchMoreJobs = useCallback(async () => ***REMOVED***
+  const fetchMoreJobs = useCallback(async () => {
     const tickerVal = ticker.current;
-    if (isLoading || !nextCursor) ***REMOVED***
+    if (isLoading || !nextCursor) {
       return;
-    ***REMOVED***
-    dispatch(***REMOVED*** type: "FETCH_INIT" ***REMOVED***);
-    try ***REMOVED***
+    }
+    dispatch({ type: "FETCH_INIT" });
+    try {
       const filterQuery = getFilterQuery(location.search);
-      const jobPage = await api.getJobs(***REMOVED***
+      const jobPage = await api.getJobs({
         filterQuery,
         cursor: nextCursor
-      ***REMOVED***);
-      if (tickerVal === ticker.current) ***REMOVED***
-        dispatch(***REMOVED*** type: "FETCH_SUCCESS", payload: jobPage ***REMOVED***);
-      ***REMOVED***
-    ***REMOVED*** catch (err) ***REMOVED***
-      if (tickerVal === ticker.current) ***REMOVED***
-        dispatch(***REMOVED*** type: "FETCH_FAILURE" ***REMOVED***);
-      ***REMOVED***
-    ***REMOVED***
-  ***REMOVED***, [isLoading, nextCursor]);
+      });
+      if (tickerVal === ticker.current) {
+        dispatch({ type: "FETCH_SUCCESS", payload: jobPage });
+      }
+    } catch (err) {
+      if (tickerVal === ticker.current) {
+        dispatch({ type: "FETCH_FAILURE" });
+      }
+    }
+  }, [isLoading, nextCursor]);
 
   const [isIntersecting, sentinelRef] = useIsInview(300);
-  useEffect(() => ***REMOVED***
-    if (isIntersecting) ***REMOVED***
+  useEffect(() => {
+    if (isIntersecting) {
       fetchMoreJobs();
-    ***REMOVED***
-  ***REMOVED***, [fetchMoreJobs, isIntersecting]);
-  const addFilter = (key, value) => ***REMOVED***
-    const parsed = queryString.parse(location.search, ***REMOVED***
+    }
+  }, [fetchMoreJobs, isIntersecting]);
+  const addFilter = (key, value) => {
+    const parsed = queryString.parse(location.search, {
       arrayFormat: "bracket"
-    ***REMOVED***);
-    if (!parsed[key]) ***REMOVED***
+    });
+    if (!parsed[key]) {
       parsed[key] = [value];
-    ***REMOVED*** else ***REMOVED***
-      if (parsed[key].indexOf(value) !== -1) ***REMOVED***
+    } else {
+      if (parsed[key].indexOf(value) !== -1) {
         return;
-      ***REMOVED***
+      }
       parsed[key].push(value);
-    ***REMOVED***
+    }
     Router.push(
-      `/?$***REMOVED***queryString.stringify(parsed, ***REMOVED*** arrayFormat: "bracket" ***REMOVED***)***REMOVED***`
+      `/?${queryString.stringify(parsed, { arrayFormat: "bracket" })}`
     );
-  ***REMOVED***;
-  const addTagToFilter = tagName => ***REMOVED***
+  };
+  const addTagToFilter = tagName => {
     addFilter("tags", tagName);
-  ***REMOVED***;
+  };
 
-  const removeFilter = (key, value) => ***REMOVED***
-    const parsed = queryString.parse(location.search, ***REMOVED***
+  const removeFilter = (key, value) => {
+    const parsed = queryString.parse(location.search, {
       arrayFormat: "bracket"
-    ***REMOVED***);
-    if (parsed[key] && parsed[key].length > 0) ***REMOVED***
-      parsed[key] = parsed[key].filter(val => ***REMOVED***
+    });
+    if (parsed[key] && parsed[key].length > 0) {
+      parsed[key] = parsed[key].filter(val => {
         return val !== value;
-      ***REMOVED***);
+      });
       Router.push(
-        `/?$***REMOVED***queryString.stringify(parsed, ***REMOVED*** arrayFormat: "bracket" ***REMOVED***)***REMOVED***`
+        `/?${queryString.stringify(parsed, { arrayFormat: "bracket" })}`
       );
-    ***REMOVED***
-  ***REMOVED***;
-  const clearFilter = key => () => ***REMOVED***
-    const parsed = queryString.parse(location.search, ***REMOVED***
+    }
+  };
+  const clearFilter = key => () => {
+    const parsed = queryString.parse(location.search, {
       arrayFormat: "bracket"
-    ***REMOVED***);
-    if (parsed[key] && parsed[key].length > 0) ***REMOVED***
+    });
+    if (parsed[key] && parsed[key].length > 0) {
       parsed[key] = [];
-    ***REMOVED***
+    }
     Router.push(
-      `/?$***REMOVED***queryString.stringify(parsed, ***REMOVED*** arrayFormat: "bracket" ***REMOVED***)***REMOVED***`
+      `/?${queryString.stringify(parsed, { arrayFormat: "bracket" })}`
     );
-  ***REMOVED***;
-  const removeTagFromFilter = tagName => ***REMOVED***
+  };
+  const removeTagFromFilter = tagName => {
     removeFilter("tags", tagName);
-  ***REMOVED***;
+  };
 
-  const metaImage = `$***REMOVED***process.env.ROOT_URL***REMOVED***/static/hulusira.png`;
+  const metaImage = `${process.env.ROOT_URL}/static/hulusira.png`;
   return (
     <Layout
-      user=***REMOVED***user***REMOVED***
-      toolbarChildren=***REMOVED***
+      user={user}
+      toolbarChildren={
         user ? null : (
           <Fragment>
             <Link href="/new" passHref>
@@ -262,41 +262,41 @@ function Index(***REMOVED*** user, jobPage, primaryTags ***REMOVED***) ***REMOVE
             </Link>
           </Fragment>
         )
-      ***REMOVED***
+      }
     >
       <Head>
-        <title>***REMOVED***pageTitle***REMOVED***</title>
-        <meta name="description" content=***REMOVED***pageDescription***REMOVED*** />
-        <meta property="og:title" content=***REMOVED***pageTitle***REMOVED*** />
-        <meta property="og:url" content=***REMOVED***pageUrl***REMOVED*** />
-        <meta property="og:description" content=***REMOVED***pageDescription***REMOVED*** />
-        <meta property="og:image" content=***REMOVED***metaImage***REMOVED*** />
-        <meta name="twitter:title" content=***REMOVED***pageTitle***REMOVED*** />
-        <meta name="twitter:description" content=***REMOVED***pageDescription***REMOVED*** />
-        <meta name="twitter:image:src" content=***REMOVED***metaImage***REMOVED*** />
-        <meta name="twitter:url" content=***REMOVED***pageUrl***REMOVED*** />
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:url" content={pageUrl} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:image" content={metaImage} />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+        <meta name="twitter:image:src" content={metaImage} />
+        <meta name="twitter:url" content={pageUrl} />
       </Head>
-      <Container className=***REMOVED***classes.root***REMOVED*** maxWidth="xl">
-        <Box className=***REMOVED***classes.wrapperGrid***REMOVED***>
+      <Container className={classes.root} maxWidth="xl">
+        <Box className={classes.wrapperGrid}>
           <Hidden mdUp>
             <HeaderAd />
           </Hidden>
           <HSPaper>
-            ***REMOVED***smallScreen && (
+            {smallScreen && (
               <ExpansionPanel
-                classes=***REMOVED******REMOVED***
+                classes={{
                   root: classes.filterExpansionPanel
-                ***REMOVED******REMOVED***
-                expanded=***REMOVED***!filterCollapsed***REMOVED***
-                onChange=***REMOVED***(_ev, isExpanded) => ***REMOVED***
+                }}
+                expanded={!filterCollapsed}
+                onChange={(_ev, isExpanded) => {
                   setFilterCollapsed(!isExpanded);
-                ***REMOVED******REMOVED***
+                }}
               >
                 <ExpansionPanelSummary
-                  classes=***REMOVED******REMOVED***
+                  classes={{
                     root: classes.filterPanelSummary
-                  ***REMOVED******REMOVED***
-                  expandIcon=***REMOVED***
+                  }}
+                  expandIcon={
                     hasActiveFilter ? (
                       <Badge color="primary" variant="dot">
                         <FilterListIcon />
@@ -304,112 +304,112 @@ function Index(***REMOVED*** user, jobPage, primaryTags ***REMOVED***) ***REMOVE
                     ) : (
                       <FilterListIcon />
                     )
-                  ***REMOVED***
+                  }
                 >
                   <Typography variant="h6">Filter</Typography>
                 </ExpansionPanelSummary>
-                <ExpansionPanelDetails className=***REMOVED***classes.filterPanelDetails***REMOVED***>
+                <ExpansionPanelDetails className={classes.filterPanelDetails}>
                   <JobFilterPanels
-                    tags=***REMOVED***primaryTags***REMOVED***
-                    onCheckTagFilter=***REMOVED***addTagToFilter***REMOVED***
-                    onUncheckTagFilter=***REMOVED***removeTagFromFilter***REMOVED***
-                    onClearTagFilter=***REMOVED***clearFilter("tags")***REMOVED***
-                    onCheckJobTypeFilter=***REMOVED***jobType => ***REMOVED***
+                    tags={primaryTags}
+                    onCheckTagFilter={addTagToFilter}
+                    onUncheckTagFilter={removeTagFromFilter}
+                    onClearTagFilter={clearFilter("tags")}
+                    onCheckJobTypeFilter={jobType => {
                       addFilter("jobTypes", jobType);
-                    ***REMOVED******REMOVED***
-                    onUncheckJobTypeFilter=***REMOVED***jobType => ***REMOVED***
+                    }}
+                    onUncheckJobTypeFilter={jobType => {
                       removeFilter("jobTypes", jobType);
-                    ***REMOVED******REMOVED***
-                    onClearJobTypeFilter=***REMOVED***clearFilter("jobTypes")***REMOVED***
-                    onCheckCareerLevelFilter=***REMOVED***careerLevel => ***REMOVED***
+                    }}
+                    onClearJobTypeFilter={clearFilter("jobTypes")}
+                    onCheckCareerLevelFilter={careerLevel => {
                       addFilter("careerLevels", careerLevel);
-                    ***REMOVED******REMOVED***
-                    onUncheckCareerLevelFilter=***REMOVED***careerLevel => ***REMOVED***
+                    }}
+                    onUncheckCareerLevelFilter={careerLevel => {
                       removeFilter("careerLevels", careerLevel);
-                    ***REMOVED******REMOVED***
-                    onClearCareerLevelFilter=***REMOVED***clearFilter("careerLevels")***REMOVED***
+                    }}
+                    onClearCareerLevelFilter={clearFilter("careerLevels")}
                   />
                 </ExpansionPanelDetails>
               </ExpansionPanel>
-            )***REMOVED***
-            ***REMOVED***!smallScreen && (
+            )}
+            {!smallScreen && (
               <Fragment>
                 <Box display="flex" alignItems="center" px="1.5rem" py="1rem">
                   <Typography variant="h6">Filter</Typography>
                 </Box>
                 <JobFilterPanels
-                  tags=***REMOVED***primaryTags***REMOVED***
-                  onCheckTagFilter=***REMOVED***addTagToFilter***REMOVED***
-                  onUncheckTagFilter=***REMOVED***removeTagFromFilter***REMOVED***
-                  onClearTagFilter=***REMOVED***clearFilter("tags")***REMOVED***
-                  onCheckJobTypeFilter=***REMOVED***jobType => ***REMOVED***
+                  tags={primaryTags}
+                  onCheckTagFilter={addTagToFilter}
+                  onUncheckTagFilter={removeTagFromFilter}
+                  onClearTagFilter={clearFilter("tags")}
+                  onCheckJobTypeFilter={jobType => {
                     addFilter("jobTypes", jobType);
-                  ***REMOVED******REMOVED***
-                  onUncheckJobTypeFilter=***REMOVED***jobType => ***REMOVED***
+                  }}
+                  onUncheckJobTypeFilter={jobType => {
                     removeFilter("jobTypes", jobType);
-                  ***REMOVED******REMOVED***
-                  onClearJobTypeFilter=***REMOVED***clearFilter("jobTypes")***REMOVED***
-                  onCheckCareerLevelFilter=***REMOVED***careerLevel => ***REMOVED***
+                  }}
+                  onClearJobTypeFilter={clearFilter("jobTypes")}
+                  onCheckCareerLevelFilter={careerLevel => {
                     addFilter("careerLevels", careerLevel);
-                  ***REMOVED******REMOVED***
-                  onUncheckCareerLevelFilter=***REMOVED***careerLevel => ***REMOVED***
+                  }}
+                  onUncheckCareerLevelFilter={careerLevel => {
                     removeFilter("careerLevels", careerLevel);
-                  ***REMOVED******REMOVED***
-                  onClearCareerLevelFilter=***REMOVED***clearFilter("careerLevels")***REMOVED***
+                  }}
+                  onClearCareerLevelFilter={clearFilter("careerLevels")}
                 />
               </Fragment>
-            )***REMOVED***
+            )}
           </HSPaper>
           <Box>
             <Hidden smDown>
-              <HeaderAd className=***REMOVED***classes.headerAd***REMOVED*** />
+              <HeaderAd className={classes.headerAd} />
             </Hidden>
-            ***REMOVED***activeTagNames.length > 0 && (
+            {activeTagNames.length > 0 && (
               <TagFilter
-                tagNames=***REMOVED***activeTagNames***REMOVED***
-                onTagRemove=***REMOVED***removeTagFromFilter***REMOVED***
+                tagNames={activeTagNames}
+                onTagRemove={removeTagFromFilter}
               />
-            )***REMOVED***
-            ***REMOVED***jobs.map((***REMOVED*** job, company ***REMOVED***, index) => ***REMOVED***
+            )}
+            {jobs.map(({ job, company }, index) => {
               return (
-                <Fragment key=***REMOVED***job.id***REMOVED***>
-                  ***REMOVED***process.env.NODE_ENV === "production" &&
+                <Fragment key={job.id}>
+                  {process.env.NODE_ENV === "production" &&
                     index % 4 === 0 &&
-                    index > 0 && <FeedAd className=***REMOVED***classes.feedAd***REMOVED*** />***REMOVED***
+                    index > 0 && <FeedAd className={classes.feedAd} />}
                   <JobItem
-                    className=***REMOVED***classes.jobItem***REMOVED***
-                    job=***REMOVED***job***REMOVED***
-                    tags=***REMOVED***job.tags***REMOVED***
-                    company=***REMOVED***company***REMOVED***
-                    onTagClick=***REMOVED***addTagToFilter***REMOVED***
+                    className={classes.jobItem}
+                    job={job}
+                    tags={job.tags}
+                    company={company}
+                    onTagClick={addTagToFilter}
                   />
                 </Fragment>
               );
-            ***REMOVED***)***REMOVED***
-            <div ref=***REMOVED***sentinelRef***REMOVED*** style=***REMOVED******REMOVED*** height: "1px" ***REMOVED******REMOVED*** />
-            ***REMOVED***ticker.current > 0 && jobs.length === 0 && (
+            })}
+            <div ref={sentinelRef} style={{ height: "1px" }} />
+            {ticker.current > 0 && jobs.length === 0 && (
               <Typography
                 variant="h4"
                 color="textSecondary"
                 align="center"
-                className=***REMOVED***classes.nothingFound***REMOVED***
+                className={classes.nothingFound}
               >
                 😬 <br /> Nothing Found
               </Typography>
-            )***REMOVED***
-            ***REMOVED***isLoading && (
+            )}
+            {isLoading && (
               <CircularProgress
-                classes=***REMOVED******REMOVED*** root: classes.jobsLoadingSpinner ***REMOVED******REMOVED***
+                classes={{ root: classes.jobsLoadingSpinner }}
                 color="primary"
               />
-            )***REMOVED***
-            ***REMOVED***isError && (
+            )}
+            {isError && (
               <Box textAlign="center">
                 <Typography color="textSecondary" variant="h6">
                   Problem occurred fetching data.
                 </Typography>
                 <Fab
-                  onClick=***REMOVED***fetchMoreJobs***REMOVED***
+                  onClick={fetchMoreJobs}
                   variant="extended"
                   color="primary"
                   size="medium"
@@ -418,22 +418,22 @@ function Index(***REMOVED*** user, jobPage, primaryTags ***REMOVED***) ***REMOVE
                   Try Again
                 </Fab>
               </Box>
-            )***REMOVED***
+            )}
           </Box>
         </Box>
       </Container>
     </Layout>
   );
-***REMOVED***
+}
 
-Index.getInitialProps = async ctx => ***REMOVED***
+Index.getInitialProps = async ctx => {
   const filterQuery = getFilterQuery(queryString.extract(ctx.asPath));
   const [jobPage, primaryTags] = await Promise.all([
-    api.getJobs(***REMOVED*** ctx, filterQuery ***REMOVED***),
+    api.getJobs({ ctx, filterQuery }),
     api.getPrimaryTags(ctx)
   ]);
 
-  return ***REMOVED*** jobPage, primaryTags ***REMOVED***;
-***REMOVED***;
+  return { jobPage, primaryTags };
+};
 
 export default Index;

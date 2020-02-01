@@ -1,4 +1,4 @@
-import ***REMOVED***
+import {
   ExpansionPanel,
   makeStyles,
   ExpansionPanelSummary,
@@ -7,71 +7,71 @@ import ***REMOVED***
   Button,
   Badge,
   ExpansionPanelActions
-***REMOVED*** from "@material-ui/core";
+} from "@material-ui/core";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
-const useStyles = makeStyles(theme => (***REMOVED***
-  expansionPanel: ***REMOVED***
+const useStyles = makeStyles(theme => ({
+  expansionPanel: {
     boxShadow: "none",
     backgroundColor: "inherit"
-  ***REMOVED***,
-  expansionPanelExpanded: ***REMOVED******REMOVED***,
-  expandIcon: ***REMOVED***
+  },
+  expansionPanelExpanded: {},
+  expandIcon: {
     fontSize: "1.2rem"
-  ***REMOVED***,
-  panelSummaryExpanded: ***REMOVED***
+  },
+  panelSummaryExpanded: {
     padding: `0 1rem 0 1rem`
-  ***REMOVED***,
-  title: ***REMOVED***
+  },
+  title: {
     flex: 1
-  ***REMOVED***,
-  filterIcon: ***REMOVED***
+  },
+  filterIcon: {
     color: theme.palette.text.secondary
-  ***REMOVED***
-***REMOVED***));
+  }
+}));
 
-export default function FilterPanel(***REMOVED***
+export default function FilterPanel({
   title,
   expanded,
   onExpandChange,
   children,
   filterCount = 0,
   onClear
-***REMOVED***) ***REMOVED***
+}) {
   const classes = useStyles();
   return (
     <ExpansionPanel
-      expanded=***REMOVED***expanded***REMOVED***
-      onChange=***REMOVED***onExpandChange***REMOVED***
-      classes=***REMOVED******REMOVED***
+      expanded={expanded}
+      onChange={onExpandChange}
+      classes={{
         root: classes.expansionPanel,
         expanded: classes.expansionPanelExpanded
-      ***REMOVED******REMOVED***
+      }}
     >
       <ExpansionPanelSummary
-        classes=***REMOVED******REMOVED***
+        classes={{
           expanded: classes.panelSummaryExpanded
-        ***REMOVED******REMOVED***
-        expandIcon=***REMOVED***<ExpandMoreIcon className=***REMOVED***classes.expandIcon***REMOVED*** />***REMOVED***
+        }}
+        expandIcon={<ExpandMoreIcon className={classes.expandIcon} />}
       >
-        <Typography className=***REMOVED***classes.title***REMOVED*** variant="subtitle2">
-          ***REMOVED***title***REMOVED***
+        <Typography className={classes.title} variant="subtitle2">
+          {title}
         </Typography>
-        ***REMOVED***filterCount > 0 && (
+        {filterCount > 0 && (
           <Badge variant="dot" color="primary">
             <FilterListIcon fontSize="small" color="action" />
           </Badge>
-        )***REMOVED***
+        )}
       </ExpansionPanelSummary>
-      <ExpansionPanelDetails>***REMOVED***children***REMOVED***</ExpansionPanelDetails>
-      ***REMOVED***filterCount > 0 && onClear && (
+      <ExpansionPanelDetails>{children}</ExpansionPanelDetails>
+      {filterCount > 0 && onClear && (
         <ExpansionPanelActions>
-          <Button size="small" color="primary" onClick=***REMOVED***onClear***REMOVED***>
+          <Button size="small" color="primary" onClick={onClear}>
             Clear All
           </Button>
         </ExpansionPanelActions>
-      )***REMOVED***
+      )}
     </ExpansionPanel>
   );
-***REMOVED***
+}

@@ -1,168 +1,168 @@
 import axios from "axios";
 
-class Api ***REMOVED***
-  request(ctx = ***REMOVED******REMOVED***) ***REMOVED***
-    return axios.create(***REMOVED***
-      baseURL: `$***REMOVED***
-        ctx.req ? `$***REMOVED***ctx.req.protocol***REMOVED***://localhost:$***REMOVED***process.env.PORT***REMOVED***` : ""
-      ***REMOVED***/api`,
-      headers: ***REMOVED***
+class Api {
+  request(ctx = {}) {
+    return axios.create({
+      baseURL: `${
+        ctx.req ? `${ctx.req.protocol}://localhost:${process.env.PORT}` : ""
+      }/api`,
+      headers: {
         ...(ctx.req &&
-          ctx.req.headers.cookie && ***REMOVED***
+          ctx.req.headers.cookie && {
             cookie: ctx.req.headers.cookie
-          ***REMOVED***)
-      ***REMOVED***
-    ***REMOVED***);
-  ***REMOVED***
+          })
+      }
+    });
+  }
 
-  async createJob(data) ***REMOVED***
-    const ***REMOVED*** data: jobData ***REMOVED*** = await this.request().post("/new", data);
+  async createJob(data) {
+    const { data: jobData } = await this.request().post("/new", data);
     return jobData;
-  ***REMOVED***
+  }
 
-  async updateJob(id, data) ***REMOVED***
-    const ***REMOVED*** data: jobData ***REMOVED*** = await this.request().put(`/jobs/$***REMOVED***id***REMOVED***`, data);
+  async updateJob(id, data) {
+    const { data: jobData } = await this.request().put(`/jobs/${id}`, data);
     return jobData;
-  ***REMOVED***
+  }
 
-  async createCompany(data) ***REMOVED***
-    const ***REMOVED*** data: company ***REMOVED*** = await this.request().post("/company", data);
+  async createCompany(data) {
+    const { data: company } = await this.request().post("/company", data);
     return company;
-  ***REMOVED***
+  }
 
-  async updateCompany(companyId, data) ***REMOVED***
-    const ***REMOVED*** data: company ***REMOVED*** = await this.request().put(
-      `/company/$***REMOVED***companyId***REMOVED***`,
+  async updateCompany(companyId, data) {
+    const { data: company } = await this.request().put(
+      `/company/${companyId}`,
       data
     );
     return company;
-  ***REMOVED***
+  }
 
-  deleteCompany(companyId) ***REMOVED***
-    return this.request().delete(`/company/$***REMOVED***companyId***REMOVED***`);
-  ***REMOVED***
+  deleteCompany(companyId) {
+    return this.request().delete(`/company/${companyId}`);
+  }
 
-  async uploadImage(file) ***REMOVED***
+  async uploadImage(file) {
     const formData = new FormData();
     formData.append("image", file);
-    const ***REMOVED*** data ***REMOVED*** = await this.request().post(`/image-upload`, formData, ***REMOVED***
-      headers: ***REMOVED***
+    const { data } = await this.request().post(`/image-upload`, formData, {
+      headers: {
         "content-type": "multipart/form-data"
-      ***REMOVED***
-    ***REMOVED***);
+      }
+    });
     return data.imageUrl;
-  ***REMOVED***
+  }
 
-  async getPrimaryTags(ctx) ***REMOVED***
-    const ***REMOVED*** data ***REMOVED*** = await this.request(ctx).get(`/primary-tags`);
+  async getPrimaryTags(ctx) {
+    const { data } = await this.request(ctx).get(`/primary-tags`);
     return data;
-  ***REMOVED***
+  }
 
-  async getJobs(***REMOVED*** ctx = ***REMOVED******REMOVED***, cursor = "", filterQuery ***REMOVED*** = ***REMOVED******REMOVED***) ***REMOVED***
-    const ***REMOVED*** data ***REMOVED*** = await this.request(ctx).get(
-      `/jobs?cursor=$***REMOVED***cursor***REMOVED***&$***REMOVED***filterQuery***REMOVED***`
+  async getJobs({ ctx = {}, cursor = "", filterQuery } = {}) {
+    const { data } = await this.request(ctx).get(
+      `/jobs?cursor=${cursor}&${filterQuery}`
     );
     return data;
-  ***REMOVED***
+  }
 
-  async getMyJobs(ctx) ***REMOVED***
-    const ***REMOVED*** data: jobs ***REMOVED*** = await this.request(ctx).get(`/myjobs`);
+  async getMyJobs(ctx) {
+    const { data: jobs } = await this.request(ctx).get(`/myjobs`);
     return jobs;
-  ***REMOVED***
+  }
 
-  async getCompanies(ctx) ***REMOVED***
-    const ***REMOVED*** data: companies ***REMOVED*** = await this.request(ctx).get(`/company`);
+  async getCompanies(ctx) {
+    const { data: companies } = await this.request(ctx).get(`/company`);
     return companies;
-  ***REMOVED***
+  }
 
-  async getCompany(ctx, companyId) ***REMOVED***
-    const ***REMOVED*** data: company ***REMOVED*** = await this.request(ctx).get(
-      `/company/$***REMOVED***companyId***REMOVED***`
+  async getCompany(ctx, companyId) {
+    const { data: company } = await this.request(ctx).get(
+      `/company/${companyId}`
     );
     return company;
-  ***REMOVED***
+  }
 
-  async getPendingJobs(ctx) ***REMOVED***
-    const ***REMOVED*** data ***REMOVED*** = await this.request(ctx).get(`/pending-jobs`);
+  async getPendingJobs(ctx) {
+    const { data } = await this.request(ctx).get(`/pending-jobs`);
     return data;
-  ***REMOVED***
+  }
 
-  async getJob(ctx, slug, adminToken) ***REMOVED***
-    const ***REMOVED*** data ***REMOVED*** = await this.request(ctx).get(
-      `/jobs/$***REMOVED***slug***REMOVED***?$***REMOVED***!!adminToken ? `adminToken=$***REMOVED***adminToken***REMOVED***` : ""***REMOVED***`
+  async getJob(ctx, slug, adminToken) {
+    const { data } = await this.request(ctx).get(
+      `/jobs/${slug}?${!!adminToken ? `adminToken=${adminToken}` : ""}`
     );
     return data;
-  ***REMOVED***
+  }
 
-  async getCompanyJobs(companyId, ctx) ***REMOVED***
-    const ***REMOVED*** data ***REMOVED*** = await this.request(ctx).get(`/jobs/company/$***REMOVED***companyId***REMOVED***`);
+  async getCompanyJobs(companyId, ctx) {
+    const { data } = await this.request(ctx).get(`/jobs/company/${companyId}`);
     return data;
-  ***REMOVED***
+  }
 
-  async login(data) ***REMOVED***
-    const ***REMOVED*** data: user ***REMOVED*** = await this.request().post(`/login`, data);
+  async login(data) {
+    const { data: user } = await this.request().post(`/login`, data);
     return user;
-  ***REMOVED***
+  }
 
-  async telegramLogin(data) ***REMOVED***
-    const ***REMOVED*** data: user ***REMOVED*** = await this.request().post(`/telegram-login`, data);
+  async telegramLogin(data) {
+    const { data: user } = await this.request().post(`/telegram-login`, data);
     return user;
-  ***REMOVED***
+  }
 
-  register(data) ***REMOVED***
+  register(data) {
     return this.request().post("/register", data);
-  ***REMOVED***
+  }
 
-  confirmUser(confirmationKey) ***REMOVED***
-    return this.request().get(`/confirm-user/$***REMOVED***confirmationKey***REMOVED***`);
-  ***REMOVED***
+  confirmUser(confirmationKey) {
+    return this.request().get(`/confirm-user/${confirmationKey}`);
+  }
 
-  logout() ***REMOVED***
+  logout() {
     return this.request().get("/logout");
-  ***REMOVED***
+  }
 
-  async activeUser(ctx) ***REMOVED***
-    const ***REMOVED*** data: user ***REMOVED*** = await this.request(ctx).get(`/me`);
+  async activeUser(ctx) {
+    const { data: user } = await this.request(ctx).get(`/me`);
     return user;
-  ***REMOVED***
+  }
 
-  async approveJob(jobId) ***REMOVED***
-    const ***REMOVED*** data ***REMOVED*** = await this.request().put("/approve-job", ***REMOVED*** jobId ***REMOVED***);
+  async approveJob(jobId) {
+    const { data } = await this.request().put("/approve-job", { jobId });
     return data;
-  ***REMOVED***
+  }
 
-  async declineJob(jobId) ***REMOVED***
-    const ***REMOVED*** data ***REMOVED*** = await this.request().patch(`/jobs/$***REMOVED***jobId***REMOVED***/decline-job`);
+  async declineJob(jobId) {
+    const { data } = await this.request().patch(`/jobs/${jobId}/decline-job`);
     return data;
-  ***REMOVED***
+  }
 
-  async removeJob(jobId) ***REMOVED***
-    const ***REMOVED*** data ***REMOVED*** = await this.request().delete(`/jobs/$***REMOVED***jobId***REMOVED***`);
+  async removeJob(jobId) {
+    const { data } = await this.request().delete(`/jobs/${jobId}`);
     return data;
-  ***REMOVED***
+  }
 
-  async openPage(jobSlug) ***REMOVED***
-    return this.request().post(`/jobs/$***REMOVED***jobSlug***REMOVED***/page-open`);
-  ***REMOVED***
+  async openPage(jobSlug) {
+    return this.request().post(`/jobs/${jobSlug}/page-open`);
+  }
 
-  async verifyJobToken(id, adminToken) ***REMOVED***
-    const ***REMOVED*** data ***REMOVED*** = await this.request().post(`/jobs/$***REMOVED***id***REMOVED***/verify-token`, ***REMOVED***
+  async verifyJobToken(id, adminToken) {
+    const { data } = await this.request().post(`/jobs/${id}/verify-token`, {
       adminToken
-    ***REMOVED***);
+    });
     return data;
-  ***REMOVED***
+  }
 
-  async closeJob(id, adminToken) ***REMOVED***
-    const ***REMOVED*** data ***REMOVED*** = await this.request().patch(`/jobs/$***REMOVED***id***REMOVED***/close-job`, ***REMOVED***
+  async closeJob(id, adminToken) {
+    const { data } = await this.request().patch(`/jobs/${id}/close-job`, {
       adminToken
-    ***REMOVED***);
+    });
     return data;
-  ***REMOVED***
+  }
 
-  async getTags(tagNames = "", ctx) ***REMOVED***
-    const ***REMOVED*** data ***REMOVED*** = await this.request(ctx).get(`/tags?names=$***REMOVED***tagNames***REMOVED***`);
+  async getTags(tagNames = "", ctx) {
+    const { data } = await this.request(ctx).get(`/tags?names=${tagNames}`);
     return data;
-  ***REMOVED***
-***REMOVED***
+  }
+}
 
 export default new Api();

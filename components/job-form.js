@@ -1,4 +1,4 @@
-import ***REMOVED***
+import {
   makeStyles,
   Collapse,
   Box,
@@ -7,12 +7,12 @@ import ***REMOVED***
   Typography,
   Button,
   Fab
-***REMOVED*** from "@material-ui/core";
+} from "@material-ui/core";
 import BusinessIcon from "@material-ui/icons/Business";
 import SaveIcon from "@material-ui/icons/Save";
-import ***REMOVED*** useState, Fragment ***REMOVED*** from "react";
-import ***REMOVED*** Formik ***REMOVED*** from "formik";
-import ***REMOVED*** jobValidationSchema ***REMOVED*** from "../utils/validation";
+import { useState, Fragment } from "react";
+import { Formik } from "formik";
+import { jobValidationSchema } from "../utils/validation";
 import JobSettingFormElement from "./job-setting-form-element";
 import HSCard from "./hs-card";
 import CompanyLogo from "./company-logo";
@@ -21,44 +21,44 @@ import JobPreviewFormElement from "./job-preview-form-element";
 import PageProgress from "./page-progress";
 import HSSnackBar from "./hs-snackbar";
 import Router from "next/router";
-import ***REMOVED*** MuiPickersUtilsProvider, DateTimePicker ***REMOVED*** from "@material-ui/pickers";
+import { MuiPickersUtilsProvider, DateTimePicker } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import add from "date-fns/add";
 
-const useStyles = makeStyles(theme => (***REMOVED***
-  form: ***REMOVED***
+const useStyles = makeStyles(theme => ({
+  form: {
     display: "flex",
     flexDirection: "column"
-  ***REMOVED***,
-  jobSetting: ***REMOVED***
+  },
+  jobSetting: {
     marginBottom: theme.spacing(3)
-  ***REMOVED***,
-  companyPanel: ***REMOVED***
+  },
+  companyPanel: {
     marginBottom: theme.spacing(3)
-  ***REMOVED***,
-  jobDetailsCard: ***REMOVED***
+  },
+  jobDetailsCard: {
     marginBottom: theme.spacing(3)
-  ***REMOVED***,
-  orText: ***REMOVED***
+  },
+  orText: {
     marginBottom: theme.spacing(1)
-  ***REMOVED***,
-  postButton: ***REMOVED***
+  },
+  postButton: {
     marginTop: theme.spacing(1)
-  ***REMOVED***,
-  saveButtonIcon: ***REMOVED***
+  },
+  saveButtonIcon: {
     marginRight: theme.spacing(1)
-  ***REMOVED***,
-  jobPreview: ***REMOVED***
+  },
+  jobPreview: {
     marginTop: theme.spacing(3)
-  ***REMOVED***
-***REMOVED***));
+  }
+}));
 
-function DateTimePickerTextField(props) ***REMOVED***
-  return <TextField margin="normal" fullWidth ***REMOVED***...props***REMOVED*** />;
-***REMOVED***
+function DateTimePickerTextField(props) {
+  return <TextField margin="normal" fullWidth {...props} />;
+}
 
-export default function JobForm(***REMOVED***
-  initialValues = ***REMOVED***
+export default function JobForm({
+  initialValues = {
     position: "",
     jobType: "",
     careerLevel: "",
@@ -76,32 +76,32 @@ export default function JobForm(***REMOVED***
     deadline: null,
     companyId: null,
     socialPostScheduleTime: null
-  ***REMOVED***,
+  },
   companies,
   primaryTags,
   onSubmit,
   disableSaveButton = false,
   user
-***REMOVED***) ***REMOVED***
+}) {
   const classes = useStyles();
   const [showErrorSubmitting, setShowErrorSubmitting] = useState(false);
-  const handleSubmit = async function(values, actions) ***REMOVED***
-    try ***REMOVED***
+  const handleSubmit = async function(values, actions) {
+    try {
       await onSubmit(values);
-    ***REMOVED*** catch (err) ***REMOVED***
+    } catch (err) {
       console.error(err);
       setShowErrorSubmitting(true);
       actions.setSubmitting(false);
-    ***REMOVED***
+    }
     actions.setSubmitting(false);
-  ***REMOVED***;
+  };
   return (
     <Formik
-      validationSchema=***REMOVED***jobValidationSchema***REMOVED***
-      initialValues=***REMOVED***initialValues***REMOVED***
-      onSubmit=***REMOVED***handleSubmit***REMOVED***
+      validationSchema={jobValidationSchema}
+      initialValues={initialValues}
+      onSubmit={handleSubmit}
     >
-      ***REMOVED***(***REMOVED***
+      {({
         values,
         isSubmitting,
         handleChange,
@@ -109,21 +109,21 @@ export default function JobForm(***REMOVED***
         touched,
         setFieldValue,
         handleSubmit
-      ***REMOVED***) => ***REMOVED***
+      }) => {
         const selectedCompany = values.companyId
           ? companies.find(company => company.id === values.companyId)
           : null;
         return (
-          <form className=***REMOVED***classes.form***REMOVED*** onSubmit=***REMOVED***handleSubmit***REMOVED***>
+          <form className={classes.form} onSubmit={handleSubmit}>
             <JobSettingFormElement
-              className=***REMOVED***classes.jobSetting***REMOVED***
-              values=***REMOVED***values***REMOVED***
-              setFieldValue=***REMOVED***setFieldValue***REMOVED***
+              className={classes.jobSetting}
+              values={values}
+              setFieldValue={setFieldValue}
             />
-            <Collapse in=***REMOVED***values.hasCompany***REMOVED*** unmountOnExit>
-              <HSCard title="Company" className=***REMOVED***classes.companyPanel***REMOVED***>
+            <Collapse in={values.hasCompany} unmountOnExit>
+              <HSCard title="Company" className={classes.companyPanel}>
                 <Box display="flex" flexDirection="column" alignItems="center">
-                  ***REMOVED***companies.length > 0 && (
+                  {companies.length > 0 && (
                     <Fragment>
                       <TextField
                         select
@@ -132,42 +132,42 @@ export default function JobForm(***REMOVED***
                         margin="normal"
                         variant="outlined"
                         fullWidth
-                        value=***REMOVED***values.companyId || ""***REMOVED***
-                        onChange=***REMOVED***handleChange***REMOVED***
-                        error=***REMOVED***!!(touched.companyId && errors.companyId)***REMOVED***
-                        helperText=***REMOVED***touched.companyId && errors.companyId***REMOVED***
+                        value={values.companyId || ""}
+                        onChange={handleChange}
+                        error={!!(touched.companyId && errors.companyId)}
+                        helperText={touched.companyId && errors.companyId}
                       >
-                        ***REMOVED***companies.map(company => (
-                          <MenuItem key=***REMOVED***company.id***REMOVED*** value=***REMOVED***company.id***REMOVED***>
+                        {companies.map(company => (
+                          <MenuItem key={company.id} value={company.id}>
                             <Box display="flex" alignItems="center">
-                              ***REMOVED***company.logo && (
-                                <Box pr=***REMOVED***1***REMOVED***>
+                              {company.logo && (
+                                <Box pr={1}>
                                   <CompanyLogo
-                                    company=***REMOVED***company***REMOVED***
-                                    abbrevFallback=***REMOVED***false***REMOVED***
+                                    company={company}
+                                    abbrevFallback={false}
                                     size="extraSmall"
                                   />
                                 </Box>
-                              )***REMOVED***
-                              ***REMOVED***company.name***REMOVED***
+                              )}
+                              {company.name}
                             </Box>
                           </MenuItem>
-                        ))***REMOVED***
+                        ))}
                       </TextField>
                       <Typography
                         variant="subtitle1"
                         align="center"
-                        className=***REMOVED***classes.orText***REMOVED***
+                        className={classes.orText}
                       >
                         OR
                       </Typography>
                     </Fragment>
-                  )***REMOVED***
+                  )}
                   <Button
                     color="primary"
                     variant="contained"
-                    startIcon=***REMOVED***<BusinessIcon />***REMOVED***
-                    onClick=***REMOVED***() => Router.push("/dashboard/companies/new")***REMOVED***
+                    startIcon={<BusinessIcon />}
+                    onClick={() => Router.push("/dashboard/companies/new")}
                   >
                     Add Company
                   </Button>
@@ -175,62 +175,62 @@ export default function JobForm(***REMOVED***
               </HSCard>
             </Collapse>
             <JobDetailsFormElement
-              className=***REMOVED***classes.jobDetailsCard***REMOVED***
-              values=***REMOVED***values***REMOVED***
-              errors=***REMOVED***errors***REMOVED***
-              touched=***REMOVED***touched***REMOVED***
-              handleChange=***REMOVED***handleChange***REMOVED***
-              setFieldValue=***REMOVED***setFieldValue***REMOVED***
-              primaryTags=***REMOVED***primaryTags***REMOVED***
+              className={classes.jobDetailsCard}
+              values={values}
+              errors={errors}
+              touched={touched}
+              handleChange={handleChange}
+              setFieldValue={setFieldValue}
+              primaryTags={primaryTags}
             />
-            ***REMOVED***user.role === "admin" && (
+            {user.role === "admin" && (
               <HSCard title="Facebook post schedule">
-                <MuiPickersUtilsProvider utils=***REMOVED***DateFnsUtils***REMOVED***>
+                <MuiPickersUtilsProvider utils={DateFnsUtils}>
                   <DateTimePicker
                     label="Schedule time"
                     inputVariant="outlined"
-                    value=***REMOVED***
+                    value={
                       values.socialPostScheduleTime &&
                       new Date(values.socialPostScheduleTime * 1000)
-                    ***REMOVED***
-                    onChange=***REMOVED***date => ***REMOVED***
+                    }
+                    onChange={date => {
                       const inSeconds = parseInt(date.getTime() / 1000);
                       setFieldValue("socialPostScheduleTime", inSeconds);
-                    ***REMOVED******REMOVED***
-                    TextFieldComponent=***REMOVED***DateTimePickerTextField***REMOVED***
-                    minDate=***REMOVED***add(new Date(), ***REMOVED*** minutes: 20 ***REMOVED***)***REMOVED***
+                    }}
+                    TextFieldComponent={DateTimePickerTextField}
+                    minDate={add(new Date(), { minutes: 20 })}
                     minDateMessage="Can't schedule for that time. Please move it forward."
                   />
                 </MuiPickersUtilsProvider>
               </HSCard>
-            )***REMOVED***
+            )}
             <Fab
               type="submit"
               variant="extended"
               color="primary"
-              className=***REMOVED***classes.postButton***REMOVED***
-              disabled=***REMOVED***isSubmitting || disableSaveButton***REMOVED***
+              className={classes.postButton}
+              disabled={isSubmitting || disableSaveButton}
             >
-              <SaveIcon className=***REMOVED***classes.saveButtonIcon***REMOVED*** />
+              <SaveIcon className={classes.saveButtonIcon} />
               Save
             </Fab>
             <JobPreviewFormElement
-              className=***REMOVED***classes.jobPreview***REMOVED***
-              values=***REMOVED***values***REMOVED***
-              company=***REMOVED***selectedCompany***REMOVED***
-              primaryTags=***REMOVED***primaryTags***REMOVED***
+              className={classes.jobPreview}
+              values={values}
+              company={selectedCompany}
+              primaryTags={primaryTags}
             />
-            ***REMOVED***isSubmitting && <PageProgress />***REMOVED***
+            {isSubmitting && <PageProgress />}
             <HSSnackBar
               variant="error"
-              open=***REMOVED***showErrorSubmitting***REMOVED***
-              onClose=***REMOVED***() => setShowErrorSubmitting(false)***REMOVED***
+              open={showErrorSubmitting}
+              onClose={() => setShowErrorSubmitting(false)}
               message="Couldn't submit data. Please try again later."
-              autoHideDuration=***REMOVED***3000***REMOVED***
+              autoHideDuration={3000}
             />
           </form>
         );
-      ***REMOVED******REMOVED***
+      }}
     </Formik>
   );
-***REMOVED***
+}

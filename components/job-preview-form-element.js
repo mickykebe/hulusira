@@ -1,27 +1,27 @@
 import JobItem from "./job-item";
-import ***REMOVED*** cleanTags ***REMOVED*** from "../utils";
+import { cleanTags } from "../utils";
 
-export default function JobPreviewFormElement(***REMOVED***
+export default function JobPreviewFormElement({
   className = "",
   values,
   company,
   primaryTags
-***REMOVED***) ***REMOVED***
+}) {
   return (
     <JobItem
-      className=***REMOVED***className***REMOVED***
-      company=***REMOVED***values.hasCompany ? company : null***REMOVED***
-      job=***REMOVED******REMOVED***
+      className={className}
+      company={values.hasCompany ? company : null}
+      job={{
         position: values.position || "Position",
         jobType: values.jobType
-      ***REMOVED******REMOVED***
-      tags=***REMOVED***[
+      }}
+      tags={[
         ...primaryTags
           .filter(tag => tag.name === values.primaryTag)
           .map(tag => tag.name),
         ...cleanTags(values.tags)
-      ]***REMOVED***
+      ]}
       preview
     />
   );
-***REMOVED***
+}

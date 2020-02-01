@@ -1,28 +1,28 @@
-import ***REMOVED*** useReducer, useState ***REMOVED*** from "react";
+import { useReducer, useState } from "react";
 import jobCloseReducer from "../reducers/close-job";
 
-export default function useCloseJob(closeJob) ***REMOVED***
-  const [***REMOVED*** closeStatus ***REMOVED***, dispatch] = useReducer(jobCloseReducer, ***REMOVED***
+export default function useCloseJob(closeJob) {
+  const [{ closeStatus }, dispatch] = useReducer(jobCloseReducer, {
     closeStatus: null
-  ***REMOVED***);
+  });
   const [closeDialogOpen, setCloseDialogOpen] = useState(false);
-  const handleCloseJob = async () => ***REMOVED***
-    dispatch(***REMOVED*** type: "CLOSING_JOB" ***REMOVED***);
+  const handleCloseJob = async () => {
+    dispatch({ type: "CLOSING_JOB" });
     setCloseDialogOpen(false);
-    try ***REMOVED***
+    try {
       await closeJob();
-      dispatch(***REMOVED*** type: "CLOSED_JOB" ***REMOVED***);
-    ***REMOVED*** catch (err) ***REMOVED***
+      dispatch({ type: "CLOSED_JOB" });
+    } catch (err) {
       console.error(err);
-      dispatch(***REMOVED*** type: "ERROR_CLOSING_JOB" ***REMOVED***);
-    ***REMOVED***
-  ***REMOVED***;
-  const clearError = () => dispatch(***REMOVED*** type: "CLEAR_ERROR" ***REMOVED***);
+      dispatch({ type: "ERROR_CLOSING_JOB" });
+    }
+  };
+  const clearError = () => dispatch({ type: "CLEAR_ERROR" });
 
   return [
-    ***REMOVED*** closeStatus, closeDialogOpen ***REMOVED***,
+    { closeStatus, closeDialogOpen },
     setCloseDialogOpen,
     clearError,
     handleCloseJob
   ];
-***REMOVED***
+}

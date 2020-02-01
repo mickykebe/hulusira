@@ -1,4 +1,4 @@
-import ***REMOVED***
+import {
   Container,
   Box,
   Button,
@@ -10,7 +10,7 @@ import ***REMOVED***
   DialogContent,
   DialogContentText,
   DialogActions
-***REMOVED*** from "@material-ui/core";
+} from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -19,97 +19,97 @@ import Router from "next/router";
 import api from "../../../api";
 import CompanyLogo from "../../../components/company-logo";
 import HSPaper from "../../../components/hs-paper";
-import ***REMOVED*** useReducer, useState ***REMOVED*** from "react";
+import { useReducer, useState } from "react";
 import HSSnackBar from "../../../components/hs-snackbar";
 import redirect from "../../../utils/redirect";
 import EmptyList from "../../../components/empty-list";
 
-const useStyles = makeStyles(theme => (***REMOVED***
-  companyItem: ***REMOVED***
+const useStyles = makeStyles(theme => ({
+  companyItem: {
     marginBottom: theme.spacing(1)
-  ***REMOVED***
-***REMOVED***));
+  }
+}));
 
-function deleteCompanyReducer(state, action) ***REMOVED***
-  switch (action.type) ***REMOVED***
+function deleteCompanyReducer(state, action) {
+  switch (action.type) {
     case "DELETING_COMPANY":
-      return ***REMOVED*** isDeletingCompany: true, errorDeletingCompany: false ***REMOVED***;
+      return { isDeletingCompany: true, errorDeletingCompany: false };
     case "DELETED_COMPANY":
-      return ***REMOVED*** isDeletingCompany: false, errorDeletingCompany: false ***REMOVED***;
+      return { isDeletingCompany: false, errorDeletingCompany: false };
     case "ERROR_DELETING_COMPANY":
-      return ***REMOVED*** isDeletingCompany: false, errorDeletingCompany: true ***REMOVED***;
+      return { isDeletingCompany: false, errorDeletingCompany: true };
     case "CLEAR_ERROR":
-      return ***REMOVED*** ...state, errorDeletingCompany: false ***REMOVED***;
+      return { ...state, errorDeletingCompany: false };
     default:
       throw new Error("Unidentified action type");
-  ***REMOVED***
-***REMOVED***
+  }
+}
 
-function Companies(***REMOVED*** user, companies ***REMOVED***) ***REMOVED***
+function Companies({ user, companies }) {
   const classes = useStyles();
-  const [***REMOVED*** isDeletingCompany, errorDeletingCompany ***REMOVED***, dispatch] = useReducer(
+  const [{ isDeletingCompany, errorDeletingCompany }, dispatch] = useReducer(
     deleteCompanyReducer,
-    ***REMOVED*** isDeletingCompany: false, errorDeletingCompany: false ***REMOVED***
+    { isDeletingCompany: false, errorDeletingCompany: false }
   );
   const [companyIdPendingDelete, setCompanyIdPendingDelete] = useState(null);
-  const handleDeleteCompany = async () => ***REMOVED***
+  const handleDeleteCompany = async () => {
     setCompanyIdPendingDelete(null);
-    dispatch(***REMOVED*** type: "DELETING_COMPANY" ***REMOVED***);
-    try ***REMOVED***
+    dispatch({ type: "DELETING_COMPANY" });
+    try {
       await api.deleteCompany(companyIdPendingDelete);
       Router.push("/dashboard/companies");
-      dispatch(***REMOVED*** type: "DELETED_COMPANY" ***REMOVED***);
-    ***REMOVED*** catch (err) ***REMOVED***
-      dispatch(***REMOVED*** type: "ERROR_DELETING_COMPANY" ***REMOVED***);
-    ***REMOVED***
-  ***REMOVED***;
+      dispatch({ type: "DELETED_COMPANY" });
+    } catch (err) {
+      dispatch({ type: "ERROR_DELETING_COMPANY" });
+    }
+  };
   return (
-    <DashboardLayout user=***REMOVED***user***REMOVED*** selectedItem="company">
+    <DashboardLayout user={user} selectedItem="company">
       <Container maxWidth="md">
-        <Box display="flex" py=***REMOVED***2***REMOVED***>
+        <Box display="flex" py={2}>
           <Box flex="1" />
           <Button
             variant="contained"
             size="small"
             color="primary"
-            startIcon=***REMOVED***<AddIcon />***REMOVED***
-            onClick=***REMOVED***() => Router.push("/dashboard/companies/new")***REMOVED***>
+            startIcon={<AddIcon />}
+            onClick={() => Router.push("/dashboard/companies/new")}>
             Add Company
           </Button>
         </Box>
-        ***REMOVED***companies.length === 0 && (
+        {companies.length === 0 && (
           <EmptyList message="No Companies Available" />
-        )***REMOVED***
-        ***REMOVED***companies.map(company => (
-          <HSPaper key=***REMOVED***company.id***REMOVED*** className=***REMOVED***classes.companyItem***REMOVED***>
-            <Box p=***REMOVED***2***REMOVED*** display="flex" alignItems="center">
-              <Box pr=***REMOVED***[2, 3]***REMOVED***>
-                <CompanyLogo company=***REMOVED***company***REMOVED*** />
+        )}
+        {companies.map(company => (
+          <HSPaper key={company.id} className={classes.companyItem}>
+            <Box p={2} display="flex" alignItems="center">
+              <Box pr={[2, 3]}>
+                <CompanyLogo company={company} />
               </Box>
-              <Typography variant="subtitle1">***REMOVED***company.name***REMOVED***</Typography>
+              <Typography variant="subtitle1">{company.name}</Typography>
               <Box flex="1" />
               <IconButton
                 color="secondary"
-                className=***REMOVED***classes.actionButton***REMOVED***
-                onClick=***REMOVED***() =>
-                  Router.push(`/dashboard/companies/$***REMOVED***company.id***REMOVED***`)
-                ***REMOVED***>
+                className={classes.actionButton}
+                onClick={() =>
+                  Router.push(`/dashboard/companies/${company.id}`)
+                }>
                 <EditIcon />
               </IconButton>
               <IconButton
                 color="secondary"
-                className=***REMOVED***classes.actionButton***REMOVED***
-                disabled=***REMOVED***isDeletingCompany***REMOVED***
-                onClick=***REMOVED***() => setCompanyIdPendingDelete(company.id)***REMOVED***>
+                className={classes.actionButton}
+                disabled={isDeletingCompany}
+                onClick={() => setCompanyIdPendingDelete(company.id)}>
                 <DeleteIcon />
               </IconButton>
             </Box>
           </HSPaper>
-        ))***REMOVED***
+        ))}
       </Container>
       <Dialog
-        open=***REMOVED***companyIdPendingDelete !== null***REMOVED***
-        onClose=***REMOVED***() => setCompanyIdPendingDelete(null)***REMOVED***>
+        open={companyIdPendingDelete !== null}
+        onClose={() => setCompanyIdPendingDelete(null)}>
         <DialogTitle>Delete this company?</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -118,41 +118,41 @@ function Companies(***REMOVED*** user, companies ***REMOVED***) ***REMOVED***
         </DialogContent>
         <DialogActions>
           <Button
-            onClick=***REMOVED***() => setCompanyIdPendingDelete(null)***REMOVED***
+            onClick={() => setCompanyIdPendingDelete(null)}
             color="primary">
             Cancel
           </Button>
-          <Button onClick=***REMOVED***handleDeleteCompany***REMOVED*** color="primary">
+          <Button onClick={handleDeleteCompany} color="primary">
             Yes
           </Button>
         </DialogActions>
       </Dialog>
       <HSSnackBar
-        open=***REMOVED***errorDeletingCompany***REMOVED***
+        open={errorDeletingCompany}
         variant="error"
         message="Problem occurred deleting company."
-        autoHideDuration=***REMOVED***3000***REMOVED***
-        onClose=***REMOVED***() => dispatch("CLEAR_ERROR")***REMOVED***
+        autoHideDuration={3000}
+        onClose={() => dispatch("CLEAR_ERROR")}
       />
     </DashboardLayout>
   );
-***REMOVED***
+}
 
-Companies.getInitialProps = async function(ctx) ***REMOVED***
-  const ***REMOVED*** user ***REMOVED*** = ctx;
+Companies.getInitialProps = async function(ctx) {
+  const { user } = ctx;
 
-  if (!user) ***REMOVED***
+  if (!user) {
     redirect(ctx, "/");
-  ***REMOVED***
+  }
 
   let companies = [];
-  try ***REMOVED***
+  try {
     companies = await api.getCompanies(ctx);
-  ***REMOVED*** catch (err) ***REMOVED***
+  } catch (err) {
     console.log(err);
-  ***REMOVED***
+  }
 
-  return ***REMOVED*** companies ***REMOVED***;
-***REMOVED***;
+  return { companies };
+};
 
 export default Companies;
