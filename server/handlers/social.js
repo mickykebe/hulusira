@@ -83,7 +83,7 @@ const sendPostToTelegram = async function(channelUsername, message, jobUrl) {
   }
 };
 
-exports.postJobToSocialMedia = async function(jobData, { fbSchedule }) {
+exports.postJobToSocialMedia = async function(jobData, { fbSchedule } = {}) {
   const messageBody = createJobMessage(jobData);
   const jobUrl = `${process.env.ROOT_URL}/jobs/${jobData.job.slug}`;
   const jobFacebookUrl = `${jobUrl}?utm_source=HuluSira%20Facebook%20Page&utm_medium=facebook&utm_campaign=${jobData.job.slug}`;
