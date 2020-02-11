@@ -36,7 +36,7 @@
     "formik": "^1.5.8",
     "ioredis": "^4.14.0",
     "js-cookie": "^2.2.1",
-    "knex": "^0.19.4",
+    "knex": "^0.19.5",
     "lodash": "^4.17.15",
     "markdown-to-jsx": "^6.10.3",
     "morgan": "^1.9.1",
