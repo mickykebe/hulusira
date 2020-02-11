@@ -1,6 +1,6 @@
 # HuluSira
 
-HuluSira is a job board for Ethiopian jobs with the aim of posting jobs simpler and more accessible.
+HuluSira is a job board for Ethiopian jobs with the aim of making the employment scene simpler and more accessible.
 
 ![HuluSira](https://github.com/mickykebe/hulusira/blob/master/screenshot.png "HuluSira")
 
@@ -12,3 +12,7 @@ HuluSira is a job board for Ethiopian jobs with the aim of posting jobs simpler 
 - Bot for creating/managing jobs from telegram
 - Allows for posting jobs without signing up for an account
 - Employers creating jobs from the telegram bot can manage their jobs on the site via the Telegram login option.
+
+# Stack
+
+- Next.js, React.js, Express.js, Material-UI
