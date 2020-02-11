@@ -19,8 +19,7 @@ export default function EditJob({ user, jobData, companies, primaryTags }) {
   const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
   const handleSubmit = async function(values) {
     const tags = cleanTags(values.tags);
-    const primaryTag =
-      values.primaryTag !== "" ? values.primaryTag : null;
+    const primaryTag = values.primaryTag !== "" ? values.primaryTag : null;
     await api.updateJob(jobData.job.id, {
       ...values,
       tags,
@@ -36,6 +35,7 @@ export default function EditJob({ user, jobData, companies, primaryTags }) {
           companies={companies}
           primaryTags={primaryTags}
           onSubmit={handleSubmit}
+          user={user}
         />
         <HSSnackBar
           open={showSuccessSnackbar}
