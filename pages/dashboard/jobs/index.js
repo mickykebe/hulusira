@@ -28,7 +28,7 @@ export default function DashboardJobs({ user, jobs }) {
   const classes = useStyles();
   return (
     <DashboardLayout user={user} selectedItem="jobs">
-      <Container maxWidth="lg">
+      <Container maxWidth="xl">
         <Box display="flex" py={2}>
           <Box flex="1" />
           <Button
@@ -36,8 +36,7 @@ export default function DashboardJobs({ user, jobs }) {
             color="primary"
             size="small"
             startIcon={<AddIcon />}
-            onClick={() => Router.push("/dashboard/jobs/new")}
-          >
+            onClick={() => Router.push("/dashboard/jobs/new")}>
             Post Job
           </Button>
         </Box>
