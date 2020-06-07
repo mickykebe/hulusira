@@ -1,16 +1,24 @@
 const { Storage } = require("@google-cloud/storage");
 const path = require("path");
 
-const gcStorage = new Storage({
+const config = {
   projectId: "hulusira",
-  keyFilename: path.resolve(process.cwd(), "Hulusira-97ccaea38cdd.json")
-});
+};
+
+if (process.env.NODE_ENV === "development") {
+  config.keyFilename = path.resolve(
+    process.cwd(),
+    "Hulusira-97ccaea38cdd.json"
+  );
+}
+
+const gcStorage = new Storage(config);
 
 const bucketName = process.env.GCS_STATIC_BUCKET_NAME;
 const bucket = gcStorage.bucket(bucketName);
 
 function getPublicUrl(filename) {
-  if(process.env.BASE_STATIC_URL) {
+  if (process.env.BASE_STATIC_URL) {
     return `${process.env.BASE_STATIC_URL}/${filename}`;
   }
   return `https://storage.googleapis.com/${bucketName}/${filename}`;
@@ -26,11 +34,11 @@ exports.upload = (req, res, next) => {
 
   const stream = file.createWriteStream({
     metadata: {
-      contentType: req.file.mimetype
-    }
+      contentType: req.file.mimetype,
+    },
   });
 
-  stream.on("error", err => {
+  stream.on("error", (err) => {
     console.error(err);
     req.file.cloudStorageError = err;
     next(err);
