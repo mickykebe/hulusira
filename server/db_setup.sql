@@ -20,7 +20,7 @@ CREATE TABLE company (
   email TEXT NOT NULL,
   logo TEXT,
   verified BOOLEAN NOT NULL DEFAULT FALSE,
-  owner INTEGER REFERENCES users(id) ON DELETE SET NULL,
+  owner INTEGER REFERENCES users(id) ON DELETE SET NULL
 );
 
 CREATE TABLE tag (
@@ -57,7 +57,7 @@ CREATE TABLE job_tags (
   job_id INTEGER NOT NULL REFERENCES job(id) ON DELETE CASCADE,
   tag_name TEXT NOT NULL REFERENCES tag(name),
   is_primary BOOLEAN DEFAULT FALSE,
-  UNIQUE (job_id, tag_id)
+  UNIQUE (job_id, tag_name)
 );
 
 CREATE TABLE job_social_post (
