@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
   wrapperGrid: {
     display: "grid",
     gridTemplateColumns: "1fr 3fr",
-    gridGap: "1rem",
+    gridGap: "0.5rem",
     alignItems: "start",
     [theme.breakpoints.down("sm")]: {
       gridTemplateColumns: "1fr",

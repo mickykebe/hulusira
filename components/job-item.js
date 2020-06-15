@@ -9,8 +9,8 @@ import { Box, Typography, Chip, Link as MuiLink } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import CompanyLogo from "../components/company-logo";
 
-const useStyles = makeStyles(theme => ({
-  root: props => ({
+const useStyles = makeStyles((theme) => ({
+  root: (props) => ({
     position: "relative",
     display: "flex",
     flexWrap: "wrap",
@@ -25,15 +25,15 @@ const useStyles = makeStyles(theme => ({
       bottom: 0,
       left: 0,
       right: 0,
-      zIndex: 1110
-    })
+      zIndex: 1110,
+    }),
   }),
   logoSmall: {
     width: 48,
-    height: 48
+    height: 48,
   },
   position: {
-    display: "block"
+    display: "block",
   },
   tagChip: {
     border: `1px solid ${theme.palette.grey[700]}`,
@@ -41,44 +41,57 @@ const useStyles = makeStyles(theme => ({
     marginBottom: "0.5rem",
     fontWeight: 800,
     fontSize: ".6875rem",
-    color: theme.palette.grey[700]
+    color: theme.palette.grey[700],
   },
   tagChipLabel: {
     paddingLeft: "0.5rem",
-    paddingRight: "0.5rem"
+    paddingRight: "0.5rem",
   },
   applyButton: {
     marginLeft: theme.spacing(2),
     [theme.breakpoints.down("xs")]: {
-      display: "none"
-    }
+      display: "none",
+    },
   },
   extrasText: {
     display: "inline-flex",
     alignItems: "center",
     marginRight: theme.spacing(1),
-    paddingBottom: theme.spacing(0.5)
+    paddingBottom: theme.spacing(0.5),
   },
-  expiredTag: {
-    padding: `0 0.25rem`,
-    border: "1px solid rgb(229, 57, 53)",
-    color: "rgb(229, 57, 53)"
+  stamp: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%) rotate(-22.5deg)",
+    borderWidth: "0.5rem",
+    borderStyle: "double",
+    padding: `0.5rem`,
+    fontSize: "1.5rem",
+    borderRadius: "1rem",
+    textTransform: "uppercase",
+    fontWeight: 700,
+    WebkitMaskImage:
+      "url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/8399/grunge.png)",
+    WebkitMaskSize: "944px 604px",
+    fontFamily: "Courier",
+    zIndex: 100,
   },
-  closedTag: {
-    padding: `0 0.25rem`,
-    backgroundColor: "rgb(229, 57, 53)",
-    color: "white"
-  }
+  expiredStamp: {
+    borderColor: "rgb(229, 57, 53)",
+    color: "rgb(229, 57, 53)",
+  },
+  closedStamp: {
+    borderColor: theme.palette.secondary.main,
+    color: theme.palette.secondary.main,
+  },
 }));
 
 function ExpirationTag({ deadline }) {
   const expired = isAfter(new Date(), endOfDay(deadline));
   const classes = useStyles();
   return expired ? (
-    <Typography
-      className={clsx(classes.extrasText, classes.expiredTag)}
-      variant="caption"
-    >
+    <Typography className={clsx(classes.stamp, classes.expiredStamp)}>
       Expired
     </Typography>
   ) : null;
@@ -88,9 +101,8 @@ function ClosedTag() {
   const classes = useStyles();
   return (
     <Typography
-      className={clsx(classes.extrasText, classes.closedTag)}
-      variant="caption"
-    >
+      className={clsx(classes.stamp, classes.closedStamp)}
+      variant="caption">
       Closed
     </Typography>
   );
@@ -102,7 +114,7 @@ export default function JobItem({
   tags,
   preview = false,
   className = "",
-  onTagClick
+  onTagClick,
 }) {
   const classes = useStyles({ preview });
 
@@ -127,8 +139,7 @@ export default function JobItem({
               <MuiLink
                 classes={{ root: classes.position }}
                 variant="h6"
-                color="inherit"
-              >
+                color="inherit">
                 {job.position}
               </MuiLink>
             </Link>
@@ -146,8 +157,7 @@ export default function JobItem({
                 <Link
                   href="/companies/[id]"
                   as={`/companies/${company.id}`}
-                  passHref
-                >
+                  passHref>
                   <MuiLink variant="subtitle2" color="inherit" gutterBottom>
                     {company.name}
                   </MuiLink>
@@ -161,14 +171,12 @@ export default function JobItem({
               alignItems="center"
               pt="1rem"
               pb="0.5rem"
-              flexWrap="wrap"
-            >
+              flexWrap="wrap">
               {!!job.jobType && (
                 <Typography
                   className={classes.extrasText}
                   color="textSecondary"
-                  variant="body2"
-                >
+                  variant="body2">
                   📌 {job.jobType}
                 </Typography>
               )}
@@ -176,8 +184,7 @@ export default function JobItem({
                 <Typography
                   className={classes.extrasText}
                   color="textSecondary"
-                  variant="body2"
-                >
+                  variant="body2">
                   ⏱️{" "}
                   {formatDistance(
                     job.created ? new Date(job.created) : new Date(),
@@ -190,22 +197,21 @@ export default function JobItem({
                 <Typography
                   className={classes.extrasText}
                   color="textSecondary"
-                  variant="body2"
-                >
+                  variant="body2">
                   👀 {job.views ? job.views : 0}{" "}
                   {`View${job.views === 1 ? "" : "s"}`}
                 </Typography>
               )}
-              {!preview && job.approvalStatus !== "Closed" && job.deadline && (
-                <ExpirationTag deadline={new Date(job.deadline)} />
-              )}
-              {!preview && job.approvalStatus === "Closed" && <ClosedTag />}
             </Box>
+          )}
+          {!preview && job.approvalStatus === "Closed" && <ClosedTag />}
+          {!preview && job.approvalStatus !== "Closed" && job.deadline && (
+            <ExpirationTag deadline={new Date(job.deadline)} />
           )}
         </Box>
       </Box>
       <Box display="flex" flexWrap="wrap" flex="1">
-        {tags.map(tag => {
+        {tags.map((tag) => {
           let tagName = typeof tag === "object" ? tag.name : tag;
           return (
             <Chip
