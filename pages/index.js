@@ -15,7 +15,7 @@ import {
   ExpansionPanel,
   ExpansionPanelSummary,
   ExpansionPanelDetails,
-  Hidden
+  Hidden,
 } from "@material-ui/core";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import RefreshIcon from "@material-ui/icons/Refresh";
@@ -31,79 +31,79 @@ import JobFilterPanels from "../components/job-filter-panels";
 import queryString from "query-string";
 import HSPaper from "../components/hs-paper";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    paddingTop: theme.spacing(2)
+    padding: theme.spacing(1),
   },
   wrapperGrid: {
     display: "grid",
     gridTemplateColumns: "1fr 3fr",
-    gridGap: "1.5rem",
+    gridGap: "1rem",
     alignItems: "start",
     [theme.breakpoints.down("sm")]: {
-      gridTemplateColumns: "1fr"
-    }
+      gridTemplateColumns: "1fr",
+    },
   },
   headerAd: {
-    marginBottom: "1.5rem"
+    marginBottom: "1.5rem",
   },
   filterExpansionPanel: {
     boxShadow: "none",
     backgroundColor: "inherit",
     "&::before": {
-      display: "none"
-    }
+      display: "none",
+    },
   },
   filterPanelSummary: {
-    padding: "0 1rem"
+    padding: "0 1rem",
   },
   filterPanelDetails: {
-    padding: 0
+    padding: 0,
   },
   filterHead: ({ smallScreen }) => {
     return {
       ...(smallScreen && {
         borderBottom: `1px solid ${theme.palette.grey[400]}`,
-        borderTop: `1px solid ${theme.palette.grey[400]}`
+        borderTop: `1px solid ${theme.palette.grey[400]}`,
       }),
       ...(!smallScreen && {
-        paddingBottom: `0.5rem`
-      })
+        paddingBottom: `0.5rem`,
+      }),
     };
   },
   jobItem: {
-    marginBottom: `0.5rem`
+    marginBottom: `0.5rem`,
   },
   feedAd: {
-    marginBottom: `0.5rem`
+    marginBottom: `0.5rem`,
   },
   jobsLoadingSpinner: {
     display: "block",
-    margin: "0 auto"
+    margin: "0 auto",
   },
   categorySelect: {
     marginTop: theme.spacing(2),
-    background: theme.palette.common.white
+    background: theme.palette.common.white,
   },
   categoryItem: {
     fontWeight: 800,
     padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
-    fontSize: "0.8rem"
+    fontSize: "0.8rem",
   },
   nothingFound: {
-    paddingTop: theme.spacing(4)
-  }
+    paddingTop: theme.spacing(4),
+  },
 }));
 
 function getFilterQuery(queryPath) {
   const queryParams = queryString.parse(queryPath, {
-    arrayFormat: "bracket"
+    arrayFormat: "bracket",
   });
   return queryString.stringify(
     {
       tags: queryParams.tags,
       jobTypes: queryParams.jobTypes,
-      careerLevels: queryParams.careerLevels
+      careerLevels: queryParams.careerLevels,
     },
     { arrayFormat: "bracket" }
   );
@@ -124,7 +124,7 @@ const jobsReducer = (state, action) => {
         isLoading: false,
         isError: false,
         jobs: [...state.jobs, ...action.payload.jobs],
-        nextCursor: action.payload.nextCursor
+        nextCursor: action.payload.nextCursor,
       };
     case "FETCH_FAILURE":
       return { ...state, isLoading: false, isError: true };
@@ -134,7 +134,7 @@ const jobsReducer = (state, action) => {
         isLoading: false,
         isError: false,
         jobs: action.payload.jobs,
-        nextCursor: action.payload.nextCursor
+        nextCursor: action.payload.nextCursor,
       };
     }
     default:
@@ -149,7 +149,7 @@ function Index({ user, jobPage, primaryTags }) {
       jobs: jobPage.jobs,
       nextCursor: jobPage.nextCursor,
       isLoading: false,
-      isError: false
+      isError: false,
     }
   );
   const ticker = useRef(0);
@@ -162,7 +162,7 @@ function Index({ user, jobPage, primaryTags }) {
 
   const router = useRouter();
   const parsedQS = queryString.parse(queryString.extract(router.asPath), {
-    arrayFormat: "bracket"
+    arrayFormat: "bracket",
   });
   const activeTagNames = parsedQS.tags || [];
   const hasActiveFilter =
@@ -182,7 +182,7 @@ function Index({ user, jobPage, primaryTags }) {
       const filterQuery = getFilterQuery(location.search);
       const jobPage = await api.getJobs({
         filterQuery,
-        cursor: nextCursor
+        cursor: nextCursor,
       });
       if (tickerVal === ticker.current) {
         dispatch({ type: "FETCH_SUCCESS", payload: jobPage });
@@ -202,7 +202,7 @@ function Index({ user, jobPage, primaryTags }) {
   }, [fetchMoreJobs, isIntersecting]);
   const addFilter = (key, value) => {
     const parsed = queryString.parse(location.search, {
-      arrayFormat: "bracket"
+      arrayFormat: "bracket",
     });
     if (!parsed[key]) {
       parsed[key] = [value];
@@ -216,16 +216,16 @@ function Index({ user, jobPage, primaryTags }) {
       `/?${queryString.stringify(parsed, { arrayFormat: "bracket" })}`
     );
   };
-  const addTagToFilter = tagName => {
+  const addTagToFilter = (tagName) => {
     addFilter("tags", tagName);
   };
 
   const removeFilter = (key, value) => {
     const parsed = queryString.parse(location.search, {
-      arrayFormat: "bracket"
+      arrayFormat: "bracket",
     });
     if (parsed[key] && parsed[key].length > 0) {
-      parsed[key] = parsed[key].filter(val => {
+      parsed[key] = parsed[key].filter((val) => {
         return val !== value;
       });
       Router.push(
@@ -233,9 +233,9 @@ function Index({ user, jobPage, primaryTags }) {
       );
     }
   };
-  const clearFilter = key => () => {
+  const clearFilter = (key) => () => {
     const parsed = queryString.parse(location.search, {
-      arrayFormat: "bracket"
+      arrayFormat: "bracket",
     });
     if (parsed[key] && parsed[key].length > 0) {
       parsed[key] = [];
@@ -244,7 +244,7 @@ function Index({ user, jobPage, primaryTags }) {
       `/?${queryString.stringify(parsed, { arrayFormat: "bracket" })}`
     );
   };
-  const removeTagFromFilter = tagName => {
+  const removeTagFromFilter = (tagName) => {
     removeFilter("tags", tagName);
   };
 
@@ -262,8 +262,7 @@ function Index({ user, jobPage, primaryTags }) {
             </Link>
           </Fragment>
         )
-      }
-    >
+      }>
       <Head>
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
@@ -285,16 +284,15 @@ function Index({ user, jobPage, primaryTags }) {
             {smallScreen && (
               <ExpansionPanel
                 classes={{
-                  root: classes.filterExpansionPanel
+                  root: classes.filterExpansionPanel,
                 }}
                 expanded={!filterCollapsed}
                 onChange={(_ev, isExpanded) => {
                   setFilterCollapsed(!isExpanded);
-                }}
-              >
+                }}>
                 <ExpansionPanelSummary
                   classes={{
-                    root: classes.filterPanelSummary
+                    root: classes.filterPanelSummary,
                   }}
                   expandIcon={
                     hasActiveFilter ? (
@@ -304,8 +302,7 @@ function Index({ user, jobPage, primaryTags }) {
                     ) : (
                       <FilterListIcon />
                     )
-                  }
-                >
+                  }>
                   <Typography variant="h6">Filter</Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails className={classes.filterPanelDetails}>
@@ -314,17 +311,17 @@ function Index({ user, jobPage, primaryTags }) {
                     onCheckTagFilter={addTagToFilter}
                     onUncheckTagFilter={removeTagFromFilter}
                     onClearTagFilter={clearFilter("tags")}
-                    onCheckJobTypeFilter={jobType => {
+                    onCheckJobTypeFilter={(jobType) => {
                       addFilter("jobTypes", jobType);
                     }}
-                    onUncheckJobTypeFilter={jobType => {
+                    onUncheckJobTypeFilter={(jobType) => {
                       removeFilter("jobTypes", jobType);
                     }}
                     onClearJobTypeFilter={clearFilter("jobTypes")}
-                    onCheckCareerLevelFilter={careerLevel => {
+                    onCheckCareerLevelFilter={(careerLevel) => {
                       addFilter("careerLevels", careerLevel);
                     }}
-                    onUncheckCareerLevelFilter={careerLevel => {
+                    onUncheckCareerLevelFilter={(careerLevel) => {
                       removeFilter("careerLevels", careerLevel);
                     }}
                     onClearCareerLevelFilter={clearFilter("careerLevels")}
@@ -342,17 +339,17 @@ function Index({ user, jobPage, primaryTags }) {
                   onCheckTagFilter={addTagToFilter}
                   onUncheckTagFilter={removeTagFromFilter}
                   onClearTagFilter={clearFilter("tags")}
-                  onCheckJobTypeFilter={jobType => {
+                  onCheckJobTypeFilter={(jobType) => {
                     addFilter("jobTypes", jobType);
                   }}
-                  onUncheckJobTypeFilter={jobType => {
+                  onUncheckJobTypeFilter={(jobType) => {
                     removeFilter("jobTypes", jobType);
                   }}
                   onClearJobTypeFilter={clearFilter("jobTypes")}
-                  onCheckCareerLevelFilter={careerLevel => {
+                  onCheckCareerLevelFilter={(careerLevel) => {
                     addFilter("careerLevels", careerLevel);
                   }}
-                  onUncheckCareerLevelFilter={careerLevel => {
+                  onUncheckCareerLevelFilter={(careerLevel) => {
                     removeFilter("careerLevels", careerLevel);
                   }}
                   onClearCareerLevelFilter={clearFilter("careerLevels")}
@@ -392,8 +389,7 @@ function Index({ user, jobPage, primaryTags }) {
                 variant="h4"
                 color="textSecondary"
                 align="center"
-                className={classes.nothingFound}
-              >
+                className={classes.nothingFound}>
                 😬 <br /> Nothing Found
               </Typography>
             )}
@@ -412,8 +408,7 @@ function Index({ user, jobPage, primaryTags }) {
                   onClick={fetchMoreJobs}
                   variant="extended"
                   color="primary"
-                  size="medium"
-                >
+                  size="medium">
                   <RefreshIcon />
                   Try Again
                 </Fab>
@@ -426,11 +421,11 @@ function Index({ user, jobPage, primaryTags }) {
   );
 }
 
-Index.getInitialProps = async ctx => {
+Index.getInitialProps = async (ctx) => {
   const filterQuery = getFilterQuery(queryString.extract(ctx.asPath));
   const [jobPage, primaryTags] = await Promise.all([
     api.getJobs({ ctx, filterQuery }),
-    api.getPrimaryTags(ctx)
+    api.getPrimaryTags(ctx),
   ]);
 
   return { jobPage, primaryTags };

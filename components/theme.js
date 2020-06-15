@@ -3,14 +3,14 @@ import { createMuiTheme } from "@material-ui/core/styles";
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: "#0069ff"
+      main: "#0069ff",
     },
     secondary: {
-      main: "#172b4d"
+      main: "#172b4d",
     },
     background: {
-      default: "#FBFBFB"
-    }
+      default: "#FFFFFF",
+    },
   },
   typography: {
     fontFamily: [
@@ -24,37 +24,37 @@ const theme = createMuiTheme({
       "sans-serif",
       '"Apple Color Emoji"',
       '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"'
+      '"Segoe UI Symbol"',
     ],
     h6: {
-      fontWeight: 800
+      fontWeight: 800,
     },
     h5: {
-      fontWeight: 800
+      fontWeight: 800,
     },
     h4: {
-      fontWeight: 800
+      fontWeight: 800,
     },
     h3: {
-      fontWeight: 800
+      fontWeight: 800,
     },
     subtitle1: {
-      fontWeight: 800
+      fontWeight: 800,
     },
     subtitle2: {
-      fontWeight: 800
+      fontWeight: 800,
     },
     caption: {
-      fontWeight: 800
+      fontWeight: 800,
     },
     button: {
-      fontWeight: 800
+      fontWeight: 800,
     },
     overline: {
-      fontWeight: 800
-    }
+      fontWeight: 800,
+    },
   },
-  boxShadows: ["0 1px 3px 0 rgba(0, 0, 0, 0.04)"]
+  boxShadows: ["0 1px 3px 0 rgba(0, 0, 0, 0.04)"],
 });
 
 export default theme;
