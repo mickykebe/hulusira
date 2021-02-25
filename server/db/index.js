@@ -8,11 +8,11 @@ const bcrypt = require("bcryptjs");
 class Db {
   constructor() {
     this.pool = new Pool({
-      connectionString: process.env.DATABASE_URL
+      connectionString: process.env.DATABASE_URL,
     });
     this.knex = Knex({
       client: "pg",
-      connection: process.env.DATABASE_URL
+      connection: process.env.DATABASE_URL,
     });
     this.jobColumns = [
       "id",
@@ -34,7 +34,7 @@ class Db {
       "deadline",
       "owner",
       "approval_status",
-      "views"
+      "views",
     ];
     this.companyColumns = ["id", "name", "email", "logo", "verified"];
   }
@@ -49,7 +49,7 @@ class Db {
     const job = await this.createJob(jobData, company && company.id);
     return {
       company,
-      job
+      job,
     };
   }
 
@@ -71,12 +71,12 @@ class Db {
       primaryTag = Tag.fromDb(primaryTagRow);
     }
 
-    const job = await this.knex.transaction(async trx => {
+    const job = await this.knex.transaction(async (trx) => {
       const tags = (
         await Promise.all(
-          jobData.tags.map(tagName => this.findOrCreateTag(tagName, { trx }))
+          jobData.tags.map((tagName) => this.findOrCreateTag(tagName, { trx }))
         )
-      ).map(tag => ({ ...tag, isPrimary: false }));
+      ).map((tag) => ({ ...tag, isPrimary: false }));
 
       let rows = await trx("job")
         .insert({
@@ -94,7 +94,7 @@ class Db {
           apply_url: jobData.applyUrl,
           apply_email: jobData.applyEmail,
           approval_status: jobData.approvalStatus || "Pending",
-          owner: jobData.owner || null
+          owner: jobData.owner || null,
         })
         .returning(this.selectColumns("job", "job", this.jobColumns));
 
@@ -106,7 +106,7 @@ class Db {
       rows = await trx("job")
         .where("id", row.job_id)
         .update({
-          slug: this.jobSlug(row.job_id, row.job_position)
+          slug: this.jobSlug(row.job_id, row.job_position),
         })
         .returning(this.selectColumns("job", "job", this.jobColumns));
 
@@ -119,7 +119,7 @@ class Db {
         await this.createJobTag(job.id, jobData.primaryTag, true, { trx });
       }
       await Promise.all(
-        tags.map(tag => this.createJobTag(job.id, tag.name, false, { trx }))
+        tags.map((tag) => this.createJobTag(job.id, tag.name, false, { trx }))
       );
 
       return job;
@@ -141,18 +141,18 @@ class Db {
       primaryTag = Tag.fromDb(primaryTagRow);
     }
 
-    const job = await this.knex.transaction(async trx => {
+    const job = await this.knex.transaction(async (trx) => {
       await trx("job_tags")
         .where({
-          job_id: jobId
+          job_id: jobId,
         })
         .del();
 
       const tags = (
         await Promise.all(
-          jobData.tags.map(tagName => this.findOrCreateTag(tagName, { trx }))
+          jobData.tags.map((tagName) => this.findOrCreateTag(tagName, { trx }))
         )
-      ).map(tag => ({ ...tag, isPrimary: false }));
+      ).map((tag) => ({ ...tag, isPrimary: false }));
 
       let rows = await trx("job")
         .where("id", jobId)
@@ -169,7 +169,7 @@ class Db {
           requirements: jobData.requirements,
           how_to_apply: jobData.howToApply,
           apply_url: jobData.applyUrl,
-          apply_email: jobData.applyEmail
+          apply_email: jobData.applyEmail,
         })
         .returning(this.selectColumns("job", "job", this.jobColumns));
 
@@ -187,7 +187,7 @@ class Db {
       }
 
       await Promise.all(
-        tags.map(tag => this.createJobTag(job.id, tag.name, false, { trx }))
+        tags.map((tag) => this.createJobTag(job.id, tag.name, false, { trx }))
       );
 
       return job;
@@ -200,7 +200,7 @@ class Db {
     return (trx || this.knex)("job_tags").insert({
       job_id: jobId,
       tag_name: tagName,
-      is_primary: isPrimary
+      is_primary: isPrimary,
     });
   }
 
@@ -210,7 +210,7 @@ class Db {
         name: companyData.name,
         email: companyData.email,
         logo: companyData.logo,
-        owner: companyData.owner || null
+        owner: companyData.owner || null,
       })
       .returning(this.selectColumns("company", "company", this.companyColumns));
     return Company.fromDb(rows[0]);
@@ -220,12 +220,12 @@ class Db {
     const rows = await this.knex("company")
       .where({
         id: companyId,
-        owner: ownerId
+        owner: ownerId,
       })
       .update({
         name: companyData.name,
         email: companyData.email,
-        logo: companyData.logo
+        logo: companyData.logo,
       })
       .returning("*");
     if (rows.length > 0) {
@@ -251,7 +251,7 @@ class Db {
   }
 
   async getPrimaryTags() {
-    const rows = this.knex("tag")
+    const rows = await this.knex("tag")
       .select()
       .where("is_primary", true)
       .orderBy("name");
@@ -268,7 +268,7 @@ class Db {
     careerLevels = [],
     publicOnly = false,
     ownerId,
-    companyId
+    companyId,
   } = {}) {
     let query = this.knex("job")
       .select(
@@ -346,20 +346,20 @@ class Db {
       query = query.where("job.id", "in", subQuery);
     }); */
     const rows = await query;
-    return rows.map(row => {
+    return rows.map((row) => {
       let job = Job.fromDb(row, row.tags || []);
       if (publicOnly) {
         job = job.publicData();
       }
       return {
         company: row.company_id && Company.fromDb(row),
-        job
+        job,
       };
     });
   }
 
   selectColumns(tableName, prefix, fields) {
-    return fields.map(f => `${tableName}.${f} as ${prefix}_${f}`);
+    return fields.map((f) => `${tableName}.${f} as ${prefix}_${f}`);
   }
 
   jobQuery() {
@@ -386,11 +386,11 @@ class Db {
       .count("id")
       .where({
         ...(id && {
-          id
+          id,
         }),
         ...(owner && {
-          owner
-        })
+          owner,
+        }),
       });
     return parseInt(result[0].count);
   }
@@ -418,7 +418,7 @@ class Db {
       const company = row.company_id && Company.fromDb(row);
       return {
         company: company,
-        job: Job.fromDb(row, row.tags || [])
+        job: Job.fromDb(row, row.tags || []),
       };
     }
     return null;
@@ -430,7 +430,7 @@ class Db {
       const company = row.company_id && Company.fromDb(row);
       return {
         company: company,
-        job: Job.fromDb(row, row.tags || [])
+        job: Job.fromDb(row, row.tags || []),
       };
     }
     return null;
@@ -442,8 +442,8 @@ class Db {
       .where({
         id: companyId,
         ...(ownerId && {
-          owner: ownerId
-        })
+          owner: ownerId,
+        }),
       });
   }
 
@@ -476,7 +476,7 @@ class Db {
         last_name: userData.lastName,
         email: userData.email,
         password: hashedPassword,
-        role: userData.role
+        role: userData.role,
       })
       .returning("*");
     if (rows.length !== 1) {
@@ -489,7 +489,7 @@ class Db {
     const row = await this.knex("users")
       .first()
       .where({
-        telegram_id: userData.id
+        telegram_id: userData.id,
       });
     if (!!row) {
       return User.fromDb(row);
@@ -501,7 +501,7 @@ class Db {
         telegram_id: userData.id,
         telegram_user_name: userData.username,
         confirmed: true,
-        role: userData.role
+        role: userData.role,
       })
       .returning("*");
     if (rows.length !== 1) {
@@ -514,7 +514,7 @@ class Db {
     await this.knex("users")
       .where("id", userId)
       .update({
-        confirmed: true
+        confirmed: true,
       });
   }
 
@@ -541,8 +541,8 @@ class Db {
       .update({
         approval_status: "Closed",
         ...(ownerId && {
-          owner: ownerId
-        })
+          owner: ownerId,
+        }),
       });
   }
 
@@ -550,7 +550,7 @@ class Db {
     return this.knex("job")
       .where("id", id)
       .update({
-        approval_status: "Active"
+        approval_status: "Active",
       });
   }
 
@@ -558,7 +558,7 @@ class Db {
     return this.knex("job")
       .where("id", id)
       .update({
-        approval_status: "Declined"
+        approval_status: "Declined",
       });
   }
 
@@ -572,14 +572,14 @@ class Db {
     return this.knex("company")
       .where({
         id,
-        owner: ownerId
+        owner: ownerId,
       })
       .del();
   }
 
   createJobSocialPost(jobId, { telegramMessages, facebookPostId }) {
     const data = {
-      job_id: jobId
+      job_id: jobId,
     };
     if (!telegramMessages && !facebookPostId) {
       return;
@@ -601,7 +601,7 @@ class Db {
       return {
         telegramMessageId: row.telegram_message_id,
         telegramMessages: row.telegram_messages,
-        facebookPostId: row.facebook_post_id
+        facebookPostId: row.facebook_post_id,
       };
     }
   }
@@ -615,7 +615,7 @@ class Db {
   createUserConfirmation(userId, confirmationKey) {
     return this.knex("user_confirmation").insert({
       user_id: userId,
-      confirmation_key: confirmationKey
+      confirmation_key: confirmationKey,
     });
   }
 
