@@ -106,7 +106,6 @@ function New({ primaryTags, user }) {
   };
   const router = useRouter();
   const pageUrl = `${process.env.NEXT_PUBLIC_ROOT_URL}${router.asPath}`;
-  console.log("recaptcha_key", process.env.NEXT_PUBLIC_RECAPTCHA_KEY);
   return (
     <Layout user={user}>
       <Head>
