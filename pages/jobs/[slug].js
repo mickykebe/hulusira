@@ -36,8 +36,8 @@ function Job({ user, jobData, adminToken }) {
     jobData.company ? `${jobData.company.name} is h` : "H"
   }iring ${jobData.job.position}. ${jobData.job.description.slice(0, 250)}...`;
   const router = useRouter();
-  const url = `${process.env.ROOT_URL}${router.asPath}`;
-  const defaultThumbnailUrl = `${process.env.ROOT_URL}/static/hulusira.png`;
+  const url = `${process.env.NEXT_PUBLIC_ROOT_URL}${router.asPath}`;
+  const defaultThumbnailUrl = `${process.env.NEXT_PUBLIC_ROOT_URL}/static/hulusira.png`;
   return (
     <Layout user={user}>
       <Head>
@@ -72,7 +72,7 @@ function Job({ user, jobData, adminToken }) {
   );
 }
 
-Job.getInitialProps = async ctx => {
+Job.getInitialProps = async (ctx) => {
   const { slug } = ctx.query;
   const cookies = nextCookie(ctx);
   const adminToken = cookies[slug];

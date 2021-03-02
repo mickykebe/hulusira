@@ -30,7 +30,7 @@ exports.telegramLogin = async (req, res) => {
   const { hash, ...userData } = req.body;
   const dataCheckStr = Object.keys(userData)
     .sort()
-    .map(key => `${key}=${userData[key]}`)
+    .map((key) => `${key}=${userData[key]}`)
     .join("\n");
   console.log({ dataCheckStr });
   const secretKey = crypto
@@ -45,7 +45,7 @@ exports.telegramLogin = async (req, res) => {
   if (hash === computedHash && new Date() / 1000 - userData.auth_date < 86400) {
     const user = await db.findOrCreateTelegramUser({
       role: "user",
-      ...userData
+      ...userData,
     });
     req.session.userId = user.id;
     res.status(200).send(user.publicData());
@@ -59,7 +59,7 @@ exports.register = async (req, res) => {
   const user = await db.createUser(userData);
   const confirmationKey = v4();
   await db.createUserConfirmation(user.id, confirmationKey);
-  const confirmationUrl = `${process.env.ROOT_URL}/confirm-user/${confirmationKey}`;
+  const confirmationUrl = `${process.env.NEXT_PUBLIC_ROOT_URL}/confirm-user/${confirmationKey}`;
   await sendEmail(
     user.email,
     `Hi ${user.firstName} ${user.lastName}, please verify your HuluSira account`,
@@ -86,7 +86,7 @@ exports.confirmUser = async (req, res) => {
 
 exports.logout = async (req, res) => {
   if (req.session) {
-    req.session.destroy(err => {
+    req.session.destroy((err) => {
       if (err) {
         throw err;
       }

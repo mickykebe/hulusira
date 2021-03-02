@@ -10,7 +10,7 @@ import {
   TextField,
   Fab,
   Link as MuiLink,
-  Typography
+  Typography,
 } from "@material-ui/core";
 import TelegramLoginButton from "react-telegram-login";
 import api from "../api";
@@ -19,27 +19,27 @@ import redirect from "../utils/redirect";
 import AuthLayout from "../components/auth-layout";
 import PageProgress from "../components/page-progress";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   telegramBtnContainer: {
     display: "flex",
     justifyContent: "center",
     paddingBottom: theme.spacing(2),
-    paddingTop: theme.spacing(2)
+    paddingTop: theme.spacing(2),
   },
   signinButton: {
     width: "100% !important",
-    marginTop: theme.spacing(1)
+    marginTop: theme.spacing(1),
   },
   registerLink: {
-    fontWeight: 800
-  }
+    fontWeight: 800,
+  },
 }));
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
     .email()
     .required("Required"),
-  password: Yup.string().required("Required")
+  password: Yup.string().required("Required"),
 });
 
 function Login() {
@@ -71,7 +71,7 @@ function Login() {
       <TelegramLoginButton
         className={classes.telegramBtnContainer}
         dataOnauth={handleTelegramLogin}
-        botName={process.env.TELEGRAM_BOT_NAME}
+        botName={process.env.NEXT_PUBLIC_TELEGRAM_BOT_NAME}
       />
       <Typography variant="subtitle1" align="center">
         OR
@@ -80,17 +80,16 @@ function Login() {
         validationSchema={validationSchema}
         initialValues={{
           email: "",
-          password: ""
+          password: "",
         }}
-        onSubmit={handleSubmit}
-      >
+        onSubmit={handleSubmit}>
         {({
           values,
           isSubmitting,
           handleChange,
           errors,
           touched,
-          handleSubmit
+          handleSubmit,
         }) => {
           return (
             <form onSubmit={handleSubmit}>
@@ -122,8 +121,7 @@ function Login() {
                 type="submit"
                 variant="extended"
                 color="primary"
-                disabled={isSubmitting || loginSuccess}
-              >
+                disabled={isSubmitting || loginSuccess}>
                 Sign In
               </Fab>
               <Box textAlign="right" pt={2} fontSize="1rem">

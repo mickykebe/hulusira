@@ -23,43 +23,43 @@ import { cleanTags } from "../utils";
 import JobPreviewFormElement from "../components/job-preview-form-element";
 import Banner from "../components/banner";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    paddingTop: theme.spacing(1)
+    paddingTop: theme.spacing(1),
   },
   banner: {
-    marginBottom: theme.spacing(3)
+    marginBottom: theme.spacing(3),
   },
   form: {
     display: "flex",
-    flexDirection: "column"
+    flexDirection: "column",
   },
   headline: {
-    fontWeight: 800
+    fontWeight: 800,
   },
   jobSetting: {
-    marginBottom: theme.spacing(3)
+    marginBottom: theme.spacing(3),
   },
   companyDetails: {
-    marginBottom: theme.spacing(3)
+    marginBottom: theme.spacing(3),
   },
   jobDetailsFormElement: {
-    marginBottom: theme.spacing(3)
+    marginBottom: theme.spacing(3),
   },
   recaptchaBox: {
     display: "flex",
     justifyContent: "center",
-    padding: theme.spacing(3)
+    padding: theme.spacing(3),
   },
   jobPreview: {
-    marginTop: theme.spacing(3)
+    marginTop: theme.spacing(3),
   },
   postButton: {
-    marginTop: theme.spacing(2)
+    marginTop: theme.spacing(2),
   },
   saveButtonIcon: {
-    marginRight: theme.spacing(1)
-  }
+    marginRight: theme.spacing(1),
+  },
 }));
 
 const pageTitle = "Post job on HuluSira";
@@ -68,7 +68,7 @@ const pageDescription =
 
 const validationSchema = jobValidationSchema.concat(
   Yup.object().shape({
-    recaptchaPassed: Yup.boolean().oneOf([true])
+    recaptchaPassed: Yup.boolean().oneOf([true]),
   })
 );
 
@@ -78,7 +78,7 @@ function New({ primaryTags, user }) {
   const [successfullySubmitted, setSuccessfullySubmitted] = useState(false);
   const [showErrorSubmitting, setShowErrorSubmitting] = useState(false);
   React.useEffect(() => {
-    files.forEach(file => URL.revokeObjectURL(file.preview));
+    files.forEach((file) => URL.revokeObjectURL(file.preview));
   }, [files]);
 
   const handleSubmit = async function(values, actions) {
@@ -93,7 +93,7 @@ function New({ primaryTags, user }) {
         ...values,
         tags,
         primaryTag,
-        companyLogo
+        companyLogo,
       });
       Cookies.set(jobData.job.slug, jobData.job.adminToken);
       setSuccessfullySubmitted(true);
@@ -105,7 +105,7 @@ function New({ primaryTags, user }) {
     actions.setSubmitting(false);
   };
   const router = useRouter();
-  const pageUrl = `${process.env.ROOT_URL}${router.asPath}`;
+  const pageUrl = `${process.env.NEXT_PUBLIC_ROOT_URL}${router.asPath}`;
 
   return (
     <Layout user={user}>
@@ -145,10 +145,9 @@ function New({ primaryTags, user }) {
             applyEmail: "",
             companyEmail: "",
             deadline: null,
-            recaptchaPassed: false
+            recaptchaPassed: false,
           }}
-          onSubmit={handleSubmit}
-        >
+          onSubmit={handleSubmit}>
           {({
             values,
             isSubmitting,
@@ -156,7 +155,7 @@ function New({ primaryTags, user }) {
             errors,
             touched,
             setFieldValue,
-            handleSubmit
+            handleSubmit,
           }) => {
             return (
               <form className={classes.form} onSubmit={handleSubmit}>
@@ -168,8 +167,7 @@ function New({ primaryTags, user }) {
                 <Collapse in={values.hasCompany} unmountOnExit>
                   <HSCard
                     className={classes.companyDetails}
-                    title="Company Details"
-                  >
+                    title="Company Details">
                     <TextField
                       label="Company Name*"
                       variant="outlined"
@@ -208,8 +206,8 @@ function New({ primaryTags, user }) {
                 />
                 <HSPaper className={classes.recaptchaBox}>
                   <ReCAPTCHA
-                    sitekey={process.env.RECAPTCHA_KEY}
-                    onChange={value =>
+                    sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_KEY}
+                    onChange={(value) =>
                       setFieldValue("recaptchaPassed", value !== null)
                     }
                   />
@@ -219,8 +217,7 @@ function New({ primaryTags, user }) {
                   variant="extended"
                   color="primary"
                   className={classes.postButton}
-                  disabled={isSubmitting || successfullySubmitted}
-                >
+                  disabled={isSubmitting || successfullySubmitted}>
                   <SaveIcon className={classes.saveButtonIcon} />
                   Post your job
                 </Fab>
@@ -231,7 +228,7 @@ function New({ primaryTags, user }) {
                     values.hasCompany
                       ? {
                           logo: files[0] && files[0].preview,
-                          name: values.companyName
+                          name: values.companyName,
                         }
                       : null
                   }
@@ -255,7 +252,7 @@ function New({ primaryTags, user }) {
   );
 }
 
-New.getInitialProps = async ctx => {
+New.getInitialProps = async (ctx) => {
   const { user } = ctx;
 
   if (user) {

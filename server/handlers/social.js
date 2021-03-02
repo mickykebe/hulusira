@@ -19,7 +19,7 @@ const createJobMessage = ({ job, company }) => {
   }
   
 📋 ${job.description}
-${job.tags.map(tag => `#${tag.name.replace(/\s+/g, "_")}`).join(" ")}`;
+${job.tags.map((tag) => `#${tag.name.replace(/\s+/g, "_")}`).join(" ")}`;
 };
 
 const sendPostToFacebook = async function(
@@ -71,11 +71,11 @@ const sendPostToTelegram = async function(channelUsername, message, jobUrl) {
             [
               {
                 text: "Apply",
-                url: jobUrl
-              }
-            ]
-          ]
-        }
+                url: jobUrl,
+              },
+            ],
+          ],
+        },
       })
       .catch(logAxiosErrors);
     if (response.ok) {
@@ -89,11 +89,11 @@ const sendPostToTelegram = async function(channelUsername, message, jobUrl) {
 
 exports.postJobToSocialMedia = async function(jobData, { fbSchedule } = {}) {
   const messageBody = createJobMessage(jobData);
-  const jobUrl = `${process.env.ROOT_URL}/jobs/${jobData.job.slug}`;
+  const jobUrl = `${process.env.NEXT_PUBLIC_ROOT_URL}/jobs/${jobData.job.slug}`;
   const jobFacebookUrl = `${jobUrl}?utm_source=HuluSira%20Facebook%20Page&utm_medium=facebook&utm_campaign=${jobData.job.slug}`;
   const telegramMessage = `${messageBody}
   
-Hulusira ላይ ስራ ማስተዋወቅ የሚፈልጉ ቀጣሪዎች @${process.env.TELEGRAM_BOT_NAME} በመጠቀም በነጻ የስራ ማስታወቅያ ማውጣት ይችላሉ፡፡`;
+Hulusira ላይ ስራ ማስተዋወቅ የሚፈልጉ ቀጣሪዎች @${process.env.NEXT_PUBLIC_TELEGRAM_BOT_NAME} በመጠቀም በነጻ የስራ ማስታወቅያ ማውጣት ይችላሉ፡፡`;
   const facebookMessage = `ክፍት የስራ ቦታ ማስታወቅያ
   
 ${messageBody}
@@ -106,11 +106,11 @@ ${jobFacebookUrl}
     process.env.TELEGRAM_CHANNEL_USERNAMES || ""
   )
     .split(" ")
-    .filter(userName => !!userName);
+    .filter((userName) => !!userName);
   if (telegramChannelUsernames.length > 0) {
     let messageIds = await Promise.all(
       telegramChannelUsernames
-        .map(channelUserName => {
+        .map((channelUserName) => {
           const jobTelegramUrl = `${jobUrl}?utm_source=${encodeURIComponent(
             `${channelUserName} Telegram Channel`
           )}&utm_medium=telegram&utm_campaign=${jobData.job.slug}`;
@@ -120,14 +120,14 @@ ${jobFacebookUrl}
             jobTelegramUrl
           );
         })
-        .map(p => p.catch(() => null))
+        .map((p) => p.catch(() => null))
     );
     const messages = messageIds
       .map((messageId, index) => ({
         channelUserName: telegramChannelUsernames[index],
-        messageId
+        messageId,
       }))
-      .filter(message => message.messageId !== null);
+      .filter((message) => message.messageId !== null);
     telegramMessages = JSON.stringify(messages);
   }
 
@@ -138,7 +138,7 @@ ${jobFacebookUrl}
   ).catch(() => null);
   await db.createJobSocialPost(jobData.job.id, {
     telegramMessages,
-    facebookPostId
+    facebookPostId,
   });
 };
 
@@ -175,7 +175,7 @@ const postCloseJobToTelegram = async function(
     .post(`${TELEGRAM_API_BASE_URL}/editMessageText`, {
       chat_id: `@${channelUserName}`,
       message_id: messageId,
-      text: closedMessage
+      text: closedMessage,
     })
     .catch(logAxiosErrors);
 };
@@ -190,7 +190,7 @@ exports.postJobCloseToSocialMedia = async function(jobData) {
   if (!!telegramMessages) {
     try {
       await Promise.all(
-        telegramMessages.map(message => {
+        telegramMessages.map((message) => {
           return postCloseJobToTelegram(
             message.channelUserName,
             message.messageId,

@@ -110,7 +110,7 @@ function getFilterQuery(queryPath) {
 }
 
 const pageTitle = "Hulusira - Jobs in Ethiopia";
-const pageUrl = `${process.env.ROOT_URL}/`;
+const pageUrl = `${process.env.NEXT_PUBLIC_ROOT_URL}/`;
 const pageDescription =
   "HuluSira is a job board for jobs based in Ethiopia. We aim to make the job posting and dissemination process as simple as possible. Get workers hired.";
 
@@ -248,7 +248,7 @@ function Index({ user, jobPage, primaryTags }) {
     removeFilter("tags", tagName);
   };
 
-  const metaImage = `${process.env.ROOT_URL}/static/hulusira.png`;
+  const metaImage = `${process.env.NEXT_PUBLIC_ROOT_URL}/static/hulusira.png`;
   return (
     <Layout
       user={user}

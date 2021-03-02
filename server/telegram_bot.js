@@ -4,7 +4,7 @@ const TELEGRAM_API_BASE_URL = `https://api.telegram.org/bot${process.env.TELEGRA
 
 exports.setupWebhook = function() {
   return axios.post(`${TELEGRAM_API_BASE_URL}/setWebhook`, {
-    url: `${process.env.ROOT_URL}/api/telegram/${process.env.TELEGRAM_BOT_TOKEN}`
+    url: `${process.env.NEXT_PUBLIC_ROOT_URL}/api/telegram/${process.env.TELEGRAM_BOT_TOKEN}`,
   });
 };
 
@@ -13,7 +13,7 @@ exports.sendMessage = function(chatId, text, { replyMarkup, parseMode } = {}) {
     chat_id: chatId,
     text,
     reply_markup: replyMarkup,
-    parse_mode: parseMode
+    parse_mode: parseMode,
   });
 };
 
@@ -24,7 +24,7 @@ exports.answerCallbackQuery = function(
   return axios.post(`${TELEGRAM_API_BASE_URL}/answerCallbackQuery`, {
     callback_query_id: callbackQueryId,
     text,
-    show_alert: showAlert
+    show_alert: showAlert,
   });
 };
 

@@ -1,7 +1,7 @@
-import Router from 'next/router';
+import Router from "next/router";
 
-export default (ctx, target) => {
-  if(ctx.res) {
+export default function Redirect(ctx, target) {
+  if (ctx.res) {
     ctx.res.writeHead(303, { Location: target });
     ctx.res.end();
   } else {

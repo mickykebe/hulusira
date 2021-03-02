@@ -1,4 +1,4 @@
-require("dotenv").config();
+require("dotenv").config({ path: "./.env.local" });
 const next = require("next");
 const server = require("./server/app");
 const telegramBot = require("./server/telegram_bot");
@@ -16,7 +16,7 @@ app.prepare().then(() => {
     return handle(req, res);
   });
 
-  server.listen(port, err => {
+  server.listen(port, (err) => {
     if (err) throw err;
     console.log(`Server running on http://localhost:${port}`);
     setupTelegramBot();
