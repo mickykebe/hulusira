@@ -277,7 +277,7 @@ function Index({ user, jobPage, primaryTags }) {
       </Head>
       <Container className={classes.root} maxWidth="xl">
         <Box className={classes.wrapperGrid}>
-          <Hidden mdUp>
+          <Hidden implementation="css" mdUp>
             <HeaderAd />
           </Hidden>
           <HSPaper>
@@ -358,7 +358,7 @@ function Index({ user, jobPage, primaryTags }) {
             )}
           </HSPaper>
           <Box>
-            <Hidden smDown>
+            <Hidden implementation="css" smDown>
               <HeaderAd className={classes.headerAd} />
             </Hidden>
             {activeTagNames.length > 0 && (
