@@ -5,7 +5,7 @@ export default function GoogleAd({
   className = "",
   style = {},
   dataAdLayout,
-  dataAdFormat = "fluid",
+  dataAdFormat,
   dataAdLayoutKey,
   dataAdSlot,
   dataFullWidthResponsive,

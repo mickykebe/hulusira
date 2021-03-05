@@ -30,6 +30,7 @@ import FeedAd from "../components/feed-ad";
 import JobFilterPanels from "../components/job-filter-panels";
 import queryString from "query-string";
 import HSPaper from "../components/hs-paper";
+import GoogleAd from "../components/google-ad";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -278,7 +279,10 @@ function Index({ user, jobPage, primaryTags }) {
       <Container className={classes.root} maxWidth="xl">
         <Box className={classes.wrapperGrid}>
           <Hidden mdUp>
-            <HeaderAd adStyle={{ maxHeight: 90 }} />
+            <GoogleAd
+              style={{ display: "inline-block", width: 320, height: 50 }}
+              dataAdSlot="1624742511"
+            />
           </Hidden>
           <HSPaper>
             {smallScreen && (

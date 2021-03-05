@@ -6,6 +6,7 @@ export default function InArticleAd() {
       style={{ textAlign: "center" }}
       dataAdLayout="in-article"
       dataAdSlot="7719911413"
+      dataAdFormat="fluid"
       dataFullWidthResponsive={false}
     />
   );

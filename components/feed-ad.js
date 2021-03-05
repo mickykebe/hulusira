@@ -6,6 +6,7 @@ export default function FeedAd({ className }) {
       className={className}
       dataAdLayouKey="-ha-6+1u-6q+8y"
       dataAdSlot="8888209775"
+      dataAdFormat="fluid"
       style={{ height: 120 }}
     />
   );
