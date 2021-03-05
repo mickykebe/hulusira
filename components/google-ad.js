@@ -8,7 +8,7 @@ export default function GoogleAd({
   dataAdFormat = "fluid",
   dataAdLayoutKey,
   dataAdSlot,
-  dataFullWidthResponsive
+  dataFullWidthResponsive,
 }) {
   useEffect(() => {
     if (process.env.NODE_ENV === "production") {
@@ -26,8 +26,7 @@ export default function GoogleAd({
           data-ad-layout-key={dataAdLayoutKey}
           data-ad-client="ca-pub-1430919979045648"
           data-ad-slot={dataAdSlot}
-          data-full-width-responsive={dataFullWidthResponsive}
-        ></ins>
+          data-full-width-responsive={dataFullWidthResponsive}></ins>
       </Box>
     );
   }
