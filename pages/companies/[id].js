@@ -3,20 +3,20 @@ import Layout from "../../components/layout";
 import Router from "next/router";
 import {
   Container,
-  Grid,
   Typography,
   makeStyles,
-  Box
+  Box,
+  Hidden,
 } from "@material-ui/core";
 import HSPaper from "../../components/hs-paper";
 import CompanyLogo from "../../components/company-logo";
 import JobItem from "../../components/job-item";
 import HeaderAd from "../../components/header-ad";
-import { Fragment } from "react";
+import MobileHeaderAd from "../../components/mobile-header-ad";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    paddingTop: theme.spacing(2)
+    paddingTop: theme.spacing(2),
   },
   containerGrid: {
     display: "grid",
@@ -24,26 +24,23 @@ const useStyles = makeStyles(theme => ({
     gridGap: "1.5rem",
     alignItems: "start",
     [theme.breakpoints.down("sm")]: {
-      gridTemplateColumns: "1fr"
-    }
-  },
-  headerAd: {
-    marginBottom: theme.spacing(2)
+      gridTemplateColumns: "1fr",
+    },
   },
   companyCard: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    padding: theme.spacing(3)
+    padding: theme.spacing(3),
   },
   companyName: {
     textAlign: "center",
-    marginTop: theme.spacing(1)
+    marginTop: theme.spacing(1),
   },
   jobItem: {
-    marginBottom: theme.spacing(2)
-  }
+    marginBottom: theme.spacing(2),
+  },
 }));
 
 export default function CompanyJobs({ user, company, jobs }) {
@@ -51,7 +48,14 @@ export default function CompanyJobs({ user, company, jobs }) {
   return (
     <Layout user={user}>
       <Container className={classes.root} maxWidth="xl">
-        <HeaderAd className={classes.headerAd} />
+        <Box pb={2}>
+          <Hidden mdUp>
+            <MobileHeaderAd />
+          </Hidden>
+          <Hidden smDown>
+            <HeaderAd />
+          </Hidden>
+        </Box>
         <Box className={classes.containerGrid}>
           <HSPaper className={classes.companyCard}>
             <CompanyLogo
@@ -72,7 +76,7 @@ export default function CompanyJobs({ user, company, jobs }) {
                   job={job}
                   tags={job.tags}
                   company={company}
-                  onTagClick={tagId => Router.push(`/?tags=${tagId}`)}
+                  onTagClick={(tagId) => Router.push(`/?tags=${tagId}`)}
                 />
               );
             })}
@@ -88,7 +92,7 @@ CompanyJobs.getInitialProps = async function(ctx) {
 
   const [company, jobs] = await Promise.all([
     api.getCompany(ctx, id),
-    api.getCompanyJobs(id, ctx)
+    api.getCompanyJobs(id, ctx),
   ]);
 
   return { company, jobs };

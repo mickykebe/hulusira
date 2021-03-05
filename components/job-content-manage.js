@@ -1,4 +1,11 @@
-import { Container, Toolbar, Box, Button, makeStyles } from "@material-ui/core";
+import {
+  Container,
+  Toolbar,
+  Box,
+  Button,
+  makeStyles,
+  Hidden,
+} from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { Fragment, useState, useReducer } from "react";
 import isAfter from "date-fns/isAfter";
@@ -10,25 +17,26 @@ import HSSnackBar from "./hs-snackbar";
 import HeaderAd from "./header-ad";
 import jobCloseReducer from "../reducers/close-job";
 import useCloseJob from "../hooks/use-close-job";
+import MobileHeaderAd from "./mobile-header-ad";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   header: {
-    paddingTop: theme.spacing(2)
+    paddingTop: theme.spacing(2),
   },
   toolbar: {
-    padding: 0
+    padding: 0,
   },
   closeIcon: {
     fontSize: "1.125rem",
-    marginRight: theme.spacing(0.5)
-  }
+    marginRight: theme.spacing(0.5),
+  },
 }));
 
 export default function JobContentManage({
   jobData,
   onJobClose,
   isJobOwner,
-  withAds = false
+  withAds = false,
 }) {
   const classes = useStyles();
   const { approvalStatus, deadline } = jobData.job;
@@ -39,12 +47,21 @@ export default function JobContentManage({
     { closeStatus, closeDialogOpen },
     setCloseDialogOpen,
     clearError,
-    handleCloseJob
+    handleCloseJob,
   ] = useCloseJob(onJobClose);
   return (
     <Fragment>
       <Container className={classes.header} maxWidth="xl">
-        {withAds && <HeaderAd />}
+        {withAds && (
+          <Fragment>
+            <Hidden mdUp>
+              <MobileHeaderAd />
+            </Hidden>
+            <Hidden smDown>
+              <HeaderAd />
+            </Hidden>
+          </Fragment>
+        )}
         {approvalStatus === "Closed" && (
           <Banner
             variant="error"
@@ -75,8 +92,7 @@ export default function JobContentManage({
               color="secondary"
               size="small"
               disabled={closeStatus === "closing" || closeStatus === "closed"}
-              onClick={() => setCloseDialogOpen(true)}
-            >
+              onClick={() => setCloseDialogOpen(true)}>
               <CloseIcon className={classes.closeIcon} /> Close Job
             </Button>
           </Toolbar>
