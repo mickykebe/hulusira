@@ -3,6 +3,7 @@ import GoogleAd from "./google-ad";
 export default function HeaderAd({ className }) {
   return (
     <GoogleAd
+      style={{ height: 90 }}
       className={className}
       dataAdFormat="horizontal"
       dataAdSlot="7862886800"
