@@ -278,7 +278,7 @@ function Index({ user, jobPage, primaryTags }) {
       <Container className={classes.root} maxWidth="xl">
         <Box className={classes.wrapperGrid}>
           <Hidden mdUp>
-            <HeaderAd adStyle={{ height: 90 }} />
+            <HeaderAd adStyle={{ maxHeight: 90 }} />
           </Hidden>
           <HSPaper>
             {smallScreen && (
