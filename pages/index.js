@@ -277,8 +277,8 @@ function Index({ user, jobPage, primaryTags }) {
       </Head>
       <Container className={classes.root} maxWidth="xl">
         <Box className={classes.wrapperGrid}>
-          <Hidden implementation="css" mdUp>
-            <HeaderAd />
+          <Hidden mdUp>
+            <HeaderAd adStyle={{ height: 90 }} />
           </Hidden>
           <HSPaper>
             {smallScreen && (
@@ -358,7 +358,7 @@ function Index({ user, jobPage, primaryTags }) {
             )}
           </HSPaper>
           <Box>
-            <Hidden implementation="css" smDown>
+            <Hidden smDown>
               <HeaderAd className={classes.headerAd} />
             </Hidden>
             {activeTagNames.length > 0 && (
