@@ -1,4 +1,5 @@
 .env.local
+.env
 .next/
 node_modules
 scratchpad.js

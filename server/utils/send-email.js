@@ -7,15 +7,15 @@ exports.sendEmail = async function(email, subject, text, html) {
     secure: false,
     auth: {
       user: process.env.SMTP_USERNAME,
-      pass: process.env.SMTP_PASSWORD
-    }
+      pass: process.env.SMTP_PASSWORD,
+    },
   });
 
   const info = await transporter.sendMail({
-    from: process.env.SMTP_HOSTNAME,
+    from: process.env.NOREPLY_EMAIL_ADDRESS,
     to: email,
     subject,
     text,
-    html
+    html,
   });
 };
