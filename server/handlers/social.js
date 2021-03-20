@@ -38,7 +38,9 @@ const sendPostToFacebook = async function(
         }/feed?message=${encodedMessage}&link=${encodedJobUrl}&access_token=${
           process.env.FB_PAGE_ACCESS_TOKEN
         }${
-          scheduleTime ? `&published=false&scheduled_publish_time=${time}` : ""
+          scheduleTime
+            ? `&published=false&scheduled_publish_time=${scheduleTime}`
+            : ""
         }`
       )
       .catch(logAxiosErrors);
