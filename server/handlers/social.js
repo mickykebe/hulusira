@@ -33,13 +33,19 @@ const sendPostToFacebook = async function(
   try {
     const { data: response } = await axios
       .post(
-        `https://graph.facebook.com/${process.env.FB_PAGE_ID}/feed?message=${encodedMessage}&link=${encodedJobUrl}&access_token=${process.env.FB_PAGE_ACCESS_TOKEN}`
+        `https://graph.facebook.com/${
+          process.env.FB_PAGE_ID
+        }/feed?message=${encodedMessage}&link=${encodedJobUrl}&access_token=${
+          process.env.FB_PAGE_ACCESS_TOKEN
+        }${
+          scheduleTime ? `&published=false&scheduled_publish_time=${time}` : ""
+        }`
       )
       .catch(logAxiosErrors);
     if (response.id) {
       fbPostId = response.id;
     }
-    if (scheduleTime) {
+    /* if (scheduleTime) {
       const shareablePages = JSON.parse(process.env.SHARING_FB_PAGES) || [];
       await Promise.all(
         shareablePages.map((page, index) => {
@@ -52,7 +58,7 @@ const sendPostToFacebook = async function(
             .catch(logAxiosErrors);
         })
       );
-    }
+    } */
   } catch (error) {
     console.log("Problem occurred posting job to facebook");
   } finally {
