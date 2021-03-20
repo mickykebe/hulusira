@@ -61,6 +61,7 @@ const sendPostToFacebook = async function(
     } */
   } catch (error) {
     console.log("Problem occurred posting job to facebook");
+    console.error(error);
   } finally {
     return fbPostId;
   }
