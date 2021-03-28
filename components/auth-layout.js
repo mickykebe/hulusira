@@ -3,23 +3,23 @@ import Link from "next/link";
 import { Link as MuiLink } from "@material-ui/core";
 import HSPaper from "./hs-paper";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     height: "100vh",
     width: "100%",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    padding: `0 ${theme.spacing(2)}px`
+    padding: `0 ${theme.spacing(2)}px`,
   },
   signinCard: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(4),
     maxWidth: 400,
-    margin: "auto"
+    margin: "auto",
   },
   logoLink: {
-    display: "block"
-  }
+    display: "block",
+  },
 }));
 
 export default function AuthLayout({ children }) {

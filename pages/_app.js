@@ -11,11 +11,12 @@ import GlobalCss from "../components/global-css";
 import * as gtag from "../lib/gtag";
 import "easymde/dist/easymde.min.css";
 import { Box } from "@material-ui/core";
+import { GA_TRACKING_ID } from "../lib/gtag";
 
 NProgress.configure({ showSpinner: false });
 
 Router.events.on("routeChangeStart", () => NProgress.start());
-Router.events.on("routeChangeComplete", url => {
+Router.events.on("routeChangeComplete", (url) => {
   NProgress.done();
   gtag.pageview(url);
 });
@@ -53,10 +54,50 @@ class MyApp extends App {
         <Head>
           <title>HuluSira</title>
           <link rel="stylesheet" type="text/css" href="/nprogress.css" />
+          <script
+            async
+            src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}></script>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', '${GA_TRACKING_ID}');`,
+            }}></script>
+          <meta charSet="utf-8" />
+          <meta
+            name="viewport"
+            content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
+          />
+          <meta name="theme-color" content={theme.palette.primary.main} />
+          <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+          />
+          <link
+            rel="shortcut icon"
+            type="image/x-icon"
+            href="/static/favicon.ico"
+          />
+          <meta property="og:site_name" content="HuluSira" />
+          <meta property="og:type" content="website" />
+          <meta name="twitter:card" content="summary" />
+          <meta name="twitter:site" content="@HuluSira" />
+          <meta name="twitter:creator" content="@HuluSira" />
+          <script
+            crossOrigin="anonymous"
+            src="https://polyfill.io/v3/polyfill.min.js?features=IntersectionObserver"></script>
+          {process.env.NODE_ENV === "production" && (
+            <script
+              data-ad-client="ca-pub-1430919979045648"
+              async
+              src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+          )}
         </Head>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <GlobalCss />
+          {/*  <GlobalCss /> */}
           <Component {...pageProps} />
         </ThemeProvider>
       </Box>

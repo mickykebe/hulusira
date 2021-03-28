@@ -1,13 +1,10 @@
 import { Paper } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    border: `1px solid #EAEDF3`
+    boxShadow: "4px 4px 24px hsl(0deg 0% 62% / 25%)",
   },
-  elevation1: {
-    boxShadow: theme.boxShadows[0]
-  }
 }));
 
 export default function HSPaper({ className = "", ...props }) {
@@ -17,7 +14,6 @@ export default function HSPaper({ className = "", ...props }) {
       className={className}
       classes={{
         root: classes.root,
-        elevation1: classes.elevation1
       }}
       {...props}
     />

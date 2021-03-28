@@ -14,7 +14,7 @@ const theme = createMuiTheme({
   },
   typography: {
     fontFamily: [
-      "Source Sans Pro",
+      "Inter",
       "-apple-system",
       "BlinkMacSystemFont",
       '"Segoe UI"',
@@ -26,6 +26,10 @@ const theme = createMuiTheme({
       '"Segoe UI Emoji"',
       '"Segoe UI Symbol"',
     ],
+    button: {
+      textTransform: "none",
+    },
+    //fontSize: 16,
     h6: {
       fontWeight: 800,
     },

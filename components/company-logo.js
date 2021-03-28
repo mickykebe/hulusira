@@ -4,46 +4,43 @@ import { makeStyles } from "@material-ui/styles";
 const logoSizes = {
   extraSmall: {
     width: "2rem",
-    height: "2rem"
+    height: "2rem",
   },
   small: {
     width: "3rem",
-    height: "3rem"
+    height: "3rem",
   },
   medium: {
     width: "4.5rem",
-    height: "4.5rem"
+    height: "4.5rem",
   },
   large: {
     width: "6rem",
-    height: "6rem"
-  }
+    height: "6rem",
+  },
 };
 
-const useStyles = makeStyles(theme => ({
-  logoContainer: props => ({
+const useStyles = makeStyles((theme) => ({
+  logoContainer: (props) => ({
     position: "relative",
     backgroundColor: theme.palette.background.default,
-    border: `1px solid #eee`,
     cursor: props.isLink ? "pointer" : "auto",
-    borderRadius: "50%",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    ...logoSizes[props.size]
+    ...logoSizes[props.size],
   }),
   logo: {
     maxWidth: "100%",
     maxHeight: "100%",
-    borderRadius: "50%"
   },
-  abbrev: props => ({
+  abbrev: (props) => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     cursor: props.isLink ? "pointer" : "auto",
-    ...logoSizes[props.size]
-  })
+    ...logoSizes[props.size],
+  }),
 }));
 
 function abbrev(name) {
@@ -55,7 +52,7 @@ export default function CompanyLogo({
   company,
   abbrevFallback = true,
   size = "medium",
-  onClick
+  onClick,
 }) {
   const classes = useStyles({ size, isLink: !!onClick });
   if (company.logo) {
@@ -78,8 +75,7 @@ export default function CompanyLogo({
           color="textSecondary"
           align="center"
           className={classes.abbrev}
-          onClick={onClick}
-        >
+          onClick={onClick}>
           {abbrev(company.name)}
         </Typography>
       </Box>

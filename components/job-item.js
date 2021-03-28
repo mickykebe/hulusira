@@ -5,7 +5,14 @@ import isAfter from "date-fns/isAfter";
 import formatDistance from "date-fns/formatDistance";
 import endOfDay from "date-fns/endOfDay";
 import clsx from "clsx";
-import { Box, Typography, Chip, Link as MuiLink } from "@material-ui/core";
+import {
+  Box,
+  Typography,
+  Chip,
+  Link as MuiLink,
+  useMediaQuery,
+  useTheme,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import CompanyLogo from "../components/company-logo";
 
@@ -14,12 +21,13 @@ const useStyles = makeStyles((theme) => ({
     position: "relative",
     display: "flex",
     flexWrap: "wrap",
-    padding: `0.5rem 1rem`,
-    border: `1px solid ${theme.palette.grey[200]}`,
     backgroundColor: theme.palette.common.white,
     alignItems: "center",
-    borderRadius: 4,
-    boxShadow: theme.boxShadows[0],
+    /* "@media (min-width: 960px)": {
+      boxShadow: "4px 4px 24px hsl(0deg 0% 62% / 25%)",
+    },
+    boxShadow: "0 0 24px hsl(0deg 0% 51% / 25%)", */
+    boxShadow: "0 2px 8px hsl(0deg 0% 62% / 25%)",
     ...(props.preview && {
       position: "sticky",
       bottom: 0,
@@ -28,20 +36,33 @@ const useStyles = makeStyles((theme) => ({
       zIndex: 1110,
     }),
   }),
-  logoSmall: {
-    width: 48,
-    height: 48,
-  },
   position: {
-    display: "block",
+    wordWrap: "break-word",
+    cursor: "pointer",
+    textDecoration: "none",
+    fontWeight: 600,
+    fontSize: "1rem",
+    "@media (min-width: 960px)": {
+      fontWeight: 500,
+    },
+  },
+  company: {
+    wordWrap: "break-word",
+    color: theme.palette.grey[600],
+    fontSize: "0.875rem",
+    "@media (min-width: 960px)": {
+      fontWeight: 400,
+    },
   },
   tagChip: {
-    border: `1px solid ${theme.palette.grey[700]}`,
-    marginRight: "0.5rem",
-    marginBottom: "0.5rem",
-    fontWeight: 800,
-    fontSize: ".6875rem",
-    color: theme.palette.grey[700],
+    border: `2px solid ${theme.palette.grey[600]}`,
+    padding: theme.spacing(0.5),
+    borderRadius: 8,
+    marginRight: theme.spacing(0.5),
+    marginBottom: theme.spacing(0.5),
+    fontWeight: 500,
+    fontSize: theme.spacing(1.5),
+    color: theme.palette.grey[600],
   },
   tagChipLabel: {
     paddingLeft: "0.5rem",
@@ -59,6 +80,11 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(1),
     paddingBottom: theme.spacing(0.5),
   },
+  dateText: {
+    position: "absolute",
+    bottom: theme.spacing(1),
+    right: theme.spacing(1),
+  },
   stamp: {
     position: "absolute",
     top: "50%",
@@ -67,7 +93,7 @@ const useStyles = makeStyles((theme) => ({
     borderWidth: "0.5rem",
     borderStyle: "double",
     padding: `0.5rem`,
-    fontSize: "1.5rem",
+    fontSize: "0.8rem",
     borderRadius: "1rem",
     textTransform: "uppercase",
     fontWeight: 700,
@@ -117,55 +143,76 @@ export default function JobItem({
   onTagClick,
 }) {
   const classes = useStyles({ preview });
+  const theme = useTheme();
+  const xsScreen = useMediaQuery(theme.breakpoints.down("xs"));
+  const renderChips = (
+    <Box display="flex" flexWrap="wrap" flex="1" py={{ xs: 1, md: 0 }}>
+      {tags.map((tag) => {
+        let tagName = typeof tag === "object" ? tag.name : tag;
+        return (
+          <Chip
+            key={tagName}
+            classes={{ root: classes.tagChip, label: classes.tagChipLabel }}
+            label={tagName}
+            variant="outlined"
+            size="small"
+            onClick={!!onTagClick ? () => onTagClick(tag.name) : null}
+          />
+        );
+      })}
+    </Box>
+  );
 
   return (
-    <Box className={clsx(classes.root, className)}>
-      <Box display="flex" alignItems="center" flex="1 0 26rem" pr={2}>
-        <Box className={classes.logoWrapper} pr={[2, 3]}>
-          {!!company && (
-            <CompanyLogo
-              company={company}
-              onClick={
-                !preview ? () => Router.push(`/companies/${company.id}`) : null
-              }
-            />
-          )}
-        </Box>
-        <Box mb={1} flex={1}>
-          {preview ? (
-            <Typography variant="h6">{job.position || "Position"}</Typography>
-          ) : (
-            <Link href="/jobs/[slug]" as={`/jobs/${job.slug}`} passHref>
-              <MuiLink
-                classes={{ root: classes.position }}
-                variant="h6"
-                color="inherit">
-                {job.position}
-              </MuiLink>
-            </Link>
-          )}
-          {company && (
-            <React.Fragment>
-              <Typography variant="body1" component="span">
-                at&nbsp;
+    <Box
+      py={{ xs: 1, md: 1.5 }}
+      px={{ xs: 2, md: 2.5 }}
+      borderRadius={{ sm: 0, md: 12 }}
+      className={clsx(classes.root, className)}>
+      <Box pr={[2, 3]}>
+        {!!company && (
+          <CompanyLogo
+            size="small"
+            company={company}
+            onClick={
+              !preview ? () => Router.push(`/companies/${company.id}`) : null
+            }
+          />
+        )}
+      </Box>
+      <Box display="flex" mb={1} flex={1} flexDirection="column">
+        {preview ? (
+          <Typography className={classes.position}>
+            {job.position || "Position"}
+          </Typography>
+        ) : (
+          <Link href={`/jobs/${job.slug}`} passHref>
+            <MuiLink classes={{ root: classes.position }} color="inherit">
+              {job.position}
+            </MuiLink>
+          </Link>
+        )}
+        {company && (
+          <React.Fragment>
+            {preview ? (
+              <Typography className={classes.company} gutterBottom>
+                {company.name || "Company"}
               </Typography>
-              {preview ? (
-                <Typography variant="subtitle2" component="span" gutterBottom>
-                  {company.name || "Company"}
-                </Typography>
-              ) : (
-                <Link
-                  href="/companies/[id]"
-                  as={`/companies/${company.id}`}
-                  passHref>
-                  <MuiLink variant="subtitle2" color="inherit" gutterBottom>
-                    {company.name}
-                  </MuiLink>
-                </Link>
-              )}
-            </React.Fragment>
-          )}
-          {(!preview || !!job.jobType) && (
+            ) : (
+              <Link
+                href="/companies/[id]"
+                as={`/companies/${company.id}`}
+                passHref>
+                <MuiLink className={classes.company} gutterBottom>
+                  {company.name}
+                </MuiLink>
+              </Link>
+            )}
+          </React.Fragment>
+        )}
+        {xsScreen ? renderChips : null}
+
+        {/* {(!preview || !!job.jobType) && (
             <Box
               display="flex"
               alignItems="center"
@@ -203,28 +250,24 @@ export default function JobItem({
                 </Typography>
               )}
             </Box>
-          )}
-          {!preview && job.approvalStatus === "Closed" && <ClosedTag />}
-          {!preview && job.approvalStatus !== "Closed" && job.deadline && (
-            <ExpirationTag deadline={new Date(job.deadline)} />
-          )}
-        </Box>
+          )} */}
+        {!preview && job.approvalStatus === "Closed" && <ClosedTag />}
+        {!preview && job.approvalStatus !== "Closed" && job.deadline && (
+          <ExpirationTag deadline={new Date(job.deadline)} />
+        )}
       </Box>
-      <Box display="flex" flexWrap="wrap" flex="1">
-        {tags.map((tag) => {
-          let tagName = typeof tag === "object" ? tag.name : tag;
-          return (
-            <Chip
-              key={tagName}
-              classes={{ root: classes.tagChip, label: classes.tagChipLabel }}
-              label={tagName}
-              variant="outlined"
-              size="small"
-              onClick={!!onTagClick ? () => onTagClick(tag.name) : null}
-            />
-          );
-        })}
-      </Box>
+      {!xsScreen ? renderChips : null}
+      {!preview && (
+        <Typography
+          className={classes.dateText}
+          color="textSecondary"
+          variant="caption">
+          {formatDistance(
+            job.created ? new Date(job.created) : new Date(),
+            new Date()
+          )}
+        </Typography>
+      )}
     </Box>
   );
 }

@@ -6,29 +6,26 @@ import {
   ExpansionPanelDetails,
   Button,
   Badge,
-  ExpansionPanelActions
+  ExpansionPanelActions,
 } from "@material-ui/core";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   expansionPanel: {
     boxShadow: "none",
-    backgroundColor: "inherit"
+    backgroundColor: "inherit",
   },
   expansionPanelExpanded: {},
   expandIcon: {
-    fontSize: "1.2rem"
-  },
-  panelSummaryExpanded: {
-    padding: `0 1rem 0 1rem`
+    fontSize: "1.2rem",
   },
   title: {
-    flex: 1
+    flex: 1,
   },
   filterIcon: {
-    color: theme.palette.text.secondary
-  }
+    color: theme.palette.text.secondary,
+  },
 }));
 
 export default function FilterPanel({
@@ -37,7 +34,7 @@ export default function FilterPanel({
   onExpandChange,
   children,
   filterCount = 0,
-  onClear
+  onClear,
 }) {
   const classes = useStyles();
   return (
@@ -46,15 +43,10 @@ export default function FilterPanel({
       onChange={onExpandChange}
       classes={{
         root: classes.expansionPanel,
-        expanded: classes.expansionPanelExpanded
-      }}
-    >
+        expanded: classes.expansionPanelExpanded,
+      }}>
       <ExpansionPanelSummary
-        classes={{
-          expanded: classes.panelSummaryExpanded
-        }}
-        expandIcon={<ExpandMoreIcon className={classes.expandIcon} />}
-      >
+        expandIcon={<ExpandMoreIcon className={classes.expandIcon} />}>
         <Typography className={classes.title} variant="subtitle2">
           {title}
         </Typography>

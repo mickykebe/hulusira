@@ -24,7 +24,14 @@ import Layout from "../components/layout";
 import JobItem from "../components/job-item";
 import useIsInview from "../hooks/use-is-inview";
 import TagFilter from "../components/tag-filter";
-import { useEffect, useRef, Fragment, useCallback, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  Fragment,
+  useCallback,
+  useState,
+  useReducer,
+} from "react";
 import HeaderAd from "../components/header-ad";
 import FeedAd from "../components/feed-ad";
 import JobFilterPanels from "../components/job-filter-panels";
@@ -33,14 +40,12 @@ import HSPaper from "../components/hs-paper";
 import GoogleAd from "../components/google-ad";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    padding: theme.spacing(1),
-  },
   wrapperGrid: {
     display: "grid",
     gridTemplateColumns: "1fr 3fr",
-    gridGap: "0.5rem",
+    gridGap: theme.spacing(1.5),
     alignItems: "start",
+    paddingBottom: theme.spacing(2),
     [theme.breakpoints.down("sm")]: {
       gridTemplateColumns: "1fr",
     },
@@ -73,14 +78,10 @@ const useStyles = makeStyles((theme) => ({
     };
   },
   jobItem: {
-    marginBottom: `0.5rem`,
+    marginBottom: theme.spacing(1.5),
   },
   feedAd: {
-    marginBottom: `0.5rem`,
-  },
-  jobsLoadingSpinner: {
-    display: "block",
-    margin: "0 auto",
+    marginBottom: theme.spacing(1.5),
   },
   categorySelect: {
     marginTop: theme.spacing(2),
@@ -144,7 +145,7 @@ const jobsReducer = (state, action) => {
 };
 
 function Index({ user, jobPage, primaryTags }) {
-  const [{ jobs, nextCursor, isLoading, isError }, dispatch] = React.useReducer(
+  const [{ jobs, nextCursor, isLoading, isError }, dispatch] = useReducer(
     jobsReducer,
     {
       jobs: jobPage.jobs,
@@ -196,11 +197,11 @@ function Index({ user, jobPage, primaryTags }) {
   }, [isLoading, nextCursor]);
 
   const [isIntersecting, sentinelRef] = useIsInview(300);
-  useEffect(() => {
+  /* useEffect(() => {
     if (isIntersecting) {
       fetchMoreJobs();
     }
-  }, [fetchMoreJobs, isIntersecting]);
+  }, [fetchMoreJobs, isIntersecting]); */
   const addFilter = (key, value) => {
     const parsed = queryString.parse(location.search, {
       arrayFormat: "bracket",
@@ -276,7 +277,7 @@ function Index({ user, jobPage, primaryTags }) {
         <meta name="twitter:image:src" content={metaImage} />
         <meta name="twitter:url" content={pageUrl} />
       </Head>
-      <Container className={classes.root} maxWidth="xl">
+      <Box maxWidth={1920} py={1.5} px={{ md: 1.5 }}>
         <Box className={classes.wrapperGrid}>
           <Hidden mdUp>
             <GoogleAd
@@ -335,7 +336,7 @@ function Index({ user, jobPage, primaryTags }) {
             )}
             {!smallScreen && (
               <Fragment>
-                <Box display="flex" alignItems="center" px="1.5rem" py="1rem">
+                <Box display="flex" alignItems="center" p={2}>
                   <Typography variant="h6">Filter</Typography>
                 </Box>
                 <JobFilterPanels
@@ -387,6 +388,22 @@ function Index({ user, jobPage, primaryTags }) {
                 </Fragment>
               );
             })}
+            {!!nextCursor && (
+              <Button
+                size="large"
+                color="primary"
+                variant="text"
+                fullWidth
+                onClick={fetchMoreJobs}
+                disabled={isLoading}>
+                {isLoading && (
+                  <Box display="flex" mr={1}>
+                    <CircularProgress size={16} color="primary" />
+                  </Box>
+                )}
+                Load More Jobs
+              </Button>
+            )}
             <div ref={sentinelRef} style={{ height: "1px" }} />
             {ticker.current > 0 && jobs.length === 0 && (
               <Typography
@@ -396,12 +413,6 @@ function Index({ user, jobPage, primaryTags }) {
                 className={classes.nothingFound}>
                 😬 <br /> Nothing Found
               </Typography>
-            )}
-            {isLoading && (
-              <CircularProgress
-                classes={{ root: classes.jobsLoadingSpinner }}
-                color="primary"
-              />
             )}
             {isError && (
               <Box textAlign="center">
@@ -420,7 +431,7 @@ function Index({ user, jobPage, primaryTags }) {
             )}
           </Box>
         </Box>
-      </Container>
+      </Box>
     </Layout>
   );
 }

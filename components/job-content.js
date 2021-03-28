@@ -3,10 +3,9 @@ import Router from "next/router";
 import {
   Box,
   Typography,
-  Container,
   Grid,
   Button,
-  Link as MuiLink
+  Link as MuiLink,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import CompanyLogo from "./company-logo";
@@ -18,50 +17,67 @@ import InArticleAd from "./in-article-ad";
 import * as gtag from "../lib/gtag";
 import { careerLevelLabel } from "../utils/index";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    paddingTop: theme.spacing(2)
+    paddingTop: theme.spacing(2),
+    "@media (min-width: 960px)": {
+      maxWidth: 960,
+      marginLeft: "auto",
+      marginRight: "auto",
+    },
+    "@media (min-width: 1280px)": {
+      maxWidth: 1280,
+    },
   },
   jobGrid: {
-    width: "100%"
+    width: "100%",
   },
   jobInfo: {
-    display: "flex",
-    flexWrap: "wrap",
-    padding: theme.spacing(2),
-    marginBottom: theme.spacing(2)
+    display: "grid",
+    gridGap: theme.spacing(2),
+    gridTemplateColumns: "1fr",
+    "@media (min-width: 600px)": {
+      gridAutoFlow: "column",
+      gridAutoColumns: "1fr",
+    },
+    /* display: "flex",
+    flexWrap: "wrap", */
+    padding: theme.spacing(3),
+    marginBottom: theme.spacing(2),
   },
   jobMain: {
-    padding: theme.spacing(2),
-    marginBottom: theme.spacing(2)
+    padding: theme.spacing(3),
+    marginBottom: theme.spacing(2),
   },
   applyGrid: {
     width: "100%",
     [theme.breakpoints.down("xs")]: {
-      maxWidth: "100%"
+      maxWidth: "100%",
     },
     [theme.breakpoints.down("md")]: {
-      marginTop: -1 * theme.spacing(2)
-    }
+      marginTop: -1 * theme.spacing(2),
+    },
   },
   apply: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(3),
     overflowWrap: "break-word",
     wordWrap: "break-word",
     wordBreak: "break-all",
     wordBreak: "bread-word",
-    hyphens: "auto"
+    hyphens: "auto",
   },
   jobInfoDeadline: {
-    color: "red"
-  }
+    color: "red",
+  },
 }));
 
-function JobInfoItem({ title, value, classes = {} }) {
+function JobInfoItem({ title, value }) {
   return (
-    <Box flex={1} pr={3}>
-      <Typography variant="subtitle1">{title}</Typography>
-      <Typography variant="body1" className={classes.value}>
+    <Box>
+      <Typography variant="subtitle1" align="center">
+        {title}
+      </Typography>
+      <Typography variant="body1" align="center">
         {value}
       </Typography>
     </Box>
@@ -71,6 +87,7 @@ function JobInfoItem({ title, value, classes = {} }) {
 function ApplyButton({ job }) {
   return (
     <Button
+      size="large"
       variant="contained"
       color="primary"
       href={job.applyUrl || `mailto:${job.applyEmail}`}
@@ -80,10 +97,9 @@ function ApplyButton({ job }) {
         gtag.event({
           action: "Click Apply Now",
           category: "Job",
-          label: job.slug
+          label: job.slug,
         });
-      }}
-    >
+      }}>
       Apply Now
     </Button>
   );
@@ -96,20 +112,20 @@ export default function JobContent({ jobData, withAds = false }) {
   const hasApplySection =
     job.approvalStatus !== "Closed" && (!!job.howToApply || hasApplyButton);
   return (
-    <Container className={classes.root} maxWidth="xl">
+    <Box p={3} className={classes.root}>
       <Box display="flex" alignItems="center" pb={2}>
         {company && company.logo && (
           <Box mr={1}>
             <CompanyLogo
               company={company}
               abbrevFallback={false}
-              size="large"
+              size="medium"
               onClick={() => Router.push(`/companies/${company.id}`)}
             />
           </Box>
         )}
         <Box ml={1}>
-          <Typography variant="h4">{job.position}</Typography>
+          <Typography variant="h5">{job.position}</Typography>
           {company && company.name && (
             <Fragment>
               <Typography variant="body1" component="span">
@@ -118,8 +134,7 @@ export default function JobContent({ jobData, withAds = false }) {
               <Link
                 href="/companies/[id]"
                 as={`/companies/${company.id}`}
-                passHref
-              >
+                passHref>
                 <MuiLink variant="subtitle2" color="inherit" gutterBottom>
                   {company.name}
                 </MuiLink>
@@ -132,9 +147,8 @@ export default function JobContent({ jobData, withAds = false }) {
         <Grid
           className={classes.jobGrid}
           item
-          sm={12}
-          lg={hasApplySection ? 9 : 12}
-        >
+          xs={12}
+          lg={hasApplySection ? 8 : 12}>
           <HSPaper className={classes.jobInfo}>
             {job.location && (
               <JobInfoItem title="📍 Location" value={job.location} />
@@ -153,7 +167,6 @@ export default function JobContent({ jobData, withAds = false }) {
               <JobInfoItem
                 title="⏳ Deadline"
                 value={format(new Date(job.deadline), "MMM dd, yyyy")}
-                classes={{ value: classes.jobInfoDeadline }}
               />
             )}
           </HSPaper>
@@ -178,16 +191,18 @@ export default function JobContent({ jobData, withAds = false }) {
           </HSPaper>
         </Grid>
         {hasApplySection && (
-          <Grid item sm={12} lg={3} className={classes.applyGrid}>
+          <Grid item xs={12} lg={4} className={classes.applyGrid}>
             {!job.howToApply && hasApplyButton && <ApplyButton job={job} />}
             {!!job.howToApply && (
               <HSPaper className={classes.apply}>
                 {(job.applyUrl || job.applyEmail) && <ApplyButton job={job} />}
                 {job.howToApply && (
-                  <Box pt={hasApplyButton ? 2 : 0}>
-                    <Typography variant="subtitle1">
-                      Are you interested in this job?
-                    </Typography>
+                  <Box>
+                    {!hasApplyButton && (
+                      <Typography variant="subtitle1">
+                        Are you interested in this job?
+                      </Typography>
+                    )}
                     <Markdown>{job.howToApply}</Markdown>
                   </Box>
                 )}
@@ -196,6 +211,6 @@ export default function JobContent({ jobData, withAds = false }) {
           </Grid>
         )}
       </Grid>
-    </Container>
+    </Box>
   );
 }
