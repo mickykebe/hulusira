@@ -51,16 +51,16 @@ export default function JobContentManage({
   ] = useCloseJob(onJobClose);
   return (
     <Fragment>
-      <Container className={classes.header} maxWidth="xl">
+      <Container className={classes.header} maxWidth="lg">
         {withAds && (
-          <Box display="flex" justifyContent="center">
+          <Fragment>
             <Hidden mdUp>
               <MobileHeaderAd />
             </Hidden>
             <Hidden smDown>
               <HeaderAd />
             </Hidden>
-          </Box>
+          </Fragment>
         )}
         {approvalStatus === "Closed" && (
           <Banner
