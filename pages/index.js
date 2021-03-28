@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   headerAd: {
-    marginBottom: "1.5rem",
+    marginBottom: theme.spacing(1.5),
   },
   filterExpansionPanel: {
     boxShadow: "none",
