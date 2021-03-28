@@ -52,7 +52,7 @@ export default function JobContentManage({
   return (
     <Fragment>
       <Container className={classes.header} maxWidth="lg">
-        {withAds && (
+        {/* {withAds && (
           <Fragment>
             <Hidden mdUp>
               <MobileHeaderAd />
@@ -61,7 +61,7 @@ export default function JobContentManage({
               <HeaderAd />
             </Hidden>
           </Fragment>
-        )}
+        )} */}
         {approvalStatus === "Closed" && (
           <Banner
             variant="error"

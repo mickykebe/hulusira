@@ -16,6 +16,7 @@ import { Fragment } from "react";
 import InArticleAd from "./in-article-ad";
 import * as gtag from "../lib/gtag";
 import { careerLevelLabel } from "../utils/index";
+import HeaderAd from "./header-ad";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -68,6 +69,10 @@ const useStyles = makeStyles((theme) => ({
   },
   jobInfoDeadline: {
     color: "red",
+  },
+  responsiveAd: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
   },
 }));
 
@@ -170,6 +175,7 @@ export default function JobContent({ jobData, withAds = false }) {
               />
             )}
           </HSPaper>
+          {withAds && <HeaderAd className={classes.responsiveAd} />}
           <HSPaper className={classes.jobMain}>
             <Typography variant="h5">Description</Typography>
             <Markdown>{job.description}</Markdown>
