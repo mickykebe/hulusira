@@ -17,7 +17,11 @@ export default function GoogleAd({
   }, []);
   if (process.env.NODE_ENV === "production") {
     return (
-      <Box minWidth={250} className={className}>
+      <Box
+        minWidth={250}
+        display="flex"
+        justifyContent="center"
+        className={className}>
         <ins
           className="adsbygoogle"
           style={{ display: "block", minWidth: 250, ...style }}
