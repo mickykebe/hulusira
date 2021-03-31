@@ -5,7 +5,7 @@ import {
   Link as MuiLink,
   Box,
   Tooltip,
-  IconButton
+  IconButton,
 } from "@material-ui/core";
 import Link from "next/link";
 import CompanyLogo from "./company-logo";
@@ -20,10 +20,10 @@ import HSSnackBar from "./hs-snackbar";
 import api from "../api";
 import useCloseJob from "../hooks/use-close-job";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   tableHead: {
-    fontWeight: 800
-  }
+    fontWeight: 800,
+  },
 }));
 
 export default function JobTableRow({ jobData }) {
@@ -37,7 +37,7 @@ export default function JobTableRow({ jobData }) {
     { closeStatus, closeDialogOpen },
     setCloseDialogOpen,
     clearError,
-    handleCloseJob
+    handleCloseJob,
   ] = useCloseJob(closeJob);
   return (
     <Fragment>
@@ -46,8 +46,7 @@ export default function JobTableRow({ jobData }) {
           <Link
             href="/dashboard/jobs/[slug]"
             as={`/dashboard/jobs/${job.slug}`}
-            passHref
-          >
+            passHref>
             <MuiLink color="inherit" variant="subtitle1">
               {job.position}
             </MuiLink>
@@ -74,6 +73,7 @@ export default function JobTableRow({ jobData }) {
         <TableCell>
           <JobApprovalStatus approvalStatus={job.approvalStatus} />
         </TableCell>
+        <TableCell>{job.views}</TableCell>
         <TableCell align="left">
           {job.deadline ? format(new Date(job.deadline), "MMM dd, yyyy") : "--"}
         </TableCell>
@@ -82,8 +82,7 @@ export default function JobTableRow({ jobData }) {
             <IconButton
               disabled={closeStatus === "closing" || closeStatus === "closed"}
               color="secondary"
-              onClick={() => Router.push(`/dashboard/jobs/edit/${job.slug}`)}
-            >
+              onClick={() => Router.push(`/dashboard/jobs/edit/${job.slug}`)}>
               <EditIcon />
             </IconButton>
           </Tooltip>
@@ -91,8 +90,7 @@ export default function JobTableRow({ jobData }) {
             <IconButton
               disabled={closeStatus === "closing" || closeStatus === "closed"}
               color="secondary"
-              onClick={() => setCloseDialogOpen(true)}
-            >
+              onClick={() => setCloseDialogOpen(true)}>
               <CloseIcon />
             </IconButton>
           </Tooltip>

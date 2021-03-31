@@ -9,7 +9,7 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  makeStyles
+  makeStyles,
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import redirect from "../../../utils/redirect";
@@ -18,10 +18,10 @@ import api from "../../../api";
 import EmptyList from "../../../components/empty-list";
 import JobTableRow from "../../../components/job-table-row";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   tableHead: {
-    fontWeight: 800
-  }
+    fontWeight: 800,
+  },
 }));
 
 export default function DashboardJobs({ user, jobs }) {
@@ -36,8 +36,7 @@ export default function DashboardJobs({ user, jobs }) {
             color="primary"
             size="small"
             startIcon={<AddIcon />}
-            onClick={() => Router.push("/dashboard/jobs/new")}
-          >
+            onClick={() => Router.push("/dashboard/jobs/new")}>
             Post Job
           </Button>
         </Box>
@@ -57,6 +56,9 @@ export default function DashboardJobs({ user, jobs }) {
                     Status
                   </TableCell>
                   <TableCell classes={{ head: classes.tableHead }}>
+                    Views
+                  </TableCell>
+                  <TableCell classes={{ head: classes.tableHead }}>
                     Deadline
                   </TableCell>
                   <TableCell classes={{ head: classes.tableHead }}>
@@ -65,7 +67,7 @@ export default function DashboardJobs({ user, jobs }) {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {jobs.map(jobData => {
+                {jobs.map((jobData) => {
                   return <JobTableRow key={jobData.job.id} jobData={jobData} />;
                 })}
               </TableBody>
