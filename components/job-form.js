@@ -6,7 +6,9 @@ import {
   MenuItem,
   Typography,
   Button,
-  Fab
+  Fab,
+  FormControlLabel,
+  Switch,
 } from "@material-ui/core";
 import BusinessIcon from "@material-ui/icons/Business";
 import SaveIcon from "@material-ui/icons/Save";
@@ -25,32 +27,32 @@ import { MuiPickersUtilsProvider, DateTimePicker } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import add from "date-fns/add";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   form: {
     display: "flex",
-    flexDirection: "column"
+    flexDirection: "column",
   },
   jobSetting: {
-    marginBottom: theme.spacing(3)
+    marginBottom: theme.spacing(3),
   },
   companyPanel: {
-    marginBottom: theme.spacing(3)
+    marginBottom: theme.spacing(3),
   },
   jobDetailsCard: {
-    marginBottom: theme.spacing(3)
+    marginBottom: theme.spacing(3),
   },
   orText: {
-    marginBottom: theme.spacing(1)
+    marginBottom: theme.spacing(1),
   },
   postButton: {
-    marginTop: theme.spacing(1)
+    marginTop: theme.spacing(1),
   },
   saveButtonIcon: {
-    marginRight: theme.spacing(1)
+    marginRight: theme.spacing(1),
   },
   jobPreview: {
-    marginTop: theme.spacing(3)
-  }
+    marginTop: theme.spacing(3),
+  },
 }));
 
 function DateTimePickerTextField(props) {
@@ -75,13 +77,14 @@ export default function JobForm({
     applyEmail: "",
     deadline: null,
     companyId: null,
-    socialPostScheduleTime: null
+    socialPostScheduleTime: null,
+    postToFacebook: true,
   },
   companies,
   primaryTags,
   onSubmit,
   disableSaveButton = false,
-  user
+  user,
 }) {
   const classes = useStyles();
   const [showErrorSubmitting, setShowErrorSubmitting] = useState(false);
@@ -99,8 +102,7 @@ export default function JobForm({
     <Formik
       validationSchema={jobValidationSchema}
       initialValues={initialValues}
-      onSubmit={handleSubmit}
-    >
+      onSubmit={handleSubmit}>
       {({
         values,
         isSubmitting,
@@ -108,10 +110,10 @@ export default function JobForm({
         errors,
         touched,
         setFieldValue,
-        handleSubmit
+        handleSubmit,
       }) => {
         const selectedCompany = values.companyId
-          ? companies.find(company => company.id === values.companyId)
+          ? companies.find((company) => company.id === values.companyId)
           : null;
         return (
           <form className={classes.form} onSubmit={handleSubmit}>
@@ -135,9 +137,8 @@ export default function JobForm({
                         value={values.companyId || ""}
                         onChange={handleChange}
                         error={!!(touched.companyId && errors.companyId)}
-                        helperText={touched.companyId && errors.companyId}
-                      >
-                        {companies.map(company => (
+                        helperText={touched.companyId && errors.companyId}>
+                        {companies.map((company) => (
                           <MenuItem key={company.id} value={company.id}>
                             <Box display="flex" alignItems="center">
                               {company.logo && (
@@ -157,8 +158,7 @@ export default function JobForm({
                       <Typography
                         variant="subtitle1"
                         align="center"
-                        className={classes.orText}
-                      >
+                        className={classes.orText}>
                         OR
                       </Typography>
                     </Fragment>
@@ -167,8 +167,7 @@ export default function JobForm({
                     color="primary"
                     variant="contained"
                     startIcon={<BusinessIcon />}
-                    onClick={() => Router.push("/dashboard/companies/new")}
-                  >
+                    onClick={() => Router.push("/dashboard/companies/new")}>
                     Add Company
                   </Button>
                 </Box>
@@ -185,15 +184,27 @@ export default function JobForm({
             />
             {user.role === "admin" && (
               <HSCard title="Facebook post schedule">
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={values.postToFacebook}
+                      onChange={handleChange}
+                      name="postToFacebook"
+                      color="primary"
+                    />
+                  }
+                  label="Post job to facebook"
+                />
                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
                   <DateTimePicker
+                    disabled={!values.postToFacebook}
                     label="Schedule time"
                     inputVariant="outlined"
                     value={
                       values.socialPostScheduleTime &&
                       new Date(values.socialPostScheduleTime * 1000)
                     }
-                    onChange={date => {
+                    onChange={(date) => {
                       const inSeconds = parseInt(date.getTime() / 1000);
                       setFieldValue("socialPostScheduleTime", inSeconds);
                     }}
@@ -209,8 +220,7 @@ export default function JobForm({
               variant="extended"
               color="primary"
               className={classes.postButton}
-              disabled={isSubmitting || disableSaveButton}
-            >
+              disabled={isSubmitting || disableSaveButton}>
               <SaveIcon className={classes.saveButtonIcon} />
               Save
             </Fab>
