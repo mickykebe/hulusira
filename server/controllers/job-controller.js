@@ -40,18 +40,18 @@ const validationSchema = Yup.object().shape(
     applyEmail: validation.applyEmailValidator,
     companyName: Yup.string().when(["hasCompany", "companyId"], {
       is: (hasCompany, companyId) => hasCompany && !companyId,
-      then: validation.companyNameValidator
+      then: validation.companyNameValidator,
     }),
     companyEmail: Yup.string().when(["hasCompany", "companyId"], {
       is: (hasCompany, companyId) => hasCompany && !companyId,
-      then: validation.companyEmailValidator
+      then: validation.companyEmailValidator,
     }),
     companyId: Yup.number()
       .nullable()
       .when(["hasCompany", "companyName"], {
         is: (hasCompany, companyName) => hasCompany && !companyName,
-        then: Yup.number().required("Required")
-      })
+        then: Yup.number().required("Required"),
+      }),
   },
   ["companyId", "companyName"]
 );
@@ -108,7 +108,7 @@ exports.getJobs = async (req, res) => {
     count: countStr = "50",
     tags = [],
     jobTypes = [],
-    careerLevels = []
+    careerLevels = [],
   } = req.query;
   const fromJobId =
     typeof encodedCursor === "string" && encodedCursor !== ""
@@ -119,18 +119,18 @@ exports.getJobs = async (req, res) => {
     fromJobId,
     limit: count + 1,
     approvalStatus: ["Active", "Closed"],
-    withinDays: 30,
+    //withinDays: 30,
     tagNames: tags,
     jobTypes: jobTypes,
     careerLevels: careerLevels,
-    publicOnly: true
+    publicOnly: true,
   });
   if (jobs.length < count + 1) {
     data = { jobs, nextCursor: "" };
   } else {
     data = {
       jobs: jobs.slice(0, -1),
-      nextCursor: utils.base64encode(String(jobs[count].job.id))
+      nextCursor: utils.base64encode(String(jobs[count].job.id)),
     };
   }
   res.status(200).send(data);
@@ -149,7 +149,7 @@ exports.companyJobs = async function(req, res) {
       approvalStatus: ["Active", "Closed"],
       withinDays: 30,
       publicOnly: true,
-      companyId: id
+      companyId: id,
     });
     res.status(200).send(jobs);
   } catch (err) {
@@ -165,7 +165,7 @@ exports.myJobs = async (req, res) => {
   const jobs = await db.getJobs({
     approvalStatus: ["Active", "Pending", "Declined"],
     ownerId,
-    withinDays: 30
+    withinDays: 30,
   });
   res.status(200).send(jobs);
 };
