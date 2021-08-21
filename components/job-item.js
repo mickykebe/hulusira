@@ -85,7 +85,7 @@ const useStyles = makeStyles((theme) => ({
     bottom: theme.spacing(1),
     right: theme.spacing(1),
   },
-  stamp: {
+  /*   stamp: {
     position: "absolute",
     top: "50%",
     left: "50%",
@@ -110,6 +110,24 @@ const useStyles = makeStyles((theme) => ({
   closedStamp: {
     borderColor: theme.palette.secondary.main,
     color: theme.palette.secondary.main,
+  }, */
+  closedChip: {
+    padding: theme.spacing(0.5),
+    borderRadius: 8,
+    marginLeft: theme.spacing(1),
+    fontWeight: 500,
+    fontSize: theme.spacing(1.5),
+    backgroundColor: theme.palette.grey[800],
+    color: "white",
+  },
+  expiredChip: {
+    padding: theme.spacing(0.5),
+    borderRadius: 8,
+    marginLeft: theme.spacing(1),
+    fontWeight: 500,
+    fontSize: theme.spacing(1.5),
+    backgroundColor: "rgb(229, 57, 53)",
+    color: "white",
   },
 }));
 
@@ -186,11 +204,30 @@ export default function JobItem({
             {job.position || "Position"}
           </Typography>
         ) : (
-          <Link href={`/jobs/${job.slug}`} passHref>
-            <MuiLink classes={{ root: classes.position }} color="inherit">
-              {job.position}
-            </MuiLink>
-          </Link>
+          <Box display="flex" alignItems="center">
+            <Link href={`/jobs/${job.slug}`} passHref>
+              <MuiLink classes={{ root: classes.position }} color="inherit">
+                {job.position}
+              </MuiLink>
+            </Link>
+            {!preview && job.approvalStatus === "Closed" && (
+              <Chip
+                label="Closed"
+                size="small"
+                classes={{ root: classes.closedChip }}
+              />
+            )}
+            {!preview &&
+              job.approvalStatus !== "Closed" &&
+              job.deadline &&
+              isAfter(new Date(), endOfDay(new Date(job.deadline))) && (
+                <Chip
+                  label="Expired"
+                  size="small"
+                  classes={{ root: classes.expiredChip }}
+                />
+              )}
+          </Box>
         )}
         {company && (
           <React.Fragment>
@@ -251,10 +288,10 @@ export default function JobItem({
               )}
             </Box>
           )} */}
-        {!preview && job.approvalStatus === "Closed" && <ClosedTag />}
+        {/* {!preview && job.approvalStatus === "Closed" && <ClosedTag />}
         {!preview && job.approvalStatus !== "Closed" && job.deadline && (
           <ExpirationTag deadline={new Date(job.deadline)} />
-        )}
+        )} */}
       </Box>
       {!xsScreen ? renderChips : null}
       {!preview && (
