@@ -5,7 +5,7 @@ export default function FeedAd({ className }) {
     <GoogleAd
       className={className}
       dataAdLayouKey="-ha-6+1u-6q+8y"
-      dataAdSlot="8888209775"
+      dataAdSlot={process.env.NEXT_PUBLIC_ADSENSE_FEED_AD_SLOT}
       dataAdFormat="fluid"
       style={{ height: 120 }}
     />

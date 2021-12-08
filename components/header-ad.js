@@ -6,7 +6,7 @@ export default function HeaderAd({ className, adStyle = {} }) {
       style={adStyle}
       className={className}
       dataAdFormat="horizontal"
-      dataAdSlot="7862886800"
+      dataAdSlot={process.env.NEXT_PUBLIC_ADSENSE_HEADER_AD_SLOT}
       dataFullWidthResponsive="true"
     />
   );

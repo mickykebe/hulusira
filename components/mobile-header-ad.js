@@ -4,7 +4,7 @@ export default function MobileHeaderAd() {
   return (
     <GoogleAd
       style={{ display: "inline-block", width: 320, height: 50 }}
-      dataAdSlot="1624742511"
+      dataAdSlot={process.env.NEXT_PUBLIC_ADSENSE_MOBILE_HEADER_AD_SLOT}
     />
   );
 }

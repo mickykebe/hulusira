@@ -88,12 +88,13 @@ class MyApp extends App {
           <script
             crossOrigin="anonymous"
             src="https://polyfill.io/v3/polyfill.min.js?features=IntersectionObserver"></script>
-          {process.env.NODE_ENV === "production" && (
-            <script
-              data-ad-client="ca-pub-1430919979045648"
-              async
-              src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-          )}
+          {process.env.NODE_ENV === "production" &&
+            process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID && (
+              <script
+                data-ad-client={process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID}
+                async
+                src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+            )}
         </Head>
         <ThemeProvider theme={theme}>
           <CssBaseline />
