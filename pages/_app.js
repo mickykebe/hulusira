@@ -54,17 +54,21 @@ class MyApp extends App {
         <Head>
           <title>HuluSira</title>
           <link rel="stylesheet" type="text/css" href="/nprogress.css" />
-          <script
-            async
-            src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}></script>
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `window.dataLayer = window.dataLayer || [];
+          {GA_TRACKING_ID && (
+            <>
+              <script
+                async
+                src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}></script>
+              <script
+                dangerouslySetInnerHTML={{
+                  __html: `window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
 
             gtag('config', '${GA_TRACKING_ID}');`,
-            }}></script>
+                }}></script>
+            </>
+          )}
           <meta charSet="utf-8" />
           <meta
             name="viewport"
