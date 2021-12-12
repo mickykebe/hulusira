@@ -52,7 +52,7 @@ class MyApp extends App {
     return (
       <Box>
         <Head>
-          <title>HuluSira</title>
+          <title>{process.env.NEXT_PUBLIC_APP_NAME}</title>
           <link rel="stylesheet" type="text/css" href="/nprogress.css" />
           {GA_TRACKING_ID && (
             <>
@@ -84,11 +84,20 @@ class MyApp extends App {
             type="image/x-icon"
             href="/static/favicon.ico"
           />
-          <meta property="og:site_name" content="HuluSira" />
+          <meta
+            property="og:site_name"
+            content={process.env.NEXT_PUBLIC_APP_NAME}
+          />
           <meta property="og:type" content="website" />
           <meta name="twitter:card" content="summary" />
-          <meta name="twitter:site" content="@HuluSira" />
-          <meta name="twitter:creator" content="@HuluSira" />
+          <meta
+            name="twitter:site"
+            content={`@${process.env.NEXT_PUBLIC_APP_NAME}`}
+          />
+          <meta
+            name="twitter:creator"
+            content={`@${process.env.NEXT_PUBLIC_APP_NAME}`}
+          />
           <script
             crossOrigin="anonymous"
             src="https://polyfill.io/v3/polyfill.min.js?features=IntersectionObserver"></script>

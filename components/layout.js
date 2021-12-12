@@ -114,7 +114,7 @@ export default function Layout({
           {toolbarChildrenStart}
           <Link href="/" passHref>
             <MuiLink variant="h5" color="inherit" underline="none">
-              HuluSira
+              {process.env.NEXT_PUBLIC_APP_NAME}
             </MuiLink>
           </Link>
           <Box flex="1" />

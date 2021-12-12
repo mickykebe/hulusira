@@ -62,9 +62,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const pageTitle = "Post job on HuluSira";
-const pageDescription =
-  "Access thousands of job applicants by posting on HuluSira";
+const pageTitle = `Post job on ${process.env.NEXT_PUBLIC_APP_NAME}`;
+const pageDescription = `Access thousands of job applicants by posting on ${process.env.NEXT_PUBLIC_APP_NAME}`;
 
 const validationSchema = jobValidationSchema.concat(
   Yup.object().shape({

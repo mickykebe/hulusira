@@ -62,9 +62,9 @@ exports.register = async (req, res) => {
   const confirmationUrl = `${process.env.NEXT_PUBLIC_ROOT_URL}/confirm-user/${confirmationKey}`;
   await sendEmail(
     user.email,
-    `Hi ${user.firstName} ${user.lastName}, please verify your HuluSira account`,
-    "Thanks for signing up to HuluSira. Please activate your account by clicking the activation link.",
-    `Hi, <br /><br /> Thanks for using HuluSira! Please confirm your email address by clicking the link below. <br /><br /> <a href="${confirmationUrl}">${confirmationUrl}</a> <br /><br />If you did not signup for a HuluSira account please disregard this email. <br /><br /> Thanks <br />HuluSira`
+    `Hi ${user.firstName} ${user.lastName}, please verify your ${process.env.NEXT_PUBLIC_APP_NAME} account`,
+    `Thanks for signing up to ${process.env.NEXT_PUBLIC_APP_NAME}. Please activate your account by clicking the activation link.`,
+    `Hi, <br /><br /> Thanks for using ${process.env.NEXT_PUBLIC_APP_NAME}! Please confirm your email address by clicking the link below. <br /><br /> <a href="${confirmationUrl}">${confirmationUrl}</a> <br /><br />If you did not signup for a ${process.env.NEXT_PUBLIC_APP_NAME} account please disregard this email. <br /><br /> Thanks <br />${process.env.NEXT_PUBLIC_APP_NAME}`
   );
   res.status(200).send(user.publicData());
 };

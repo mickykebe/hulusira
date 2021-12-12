@@ -10,16 +10,16 @@ import api from "../api";
 import redirect from "../utils/redirect";
 import PageProgress from "../components/page-progress";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   registerButton: {
     width: "100% !important",
-    marginTop: theme.spacing(1)
+    marginTop: theme.spacing(1),
   },
   confirmationIcon: {
     color: "green",
     width: 64,
-    height: 64
-  }
+    height: 64,
+  },
 }));
 
 const validationSchema = Yup.object().shape({
@@ -28,7 +28,7 @@ const validationSchema = Yup.object().shape({
   email: Yup.string()
     .email()
     .required("Required"),
-  password: Yup.string().required("Required")
+  password: Yup.string().required("Required"),
 });
 
 export default function Register() {
@@ -59,8 +59,9 @@ export default function Register() {
           margin="auto">
           <CheckCircleOutlineIcon className={classes.confirmationIcon} />
           <Typography variant="h6" align="center">
-            You've successfully registered on HuluSira. We've emailed you an
-            activation link. Use it to sign in.
+            You've successfully registered on $
+            {process.env.NEXT_PUBLIC_APP_NAME}. We've emailed you an activation
+            link. Use it to sign in.
           </Typography>
         </Box>
       </Layout>
@@ -75,7 +76,7 @@ export default function Register() {
           firstName: "",
           lastName: "",
           email: "",
-          password: ""
+          password: "",
         }}>
         {({
           values,
@@ -83,7 +84,7 @@ export default function Register() {
           handleChange,
           errors,
           touched,
-          handleSubmit
+          handleSubmit,
         }) => {
           return (
             <form onSubmit={handleSubmit}>

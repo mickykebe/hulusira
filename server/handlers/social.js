@@ -99,10 +99,10 @@ const sendPostToTelegram = async function(channelUsername, message, jobUrl) {
 exports.postJobToSocialMedia = async function(jobData, { fbSchedule } = {}) {
   const messageBody = createJobMessage(jobData);
   const jobUrl = `${process.env.NEXT_PUBLIC_ROOT_URL}/jobs/${jobData.job.slug}`;
-  const jobFacebookUrl = `${jobUrl}?utm_source=HuluSira%20Facebook%20Page&utm_medium=facebook&utm_campaign=${jobData.job.slug}`;
+  const jobFacebookUrl = `${jobUrl}?utm_source=${process.env.NEXT_PUBLIC_APP_NAME}%20Facebook%20Page&utm_medium=facebook&utm_campaign=${jobData.job.slug}`;
   const telegramMessage = `${messageBody}
   
-Hulusira ላይ ስራ ማስተዋወቅ የሚፈልጉ ቀጣሪዎች @${process.env.NEXT_PUBLIC_TELEGRAM_BOT_NAME} በመጠቀም በነጻ የስራ ማስታወቅያ ማውጣት ይችላሉ፡፡`;
+${process.env.NEXT_PUBLIC_APP_NAME} ላይ ስራ ማስተዋወቅ የሚፈልጉ ቀጣሪዎች @${process.env.NEXT_PUBLIC_TELEGRAM_BOT_NAME} በመጠቀም በነጻ የስራ ማስታወቅያ ማውጣት ይችላሉ፡፡`;
   const facebookMessage = `ክፍት የስራ ቦታ ማስታወቅያ
   
 ${messageBody}

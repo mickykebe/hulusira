@@ -35,7 +35,7 @@ export default function AuthLayout({ children }) {
             align="center"
             color="inherit"
             underline="none">
-            HuluSira
+            {process.env.NEXT_PUBLIC_APP_NAME}
           </MuiLink>
         </Link>
         {children}

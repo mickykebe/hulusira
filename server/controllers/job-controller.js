@@ -247,7 +247,9 @@ exports.approveJob = async (req, res) => {
         await telegramBot.sendMessage(
           owner.telegramId || owner.telegramUserName,
           `🙌🙌🙌Your job listing has been approved 🙌🙌🙌.
-It's been shared on Hulusira's telegram channel and facebook page.
+It's been shared on ${
+            process.env.NEXT_PUBLIC_APP_NAME
+          }'s telegram channel and facebook page.
 
 You can find the job here: ${utils.jobUrlFromSlug(jobData.job.slug)}`
         );
